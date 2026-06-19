@@ -31,7 +31,7 @@ Accepts `.pdf`, `.docx`, `.txt` (max 10 MB). Response: `{language, jurisdiction,
 | Var | Default | Effect |
 |-----|---------|--------|
 | `LDV_REMOTE_TRANSLATION` | `0` | `1` allows sending document text to Google Translate. Off = non-English docs analyzed untranslated (L1 is multilingual; L2 degrades). |
-| `LDV_ADMIN_TOKEN` | unset | When set, `/admin`, `/api/stats`, `/api/recent` require `X-Admin-Token` header (or `?token=`). When unset, those endpoints are loopback-only. |
+| `LDV_ADMIN_TOKEN` | unset | When set, `/admin`, `/api/stats`, `/api/recent` require the `X-Admin-Token` header (timing-safe compared). When unset, those endpoints are loopback-only. (No `?token=` query fallback — secrets in URLs leak into logs.) |
 | `LDV_CORS_ORIGINS` | unset | Comma-separated origins. Unset = no CORS headers (same-origin only). |
 | `LDV_DEBUG` | `0` | `1` enables Flask debug mode (Werkzeug debugger — never in production). |
 
@@ -133,6 +133,29 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 13. **Docker setup** — no `Dockerfile` or `docker-compose.yml`.
 14. **OpenAPI/Swagger docs** — use `flasgger` or `flask-smorest`.
 15. **`raw_text` field** — expose via `?debug=1` only.
+
+---
+
+## Future Deployment Plan (post-dev — NOT for current dev phase)
+
+> Status: **planning only.** We are still in the dev phase; everything runs on one machine. This is the target topology for when we move to server hosting. Do not implement yet.
+
+**Idea:** split the app and the AI model across two machines for better AI performance and isolation.
+
+**Why it makes sense:** today everything shares 2 CPU cores with no GPU — L2 (DistilBERT) takes 5–15s, L4 (Qwen3-1.7B) takes minutes. Flask (HTTP) and PyTorch (inference) compete for the same cores, so a slow Qwen call stalls the web server. Separating inference removes that contention.
+
+**Key caveat:** the real speedup comes from a **GPU**, not merely from a second box. A second *CPU-only* machine gives isolation but Qwen stays slow (minutes is a CPU problem). The AI machine must have a **GPU with enough VRAM** — Qwen3-1.7B fits easily, DistilBERT is tiny. GPU turns minutes into seconds.
+
+**Target topology — 2 machines (not 3):**
+
+| Machine | Responsibilities | Hardware |
+|---------|------------------|----------|
+| App / web server | Flask under gunicorn, SQLite DB, file extraction (PDF/DOCX/TXT), L1 rules, L3 scorer, citation_db | Modest CPU, no GPU |
+| AI / inference server | L2 (DistilBERT) + L4 (Qwen) behind a small inference API | **GPU + adequate VRAM** |
+
+A separate third "DB/server" box adds little at current scale — SQLite on the app machine is fine until real load forces a split. Don't buy hardware for a problem we don't have yet.
+
+**Refactor required:** L2/L4 are currently in-process Python calls (`detector_distilbert.py`, `send_prompt.py`). To move them across machines, wrap them in a small inference API (FastAPI/Flask) on the AI box and have the app server call it over HTTP instead of importing directly. Modest change — the 4 layers are already cleanly separated, so it's mainly adding a network boundary between L1/L3 and L2/L4. Pairs with TODO P1 #3 (gunicorn) and P3 #13 (Docker).
 
 ---
 

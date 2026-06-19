@@ -1,4 +1,5 @@
 import os
+import hmac
 import logging
 import time
 import uuid
@@ -74,13 +75,17 @@ def handle_exception(e):
 def _admin_authorized() -> bool:
     """Admin endpoints expose every uploaded document's metadata.
 
-    With LDV_ADMIN_TOKEN set, require it via X-Admin-Token header (or ?token=
-    for browser access). Without it, only allow loopback connections.
+    With LDV_ADMIN_TOKEN set, require it via the X-Admin-Token header. Without
+    it, only allow loopback connections.
+
+    Header-only on purpose: a ?token= query-string fallback would leak the admin
+    secret into access logs, proxy logs, and browser history. Use hmac compare
+    to avoid leaking the token length/prefix via response timing.
     """
     token = os.getenv("LDV_ADMIN_TOKEN")
     if token:
-        supplied = request.headers.get("X-Admin-Token") or request.args.get("token")
-        return supplied == token
+        supplied = request.headers.get("X-Admin-Token") or ""
+        return hmac.compare_digest(supplied, token)
     return request.remote_addr in ("127.0.0.1", "::1")
 
 
