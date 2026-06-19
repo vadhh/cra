@@ -21,6 +21,7 @@ ldv-backend/uploads/
 .playwright-mcp/
 graphify-out/
 desktop.ini
+*:Zone.Identifier
 
 # Duplicate marketing screenshots
 * - Copy*.png
