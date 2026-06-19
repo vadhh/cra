@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sydeco LightML Contract Risk Analyzer</title>
+  <link rel="icon" type="image/png" href="images/law icon.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1b2a;
+      color: #e8ecf1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Nav ── */
+    nav {
+      background: #1a2744;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: .5px; }
+    .nav-brand span { color: #4a90d9; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; margin-left: 24px; font-size: 0.9rem; transition: color .2s; }
+    .nav-links a:hover { color: #fff; }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .hero-sub {
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    /* ── Upload card ── */
+    .upload-card {
+      background: #162235;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    .drop-zone {
+      border: 2px dashed rgba(74,144,217,0.5);
+      border-radius: 8px;
+      padding: 44px 24px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      background: rgba(74,144,217,0.03);
+    }
+    .drop-zone:hover, .drop-zone.over {
+      border-color: #4a90d9;
+      background: rgba(74,144,217,0.08);
+    }
+    .drop-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .drop-zone p { color: rgba(255,255,255,0.6); font-size: 0.92rem; line-height: 1.6; }
+    .drop-zone strong { color: #4a90d9; cursor: pointer; }
+
+    .file-types {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .ft-badge {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      font-weight: 600;
+    }
+
+    .selected-file {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 10px 16px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+    .selected-file .fname { font-size: 0.9rem; font-weight: 500; flex: 1; word-break: break-all; }
+    .selected-file .fsize { font-size: 0.78rem; color: rgba(255,255,255,0.45); white-space: nowrap; }
+
+    .upload-btn {
+      margin-top: 22px;
+      width: 100%;
+      padding: 13px;
+      background: #1a2744;
+      border: 1px solid #4a90d9;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .upload-btn:hover:not(:disabled) { background: #223260; }
+    .upload-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.88rem;
+    }
+    .spinner-ring {
+      width: 20px; height: 20px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: #4a90d9;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error ── */
+    .error-msg {
+      display: none;
+      margin-top: 16px;
+      background: rgba(220,53,69,0.15);
+      border: 1px solid rgba(220,53,69,0.4);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      color: #ff8a94;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    input[type="file"] { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="/">SYDECO <span>LightML</span></a>
+    <div class="nav-links">
+      <a href="/admin">Admin Dashboard</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1 class="hero-title">Contract Risk Analyzer</h1>
+    <p class="hero-sub">Upload a contract. Get a risk score, dangerous clauses, and a PDF report.</p>
+
+    <div class="upload-card">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">📄</div>
+        <p>Drag &amp; drop your contract here<br>or <strong id="browseLink">browse to upload</strong></p>
+        <div class="file-types">
+          <span class="ft-badge">PDF</span>
+          <span class="ft-badge">DOCX</span>
+          <span class="ft-badge">TXT</span>
+        </div>
+        <p style="margin-top:10px; font-size:0.78rem; color:rgba(255,255,255,0.35);">Max 10 MB</p>
+      </div>
+
+      <input type="file" id="fileInput" accept=".pdf,.docx,.txt">
+
+      <div class="selected-file" id="selectedFile">
+        <span>📎</span>
+        <span class="fname" id="fileName"></span>
+        <span class="fsize" id="fileSize"></span>
+      </div>
+
+      <button class="upload-btn" id="uploadBtn" onclick="doUpload()" disabled>
+        🔍 Analyze Contract
+      </button>
+
+      <div class="spinner" id="spinner">
+        <div class="spinner-ring"></div>
+        <span id="spinnerText">Uploading and analyzing…</span>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+    </div>
+  </main>
+
+  <footer>
+    © PT SYDECO — Sydeco LightML Contract Risk Analyzer
+  </footer>
+
+  <script>
+    const dropZone   = document.getElementById('dropZone');
+    const fileInput  = document.getElementById('fileInput');
+    const uploadBtn  = document.getElementById('uploadBtn');
+    const spinner    = document.getElementById('spinner');
+    const errorMsg   = document.getElementById('errorMsg');
+    const selectedFile = document.getElementById('selectedFile');
+
+    let selectedFileObj = null;
+
+    document.getElementById('browseLink').addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', (e) => {
+      if (e.target.id !== 'browseLink') fileInput.click();
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('over');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('over');
+      if (e.dataTransfer.files.length > 0) setFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length > 0) setFile(fileInput.files[0]);
+    });
+
+    function setFile(file) {
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!['pdf', 'docx', 'txt'].includes(ext)) {
+        showError('Unsupported file type. Please upload PDF, DOCX, or TXT.');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        showError('File exceeds the 10 MB limit.');
+        return;
+      }
+      selectedFileObj = file;
+      document.getElementById('fileName').textContent = file.name;
+      document.getElementById('fileSize').textContent = formatSize(file.size);
+      selectedFile.style.display = 'flex';
+      uploadBtn.disabled = false;
+      hideError();
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    async function doUpload() {
+      if (!selectedFileObj) return;
+
+      uploadBtn.disabled = true;
+      spinner.style.display = 'flex';
+      hideError();
+
+      // Animate spinner text to show progress
+      const steps = ['Uploading file…', 'Extracting text…', 'Running analysis…', 'Scoring risk…'];
+      let step = 0;
+      const stepTimer = setInterval(() => {
+        step = (step + 1) % steps.length;
+        document.getElementById('spinnerText').textContent = steps[step];
+      }, 2500);
+
+      const fd = new FormData();
+      fd.append('file', selectedFileObj);
+
+      try {
+        const resp = await fetch('/upload', { method: 'POST', body: fd });
+        const data = await resp.json();
+        if (!resp.ok) { showError(data.error || 'Upload failed.'); return; }
+        window.location.href = '/result/' + data.id;
+      } catch (e) {
+        showError('Could not reach the server. Is it running?');
+      } finally {
+        clearInterval(stepTimer);
+        spinner.style.display = 'none';
+        uploadBtn.disabled = false;
+      }
+    }
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.style.display = 'block';
+    }
+    function hideError() { errorMsg.style.display = 'none'; }
+  </script>
+</body>
+</html>

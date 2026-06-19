@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard — Sydeco LightML</title>
+  <link rel="icon" type="image/png" href="images/law icon.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1b2a;
+      color: #e8ecf1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background: #1a2744;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .nav-brand span { color: #4a90d9; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; margin-left: 24px; font-size: 0.9rem; }
+    .nav-links a:hover { color: #fff; }
+
+    main { flex: 1; max-width: 1000px; margin: 0 auto; padding: 32px 20px; width: 100%; }
+
+    h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: #162235;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .stat-card .label { font-size: 0.73rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .stat-card .value { font-size: 2rem; font-weight: 800; }
+    .stat-card .sub   { font-size: 0.75rem; color: rgba(255,255,255,0.35); margin-top: 2px; }
+
+    /* ── Distribution ── */
+    .section {
+      background: #162235;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 24px;
+    }
+    .section h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
+
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .dist-label { width: 80px; font-size: 0.8rem; font-weight: 600; }
+    .dist-bar-wrap { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; height: 18px; }
+    .dist-bar { height: 100%; border-radius: 4px; transition: width .6s ease; }
+    .dist-count { width: 32px; text-align: right; font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+
+    .bar-LOW      { background: #198754; }
+    .bar-MEDIUM   { background: #fd7e14; }
+    .bar-HIGH     { background: #dc3545; }
+    .bar-CRITICAL { background: #8b0000; }
+
+    /* ── Recent table ── */
+    .reports-table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    thead th {
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      color: rgba(255,255,255,0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    tbody tr { cursor: pointer; transition: background .15s; }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    tbody td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .risk-pill {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .pill-LOW      { background: rgba(25,135,84,0.2);  color: #4ade80; }
+    .pill-MEDIUM   { background: rgba(253,126,20,0.2); color: #fb923c; }
+    .pill-HIGH     { background: rgba(220,53,69,0.2);  color: #f87171; }
+    .pill-CRITICAL { background: rgba(139,0,0,0.3);    color: #ff6666; }
+
+    .score-num { font-weight: 700; }
+
+    .empty-row td { color: rgba(255,255,255,0.35); font-style: italic; }
+
+    /* ── Spinner ── */
+    #loadingState { text-align: center; padding: 60px; color: rgba(255,255,255,0.4); }
+    .spinner-ring {
+      display: inline-block; width: 28px; height: 28px;
+      border: 3px solid rgba(255,255,255,0.15); border-top-color: #4a90d9;
+      border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="/">SYDECO <span>LightML</span></a>
+    <div class="nav-links">
+      <a href="/">← Upload</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Admin Dashboard</h1>
+
+    <div id="loadingState">
+      <div class="spinner-ring"></div>
+      <p>Loading dashboard…</p>
+    </div>
+
+    <div id="dashContent" style="display:none;">
+
+      <!-- Stat cards -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="label">Documents</div>
+          <div class="value" id="totalDocs">—</div>
+          <div class="sub">uploaded</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Analyses</div>
+          <div class="value" id="totalAnalyses">—</div>
+          <div class="sub">completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Avg Risk Score</div>
+          <div class="value" id="avgScore">—</div>
+          <div class="sub">out of 100</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">High + Critical</div>
+          <div class="value" id="highCount">—</div>
+          <div class="sub">risky contracts</div>
+        </div>
+      </div>
+
+      <!-- Distribution -->
+      <div class="section">
+        <h2>Risk Distribution</h2>
+        <div id="distBars"></div>
+      </div>
+
+      <!-- Recent reports -->
+      <div class="section">
+        <h2>Recent Reports</h2>
+        <div class="reports-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Filename</th>
+                <th>Type</th>
+                <th>Jurisdiction</th>
+                <th>Score</th>
+                <th>Risk</th>
+                <th>Analyzed</th>
+              </tr>
+            </thead>
+            <tbody id="recentBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>© PT SYDECO — Sydeco LightML Contract Risk Analyzer</footer>
+
+  <script>
+    function esc(s) {
+      return String(s ?? '—').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function timeAgo(dateStr) {
+      if (!dateStr) return '—';
+      const d   = new Date(dateStr + 'Z');
+      const sec = Math.floor((Date.now() - d) / 1000);
+      if (sec < 60)   return 'just now';
+      if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+      if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+      return d.toLocaleDateString();
+    }
+
+    async function load() {
+      const [statsResp, recentResp] = await Promise.all([
+        fetch('/api/stats'),
+        fetch('/api/recent?limit=20'),
+      ]);
+
+      const stats  = await statsResp.json();
+      const recent = await recentResp.json();
+
+      // Stat cards
+      document.getElementById('totalDocs').textContent     = stats.total_documents ?? '0';
+      document.getElementById('totalAnalyses').textContent = stats.total_analyses  ?? '0';
+      document.getElementById('avgScore').textContent      = stats.average_risk_score ?? '0';
+
+      const dist   = stats.distribution || {};
+      const highN  = (dist['HIGH'] || 0) + (dist['CRITICAL'] || 0);
+      document.getElementById('highCount').textContent = highN;
+
+      // Distribution bars
+      const labels = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+      const total  = Object.values(dist).reduce((a, b) => a + b, 0) || 1;
+      const barsEl = document.getElementById('distBars');
+      barsEl.innerHTML = labels.map(lbl => {
+        const cnt = dist[lbl] || 0;
+        const pct = Math.round((cnt / total) * 100);
+        return `
+          <div class="dist-row">
+            <div class="dist-label">${lbl}</div>
+            <div class="dist-bar-wrap">
+              <div class="dist-bar bar-${lbl}" style="width:${pct}%"></div>
+            </div>
+            <div class="dist-count">${cnt}</div>
+          </div>`;
+      }).join('');
+
+      // Recent table
+      const tbody = document.getElementById('recentBody');
+      if (!recent.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No analyses yet.</td></tr>';
+      } else {
+        tbody.innerHTML = recent.map(row => {
+          const lbl  = row.risk_label || 'UNKNOWN';
+          const ext  = (row.file_type || '').replace('.','').toUpperCase();
+          return `<tr onclick="window.location='/result/${row.id}'">
+            <td>${row.id}</td>
+            <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${esc(row.original_filename)}">${esc(row.original_filename)}</td>
+            <td>${esc(ext)}</td>
+            <td>${esc(row.jurisdiction || '—')}</td>
+            <td class="score-num">${row.risk_score ?? '—'}</td>
+            <td><span class="risk-pill pill-${esc(lbl)}">${esc(lbl)}</span></td>
+            <td>${timeAgo(row.analyzed_at)}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      document.getElementById('loadingState').style.display  = 'none';
+      document.getElementById('dashContent').style.display   = 'block';
+    }
+
+    load().catch(e => {
+      document.getElementById('loadingState').innerHTML =
+        '<p style="color:#f87171;">Failed to load dashboard. Is the server running?</p>';
+    });
+  </script>
+</body>
+</html>

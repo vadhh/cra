@@ -1,0 +1,283 @@
+{
+  "llm_active": false,
+  "results": [
+    {
+      "file": "pdf/01_employment_id.pdf",
+      "label": "Indonesian employment contract (PDF)",
+      "expected_status": 200,
+      "assert_json": {
+        "jurisdiction": "Indonesia",
+        "language": "id"
+      },
+      "not_null": [
+        "document_type",
+        "clause_by_clause",
+        "legal_compliance"
+      ],
+      "llm_dependent": true,
+      "outcome": "WARN",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Ditandatangani di Jakarta, 1 April 2026.\", \"label\": \"abusive_clause\"}], \"jurisdiction\": \"In"
+    },
+    {
+      "file": "pdf/02_lease_be.pdf",
+      "label": "Belgian lease agreement (PDF)",
+      "expected_status": 200,
+      "assert_json": {
+        "jurisdiction": "Belgium"
+      },
+      "not_null": [
+        "document_type",
+        "clause_by_clause",
+        "legal_compliance"
+      ],
+      "llm_dependent": true,
+      "outcome": "WARN",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Locataire: Jean Dupont, n\\u00e9 5 mai 1985.\", \"label\": \"abusive_clause\"}, {\"clause\": \"Artic"
+    },
+    {
+      "file": "pdf/03_nda_en.pdf",
+      "label": "English NDA (PDF)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [
+        "document_type",
+        "clause_by_clause"
+      ],
+      "llm_dependent": true,
+      "outcome": "WARN",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Beta Ltd may receive\\nconfidential information from Alpha Corp for evaluation purposes only"
+    },
+    {
+      "file": "pdf/04_incomplete_en.pdf",
+      "label": "Incomplete draft contract (PDF)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"SERVICE CONTRACT (DRAFT)\\nBetween TechStudio Inc and Client ABC.\", \"label\": \"missing_mandat"
+    },
+    {
+      "file": "pdf/05_brochure_en.pdf",
+      "label": "Marketing brochure / non-contract (PDF)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en",
+        "jurisdiction": "Unknown"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"This brochure is for informational purposes only and does not constitute a contract.\", \"lab"
+    },
+    {
+      "file": "docx/01_service_agreement_en.docx",
+      "label": "English service agreement (DOCX)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [
+        "document_type"
+      ],
+      "llm_dependent": true,
+      "outcome": "WARN",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Liability Limitation\\nNeither party shall be liable for indirect or consequential damages.\""
+    },
+    {
+      "file": "docx/02_employment_fr.docx",
+      "label": "French employment contract (DOCX)",
+      "expected_status": 200,
+      "assert_json": {
+        "jurisdiction": "France"
+      },
+      "not_null": [
+        "document_type"
+      ],
+      "llm_dependent": true,
+      "outcome": "WARN",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Article 6 - Cong\\u00e9s\\n25 jours de cong\\u00e9s pay\\u00e9s par an selon la loi.\", \"label\":"
+    },
+    {
+      "file": "docx/03_nda_nl.docx",
+      "label": "Dutch NDA (DOCX)",
+      "expected_status": 200,
+      "assert_json": {
+        "jurisdiction": "Netherlands"
+      },
+      "not_null": [
+        "document_type"
+      ],
+      "llm_dependent": true,
+      "outcome": "WARN",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"GEHEIMHOUDINGSOVEREENKOMST\\nTussen Innovatie BV (Openbarende Partij) en Consultancy Nederla"
+    },
+    {
+      "file": "docx/04_legal_memo_en.docx",
+      "label": "Legal memorandum (DOCX)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [], \"jurisdiction\": \"Unknown\", \"language\": \"en\", \"layer1\": {\"clause_presence\": [{\"clause_id\": \"governing"
+    },
+    {
+      "file": "docx/05_general_terms_en.docx",
+      "label": "General terms and conditions (DOCX)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [], \"document_type_note\": \"This document appears to be a receipt. Full contractual clause analysis is no"
+    },
+    {
+      "file": "txt/01_employment_id.txt",
+      "label": "Indonesian employment contract (TXT/UTF-8)",
+      "expected_status": 200,
+      "assert_json": {
+        "jurisdiction": "Indonesia"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [], \"jurisdiction\": \"Indonesia\", \"language\": \"id\", \"layer1\": {\"clause_presence\": [{\"clause_id\": \"governi"
+    },
+    {
+      "file": "txt/02_lease_be.txt",
+      "label": "Belgian lease agreement (TXT/Latin-1)",
+      "expected_status": 200,
+      "assert_json": {
+        "jurisdiction": "Belgium"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [], \"document_type_note\": \"This document appears to be an invoice. Full contractual clause analysis is n"
+    },
+    {
+      "file": "txt/03_short_contract_en.txt",
+      "label": "Short freelance contract (TXT)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Between DesignStudio Ltd (Client) and Mark Hughes (Freelancer).\", \"label\": \"abusive_clause\""
+    },
+    {
+      "file": "txt/04_long_agreement_en.txt",
+      "label": "Long master services agreement (TXT)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"COMPENSATION\\nClient shall pay Company according to the rates specified in each SOW.\", \"lab"
+    },
+    {
+      "file": "txt/05_irrelevant_en.txt",
+      "label": "Quarterly earnings report / non-contract (TXT)",
+      "expected_status": 200,
+      "assert_json": {
+        "language": "en",
+        "jurisdiction": "Unknown"
+      },
+      "not_null": [],
+      "llm_dependent": true,
+      "outcome": "FAIL",
+      "status": 200,
+      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
+      "body_snippet": "{\"clause_tags\": [{\"clause\": \"QUARTERLY EARNINGS REPORT \\u2013 Q1 2026\", \"label\": \"abusive_clause\"}, {\"clause\": \"Key high"
+    },
+    {
+      "file": "negative/empty.pdf",
+      "label": "Empty file",
+      "expected_status": 400,
+      "assert_json": {},
+      "not_null": [],
+      "llm_dependent": false,
+      "outcome": "PASS",
+      "status": 400,
+      "detail": "",
+      "body_snippet": "{\"error\": \"File is empty\"}"
+    },
+    {
+      "file": "negative/fake.pdf",
+      "label": "Text file renamed to .pdf",
+      "expected_status": 400,
+      "assert_json": {},
+      "not_null": [],
+      "llm_dependent": false,
+      "outcome": "PASS",
+      "status": 400,
+      "detail": "",
+      "body_snippet": "{\"error\": \"File content does not match extension '.pdf'\"}"
+    },
+    {
+      "file": "negative/test.csv",
+      "label": "CSV file",
+      "expected_status": 400,
+      "assert_json": {},
+      "not_null": [],
+      "llm_dependent": false,
+      "outcome": "PASS",
+      "status": 400,
+      "detail": "",
+      "body_snippet": "{\"error\": \"Unsupported file type '.csv'. Supported: .docx, .pdf, .txt\"}"
+    },
+    {
+      "file": "negative/test.png",
+      "label": "PNG image",
+      "expected_status": 400,
+      "assert_json": {},
+      "not_null": [],
+      "llm_dependent": false,
+      "outcome": "PASS",
+      "status": 400,
+      "detail": "",
+      "body_snippet": "{\"error\": \"Unsupported file type '.png'. Supported: .docx, .pdf, .txt\"}"
+    }
+  ]
+}

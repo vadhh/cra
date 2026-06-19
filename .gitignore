@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.save
+
+# Models / large binaries — re-downloaded from HuggingFace, not source
+ldv-backend/models/
+Qwen3-1.7B/
+*.exe
+*.safetensors
+*.bin
+*.pkl
+
+# Runtime data — analyzed contracts & user uploads (confidential)
+ldv-backend/*.db
+ldv-backend/uploads/
+
+# Local tooling / agent artifacts
+.claude/
+.playwright-mcp/
+graphify-out/
+desktop.ini
+
+# Duplicate marketing screenshots
+* - Copy*.png

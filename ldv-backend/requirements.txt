@@ -1,0 +1,13 @@
+PyMuPDF
+Flask
+flask_cors
+deep-translator
+python-magic
+langdetect
+chardet
+python-docx
+torch
+transformers
+tokenizers
+gunicorn
+reportlab

@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analysis Result — Sydeco LightML</title>
+  <link rel="icon" type="image/png" href="images/law icon.png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0d1b2a;
+      color: #e8ecf1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav {
+      background: #1a2744;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .nav-brand span { color: #4a90d9; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; margin-left: 24px; font-size: 0.9rem; }
+    .nav-links a:hover { color: #fff; }
+
+    main { flex: 1; max-width: 900px; margin: 0 auto; padding: 32px 20px; width: 100%; }
+
+    /* ── Loading state ── */
+    #loadingState {
+      text-align: center;
+      padding: 80px 20px;
+      color: rgba(255,255,255,0.5);
+    }
+    .spinner-ring {
+      display: inline-block;
+      width: 32px; height: 32px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: #4a90d9;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error state ── */
+    #errorState {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .error-box {
+      background: rgba(220,53,69,0.12);
+      border: 1px solid rgba(220,53,69,0.4);
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .error-box h2 { color: #ff8a94; margin-bottom: 8px; }
+    .error-box p { color: rgba(255,255,255,0.6); }
+
+    /* ── Content ── */
+    #content { display: none; }
+
+    /* File header */
+    .file-header {
+      background: #162235;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .file-icon { font-size: 2rem; }
+    .file-info { flex: 1; }
+    .file-info h2 { font-size: 1rem; font-weight: 600; word-break: break-all; }
+    .file-meta { font-size: 0.8rem; color: rgba(255,255,255,0.45); margin-top: 3px; }
+    .file-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 8px 16px; border-radius: 5px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: .2s; border: none; }
+    .btn-primary { background: #4a90d9; color: #fff; }
+    .btn-primary:hover { background: #357abd; }
+    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #e8ecf1; }
+    .btn-outline:hover { border-color: #fff; }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* Risk hero */
+    .risk-hero {
+      border-radius: 10px;
+      padding: 28px 26px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .risk-score-big { font-size: 3.6rem; font-weight: 800; line-height: 1; }
+    .risk-divider { font-size: 1.5rem; opacity: .5; align-self: flex-end; margin-bottom: 6px; }
+    .risk-of { font-size: 1.2rem; opacity: .6; align-self: flex-end; margin-bottom: 10px; }
+    .risk-label-big { font-size: 1.5rem; font-weight: 700; }
+    .risk-desc { font-size: 0.85rem; opacity: .75; margin-top: 4px; }
+    .risk-LOW      { background: rgba(25,135,84,0.2);  border: 1px solid rgba(25,135,84,0.5); }
+    .risk-MEDIUM   { background: rgba(253,126,20,0.15); border: 1px solid rgba(253,126,20,0.5); }
+    .risk-HIGH     { background: rgba(220,53,69,0.15); border: 1px solid rgba(220,53,69,0.5); }
+    .risk-CRITICAL { background: rgba(139,0,0,0.25);   border: 1px solid rgba(139,0,0,0.6); }
+    .c-LOW      { color: #4ade80; }
+    .c-MEDIUM   { color: #fb923c; }
+    .c-HIGH     { color: #f87171; }
+    .c-CRITICAL { color: #ff4444; }
+
+    /* Sections */
+    .section {
+      background: #162235;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .section-header {
+      padding: 14px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .section-header:hover { background: rgba(255,255,255,0.03); }
+    .section-title { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+    .section-toggle { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
+    .section-body { padding: 18px 20px; }
+    .section-body.hidden { display: none; }
+
+    /* Summary grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .summary-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      padding: 12px 14px;
+    }
+    .summary-card .label { font-size: 0.72rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+    .summary-card .value { font-size: 0.9rem; font-weight: 600; word-break: break-word; }
+
+    /* Clause checklist */
+    .clause-list { list-style: none; }
+    .clause-list li { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
+    .clause-list li:last-child { border-bottom: none; }
+    .badge-ok   { color: #4ade80; font-weight: 700; }
+    .badge-miss { color: #f87171; font-weight: 700; }
+    .badge-req  { font-size: 0.7rem; background: rgba(253,126,20,0.2); color: #fb923c; border-radius: 3px; padding: 2px 6px; margin-left: auto; }
+
+    /* Dangerous clauses */
+    .flag-item {
+      background: rgba(220,53,69,0.08);
+      border-left: 3px solid #dc3545;
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+    }
+    .flag-item.medium { border-left-color: #fd7e14; background: rgba(253,126,20,0.08); }
+    .flag-item .flag-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+    .flag-item .sev { font-size: 0.72rem; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+    .sev-HIGH     { background: rgba(220,53,69,0.3);  color: #f87171; }
+    .sev-MEDIUM   { background: rgba(253,126,20,0.3); color: #fb923c; }
+    .flag-desc { font-weight: 600; }
+    .flag-evidence { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 3px; font-style: italic; }
+    .rewrite-box {
+      margin-top: 8px;
+      background: rgba(25,135,84,0.12);
+      border: 1px solid rgba(25,135,84,0.3);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #4ade80;
+    }
+    .ai-flag {
+      background: rgba(74,144,217,0.08);
+      border-left: 3px solid #4a90d9;
+      border-radius: 4px;
+      padding: 8px 14px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      color: #93c5fd;
+    }
+
+    /* Recommendations */
+    .rec-list { list-style: none; }
+    .rec-list li { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; display: flex; gap: 10px; }
+    .rec-list li:last-child { border-bottom: none; }
+    .rec-list li::before { content: "→"; color: #4a90d9; flex-shrink: 0; }
+
+    /* Extracted text */
+    .extracted-text {
+      background: rgba(0,0,0,0.25);
+      border-radius: 6px;
+      padding: 14px;
+      font-family: "Courier New", monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      max-height: 320px;
+      overflow-y: auto;
+      color: rgba(255,255,255,0.7);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Score breakdown */
+    .breakdown-list { list-style: none; }
+    .breakdown-list li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; display: flex; justify-content: space-between; }
+    .breakdown-list li:last-child { border-bottom: none; }
+    .pts { color: #f87171; font-weight: 600; }
+    .pts.pos { color: #4ade80; }
+
+    .empty { color: rgba(255,255,255,0.35); font-size: 0.88rem; font-style: italic; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-brand" href="/">SYDECO <span>LightML</span></a>
+    <div class="nav-links">
+      <a href="/">← New Analysis</a>
+      <a href="/admin">Admin</a>
+    </div>
+  </nav>
+
+  <main>
+    <div id="loadingState">
+      <div class="spinner-ring"></div>
+      <p>Loading analysis result…</p>
+    </div>
+
+    <div id="errorState">
+      <div class="error-box">
+        <h2>Result Not Found</h2>
+        <p id="errorText">This analysis ID does not exist or was not saved.</p>
+        <br>
+        <a href="/" class="btn btn-primary" style="display:inline-block; text-decoration:none; margin-top:10px;">
+          ← Analyze Another Contract
+        </a>
+      </div>
+    </div>
+
+    <div id="content">
+
+      <!-- File header -->
+      <div class="file-header">
+        <div class="file-icon" id="fileIcon">📄</div>
+        <div class="file-info">
+          <h2 id="fileNameEl">—</h2>
+          <div class="file-meta" id="fileMeta">—</div>
+        </div>
+        <div class="file-actions">
+          <button class="btn btn-primary" onclick="downloadPDF(this)">⬇ PDF Report</button>
+          <a href="/" class="btn btn-outline" style="text-decoration:none;">+ New Analysis</a>
+        </div>
+      </div>
+
+      <!-- Risk hero -->
+      <div class="risk-hero" id="riskHero">
+        <div>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <div class="risk-score-big" id="riskScore">—</div>
+            <div class="risk-divider">/</div>
+            <div class="risk-of">100</div>
+          </div>
+        </div>
+        <div>
+          <div class="risk-label-big" id="riskLabel">—</div>
+          <div class="risk-desc" id="riskDesc">—</div>
+        </div>
+      </div>
+
+      <!-- Contract details -->
+      <div class="section">
+        <div class="section-header" onclick="toggle(this)">
+          <span class="section-title">📋 Contract Details</span>
+          <span class="section-toggle">▾</span>
+        </div>
+        <div class="section-body">
+          <div class="summary-grid" id="summaryGrid"></div>
+        </div>
+      </div>
+
+      <!-- Missing clauses -->
+      <div class="section">
+        <div class="section-header" onclick="toggle(this)">
+          <span class="section-title">📝 Clause Checklist</span>
+          <span class="section-toggle">▾</span>
+        </div>
+        <div class="section-body">
+          <ul class="clause-list" id="clauseList"></ul>
+        </div>
+      </div>
+
+      <!-- Dangerous clauses -->
+      <div class="section">
+        <div class="section-header" onclick="toggle(this)">
+          <span class="section-title">⚠️ Dangerous Clauses</span>
+          <span class="section-toggle">▾</span>
+        </div>
+        <div class="section-body" id="dangerousClauses"></div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="section">
+        <div class="section-header" onclick="toggle(this)">
+          <span class="section-title">💡 Recommendations</span>
+          <span class="section-toggle">▾</span>
+        </div>
+        <div class="section-body">
+          <ul class="rec-list" id="recList"></ul>
+        </div>
+      </div>
+
+      <!-- Score breakdown -->
+      <div class="section">
+        <div class="section-header" onclick="toggle(this)">
+          <span class="section-title">📊 Score Breakdown</span>
+          <span class="section-toggle">▾</span>
+        </div>
+        <div class="section-body section-body hidden">
+          <ul class="breakdown-list" id="breakdownList"></ul>
+        </div>
+      </div>
+
+      <!-- Extracted text (collapsed by default) -->
+      <div class="section">
+        <div class="section-header" onclick="toggle(this)">
+          <span class="section-title">📄 Extracted Text</span>
+          <span class="section-toggle">▾</span>
+        </div>
+        <div class="section-body section-body hidden">
+          <pre class="extracted-text" id="extractedText"></pre>
+        </div>
+      </div>
+
+    </div><!-- /#content -->
+  </main>
+
+  <footer>© PT SYDECO — Sydeco LightML Contract Risk Analyzer</footer>
+
+  <script>
+  const _REWRITES = {
+    leonine_profit: "Suggested rewrite: 'Profits shall be distributed proportionally to each party's contribution as set out in Schedule A. No party may be excluded from losses while retaining the right to profits.'",
+    leonine_no_loss: "Suggested rewrite: 'Each party shall bear losses in proportion to their respective investment or contribution share as defined herein.'",
+    excessive_penalty: "Suggested rewrite: 'Late payment interest shall not exceed 0.5% per month (6% per annum) calculated on the overdue outstanding amount.'",
+    rights_waiver: "Suggested rewrite: 'Each party retains all statutory rights and remedies afforded under applicable law. No general waiver of rights is granted by this agreement.'",
+    unilateral_modification: "Suggested rewrite: 'This agreement may only be amended by a written instrument signed by authorised representatives of all parties, with a minimum notice period of 30 days.'",
+    total_liability_exclusion: "Suggested rewrite: 'The total aggregate liability of either party shall not exceed the total fees paid under this agreement in the 12 months preceding the event giving rise to liability.'",
+    auto_renewal_no_notice: "Suggested rewrite: 'This agreement renews automatically for successive 12-month terms unless either party provides written notice of non-renewal at least 60 days before the current term expires.'",
+    illegal_object: "Action required: This clause may be void or unenforceable under applicable law. Seek qualified legal advice before signing.",
+  };
+
+  const _RISK_DESCS = {
+    LOW:      "This contract appears relatively safe. Standard review recommended before signing.",
+    MEDIUM:   "This contract has some concerning clauses that warrant careful review.",
+    HIGH:     "This contract poses significant legal risk. Have a lawyer review it before signing.",
+    CRITICAL: "This contract is highly dangerous and may contain illegal or severely unfair clauses.",
+  };
+
+  let _result = null;  // full API response cached for PDF
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function toggle(header) {
+    const body = header.nextElementSibling;
+    const arrow = header.querySelector('.section-toggle');
+    body.classList.toggle('hidden');
+    arrow.textContent = body.classList.contains('hidden') ? '▸' : '▾';
+  }
+
+  function formatBytes(b) {
+    if (!b) return '—';
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+    return (b/1048576).toFixed(1) + ' MB';
+  }
+
+  function render(row) {
+    _result = row;
+    const r = row.result || {};
+    const layer1 = r.layer1 || {};
+    const layer2 = (r.layer2 || {});
+    const layer3 = r.layer3 || {};
+
+    // File header
+    const ext = (row.file_type || '').replace('.','').toUpperCase();
+    const icons = { PDF: '📕', DOCX: '📘', TXT: '📄' };
+    document.getElementById('fileIcon').textContent = icons[ext] || '📄';
+    document.getElementById('fileNameEl').textContent = row.original_filename || 'Unknown file';
+    document.getElementById('fileMeta').textContent = [
+      ext, formatBytes(row.file_size),
+      row.language ? row.language.toUpperCase() : null,
+      row.analyzed_at ? new Date(row.analyzed_at + 'Z').toLocaleString() : null,
+    ].filter(Boolean).join(' · ');
+
+    // Risk hero
+    const score = layer3.score ?? '—';
+    const label = layer3.label || 'UNKNOWN';
+    document.getElementById('riskHero').className = 'risk-hero risk-' + label;
+    document.getElementById('riskScore').className = 'risk-score-big c-' + label;
+    document.getElementById('riskScore').textContent = score;
+    document.getElementById('riskLabel').className = 'risk-label-big c-' + label;
+    document.getElementById('riskLabel').textContent = label;
+    document.getElementById('riskDesc').textContent = _RISK_DESCS[label] || '';
+
+    // Summary grid
+    const govLaw = layer1.governing_law || 'Not detected';
+    const venue  = layer1.venue         || 'Not detected';
+    const _dt = layer2.document_type;
+    const docType = (_dt && typeof _dt === 'object' ? _dt.label : _dt) || 'Not detected';
+    const juris   = r.jurisdiction      || 'Not detected';
+    const redFlags = layer1.red_flags   || [];
+    const l2flags  = layer2.flagged_clauses || [];
+    const clauses  = layer1.clause_presence || [];
+    const missing  = clauses.filter(c => c.required && !c.present);
+
+    const cards = [
+      ['Document Type',     docType],
+      ['Jurisdiction',      juris],
+      ['Governing Law',     govLaw],
+      ['Venue / Forum',     venue],
+      ['Dangerous Clauses', String(redFlags.length + l2flags.length)],
+      ['Missing Clauses',   String(missing.length)],
+    ];
+    document.getElementById('summaryGrid').innerHTML = cards.map(([lbl, val]) =>
+      `<div class="summary-card"><div class="label">${esc(lbl)}</div><div class="value">${esc(val)}</div></div>`
+    ).join('');
+
+    // Clause checklist
+    const clauseList = document.getElementById('clauseList');
+    if (!clauses.length) {
+      clauseList.innerHTML = '<li><span class="empty">No clause data available.</span></li>';
+    } else {
+      clauseList.innerHTML = clauses.map(c => {
+        const present = !!c.present;
+        const title = esc(c.title || c.clause_id || 'Unknown');
+        const reqBadge = c.required ? '<span class="badge-req">REQUIRED</span>' : '';
+        return `<li>
+          <span class="${present ? 'badge-ok' : 'badge-miss'}">${present ? '✓' : '✗'}</span>
+          <span>${title}</span>
+          ${reqBadge}
+        </li>`;
+      }).join('');
+    }
+
+    // Dangerous clauses
+    const dangerDiv = document.getElementById('dangerousClauses');
+    let dangerHTML = '';
+    for (const flag of redFlags) {
+      const sev  = flag.severity || 'MEDIUM';
+      const id   = flag.id || '';
+      const desc = esc(flag.description || flag.type || 'Unknown flag');
+      const ev   = esc(flag.evidence || '');
+      const rw   = _REWRITES[id] ? `<div class="rewrite-box">${esc(_REWRITES[id])}</div>` : '';
+      dangerHTML += `
+        <div class="flag-item ${sev === 'MEDIUM' ? 'medium' : ''}">
+          <div class="flag-head">
+            <span class="sev sev-${esc(sev)}">${esc(sev)}</span>
+            <span class="flag-desc">${desc}</span>
+          </div>
+          ${ev ? `<div class="flag-evidence">"…${ev}…"</div>` : ''}
+          ${rw}
+        </div>`;
+    }
+    for (const fl of l2flags) {
+      const lbl = esc((fl.label || '').replace(/_/g,' '));
+      const sc  = fl.score !== undefined ? (fl.score * 100).toFixed(0) + '% confidence' : '';
+      dangerHTML += `<div class="ai-flag">[AI] ${lbl}${sc ? ' — ' + esc(sc) : ''}</div>`;
+    }
+    dangerDiv.innerHTML = dangerHTML || '<span class="empty">No dangerous clauses detected.</span>';
+
+    // Recommendations
+    const recs = buildRecs(layer1, layer2, layer3, r.jurisdiction);
+    document.getElementById('recList').innerHTML = recs.map(r =>
+      `<li>${esc(r)}</li>`
+    ).join('') || '<li class="empty">No recommendations generated.</li>';
+
+    // Score breakdown
+    const breakdown = layer3.breakdown || [];
+    const bkList = document.getElementById('breakdownList');
+    if (!breakdown.length) {
+      bkList.innerHTML = '<li><span class="empty">No breakdown available.</span></li>';
+    } else {
+      bkList.innerHTML = breakdown.map(b => {
+        const reason = esc(typeof b === 'object' ? (b.reason || JSON.stringify(b)) : String(b));
+        const pts    = typeof b === 'object' && b.points !== undefined ? b.points : null;
+        const ptsStr = pts !== null
+          ? `<span class="pts ${pts > 0 ? 'pos' : ''}">${pts > 0 ? '+' : ''}${pts}</span>`
+          : '';
+        return `<li><span>${reason}</span>${ptsStr}</li>`;
+      }).join('');
+    }
+
+    // Extracted text
+    document.getElementById('extractedText').textContent = row.extracted_text || '(no text extracted)';
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  }
+
+  function buildRecs(layer1, layer2, layer3, juris) {
+    const recs = [];
+    const clauses   = layer1.clause_presence || [];
+    const missing   = clauses.filter(c => c.required && !c.present);
+    const redFlags  = layer1.red_flags || [];
+    const govLaw    = layer1.governing_law;
+    const venue     = layer1.venue;
+    const label     = layer3.label || '';
+
+    if (missing.length) {
+      const titles = missing.map(c => c.title || c.clause_id).join(', ');
+      recs.push(`Add the following missing required clauses: ${titles}.`);
+    }
+    const highFlags = redFlags.filter(f => f.severity === 'HIGH');
+    if (highFlags.length) {
+      recs.push(`Address ${highFlags.length} HIGH-severity clause(s) before signing — these create significant legal exposure.`);
+    }
+    if (!govLaw) {
+      recs.push('Add a governing law clause specifying which country\'s law governs the contract.');
+    }
+    if (!venue) {
+      recs.push('Add a jurisdiction/venue clause specifying where disputes will be resolved.');
+    }
+    if (label === 'HIGH' || label === 'CRITICAL') {
+      recs.push('This contract presents substantial risk. Have a qualified lawyer review it before signing.');
+    }
+    if (!recs.length) {
+      recs.push('Contract appears well-structured. Standard legal review is still recommended before signing.');
+    }
+    return recs;
+  }
+
+  async function downloadPDF(btn) {
+    if (!_result) return;
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+    try {
+      const resp = await fetch('/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(_result.result),
+      });
+      if (!resp.ok) { alert('PDF generation failed.'); return; }
+      const blob = await resp.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'contract_risk_report.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert('Could not reach the server.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '⬇ PDF Report';
+    }
+  }
+
+  // ── Bootstrap ──────────────────────────────────────────────────────────────
+  (async () => {
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const id    = parts[parts.length - 1];
+
+    if (!id || isNaN(Number(id))) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display  = 'block';
+      document.getElementById('errorText').textContent = 'No analysis ID found in URL.';
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/result/' + id);
+      if (resp.status === 404) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('errorState').style.display  = 'block';
+        return;
+      }
+      const data = await resp.json();
+      if (data.error) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('errorState').style.display  = 'block';
+        document.getElementById('errorText').textContent = data.error;
+        return;
+      }
+      render(data);
+    } catch (e) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display  = 'block';
+      document.getElementById('errorText').textContent = 'Could not connect to the server.';
+    }
+  })();
+  </script>
+</body>
+</html>

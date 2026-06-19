@@ -1,0 +1,54 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement ("Agreement") is entered into as of 1 April 2026,
+between Global Tech Partners Inc, a Delaware corporation ("Company"), and Enterprise
+Solutions GmbH, a German company ("Client").
+
+1. DEFINITIONS
+"Services" means the professional IT consulting and development services described
+in one or more Statements of Work ("SOW") executed under this Agreement.
+"Confidential Information" means any non-public information disclosed by either party.
+
+2. SERVICES
+Company will perform the Services as described in each SOW. Company may subcontract
+work with prior written approval from Client.
+
+3. COMPENSATION
+Client shall pay Company according to the rates specified in each SOW.
+Invoices are due within 30 days. Late payments accrue 1.5% monthly interest.
+
+4. INTELLECTUAL PROPERTY
+Work product created specifically for Client under each SOW shall be assigned to
+Client upon full payment. Company retains rights to all pre-existing materials.
+
+5. CONFIDENTIALITY
+Each party agrees to protect the other's Confidential Information with the same
+degree of care it uses for its own, but no less than reasonable care.
+
+6. WARRANTIES
+Company warrants that Services will be performed in a professional manner consistent
+with industry standards. Client warrants it has the right to provide all materials.
+
+7. LIMITATION OF LIABILITY
+Neither party shall be liable for indirect, special, or consequential damages.
+Company's total liability shall not exceed fees paid in the 3 months preceding the claim.
+
+8. TERM AND TERMINATION
+This Agreement commences on the Effective Date and continues for 2 years unless
+terminated earlier. Either party may terminate with 30 days written notice.
+Company may terminate immediately for non-payment after 15-day cure period.
+
+9. DISPUTE RESOLUTION
+Disputes shall first be subject to good-faith negotiation for 30 days, then binding
+arbitration under AAA rules in New York, New York.
+
+10. GOVERNING LAW
+This Agreement is governed by the laws of the State of New York.
+
+11. ENTIRE AGREEMENT
+This Agreement constitutes the entire agreement between the parties and supersedes
+all prior discussions and agreements.
+
+IN WITNESS WHEREOF the parties have executed this Agreement as of the date first written.
+
+Global Tech Partners Inc: ________________    Enterprise Solutions GmbH: ________________

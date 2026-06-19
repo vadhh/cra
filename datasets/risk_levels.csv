@@ -1,0 +1,5 @@
+Min_Score,Max_Score,Risk_Level
+0,30,Low Risk
+31,60,Medium Risk
+61,80,High Risk
+81,100,Critical Risk
