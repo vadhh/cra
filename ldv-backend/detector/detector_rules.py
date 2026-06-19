@@ -26,6 +26,7 @@ import logging
 from typing import Optional
 
 from detector.clause_db import clause_keywords
+from detector.risk_clause_db import detect_keyword_flags
 
 logger = logging.getLogger(__name__)
 
@@ -821,8 +822,15 @@ def detect_red_flags(text: str) -> list[dict]:
                     "severity":    flag["severity"],
                     "description": flag["description"],
                     "evidence":    snippet,
+                    "source":      "regex",
                 })
                 break  # one match per rule is enough
+
+    # Second pass: keyword-based risky-clause detection from the lawyer-authored
+    # category CSVs (abusive/dangerous/illegal/leonine). Suppresses concepts the
+    # regex rules already fired, so the two passes don't double-count.
+    fired = {f["id"] for f in found}
+    found.extend(detect_keyword_flags(text, exclude_ids=fired))
     return found
 
 
