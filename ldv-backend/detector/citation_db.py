@@ -7,8 +7,10 @@ plain CSV parsed once into memory, mirroring clause_db.py.
 
 Citations are *data*, never generated.  The `status` column (verified|draft)
 is the trust boundary: Claude-seeded rows are `draft` until a lawyer verifies
-them.  The status travels to the client so the frontend can badge unverified
-citations rather than the API silently hiding them.
+them.  **Only `verified` citations are customer-facing** (PRD CIT-02): the
+public path suppresses every non-verified row so a draft can never appear as
+legal authority.  Internal reviewer paths pass `include_drafts=True` to see the
+unverified seeds awaiting verification.
 
 CSV schema
 ----------
@@ -103,12 +105,21 @@ def db_available() -> bool:
     return bool(_load())
 
 
-def citations_for(finding_id: str, jurisdiction: Optional[str] = None) -> list[dict]:
+def citations_for(
+    finding_id: str,
+    jurisdiction: Optional[str] = None,
+    include_drafts: bool = False,
+) -> list[dict]:
     """Citations for a finding, preferring *jurisdiction*, falling back to generic.
 
     Returns [] when nothing matches — never raises.  Jurisdiction-specific rows
     and generic rows are both returned (specific first), so a finding shows both
     the local article and the cross-jurisdiction rationale when both exist.
+
+    Customer-safe by default (PRD CIT-02): only rows with status=="verified" are
+    returned.  Fail closed — anything not exactly "verified" (draft, blank, a
+    typo) is suppressed.  Internal reviewer paths pass include_drafts=True to see
+    unverified seeds.
     """
     by_juris = _load().get(finding_id)
     if not by_juris:
@@ -118,20 +129,29 @@ def citations_for(finding_id: str, jurisdiction: Optional[str] = None) -> list[d
     if code != _GENERIC:
         out.extend(by_juris.get(code, []))
     out.extend(by_juris.get(_GENERIC, []))
+    if not include_drafts:
+        out = [c for c in out if c.get("status") == "verified"]
     return out
 
 
-def annotate_layer1(layer1: dict, jurisdiction: Optional[str] = None) -> dict:
+def annotate_layer1(
+    layer1: dict,
+    jurisdiction: Optional[str] = None,
+    include_drafts: bool = False,
+) -> dict:
     """Attach a `citations` list to each red flag and clause in a layer1 result.
 
     Keyed by each finding's id: red_flags[].id and clause_presence[].clause_id.
     The `citations` key is always present (empty list when no row exists) for a
     uniform client contract.  Mutates and returns *layer1*.
+
+    Customer-safe by default: draft citations are suppressed (PRD CIT-02).  The
+    future reviewer path passes include_drafts=True for the internal view.
     """
     for flag in layer1.get("red_flags") or []:
-        flag["citations"] = citations_for(flag.get("id", ""), jurisdiction)
+        flag["citations"] = citations_for(flag.get("id", ""), jurisdiction, include_drafts)
     for clause in layer1.get("clause_presence") or []:
-        clause["citations"] = citations_for(clause.get("clause_id", ""), jurisdiction)
+        clause["citations"] = citations_for(clause.get("clause_id", ""), jurisdiction, include_drafts)
     return layer1
 
 
@@ -158,10 +178,23 @@ if __name__ == "__main__":  # run from ldv-backend: python3 detector/citation_db
     drift = verify_against(valid)
     assert not drift, f"Citation drift: finding_ids with no live rule/clause: {drift}"
 
-    sample = citations_for("leonine_no_loss", "FR")
-    assert sample and sample[0]["status"] == "draft", "expected a draft FR citation seed"
+    # CIT-02 trust boundary: leonine_no_loss/FR is a draft seed.
+    seed = citations_for("leonine_no_loss", "FR", include_drafts=True)
+    assert seed and seed[0]["status"] == "draft", "expected a draft FR citation seed"
+    assert citations_for("leonine_no_loss", "FR") == [], "draft must be suppressed for customers"
     assert citations_for("nonexistent_finding", "FR") == [], "unknown id must yield []"
 
+    # default (customer) mode must never leak a non-verified citation,
+    # across every finding/jurisdiction combination in the DB
+    leaked = [c
+              for fid, by_juris in _load().items()
+              for juris in by_juris
+              for c in citations_for(fid, juris)
+              if c.get("status") != "verified"]
+    assert not leaked, f"customer mode leaked non-verified citations: {leaked}"
+
     n = sum(len(c) for byj in _load().values() for c in byj.values())
-    print(f"OK: {len(_load())} findings cited, {n} citation rows, all ids live.")
-    print(f"    sample leonine_no_loss/FR -> {sample[0]['article']} ({sample[0]['source']})")
+    n_verified = sum(1 for byj in _load().values() for rows in byj.values()
+                     for c in rows if c.get("status") == "verified")
+    print(f"OK: {len(_load())} findings cited, {n} citation rows ({n_verified} verified), all ids live.")
+    print(f"    draft seed leonine_no_loss/FR -> {seed[0]['article']} ({seed[0]['source']}) [suppressed for customers]")

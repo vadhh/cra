@@ -111,6 +111,18 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 
 ## TODO
 
+### P0 — Production blockers (from 2026-06-22 external review)
+
+> Sources: `docs/2026-06-22-PRD.md` (authoritative product scope, FR IDs, release gates, roadmap) + `docs/2026-06-22-external-review.md` (verdict 5.5/10, controlled-pilot only). **No paid production use until all P0 are closed and verified.** None are started. These P0 map to PRD Sprint 2 (Security & operations) + Gates 3/4; full requirement IDs (IAM/ING/CLS/CLP/RSK/SCR/CIT/OUT/SUB/SEC) live in the PRD — treat it as the spec of record, this list as the near-term blocker view.
+
+1. **AuthN/AuthZ on results** (CR-01) — UUID ≠ authorization. Add user auth, tenant ownership checks, expiring signed download links on every `/api/result/<uuid>` + report endpoint.
+2. ~~**Suppress draft citations from client output**~~ (CR-02) — **DONE.** `citations_for()`/`annotate_layer1()` fail closed to `status=="verified"` (`include_drafts=False` default); `/analyze` no longer emits draft citations. Reviewer path passes `include_drafts=True`. Self-check in `citation_db.py` asserts both directions. Still TODO: lawyer approval *workflow* (status transitions UI) — depends on the auth/reviewer endpoint (P0 #1).
+3. **Retention / purge / encryption-at-rest** (CR-04) — uploads, extracted text, results, logs cannot persist indefinitely in `uploads/` + SQLite. Add retention+purge controls; encrypt stored documents.
+4. **Async job queue** (CR-10) — `flask run` + in-process L2/L4 blocks workers for minutes. Move analysis to a worker queue; return `202`; expose `queued/running/completed/failed`. (Pairs with P1 #3 gunicorn.)
+5. **Pinned deps + reproducible deploy** (CR-09, CR-10) — pin `requirements.txt`; Docker/systemd with health checks that expose degraded mode (missing citations/datasets/models must alert + show in report metadata).
+
+**P1 from the review** (track alongside P2 Quality below): clause-coverage matrix (CR-11); lawyer-reviewed benchmark set measuring precision/recall/false-missing by type+jurisdiction+language (CR-05/07/08); version scoring policies + show score-version/confidence/limits in reports (CR-03); language-aware keyword matching + evidence spans (CR-06); package or remove `legal_mlp.pkl` (overlaps P2 #8). Also: fix "100% recall" wording → "all targeted cases passed" (CR-05).
+
 ### P1 — Reliability
 
 1. ~~**Replace `googletrans==3.1.0a0`**~~ — **DONE.** `translator.py` now uses `deep-translator` (GoogleTranslator). Remote translation is opt-in via `LDV_REMOTE_TRANSLATION=1` (off by default — confidentiality); still not local when enabled.
