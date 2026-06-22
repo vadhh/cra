@@ -9,7 +9,7 @@ import sqlite3
 import uuid
 from contextlib import contextmanager
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "sydeco.db")
+DB_PATH = os.getenv("LDV_DB_PATH", os.path.join(os.path.dirname(__file__), "sydeco.db"))
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS documents (
@@ -35,6 +35,23 @@ CREATE TABLE IF NOT EXISTS analyses (
     result_json   TEXT NOT NULL,
     analyzed_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS organizations (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL UNIQUE,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    org_id        INTEGER NOT NULL REFERENCES organizations(id),
+    email         TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    role          TEXT NOT NULL DEFAULT 'user',
+    api_token     TEXT UNIQUE,
+    active        INTEGER NOT NULL DEFAULT 1,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 """
 
 
@@ -57,6 +74,14 @@ def init_db() -> None:
             "CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id "
             "ON analyses(public_id)"
         )
+        # Ownership columns for tenant isolation (CR-01). Added if missing so
+        # pre-auth databases keep working; existing rows stay NULL-org
+        # (admin-visible only) until backfilled by manage.py seed-admin.
+        doc_cols = {row[1] for row in conn.execute("PRAGMA table_info(documents)")}
+        if "org_id" not in doc_cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN org_id INTEGER REFERENCES organizations(id)")
+        if "owner_id" not in doc_cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN owner_id INTEGER REFERENCES users(id)")
 
 
 @contextmanager
@@ -81,15 +106,17 @@ def save_document(
     file_type: str,
     language: str | None = None,
     extracted_text: str | None = None,
+    org_id: int | None = None,
+    owner_id: int | None = None,
 ) -> int:
     with _conn() as db:
         cur = db.execute(
             """INSERT INTO documents
                (original_filename, stored_filename, file_path, file_size,
-                file_type, language, extracted_text)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                file_type, language, extracted_text, org_id, owner_id)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (original_filename, stored_filename, file_path, file_size,
-             file_type, language, extracted_text),
+             file_type, language, extracted_text, org_id, owner_id),
         )
         return cur.lastrowid
 
@@ -120,7 +147,7 @@ def get_result(public_id: str) -> dict | None:
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.jurisdiction,
                       a.document_type, a.result_json, a.analyzed_at,
                       d.original_filename, d.file_size, d.file_type, d.language,
-                      d.extracted_text, d.uploaded_at
+                      d.extracted_text, d.uploaded_at, d.org_id
                FROM analyses a
                JOIN documents d ON a.document_id = d.id
                WHERE a.public_id = ?""",
@@ -157,3 +184,52 @@ def get_recent(limit: int = 10) -> list[dict]:
             (limit,),
         ).fetchall()
         return [dict(r) for r in rows]
+
+
+def create_org(name: str) -> int:
+    with _conn() as db:
+        cur = db.execute("INSERT INTO organizations (name) VALUES (?)", (name,))
+        return cur.lastrowid
+
+
+def get_org_by_name(name: str) -> dict | None:
+    with _conn() as db:
+        row = db.execute(
+            "SELECT * FROM organizations WHERE name = ?", (name,)
+        ).fetchone()
+        return dict(row) if row else None
+
+
+def create_user(org_id: int, email: str, password_hash: str,
+                role: str, api_token: str) -> int:
+    with _conn() as db:
+        cur = db.execute(
+            """INSERT INTO users (org_id, email, password_hash, role, api_token)
+               VALUES (?, ?, ?, ?, ?)""",
+            (org_id, email.strip().lower(), password_hash, role, api_token),
+        )
+        return cur.lastrowid
+
+
+def get_user_by_email(email: str) -> dict | None:
+    with _conn() as db:
+        row = db.execute(
+            "SELECT * FROM users WHERE email = ?", (email.strip().lower(),)
+        ).fetchone()
+        return dict(row) if row else None
+
+
+def get_user_by_id(user_id: int) -> dict | None:
+    with _conn() as db:
+        row = db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
+        return dict(row) if row else None
+
+
+def get_user_by_token(token: str) -> dict | None:
+    if not token:
+        return None
+    with _conn() as db:
+        row = db.execute(
+            "SELECT * FROM users WHERE api_token = ?", (token,)
+        ).fetchone()
+        return dict(row) if row else None
