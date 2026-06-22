@@ -30,12 +30,25 @@ Accepts `.pdf`, `.docx`, `.txt` (max 10 MB). Response: `{language, jurisdiction,
 
 | Var | Default | Effect |
 |-----|---------|--------|
+| `LDV_SECRET_KEY` | unset | Signs Flask session cookies. If unset, an ephemeral per-process key is generated (sessions drop on restart). **Set before any real deployment.** |
+| `LDV_DB_PATH` | `ldv-backend/sydeco.db` | Overrides the SQLite database path (used by tests and deployments). |
+| `LDV_ADMIN_EMAIL` | unset | Email for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_PASSWORD`). |
+| `LDV_ADMIN_PASSWORD` | unset | Password for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_EMAIL`). |
 | `LDV_REMOTE_TRANSLATION` | `0` | `1` allows sending document text to Google Translate. Off = non-English docs analyzed untranslated (L1 is multilingual; L2 degrades). |
-| `LDV_ADMIN_TOKEN` | unset | When set, `/admin`, `/api/stats`, `/api/recent` require the `X-Admin-Token` header (timing-safe compared). When unset, those endpoints are loopback-only. (No `?token=` query fallback — secrets in URLs leak into logs.) |
 | `LDV_CORS_ORIGINS` | unset | Comma-separated origins. Unset = no CORS headers (same-origin only). |
 | `LDV_DEBUG` | `0` | `1` enables Flask debug mode (Werkzeug debugger — never in production). |
 
-Analysis results are addressed by unguessable UUID (`analyses.public_id`), not integer IDs — `/upload` returns `{"id": "<uuid hex>"}` and `/api/result/<uuid>` is the only lookup. `database.init_db()` auto-migrates old DBs (adds + backfills `public_id`).
+**User provisioning:** The first admin account is created with:
+```bash
+LDV_ADMIN_EMAIL=admin@example.com LDV_ADMIN_PASSWORD=securepassword python manage.py seed-admin
+```
+
+Further users are created with:
+```bash
+python manage.py create-user <email> <org> [--role admin]
+```
+
+Analysis results are addressed by unguessable UUID (`analyses.public_id`), not integer IDs — `/upload` returns `{"id": "<uuid hex>"}` and `/api/result/<uuid>` is the only lookup. `database.init_db()` auto-migrates old DBs (adds + backfills `public_id`). **Note:** `/api/result/<uuid>` now requires user authentication and enforces organization ownership (cross-org requests return 403).
 
 **Check model/layer status:**
 
@@ -115,7 +128,7 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 
 > Sources: `docs/2026-06-22-PRD.md` (authoritative product scope, FR IDs, release gates, roadmap) + `docs/2026-06-22-external-review.md` (verdict 5.5/10, controlled-pilot only). **No paid production use until all P0 are closed and verified.** None are started. These P0 map to PRD Sprint 2 (Security & operations) + Gates 3/4; full requirement IDs (IAM/ING/CLS/CLP/RSK/SCR/CIT/OUT/SUB/SEC) live in the PRD — treat it as the spec of record, this list as the near-term blocker view.
 
-1. **AuthN/AuthZ on results** (CR-01) — UUID ≠ authorization. Add user auth, tenant ownership checks, expiring signed download links on every `/api/result/<uuid>` + report endpoint.
+1. ~~**AuthN/AuthZ on results**~~ (CR-01) — **DONE (core features).** Session+API-token login, `organizations`/`users` tables, per-org document ownership, `/api/result/<uuid>` now requires auth + enforces 403 on cross-org access, `/upload`/`/analyze`/`/report` require auth, `/api/stats`/`/api/recent`/`/admin` require an admin account (replacing the legacy `LDV_ADMIN_TOKEN` shared-token mechanism), `manage.py` CLI for provisioning (`seed-admin`, `create-org`, `create-user`). Still TODO: MFA, full 5-role matrix (analyst/legal-reviewer/manager/…), org/user management UI, signed + expiring download links (IAM-04), audit log (SEC-06), rate limiting/CSRF (SEC-07).
 2. ~~**Suppress draft citations from client output**~~ (CR-02) — **DONE.** `citations_for()`/`annotate_layer1()` fail closed to `status=="verified"` (`include_drafts=False` default); `/analyze` no longer emits draft citations. Reviewer path passes `include_drafts=True`. Self-check in `citation_db.py` asserts both directions. Still TODO: lawyer approval *workflow* (status transitions UI) — depends on the auth/reviewer endpoint (P0 #1).
 3. **Retention / purge / encryption-at-rest** (CR-04) — uploads, extracted text, results, logs cannot persist indefinitely in `uploads/` + SQLite. Add retention+purge controls; encrypt stored documents.
 4. **Async job queue** (CR-10) — `flask run` + in-process L2/L4 blocks workers for minutes. Move analysis to a worker queue; return `202`; expose `queued/running/completed/failed`. (Pairs with P1 #3 gunicorn.)
