@@ -1,0 +1,85 @@
+"""Authentication & authorization helpers (CR-01).
+
+Resolves the current user from a Flask session cookie OR an
+`Authorization: Bearer <api_token>` header, and exposes login_required /
+admin_required decorators. No new dependencies — password hashing uses
+werkzeug (bundled with Flask).
+"""
+from __future__ import annotations
+
+import logging
+import os
+import secrets
+from functools import wraps
+
+from flask import g, jsonify, request, session
+from werkzeug.security import check_password_hash, generate_password_hash
+
+import database
+
+logger = logging.getLogger(__name__)
+
+
+def configure_secret_key(app) -> None:
+    key = os.getenv("LDV_SECRET_KEY")
+    if not key:
+        key = secrets.token_hex(32)
+        logger.warning(
+            "LDV_SECRET_KEY not set — using an ephemeral key. Sessions will not "
+            "survive a restart. Set LDV_SECRET_KEY before any real deployment."
+        )
+    app.secret_key = key
+
+
+def hash_password(password: str) -> str:
+    return generate_password_hash(password)
+
+
+def verify_login(email: str, password: str) -> dict | None:
+    user = database.get_user_by_email(email)
+    if user and user["active"] and check_password_hash(user["password_hash"], password):
+        return user
+    return None
+
+
+def _bearer_token() -> str | None:
+    header = request.headers.get("Authorization", "")
+    if header.startswith("Bearer "):
+        return header[len("Bearer "):].strip()
+    return None
+
+
+def current_user() -> dict | None:
+    if "user" in g:
+        return g.user
+    user = None
+    uid = session.get("uid")
+    if uid is not None:
+        user = database.get_user_by_id(uid)
+    if user is None:
+        user = database.get_user_by_token(_bearer_token())
+    if user is not None and not user["active"]:
+        user = None
+    g.user = user
+    return user
+
+
+def login_required(view):
+    @wraps(view)
+    def wrapper(*args, **kwargs):
+        if current_user() is None:
+            return jsonify({"error": "Authentication required"}), 401
+        return view(*args, **kwargs)
+    return wrapper
+
+
+def admin_required(view):
+    @wraps(view)
+    def wrapper(*args, **kwargs):
+        user = current_user()
+        if user is None:
+            return jsonify({"error": "Authentication required"}), 401
+        if user["role"] != "admin":
+            return jsonify({"error": "Forbidden"}), 403
+        return view(*args, **kwargs)
+    return wrapper
