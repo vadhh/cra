@@ -296,6 +296,7 @@
 
       try {
         const resp = await fetch('/upload', { method: 'POST', body: fd });
+        if (resp.status === 401) { window.location.href = '/login'; return; }
         const data = await resp.json();
         if (!resp.ok) { showError(data.error || 'Upload failed.'); return; }
         window.location.href = '/result/' + data.id;

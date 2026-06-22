@@ -223,6 +223,9 @@
         fetch('/api/stats'),
         fetch('/api/recent?limit=20'),
       ]);
+      if (statsResp.status === 401 || recentResp.status === 401) {
+        window.location.href = '/login'; return;
+      }
 
       const stats  = await statsResp.json();
       const recent = await recentResp.json();

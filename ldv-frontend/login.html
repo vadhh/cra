@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in — Sydeco LightML</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main style="max-width:360px;margin:8vh auto;font-family:system-ui,sans-serif">
+    <h1>Sign in</h1>
+    <form id="loginForm">
+      <label>Email<br><input type="email" id="email" required style="width:100%"></label><br><br>
+      <label>Password<br><input type="password" id="password" required style="width:100%"></label><br><br>
+      <button type="submit">Sign in</button>
+      <p id="err" style="color:#b00;display:none">Invalid credentials.</p>
+    </form>
+  </main>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const resp = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        }),
+      });
+      if (resp.ok) { window.location.href = '/'; return; }
+      document.getElementById('err').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
