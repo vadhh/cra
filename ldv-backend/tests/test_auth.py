@@ -20,6 +20,10 @@ client = app_module.app.test_client()
 
 
 def _user(org, email, role):
+    # Idempotent: skip if user already exists
+    existing_user = database.get_user_by_email(email)
+    if existing_user:
+        return existing_user["org_id"]
     existing = database.get_org_by_name(org)
     oid = existing["id"] if existing else database.create_org(org)
     database.create_user(oid, email, auth.hash_password("pw"), role, f"tok-{email}")
@@ -85,6 +89,7 @@ def test_admin_endpoints_gated():
 
 if __name__ == "__main__":
     test_anonymous_blocked()
+    setup()  # Seed users before test_bad_login to ensure existing-user password test
     test_bad_login()
     test_owner_and_cross_org_and_admin()
     test_admin_endpoints_gated()

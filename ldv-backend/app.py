@@ -1,5 +1,6 @@
 import os
 import logging
+import json
 import time
 import uuid
 import chardet
@@ -327,7 +328,6 @@ def api_result(analysis_id: str):
     if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
         return jsonify({"error": "Forbidden"}), 403
     row.pop("org_id", None)  # internal field, not part of the API response
-    import json
     row["result"] = json.loads(row["result_json"])
     del row["result_json"]
     return jsonify(row)
