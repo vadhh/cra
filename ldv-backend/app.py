@@ -1,11 +1,10 @@
 import os
-import hmac
 import logging
 import time
 import uuid
 import chardet
 import magic
-from flask import Flask, request, jsonify, send_from_directory, Response
+from flask import Flask, request, jsonify, send_from_directory, Response, redirect, g, session
 from flask_cors import CORS
 import fitz
 from langdetect import detect
@@ -19,6 +18,7 @@ from detector.detector_explain import layer4_explain
 from translator import translate_text
 from sydeco_engine import classify_clauses as _sydeco_classify
 import database
+import auth
 
 logging.basicConfig(
     level=logging.INFO,
@@ -48,6 +48,7 @@ UPLOADS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads"
 os.makedirs(UPLOADS_DIR, exist_ok=True)
 
 app = Flask(__name__)
+auth.configure_secret_key(app)
 
 # Same-origin by default (the frontend is served by this app). Cross-origin
 # access must be explicitly granted: LDV_CORS_ORIGINS="https://a.example,https://b.example"
@@ -70,23 +71,6 @@ def file_too_large(e):
 def handle_exception(e):
     logger.exception("Unhandled exception")
     return jsonify({"error": "Internal server error"}), 500
-
-
-def _admin_authorized() -> bool:
-    """Admin endpoints expose every uploaded document's metadata.
-
-    With LDV_ADMIN_TOKEN set, require it via the X-Admin-Token header. Without
-    it, only allow loopback connections.
-
-    Header-only on purpose: a ?token= query-string fallback would leak the admin
-    secret into access logs, proxy logs, and browser history. Use hmac compare
-    to avoid leaking the token length/prefix via response timing.
-    """
-    token = os.getenv("LDV_ADMIN_TOKEN")
-    if token:
-        supplied = request.headers.get("X-Admin-Token") or ""
-        return hmac.compare_digest(supplied, token)
-    return request.remote_addr in ("127.0.0.1", "::1")
 
 
 # ── Text extraction ────────────────────────────────────────────────────────────
@@ -236,9 +220,32 @@ def _article(word: str) -> str:
     return "an" if word[:1].lower() in "aeiou" else "a"
 
 
+# ── Auth routes ────────────────────────────────────────────────────────────────
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return send_from_directory(FRONTEND_DIR, "login.html")
+    data = request.get_json(silent=True) or request.form
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+    user = auth.verify_login(email, password)
+    if user is None:
+        return jsonify({"error": "Invalid credentials"}), 401
+    session["uid"] = user["id"]
+    return jsonify({"ok": True, "role": user["role"]})
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"ok": True})
+
+
 # ── Upload & analyse (primary endpoint) ───────────────────────────────────────
 
 @app.route("/upload", methods=["POST"])
+@auth.login_required
 def upload():
     """Save file to disk, extract text, run analysis, persist to DB."""
     if "file" not in request.files:
@@ -274,6 +281,8 @@ def upload():
         file_type=ext,
         language=lang,
         extracted_text=text,
+        org_id=g.user["org_id"],
+        owner_id=g.user["id"],
     )
 
     t_start = time.monotonic()
@@ -309,10 +318,15 @@ def upload():
 # ── Result API ─────────────────────────────────────────────────────────────────
 
 @app.route("/api/result/<analysis_id>")
+@auth.login_required
 def api_result(analysis_id: str):
     row = database.get_result(analysis_id)
     if row is None:
         return jsonify({"error": "Not found"}), 404
+    user = g.user
+    if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+    row.pop("org_id", None)  # internal field, not part of the API response
     import json
     row["result"] = json.loads(row["result_json"])
     del row["result_json"]
@@ -322,16 +336,14 @@ def api_result(analysis_id: str):
 # ── Admin API ──────────────────────────────────────────────────────────────────
 
 @app.route("/api/stats")
+@auth.admin_required
 def api_stats():
-    if not _admin_authorized():
-        return jsonify({"error": "Unauthorized"}), 403
     return jsonify(database.get_stats())
 
 
 @app.route("/api/recent")
+@auth.admin_required
 def api_recent():
-    if not _admin_authorized():
-        return jsonify({"error": "Unauthorized"}), 403
     limit = min(int(request.args.get("limit", 10)), 50)
     return jsonify(database.get_recent(limit))
 
@@ -339,6 +351,7 @@ def api_recent():
 # ── PDF report ─────────────────────────────────────────────────────────────────
 
 @app.route("/report", methods=["POST"])
+@auth.login_required
 def report():
     from pdf_report import generate_pdf
     data = request.get_json(force=True, silent=True)
@@ -359,6 +372,7 @@ def report():
 # ── Legacy /analyze (kept for curl/API access) ────────────────────────────────
 
 @app.route("/analyze", methods=["POST"])
+@auth.login_required
 def analyze():
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
@@ -431,8 +445,9 @@ def result_page(analysis_id=None):
 
 @app.route("/admin")
 def admin_page():
-    if not _admin_authorized():
-        return jsonify({"error": "Unauthorized"}), 403
+    user = auth.current_user()
+    if user is None or user["role"] != "admin":
+        return redirect("/login")
     return send_from_directory(FRONTEND_DIR, "admin.html")
 
 
