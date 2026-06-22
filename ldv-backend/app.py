@@ -344,7 +344,10 @@ def api_stats():
 @app.route("/api/recent")
 @auth.admin_required
 def api_recent():
-    limit = min(int(request.args.get("limit", 10)), 50)
+    try:
+        limit = min(int(request.args.get("limit", 10)), 50)
+    except (TypeError, ValueError):
+        limit = 10
     return jsonify(database.get_recent(limit))
 
 

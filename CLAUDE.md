@@ -31,6 +31,7 @@ Accepts `.pdf`, `.docx`, `.txt` (max 10 MB). Response: `{language, jurisdiction,
 | Var | Default | Effect |
 |-----|---------|--------|
 | `LDV_SECRET_KEY` | unset | Signs Flask session cookies. If unset, an ephemeral per-process key is generated (sessions drop on restart). **Set before any real deployment.** |
+| `LDV_COOKIE_SECURE` | `0` | `1` marks the session cookie `Secure` (HTTPS-only). Leave `0` for localhost HTTP dev; set `1` in production. |
 | `LDV_DB_PATH` | `ldv-backend/sydeco.db` | Overrides the SQLite database path (used by tests and deployments). |
 | `LDV_ADMIN_EMAIL` | unset | Email for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_PASSWORD`). |
 | `LDV_ADMIN_PASSWORD` | unset | Password for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_EMAIL`). |
