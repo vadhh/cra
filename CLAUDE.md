@@ -157,7 +157,7 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 ### P3 — Nice to have
 
 12. **API versioning** — prefix routes as `/api/v1/analyze`.
-13. **Docker setup** — no `Dockerfile` or `docker-compose.yml`.
+13. ~~**Docker setup**~~ — **DONE.** Added `Dockerfile` and `docker-compose.yml` to support containerized execution and volume persistence.
 14. **OpenAPI/Swagger docs** — use `flasgger` or `flask-smorest`.
 15. **`raw_text` field** — expose via `?debug=1` only.
 
