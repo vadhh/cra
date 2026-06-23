@@ -8,6 +8,9 @@ import os
 import sqlite3
 import uuid
 from contextlib import contextmanager
+from datetime import datetime, timedelta
+
+import crypto
 
 DB_PATH = os.getenv("LDV_DB_PATH", os.path.join(os.path.dirname(__file__), "sydeco.db"))
 
@@ -21,7 +24,8 @@ CREATE TABLE IF NOT EXISTS documents (
     file_type         TEXT NOT NULL,
     language          TEXT,
     extracted_text    TEXT,
-    uploaded_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    uploaded_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at        TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS analyses (
@@ -55,6 +59,15 @@ CREATE TABLE IF NOT EXISTS users (
 """
 
 
+def retention_days() -> int:
+    """Days a document is kept before purge. Invalid/≤0 → 30."""
+    try:
+        n = int(os.getenv("LDV_RETENTION_DAYS", "30"))
+        return n if n > 0 else 30
+    except ValueError:
+        return 30
+
+
 def init_db() -> None:
     with sqlite3.connect(DB_PATH) as conn:
         conn.executescript(_SCHEMA)
@@ -82,6 +95,14 @@ def init_db() -> None:
             conn.execute("ALTER TABLE documents ADD COLUMN org_id INTEGER REFERENCES organizations(id)")
         if "owner_id" not in doc_cols:
             conn.execute("ALTER TABLE documents ADD COLUMN owner_id INTEGER REFERENCES users(id)")
+        if "expires_at" not in doc_cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN expires_at TIMESTAMP")
+            # Backfill existing rows from their upload time + retention window.
+            conn.execute(
+                "UPDATE documents SET expires_at = datetime(uploaded_at, ?) "
+                "WHERE expires_at IS NULL",
+                (f"+{retention_days()} days",),
+            )
 
 
 @contextmanager
@@ -109,14 +130,18 @@ def save_document(
     org_id: int | None = None,
     owner_id: int | None = None,
 ) -> int:
+    enc_text = crypto.enc_str(extracted_text) if extracted_text is not None else None
+    expires_at = (datetime.utcnow() + timedelta(days=retention_days())).strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
     with _conn() as db:
         cur = db.execute(
             """INSERT INTO documents
                (original_filename, stored_filename, file_path, file_size,
-                file_type, language, extracted_text, org_id, owner_id)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                file_type, language, extracted_text, org_id, owner_id, expires_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (original_filename, stored_filename, file_path, file_size,
-             file_type, language, extracted_text, org_id, owner_id),
+             file_type, language, enc_text, org_id, owner_id, expires_at),
         )
         return cur.lastrowid
 
@@ -136,7 +161,7 @@ def save_analysis(
                (public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json)
                VALUES (?, ?, ?, ?, ?, ?, ?)""",
             (public_id, document_id, jurisdiction, document_type, risk_score, risk_label,
-             json.dumps(result)),
+             crypto.enc_str(json.dumps(result))),
         )
         return public_id
 
@@ -153,7 +178,13 @@ def get_result(public_id: str) -> dict | None:
                WHERE a.public_id = ?""",
             (public_id,),
         ).fetchone()
-        return dict(row) if row else None
+        if row is None:
+            return None
+        d = dict(row)
+        if d.get("extracted_text") is not None:
+            d["extracted_text"] = crypto.dec_str(d["extracted_text"])
+        d["result_json"] = crypto.dec_str(d["result_json"])
+        return d
 
 
 def get_stats() -> dict:
@@ -233,3 +264,46 @@ def get_user_by_token(token: str) -> dict | None:
             "SELECT * FROM users WHERE api_token = ?", (token,)
         ).fetchone()
         return dict(row) if row else None
+
+
+def delete_analysis(public_id: str) -> dict | None:
+    """Delete one analysis and its parent document. Returns the document's
+    file_path so the caller can unlink it, or None if public_id is unknown."""
+    with _conn() as db:
+        row = db.execute(
+            """SELECT d.id AS document_id, d.file_path
+               FROM analyses a JOIN documents d ON a.document_id = d.id
+               WHERE a.public_id = ?""",
+            (public_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        doc_id = row["document_id"]
+        db.execute("DELETE FROM analyses WHERE document_id = ?", (doc_id,))
+        db.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
+        return {"file_path": row["file_path"], "document_id": doc_id}
+
+
+def purge_expired(dry_run: bool = False) -> list[dict]:
+    """Documents past their expires_at. dry_run lists without deleting.
+    Caller unlinks the returned file_paths. ponytail: row+file delete + VACUUM
+    is the secure-erase ceiling — SSD overwrite-in-place is unreliable; rely on
+    full-disk/volume encryption for the rest."""
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    with _conn() as db:
+        rows = db.execute(
+            """SELECT id AS document_id, file_path, expires_at FROM documents
+               WHERE expires_at IS NOT NULL AND expires_at < ?""",
+            (now,),
+        ).fetchall()
+        victims = [dict(r) for r in rows]
+        if dry_run or not victims:
+            return victims
+        ids = [v["document_id"] for v in victims]
+        marks = ",".join("?" * len(ids))
+        db.execute(f"DELETE FROM analyses WHERE document_id IN ({marks})", ids)
+        db.execute(f"DELETE FROM documents WHERE id IN ({marks})", ids)
+    # VACUUM cannot run inside the _conn() transaction; reclaim on a fresh conn.
+    with sqlite3.connect(DB_PATH) as c:
+        c.execute("VACUUM")
+    return victims
