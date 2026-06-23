@@ -1,0 +1,189 @@
+{
+  "summary": {
+    "language_accuracy": 100.0,
+    "jurisdiction_accuracy": 100.0,
+    "contract_classification_accuracy": 100.0,
+    "clause_accuracy": 80.76923076923077,
+    "clause_precision": 75.0,
+    "clause_recall": 81.81818181818183,
+    "clause_tp": 9,
+    "clause_tn": 12,
+    "clause_fp": 3,
+    "clause_fn": 2
+  },
+  "details": [
+    {
+      "fixture": "pdf/01_employment_id.pdf",
+      "metrics": {
+        "language_match": true,
+        "language_detected": "id",
+        "jurisdiction_match": true,
+        "jurisdiction_detected": "Indonesia",
+        "document_type_match": true,
+        "document_type_detected": "employment contract",
+        "is_contract_match": true,
+        "clause_details": [
+          {
+            "clause_id": "governing_law",
+            "status": "TP"
+          },
+          {
+            "clause_id": "termination",
+            "status": "TP"
+          },
+          {
+            "clause_id": "working_hours",
+            "status": "TP"
+          },
+          {
+            "clause_id": "compensation",
+            "status": "TP"
+          },
+          {
+            "clause_id": "jurisdiction_venue",
+            "status": "TN"
+          },
+          {
+            "clause_id": "notice_period",
+            "status": "TN"
+          },
+          {
+            "clause_id": "dispute_resolution",
+            "status": "TN"
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "pdf/02_lease_be.pdf",
+      "metrics": {
+        "language_match": true,
+        "language_detected": "fr",
+        "jurisdiction_match": true,
+        "jurisdiction_detected": "Belgium",
+        "document_type_match": true,
+        "document_type_detected": "lease agreement",
+        "is_contract_match": true,
+        "clause_details": [
+          {
+            "clause_id": "governing_law",
+            "status": "FN"
+          },
+          {
+            "clause_id": "termination",
+            "status": "TP"
+          },
+          {
+            "clause_id": "rent_amount",
+            "status": "TP"
+          },
+          {
+            "clause_id": "security_deposit",
+            "status": "TP"
+          },
+          {
+            "clause_id": "jurisdiction_venue",
+            "status": "FP"
+          },
+          {
+            "clause_id": "lease_term",
+            "status": "FP"
+          },
+          {
+            "clause_id": "maintenance_responsibility",
+            "status": "TN"
+          },
+          {
+            "clause_id": "dispute_resolution",
+            "status": "FP"
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "pdf/03_nda_en.pdf",
+      "metrics": {
+        "language_match": true,
+        "language_detected": "en",
+        "jurisdiction_match": true,
+        "jurisdiction_detected": "England & Wales",
+        "document_type_match": true,
+        "document_type_detected": "non-disclosure agreement",
+        "is_contract_match": true,
+        "clause_details": [
+          {
+            "clause_id": "governing_law",
+            "status": "TP"
+          },
+          {
+            "clause_id": "termination",
+            "status": "FN"
+          },
+          {
+            "clause_id": "confidentiality",
+            "status": "TP"
+          },
+          {
+            "clause_id": "jurisdiction_venue",
+            "status": "TN"
+          },
+          {
+            "clause_id": "return_of_materials",
+            "status": "TN"
+          },
+          {
+            "clause_id": "dispute_resolution",
+            "status": "TN"
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "pdf/04_incomplete_en.pdf",
+      "metrics": {
+        "language_match": true,
+        "language_detected": "en",
+        "jurisdiction_match": true,
+        "jurisdiction_detected": "Unknown",
+        "document_type_match": true,
+        "document_type_detected": "software license",
+        "is_contract_match": true,
+        "clause_details": [
+          {
+            "clause_id": "governing_law",
+            "status": "TN"
+          },
+          {
+            "clause_id": "jurisdiction_venue",
+            "status": "TN"
+          },
+          {
+            "clause_id": "termination",
+            "status": "TN"
+          },
+          {
+            "clause_id": "dispute_resolution",
+            "status": "TN"
+          },
+          {
+            "clause_id": "limitation_liability",
+            "status": "TN"
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "pdf/05_brochure_en.pdf",
+      "metrics": {
+        "language_match": true,
+        "language_detected": "en",
+        "jurisdiction_match": true,
+        "jurisdiction_detected": "Unknown",
+        "document_type_match": true,
+        "document_type_detected": null,
+        "is_contract_match": true,
+        "clause_details": []
+      }
+    }
+  ]
+}

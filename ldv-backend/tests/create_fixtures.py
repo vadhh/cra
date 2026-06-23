@@ -140,10 +140,6 @@ TechStudio Inc agrees to deliver a custom software application.
 2. Fees
 The client agrees to pay USD 50,000 upon delivery.
 
-[NOTE: Termination clause missing]
-[NOTE: Liability limitation missing]
-[NOTE: Dispute resolution missing]
-[NOTE: Governing law missing]
 [NOTE: Signatures section missing]""",
 )
 

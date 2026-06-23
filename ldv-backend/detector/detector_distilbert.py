@@ -400,6 +400,10 @@ def classify_document_type(text: str) -> dict:
             )
             top = {"label": kw_label, "confidence": round(kw_hits / 10.0, 2)}
 
+    # If confidence is extremely low, treat the document type as unknown/None.
+    if top["confidence"] < 0.15:
+        top = {"label": None, "confidence": top["confidence"]}
+
     return {
         "label":      top["label"],
         "confidence": top["confidence"],
