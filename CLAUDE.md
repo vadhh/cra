@@ -141,7 +141,7 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 
 1. ~~**Replace `googletrans==3.1.0a0`**~~ — **DONE.** `translator.py` now uses `deep-translator` (GoogleTranslator). Remote translation is opt-in via `LDV_REMOTE_TRANSLATION=1` (off by default — confidentiality); still not local when enabled.
 2. ~~**Add LLM call timeout**~~ — **DONE.** `send_prompt.py` has `GENERATION_TIMEOUT=300s` via ThreadPoolExecutor + `max_new_tokens=512`.
-3. **Run Flask under gunicorn** — `flask run` is single-threaded. Use `gunicorn -w 4 app:app`. (`app.run` debug is now env-gated via `LDV_DEBUG`, off by default.)
+3. ~~**Run Flask under gunicorn**~~ — **DONE.** `requirements.txt` includes `gunicorn` package; `app.py` debug mode is env-gated via `LDV_DEBUG` (off by default); run in production via `gunicorn -w 4 app:app`.
 4. ~~**Rename `query_tinyllama()`**~~ — **DONE.** Now `query_llm()` in `send_prompt.py` (only caller was `detector_explain.py`).
 
 ### P2 — Quality
