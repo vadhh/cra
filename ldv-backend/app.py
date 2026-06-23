@@ -21,6 +21,7 @@ from sydeco_engine import classify_clauses as _sydeco_classify
 import database
 import auth
 import crypto
+import worker
 
 logging.basicConfig(
     level=logging.INFO,
@@ -287,34 +288,28 @@ def upload():
         owner_id=g.user["id"],
     )
 
-    t_start = time.monotonic()
-    jurisdiction = detect_jurisdiction(text)
-    result = _run_analysis(text, jurisdiction, lang)
-    elapsed = round(time.monotonic() - t_start, 2)
+    want_explain = request.args.get("explain", "0") == "1"
 
-    layer3 = result.get("layer3", {})
-    layer2 = result.get("layer2", {}) or {}
-
-    dt = layer2.get("document_type")
-    doc_type_str = dt.get("label") if isinstance(dt, dict) else dt
-
-    # Save analysis record
+    # Save queued analysis record
     analysis_id = database.save_analysis(
         document_id=doc_id,
-        jurisdiction=jurisdiction,
-        document_type=doc_type_str,
-        risk_score=layer3.get("score"),
-        risk_label=layer3.get("label"),
-        result=result,
+        jurisdiction=None,
+        document_type=None,
+        risk_score=None,
+        risk_label=None,
+        result=None,
+        status="queued",
     )
+
+    # Submit background task
+    worker.submit_job(analysis_id, text, lang, want_explain)
 
     logger.info(
-        "UPLOAD: file=%s lang=%s jurisdiction=%s risk=%s/%s time=%.2fs id=%s",
-        file.filename, lang, jurisdiction,
-        layer3.get("score"), layer3.get("label"), elapsed, analysis_id,
+        "UPLOAD: enqueued file=%s lang=%s explain=%s id=%s",
+        file.filename, lang, want_explain, analysis_id,
     )
 
-    return jsonify({"id": analysis_id})
+    return jsonify({"id": analysis_id, "status": "queued"}), 202
 
 
 # ── Result API ─────────────────────────────────────────────────────────────────
@@ -329,8 +324,15 @@ def api_result(analysis_id: str):
     if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
         return jsonify({"error": "Forbidden"}), 403
     row.pop("org_id", None)  # internal field, not part of the API response
-    row["result"] = json.loads(row["result_json"])
-    del row["result_json"]
+    
+    status = row.get("status", "completed")
+    if status in ("queued", "running", "failed"):
+        row["result"] = None
+        row.pop("result_json", None)
+        return jsonify(row)
+
+    row["result"] = json.loads(row["result_json"]) if row.get("result_json") else None
+    row.pop("result_json", None)
     return jsonify(row)
 
 
