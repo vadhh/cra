@@ -166,6 +166,44 @@ def verify_against(valid_ids) -> list[str]:
     return sorted(fid for fid in _load() if fid not in valid)
 
 
+def verify_citation(finding_id: str, jurisdiction: str) -> bool:
+    """Verify a draft citation in datasets/legal_citations.csv, writing changes back to disk.
+
+    Returns True if successfully verified, False otherwise.
+    """
+    global _DB
+    if not _CSV_PATH.exists():
+        return False
+
+    rows = []
+    updated = False
+    try:
+        with open(_CSV_PATH, "r", newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            for row in reader:
+                fid = (row.get("finding_id") or "").strip()
+                # Default to generic if blank or missing
+                juris = (row.get("jurisdiction") or _GENERIC).strip() or _GENERIC
+                if fid == finding_id and juris == jurisdiction:
+                    row["status"] = "verified"
+                    updated = True
+                rows.append(row)
+
+        if updated:
+            with open(_CSV_PATH, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+            _DB = None  # Force reload
+            return True
+    except Exception as e:
+        logger.error("Failed to verify citation %s/%s: %s", finding_id, jurisdiction, e)
+
+    return False
+
+
+
 if __name__ == "__main__":  # run from ldv-backend: python3 detector/citation_db.py
     import os
     import sys

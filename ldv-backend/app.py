@@ -374,6 +374,48 @@ def api_recent():
     return jsonify(database.get_recent(limit))
 
 
+@app.route("/api/citations")
+@auth.login_required
+def api_citations():
+    """List all citations. Admins/reviewers can see drafts; normal users see verified only."""
+    from detector.citation_db import _load
+    db = _load()
+    include_drafts = (g.user["role"] == "admin")
+
+    out = []
+    for fid, by_juris in db.items():
+        for juris, rows in by_juris.items():
+            for r in rows:
+                if include_drafts or r.get("status") == "verified":
+                    out.append({
+                        "finding_id": fid,
+                        "jurisdiction": juris,
+                        "article": r.get("article"),
+                        "source": r.get("source"),
+                        "note": r.get("note"),
+                        "status": r.get("status")
+                    })
+    return jsonify(out)
+
+
+@app.route("/api/citations/verify", methods=["POST"])
+@auth.admin_required
+def api_verify_citation():
+    """Transition a draft citation to verified status."""
+    data = request.json or {}
+    finding_id = data.get("finding_id")
+    jurisdiction = data.get("jurisdiction")
+    if not finding_id or not jurisdiction:
+        return jsonify({"error": "Missing finding_id or jurisdiction"}), 400
+
+    from detector.citation_db import verify_citation
+    if verify_citation(finding_id, jurisdiction):
+        return jsonify({"ok": True, "message": f"Citation {finding_id}/{jurisdiction} verified successfully"})
+    else:
+        return jsonify({"error": "Citation not found or status not changed"}), 404
+
+
+
 # ── PDF report ─────────────────────────────────────────────────────────────────
 
 @app.route("/report", methods=["POST"])
