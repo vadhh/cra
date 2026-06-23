@@ -183,7 +183,8 @@ def get_result(public_id: str) -> dict | None:
         d = dict(row)
         if d.get("extracted_text") is not None:
             d["extracted_text"] = crypto.dec_str(d["extracted_text"])
-        d["result_json"] = crypto.dec_str(d["result_json"])
+        if d.get("result_json") is not None:
+            d["result_json"] = crypto.dec_str(d["result_json"])
         return d
 
 
@@ -301,8 +302,8 @@ def purge_expired(dry_run: bool = False) -> list[dict]:
             return victims
         ids = [v["document_id"] for v in victims]
         marks = ",".join("?" * len(ids))
-        db.execute(f"DELETE FROM analyses WHERE document_id IN ({marks})", ids)
-        db.execute(f"DELETE FROM documents WHERE id IN ({marks})", ids)
+        db.execute(f"DELETE FROM analyses WHERE document_id IN ({marks})", tuple(ids))
+        db.execute(f"DELETE FROM documents WHERE id IN ({marks})", tuple(ids))
     # VACUUM cannot run inside the _conn() transaction; reclaim on a fresh conn.
     with sqlite3.connect(DB_PATH) as c:
         c.execute("VACUUM")
