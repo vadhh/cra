@@ -36,7 +36,9 @@ CREATE TABLE IF NOT EXISTS analyses (
     document_type TEXT,
     risk_score    INTEGER,
     risk_label    TEXT,
-    result_json   TEXT NOT NULL,
+    result_json   TEXT,
+    status        TEXT NOT NULL DEFAULT 'completed',
+    error_message TEXT,
     analyzed_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -87,6 +89,10 @@ def init_db() -> None:
             "CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id "
             "ON analyses(public_id)"
         )
+        if "status" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
+        if "error_message" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
         # Ownership columns for tenant isolation (CR-01). Added if missing so
         # pre-auth databases keep working; existing rows stay NULL-org
         # (admin-visible only) until backfilled by manage.py seed-admin.
@@ -107,8 +113,9 @@ def init_db() -> None:
 
 @contextmanager
 def _conn():
-    c = sqlite3.connect(DB_PATH)
+    c = sqlite3.connect(DB_PATH, timeout=30.0)
     c.row_factory = sqlite3.Row
+    c.execute("PRAGMA journal_mode=WAL")
     try:
         yield c
         c.commit()
@@ -152,25 +159,64 @@ def save_analysis(
     document_type: str | None,
     risk_score: int | None,
     risk_label: str | None,
-    result: dict,
+    result: dict | None,
+    status: str = "completed",
+    error_message: str | None = None,
 ) -> str:
     public_id = uuid.uuid4().hex
+    res_enc = crypto.enc_str(json.dumps(result)) if result is not None else None
     with _conn() as db:
         db.execute(
             """INSERT INTO analyses
-               (public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+               (public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (public_id, document_id, jurisdiction, document_type, risk_score, risk_label,
-             crypto.enc_str(json.dumps(result))),
+             res_enc, status, error_message),
         )
         return public_id
+
+
+def update_analysis(
+    public_id: str,
+    status: str,
+    jurisdiction: str | None = None,
+    document_type: str | None = None,
+    risk_score: int | None = None,
+    risk_label: str | None = None,
+    result: dict | None = None,
+    error_message: str | None = None,
+) -> None:
+    updates = ["status = ?"]
+    params = [status]
+    if jurisdiction is not None:
+        updates.append("jurisdiction = ?")
+        params.append(jurisdiction)
+    if document_type is not None:
+        updates.append("document_type = ?")
+        params.append(document_type)
+    if risk_score is not None:
+        updates.append("risk_score = ?")
+        params.append(risk_score)
+    if risk_label is not None:
+        updates.append("risk_label = ?")
+        params.append(risk_label)
+    if result is not None:
+        updates.append("result_json = ?")
+        params.append(crypto.enc_str(json.dumps(result)))
+    if error_message is not None:
+        updates.append("error_message = ?")
+        params.append(error_message)
+    params.append(public_id)
+    query = f"UPDATE analyses SET {', '.join(updates)} WHERE public_id = ?"
+    with _conn() as db:
+        db.execute(query, tuple(params))
 
 
 def get_result(public_id: str) -> dict | None:
     with _conn() as db:
         row = db.execute(
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.jurisdiction,
-                      a.document_type, a.result_json, a.analyzed_at,
+                      a.document_type, a.result_json, a.analyzed_at, a.status, a.error_message,
                       d.original_filename, d.file_size, d.file_type, d.language,
                       d.extracted_text, d.uploaded_at, d.org_id
                FROM analyses a
