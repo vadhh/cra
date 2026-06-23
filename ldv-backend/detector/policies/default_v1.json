@@ -1,0 +1,20 @@
+{
+  "version": "default_v1",
+  "name": "Default provisional uncalibrated scoring policy",
+  "calibration_status": "provisional_uncalibrated",
+  "limitation_notice": "This risk score is based on a provisional, uncalibrated scoring policy. The weights are uncalibrated and should not be used as authoritative legal advice.",
+  "weights": {
+    "missing_required_fallback": -10,
+    "impact_weights": {
+      "CRITICAL": -20,
+      "HIGH": -15,
+      "MEDIUM": -10,
+      "LOW": -5
+    },
+    "red_flag_high": -25,
+    "red_flag_medium": -10,
+    "l2_unique": -8,
+    "no_governing_law": -12,
+    "no_venue": -8
+  }
+}

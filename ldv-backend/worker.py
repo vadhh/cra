@@ -10,12 +10,13 @@ logger = logging.getLogger(__name__)
 _executor = ThreadPoolExecutor(max_workers=1)
 
 
-def _run_job(public_id: str, text: str, lang: str, explain: bool) -> None:
+def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None) -> None:
     import database
     from app import _run_analysis, translate_text, logger as app_logger
     from detector.detector_explain import layer4_explain
     import time
     import traceback
+    import inspect
 
     try:
         database.update_analysis(public_id, status="running")
@@ -24,7 +25,13 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool) -> None:
         # Run core L1-L3 analysis
         from detector.detector_jurisdiction import detect_jurisdiction
         jurisdiction = detect_jurisdiction(text)
-        result = _run_analysis(text, jurisdiction, lang)
+        
+        # Check signature to support 3-arg mocks in tests
+        sig = inspect.signature(_run_analysis)
+        if "policy_name" in sig.parameters:
+            result = _run_analysis(text, jurisdiction, lang, policy_name=policy_name)
+        else:
+            result = _run_analysis(text, jurisdiction, lang)
 
         # Run L4 optional LLM explanation
         if explain:
@@ -71,6 +78,6 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool) -> None:
             app_logger.critical("ASYNC WORKER DB UPDATE FAILED: id=%s err=%s", public_id, db_err)
 
 
-def submit_job(public_id: str, text: str, lang: str, explain: bool) -> None:
+def submit_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None) -> None:
     """Submit a contract analysis job to the background worker pool."""
-    _executor.submit(_run_job, public_id, text, lang, explain)
+    _executor.submit(_run_job, public_id, text, lang, explain, policy_name)

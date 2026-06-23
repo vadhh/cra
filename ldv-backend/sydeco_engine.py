@@ -1,47 +1,14 @@
 """
-sydeco_engine.py — Lightweight clause classifier using the Sydeco AI Core MLP.
+sydeco_engine.py — Lightweight clause classifier using rule-based fallback patterns (CR-03 decoupled).
 
-Classifies contract clauses into three risk labels without requiring the Qwen LLM,
-making it useful for testing and as a fast pre-screening layer on CPU-only hardware.
-
-Labels
-------
-abusive_clause    — one-sided or unfair terms
-payment_risk      — risky payment conditions
-missing_mandatory — required clause appears absent
-
-Usage
------
-    from sydeco_engine import classify_clauses, quick_risk_score
-
-    tags  = classify_clauses(text)          # list of {clause, label}
-    score = quick_risk_score(text)          # {score, label, clause_count, flagged}
-
-Environment variables
----------------------
-SYDECO_MLP_PATH   — override path to legal_mlp.pkl
-                    (default: ~/Desktop/sydeco_ai_core_bundle/models/legal_mlp.pkl)
+Classifies contract clauses into abusive_clause or payment_risk labels.
 """
 from __future__ import annotations
 
-import importlib.util
 import logging
-import os
 import re
-import sys
-import types
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
-
-# ── Model location ─────────────────────────────────────────────────────────────
-
-_DEFAULT_MODEL_PATH = (
-    Path.home() / "Desktop/sydeco_ai_core_bundle/models/legal_mlp.pkl"
-)
-MODEL_PATH = Path(os.getenv("SYDECO_MLP_PATH", str(_DEFAULT_MODEL_PATH)))
-
-# ── Label & scoring constants ──────────────────────────────────────────────────
 
 LABEL_MAP: dict[int, str] = {
     0: "abusive_clause",
@@ -56,77 +23,6 @@ _RISK_WEIGHTS: dict[str, int] = {
     "payment_risk":      15,
     "missing_mandatory": 10,
 }
-
-# ── Internal state ─────────────────────────────────────────────────────────────
-
-_model = None
-_load_attempted = False
-
-
-# ── Dependency stubs ───────────────────────────────────────────────────────────
-
-def _apply_stubs() -> None:
-    """
-    Pre-register stub modules in sys.modules so that the broken plugins inside
-    ai_core_v2 (legal_transformer, legal_onnx) are never executed.
-
-    - legal_transformer.py fails because the installed transformers version
-      does not export Trainer / TrainingArguments via its trainer sub-module.
-    - legal_onnx.py fails because onnxruntime is not installed.
-
-    The MLP plugin (legal_text_mlp.py) only uses sklearn — no stubs needed there.
-    """
-    for name in (
-        "ai_core_v2.plugins.legal_transformer",
-        "ai_core_v2.plugins.legal_onnx",
-        "onnxruntime",
-    ):
-        if name not in sys.modules:
-            mod = types.ModuleType(name)
-            mod.__spec__ = importlib.util.spec_from_loader(name, loader=None)
-            sys.modules[name] = mod
-
-
-# ── Model loader ───────────────────────────────────────────────────────────────
-
-def _load_model():
-    global _model, _load_attempted
-    if _load_attempted:
-        return _model
-    _load_attempted = True
-
-    if not MODEL_PATH.exists():
-        logger.warning(
-            "Sydeco MLP model not found at %s. "
-            "Set SYDECO_MLP_PATH or place the file at the default location. "
-            "Clause classifier disabled.",
-            MODEL_PATH,
-        )
-        return None
-
-    try:
-        import pickle  # noqa: PLC0415 — local import after stubs are applied
-
-        _apply_stubs()
-
-        bundle_dir = str(MODEL_PATH.parent.parent)
-        if bundle_dir not in sys.path:
-            sys.path.insert(0, bundle_dir)
-
-        with open(MODEL_PATH, "rb") as f:
-            _model = pickle.load(f)  # nosec — loading user's own model file
-
-        logger.info("Sydeco MLP loaded from %s.", MODEL_PATH)
-
-    except Exception as exc:
-        logger.error("Failed to load Sydeco MLP: %s", exc)
-
-    return _model
-
-
-# ── Rule-based fallback classifier ────────────────────────────────────────────
-# Used when the MLP model file is unavailable.  Provides basic clause tagging
-# so clause_tags is not always empty, even without legal_mlp.pkl.
 
 _RULE_SPECS: list[dict] = [
     {
@@ -155,7 +51,7 @@ _RULE_SPECS: list[dict] = [
 
 
 def _rule_classify_clauses(clauses: list[str]) -> list[dict]:
-    """Rule-based fallback: tag clauses matching known abusive/payment-risk patterns."""
+    """Rule-based tagger: tag clauses matching known abusive/payment-risk patterns."""
     results = []
     for clause in clauses:
         for spec in _RULE_SPECS:
@@ -169,19 +65,15 @@ def _rule_classify_clauses(clauses: list[str]) -> list[dict]:
     return results
 
 
-# ── Text splitting ─────────────────────────────────────────────────────────────
-
 def _split_clauses(text: str) -> list[str]:
     """Split contract text into clause-sized chunks suitable for classification."""
     chunks = re.split(r"(?<=[.!?])\s{1,3}(?=[A-Z0-9\(]|\Z)|\n{2,}", text)
     return [c.strip() for c in chunks if len(c.strip()) > 30]
 
 
-# ── Public API ─────────────────────────────────────────────────────────────────
-
 def is_available() -> bool:
-    """Return True if the MLP model loaded successfully."""
-    return _load_model() is not None
+    """Tagger is always available in rule-only decoupled mode."""
+    return True
 
 
 def classify_clauses(text: str) -> list[dict]:
@@ -191,29 +83,9 @@ def classify_clauses(text: str) -> list[dict]:
     Returns
     -------
     list of {"clause": str, "label": str}
-    Empty list when the model is unavailable.
     """
-    model = _load_model()
     clauses = _split_clauses(text)
-
-    if model is None:
-        # MLP unavailable — use rule-based fallback so clause_tags is never empty
-        return _rule_classify_clauses(clauses)
-
-
-    if not clauses:
-        return []
-
-    try:
-        preds = model.predict(clauses)
-        return [
-            {"clause": clause, "label": LABEL_MAP.get(pred, str(pred))}
-            for clause, pred in zip(clauses, preds)
-            if LABEL_MAP.get(pred, str(pred)) != "normal"
-        ]
-    except Exception as exc:
-        logger.error("Clause classification failed: %s", exc)
-        return []
+    return _rule_classify_clauses(clauses)
 
 
 def quick_risk_score(text: str) -> dict | None:
@@ -223,7 +95,6 @@ def quick_risk_score(text: str) -> dict | None:
     Returns
     -------
     {"score": int, "label": "LOW"|"MEDIUM"|"HIGH", "clause_count": int, "flagged": int}
-    None when the model is unavailable.
     """
     tags = classify_clauses(text)
     if not tags:

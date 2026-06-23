@@ -37,25 +37,52 @@ from detector.clause_db import clause_guidance, clause_impact
 logger = logging.getLogger(__name__)
 
 # ── Scoring weights ────────────────────────────────────────────────────────────
-# These mirror what a trained MLP would learn from labelled data.
-# Negative = deduction from base score of 100.
+import json
+import os
 
-_W_MISSING_REQUIRED   = -10   # per missing required clause (fallback weight)
-
-# Severity-scaled penalty for a missing mandatory clause, keyed by Ilham's
-# Impact_Level.  Used when the clause is reconciled to her DB; otherwise the
-# flat _W_MISSING_REQUIRED applies.
-_IMPACT_WEIGHTS: dict[str, int] = {
-    "CRITICAL": -20,
-    "HIGH":     -15,
-    "MEDIUM":   -10,
-    "LOW":      -5,
+# Fallback default weights (provisional uncalibrated)
+_DEFAULT_POLICY = {
+    "version": "fallback_v1",
+    "calibration_status": "provisional_uncalibrated",
+    "limitation_notice": "This risk score is based on a provisional, uncalibrated scoring policy. The weights are uncalibrated and should not be used as authoritative legal advice.",
+    "weights": {
+        "missing_required_fallback": -10,
+        "impact_weights": {
+            "CRITICAL": -20,
+            "HIGH": -15,
+            "MEDIUM": -10,
+            "LOW": -5
+        },
+        "red_flag_high": -25,
+        "red_flag_medium": -10,
+        "l2_unique": -8,
+        "no_governing_law": -12,
+        "no_venue": -8
+    }
 }
-_W_RED_FLAG_HIGH      = -25   # per HIGH severity L1 red flag
-_W_RED_FLAG_MEDIUM    = -10   # per MEDIUM severity L1 red flag
-_W_L2_UNIQUE          = -8    # per L2 flagged clause NOT already in L1
-_W_NO_GOVERNING_LAW   = -12   # governing law clause absent (dedicated penalty)
-_W_NO_VENUE           = -8    # jurisdiction/venue clause absent (dedicated penalty)
+
+def load_scoring_policy(policy_name: Optional[str] = None) -> dict:
+    """Load policy from detector/policies/{policy_name}.json or environment variable."""
+    if not policy_name:
+        policy_name = os.getenv("LDV_SCORING_POLICY", "default_v1")
+    
+    # Sanitize to avoid directory traversal
+    policy_name = os.path.basename(policy_name)
+    if not policy_name.endswith(".json"):
+        policy_filename = f"{policy_name}.json"
+    else:
+        policy_filename = policy_name
+
+    policy_path = os.path.join(os.path.dirname(__file__), "policies", policy_filename)
+    try:
+        if os.path.exists(policy_path):
+            with open(policy_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception as e:
+        logger.error("Failed to load scoring policy %s: %s. Falling back to default.", policy_name, e)
+    
+    return _DEFAULT_POLICY
+
 
 # These clause IDs have dedicated penalty lines; excluding them from the generic
 # missing_required count prevents double-penalising the same gap.
@@ -133,17 +160,26 @@ def _extract_features(layer1: dict, layer2: dict) -> dict:
 
 # ── Scoring ────────────────────────────────────────────────────────────────────
 
-def _compute_score(features: dict) -> tuple[int, list[dict]]:
-    """Apply weights to features; return (score, breakdown)."""
+def _compute_score(features: dict, policy: dict) -> tuple[int, list[dict]]:
+    """Apply weights from policy to features; return (score, breakdown)."""
     score = 100
     breakdown = []
+
+    w = policy.get("weights", _DEFAULT_POLICY["weights"])
+    impact_weights = w.get("impact_weights", _DEFAULT_POLICY["weights"]["impact_weights"])
+    w_missing_fallback = w.get("missing_required_fallback", -10)
+    w_red_flag_high = w.get("red_flag_high", -25)
+    w_red_flag_medium = w.get("red_flag_medium", -10)
+    w_l2_unique = w.get("l2_unique", -8)
+    w_no_gov_law = w.get("no_governing_law", -12)
+    w_no_venue = w.get("no_venue", -8)
 
     ctype = features.get("contract_type", "unknown")
     for cid in features["missing_mandatory_ids"]:
         # Weight by Ilham's Impact_Level when the clause is reconciled to her DB;
         # fall back to the flat weight for unmapped clauses.
         impact = clause_impact(cid)
-        points = _IMPACT_WEIGHTS.get(impact, _W_MISSING_REQUIRED)
+        points = impact_weights.get(impact, w_missing_fallback)
         score += points
         sev = f" [{impact}]" if impact else ""
         breakdown.append({
@@ -152,38 +188,38 @@ def _compute_score(features: dict) -> tuple[int, list[dict]]:
         })
 
     for _ in range(features["high_flags"]):
-        score += _W_RED_FLAG_HIGH
+        score += w_red_flag_high
         breakdown.append({
             "reason": "HIGH severity red flag (L1)",
-            "points": _W_RED_FLAG_HIGH,
+            "points": w_red_flag_high,
         })
 
     for _ in range(features["medium_flags"]):
-        score += _W_RED_FLAG_MEDIUM
+        score += w_red_flag_medium
         breakdown.append({
             "reason": "MEDIUM severity red flag (L1)",
-            "points": _W_RED_FLAG_MEDIUM,
+            "points": w_red_flag_medium,
         })
 
     for item in features["unique_l2_items"]:
-        score += _W_L2_UNIQUE
+        score += w_l2_unique
         breakdown.append({
             "reason": f"Flagged clause — {item['label']} (L2, not in L1)",
-            "points": _W_L2_UNIQUE,
+            "points": w_l2_unique,
         })
 
     if not features["has_governing_law"]:
-        score += _W_NO_GOVERNING_LAW
+        score += w_no_gov_law
         breakdown.append({
             "reason": "Governing law clause absent",
-            "points": _W_NO_GOVERNING_LAW,
+            "points": w_no_gov_law,
         })
 
     if not features["has_venue"]:
-        score += _W_NO_VENUE
+        score += w_no_venue
         breakdown.append({
             "reason": "Jurisdiction / venue clause absent",
-            "points": _W_NO_VENUE,
+            "points": w_no_venue,
         })
 
     score = max(0, min(100, score))
@@ -235,44 +271,64 @@ def layer3_score(
     layer1: dict,
     layer2: Optional[dict] = None,
     lang: str = "EN",
+    policy_name: Optional[str] = None,
 ) -> dict:
     """
     Compute the final combined risk score from Layer 1 and Layer 2 results.
 
     Parameters
     ----------
-    layer1 : result of detector_rules.layer1_analyze()
-    layer2 : result of detector_distilbert.layer2_analyze(), or None
-    lang   : language code for required-clause rationale (EN/ID/FR; default EN)
+    layer1      : result of detector_rules.layer1_analyze()
+    layer2      : result of detector_distilbert.layer2_analyze(), or None
+    lang        : language code for required-clause rationale (EN/ID/FR; default EN)
+    policy_name : scoring policy version file to resolve weights from
 
     Returns
     -------
     dict with keys: score, label, breakdown, features, contract_type,
-    required_clauses
+    required_clauses, policy_version, calibration_status, limitation_notice, confidence
     """
     if layer2 is None:
         layer2 = {}
 
+    policy = load_scoring_policy(policy_name)
+
     features = _extract_features(layer1, layer2)
-    score, breakdown = _compute_score(features)
+    score, breakdown = _compute_score(features, policy)
     label = _label(score)
 
     required_clauses = _required_clauses_report(features, lang)
+
+    # Calculate analysis confidence (SCR-03)
+    if features.get("l2_available") and isinstance(layer2, dict) and "document_type" in layer2:
+        doc_type_info = layer2["document_type"] or {}
+        confidence_val = doc_type_info.get("confidence")
+        if confidence_val is not None:
+            confidence = round(confidence_val * 100, 1)
+        else:
+            confidence = 50.0  # fallback when L2 runs but has no doc type confidence
+    else:
+        confidence = 30.0  # low confidence if L2 MNLI is not run/available
 
     # Remove internal helper key before returning
     export_features = {k: v for k, v in features.items() if k != "unique_l2_items"}
 
     logger.info(
-        "Layer 3: score=%d (%s) deductions=%d contract_type=%s missing_mandatory=%d",
+        "Layer 3: score=%d (%s) deductions=%d contract_type=%s missing_mandatory=%d policy=%s confidence=%.1f%%",
         score, label, len(breakdown),
         features.get("contract_type"), len(features.get("missing_mandatory_ids", [])),
+        policy.get("version"), confidence,
     )
 
     return {
-        "score":            score,
-        "label":            label,
-        "breakdown":        breakdown,
-        "features":         export_features,
-        "contract_type":    features.get("contract_type"),
-        "required_clauses": required_clauses,
+        "score":              score,
+        "label":              label,
+        "breakdown":          breakdown,
+        "features":           export_features,
+        "contract_type":      features.get("contract_type"),
+        "required_clauses":   required_clauses,
+        "policy_version":     policy.get("version", "fallback_v1"),
+        "calibration_status": policy.get("calibration_status", "provisional_uncalibrated"),
+        "limitation_notice":  policy.get("limitation_notice", ""),
+        "confidence":         confidence,
     }

@@ -34,7 +34,7 @@ def test_async_api_flow():
     # Mock worker.submit_job
     submitted_jobs = []
     import worker
-    worker.submit_job = lambda public_id, text, lang, explain: submitted_jobs.append((public_id, text, lang, explain))
+    worker.submit_job = lambda public_id, text, lang, explain, policy_name=None: submitted_jobs.append((public_id, text, lang, explain, policy_name))
 
     # Import app to initialize routes
     import app

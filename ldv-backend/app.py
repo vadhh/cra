@@ -139,7 +139,7 @@ def _validate_and_extract(file) -> tuple[bytes, str, str]:
     return data, ext, text
 
 
-def _run_analysis(text: str, jurisdiction: str, lang: str) -> dict:
+def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | None = None) -> dict:
     """Run L1–L3 analysis and return result dict.
 
     For non-contract documents (invoice, receipt, purchase order) the pipeline
@@ -177,7 +177,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str) -> dict:
 
     _semantic_backfill(layer1, doc_type_label, analysis_text)
 
-    layer3 = layer3_score(layer1, layer2, lang=lang)
+    layer3 = layer3_score(layer1, layer2, lang=lang, policy_name=policy_name)
     clause_tags = _sydeco_classify(analysis_text)
 
     return {
@@ -289,6 +289,7 @@ def upload():
     )
 
     want_explain = request.args.get("explain", "0") == "1"
+    policy_name = request.args.get("policy", "default_v1")
 
     # Save queued analysis record
     analysis_id = database.save_analysis(
@@ -302,7 +303,7 @@ def upload():
     )
 
     # Submit background task
-    worker.submit_job(analysis_id, text, lang, want_explain)
+    worker.submit_job(analysis_id, text, lang, want_explain, policy_name=policy_name)
 
     logger.info(
         "UPLOAD: enqueued file=%s lang=%s explain=%s id=%s",
@@ -413,7 +414,8 @@ def analyze():
         lang = "unknown"
 
     jurisdiction = detect_jurisdiction(text)
-    result = _run_analysis(text, jurisdiction, lang)
+    policy_name = request.args.get("policy", "default_v1")
+    result = _run_analysis(text, jurisdiction, lang, policy_name=policy_name)
 
     want_explain = request.args.get("explain", "0") == "1"
     if want_explain:
