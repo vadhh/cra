@@ -135,7 +135,7 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 4. **Async job queue** (CR-10) — `flask run` + in-process L2/L4 blocks workers for minutes. Move analysis to a worker queue; return `202`; expose `queued/running/completed/failed`. (Pairs with P1 #3 gunicorn.)
 5. **Pinned deps + reproducible deploy** (CR-09, CR-10) — pin `requirements.txt`; Docker/systemd with health checks that expose degraded mode (missing citations/datasets/models must alert + show in report metadata).
 
-**P1 from the review** (track alongside P2 Quality below): clause-coverage matrix (CR-11); lawyer-reviewed benchmark set measuring precision/recall/false-missing by type+jurisdiction+language (CR-05/07/08); version scoring policies + show score-version/confidence/limits in reports (CR-03); language-aware keyword matching + evidence spans (CR-06); package or remove `legal_mlp.pkl` (overlaps P2 #8). Also: fix "100% recall" wording → "all targeted cases passed" (CR-05).
+**P1 from the review** (track alongside P2 Quality below): clause-coverage matrix (CR-11); lawyer-reviewed benchmark set measuring precision/recall/false-missing by type+jurisdiction+language (CR-05/07/08); version scoring policies + show score-version/confidence/limits in reports (CR-03); language-aware keyword matching + evidence spans (CR-06); package or remove `legal_mlp.pkl` (overlaps P2 #8). Also: ~~fix "100% recall" wording → "all targeted cases passed" (CR-05)~~.
 
 ### P1 — Reliability
 
