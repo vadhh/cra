@@ -440,21 +440,50 @@ def analyze():
 def health():
     from detector.detector_distilbert import is_available as l2_available
     from sydeco_engine import is_available as mlp_available
+    
+    db_ok = database.check_connection()
+    
+    # Check datasets
+    datasets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets")
+    required_csvs = [
+        "abusive_clauses.csv", "dangerous_clauses.csv",
+        "illegal_clauses.csv", "leonine_clauses.csv",
+        "required_clauses.csv", "legal_citations.csv"
+    ]
+    datasets_ok = all(os.path.exists(os.path.join(datasets_dir, f)) for f in required_csvs)
+    
+    # Check model caches
+    hf_cache_dir = os.getenv("HF_HOME") or os.path.expanduser("~/.cache/huggingface")
+    qwen_cached = os.path.exists(os.path.join(hf_cache_dir, "hub", "models--Qwen--Qwen3-1.7B"))
+    distilbert_cached = os.path.exists(os.path.join(hf_cache_dir, "hub", "models--typeform--distilbert-base-uncased-mnli"))
+    
     try:
         from send_prompt import _model as qwen_model
         qwen_loaded = qwen_model is not None
     except Exception:
         qwen_loaded = False
+        
+    healthy = db_ok and datasets_ok
+    status_str = "healthy" if healthy else "degraded"
+    
     return jsonify({
-        "status":            "ok",
-        "layer1":            "ready",
+        "status": status_str,
+        "checks": {
+            "database": "ready" if db_ok else "failed",
+            "datasets": "ready" if datasets_ok else "missing",
+            "model_cache": {
+                "distilbert": "available" if distilbert_cached else "missing",
+                "qwen3": "available" if qwen_cached else "missing"
+            }
+        },
+        "layer1": "ready",
         "layer2_distilbert": l2_available(),
-        "layer3_scorer":     "ready",
-        "layer4_qwen":       qwen_loaded,
-        "sydeco_mlp":        mlp_available(),
-        "encryption":        {"enabled": crypto.is_enabled()},
-        "retention_days":    database.retention_days(),
-    })
+        "layer3_scorer": "ready",
+        "layer4_qwen": qwen_loaded,
+        "sydeco_mlp": mlp_available(),
+        "encryption": {"enabled": crypto.is_enabled()},
+        "retention_days": database.retention_days(),
+    }), 200 if healthy else 500
 
 
 # ── Frontend pages ─────────────────────────────────────────────────────────────

@@ -234,6 +234,16 @@ def get_result(public_id: str) -> dict | None:
         return d
 
 
+def check_connection() -> bool:
+    """Execute a simple query to verify SQLite database connectivity."""
+    try:
+        with _conn() as db:
+            db.execute("SELECT 1")
+        return True
+    except Exception:
+        return False
+
+
 def get_stats() -> dict:
     with _conn() as db:
         total_docs     = db.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
@@ -254,7 +264,7 @@ def get_recent(limit: int = 10) -> list[dict]:
     with _conn() as db:
         rows = db.execute(
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.document_type,
-                      a.jurisdiction, a.analyzed_at,
+                      a.jurisdiction, a.analyzed_at, a.status, a.error_message,
                       d.original_filename, d.file_type
                FROM analyses a
                JOIN documents d ON a.document_id = d.id
