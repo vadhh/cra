@@ -5,16 +5,21 @@ import tempfile
 
 _TMP = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
 _TMP.close()
-os.environ["LDV_DB_PATH"] = _TMP.name
+_DB_PATH = _TMP.name
 os.environ["LDV_ADMIN_EMAIL"] = "root@sydeco.com"
 os.environ["LDV_ADMIN_PASSWORD"] = "rootpw"
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import importlib
 import database  # noqa: E402
+importlib.reload(database)
 import manage    # noqa: E402
+importlib.reload(manage)
 
-database.init_db()
+def setup_module(module):
+    os.environ["LDV_DB_PATH"] = _DB_PATH
+    database.init_db()
 
 
 def test_seed_admin_is_idempotent():
@@ -34,6 +39,7 @@ def test_create_org_and_user():
 
 
 if __name__ == "__main__":
+    setup_module(None)
     test_seed_admin_is_idempotent()
     test_create_org_and_user()
     print("OK")

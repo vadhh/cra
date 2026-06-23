@@ -491,6 +491,7 @@ def check_clause_presence(text: str, jurisdiction: Optional[str] = None) -> list
 
         present = False
         evidence = ""
+        evidence_span = None
         source = "rules"
         for pattern in rule["patterns"]:
             m = re.search(pattern, text, re.I)
@@ -498,6 +499,7 @@ def check_clause_presence(text: str, jurisdiction: Optional[str] = None) -> list
                 start = max(0, m.start() - 60)
                 end = min(len(text), m.end() + 60)
                 evidence = text[start:end].strip().replace("\n", " ")
+                evidence_span = [m.start(), m.end()]
                 present = True
                 break
 
@@ -513,6 +515,7 @@ def check_clause_presence(text: str, jurisdiction: Optional[str] = None) -> list
                     start = max(0, idx - 60)
                     end = min(len(text), idx + len(kw) + 60)
                     evidence = text[start:end].strip().replace("\n", " ")
+                    evidence_span = [idx, idx + len(kw)]
                     present = True
                     source = "ilham_keywords"
                     break
@@ -522,8 +525,9 @@ def check_clause_presence(text: str, jurisdiction: Optional[str] = None) -> list
             "title":     rule["title"],
             "required":  rule["required"],
             "present":   present,
-            "evidence":  evidence,
-            "source":    source,
+            "evidence":  evidence if present else None,
+            "evidence_span": evidence_span,
+            "source":    source if present else None,
         })
 
     return results
@@ -822,6 +826,7 @@ def detect_red_flags(text: str) -> list[dict]:
                     "severity":    flag["severity"],
                     "description": flag["description"],
                     "evidence":    snippet,
+                    "evidence_span": [m.start(), m.end()],
                     "source":      "regex",
                 })
                 break  # one match per rule is enough

@@ -116,10 +116,10 @@ _SPECIFIC_WORDS = 3   # a single phrase this long (in words) can flag alone
 _MIN_CORROBORATION = 2  # otherwise need this many distinct phrase hits
 
 
-def _find(low: str, phrase: str) -> int:
-    """Word-boundary-aware search; returns match start or -1."""
+def _find(low: str, phrase: str) -> tuple[int, int] | None:
+    """Word-boundary-aware search; returns (start, end) or None."""
     m = re.search(r"(?<!\w)" + re.escape(phrase) + r"(?!\w)", low)
-    return m.start() if m else -1
+    return (m.start(), m.end()) if m else None
 
 
 def detect_keyword_flags(text: str, exclude_ids: Iterable[str] = ()) -> list[dict]:
@@ -140,26 +140,29 @@ def detect_keyword_flags(text: str, exclude_ids: Iterable[str] = ()) -> list[dic
         overlap = _REGEX_OVERLAP.get(entry["clause_name"].lower())
         if overlap and overlap in excluded:
             continue
-        matched = []  # (idx, nwords) for each 2+-word phrase that hit
+        matched = []  # (start, end, nwords) for each 2+-word phrase that hit
         for phrase in entry["phrases"]:
             nwords = len(phrase.split())
             if nwords < 2:
                 continue  # generic single words never trigger alone
-            idx = _find(low, phrase)
-            if idx != -1:
-                matched.append((idx, nwords))
-        has_specific = any(nw >= _SPECIFIC_WORDS for _, nw in matched)
+            res = _find(low, phrase)
+            if res is not None:
+                matched.append((res[0], res[1], nwords))
+        has_specific = any(m[2] >= _SPECIFIC_WORDS for m in matched)
         if not (has_specific or len(matched) >= _MIN_CORROBORATION):
             continue
         # snippet from the most specific hit (longest phrase), else first
-        anchor = max(matched, key=lambda m: m[1])[0]
-        start, end = max(0, anchor - 50), min(len(text), anchor + 60)
+        anchor = max(matched, key=lambda m: m[2])
+        match_start, match_end, _ = anchor
+        start = max(0, match_start - 50)
+        end = min(len(text), match_end + 60)
         out.append({
             "id":           entry["id"],
             "type":         entry["category"].lower(),
             "severity":     _SEVERITY.get(entry["impact_level"].lower(), "MEDIUM"),
             "description":  f"{entry['category']}: {entry['clause_name']}",
             "evidence":     text[start:end].strip().replace("\n", " "),
+            "evidence_span": [match_start, match_end],
             "impact_level": entry["impact_level"],
             "recommendation": entry["recommendation"],
             "source":       "keyword_db",
@@ -172,12 +175,14 @@ if __name__ == "__main__":  # python3 detector/risk_clause_db.py — load + matc
     db = _load()
     print(f"OK: {len(db)} distinct risky clauses, "
           f"{sum(len(e['phrases']) for e in db.values())} keyword phrases.")
-    sample = detect_keyword_flags(
-        "The provider accepts unlimited liability for all losses without limit."
-    )
+    text = "The provider accepts unlimited liability for all losses without limit."
+    sample = detect_keyword_flags(text)
     assert any(f["type"] == "dangerous" for f in sample), "expected an Unlimited Liability hit"
     f = next(x for x in sample if "liability" in x["description"].lower())
-    print(f"    sample hit -> {f['description']} [{f['severity']}] src={f['source']}")
+    assert "evidence_span" in f, "evidence_span missing in finding"
+    span = f["evidence_span"]
+    assert text[span[0]:span[1]].lower() == "unlimited liability", f"span mismatch: {text[span[0]:span[1]]}"
+    print(f"    sample hit -> {f['description']} [{f['severity']}] span={span} src={f['source']}")
     suppressed = detect_keyword_flags("unlimited liability",
                                       exclude_ids=["total_liability_exclusion"])
     assert all(x["id"] != "kw_unlimited_liability" for x in suppressed), \

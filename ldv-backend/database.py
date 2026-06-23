@@ -12,7 +12,8 @@ from datetime import datetime, timedelta
 
 import crypto
 
-DB_PATH = os.getenv("LDV_DB_PATH", os.path.join(os.path.dirname(__file__), "sydeco.db"))
+def get_db_path() -> str:
+    return os.getenv("LDV_DB_PATH", os.path.join(os.path.dirname(__file__), "sydeco.db"))
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS documents (
@@ -71,7 +72,7 @@ def retention_days() -> int:
 
 
 def init_db() -> None:
-    with sqlite3.connect(DB_PATH) as conn:
+    with sqlite3.connect(get_db_path()) as conn:
         conn.executescript(_SCHEMA)
         # Migrate pre-public_id databases: results are addressed by unguessable
         # UUIDs, never by the enumerable integer primary key.
@@ -113,7 +114,7 @@ def init_db() -> None:
 
 @contextmanager
 def _conn():
-    c = sqlite3.connect(DB_PATH, timeout=30.0)
+    c = sqlite3.connect(get_db_path(), timeout=30.0)
     c.row_factory = sqlite3.Row
     c.execute("PRAGMA journal_mode=WAL")
     try:
@@ -361,6 +362,6 @@ def purge_expired(dry_run: bool = False) -> list[dict]:
         db.execute(f"DELETE FROM analyses WHERE document_id IN ({marks})", tuple(ids))
         db.execute(f"DELETE FROM documents WHERE id IN ({marks})", tuple(ids))
     # VACUUM cannot run inside the _conn() transaction; reclaim on a fresh conn.
-    with sqlite3.connect(DB_PATH) as c:
+    with sqlite3.connect(get_db_path()) as c:
         c.execute("VACUUM")
     return victims

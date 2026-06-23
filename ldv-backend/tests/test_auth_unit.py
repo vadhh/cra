@@ -5,15 +5,20 @@ import tempfile
 
 _TMP = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
 _TMP.close()
-os.environ["LDV_DB_PATH"] = _TMP.name
+_DB_PATH = _TMP.name
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import importlib
 import database  # noqa: E402
+importlib.reload(database)
 import auth      # noqa: E402
+importlib.reload(auth)
 from flask import Flask, jsonify, g  # noqa: E402
 
-database.init_db()
+def setup_module(module):
+    os.environ["LDV_DB_PATH"] = _DB_PATH
+    database.init_db()
 
 
 def _seed():
@@ -59,6 +64,7 @@ def test_decorators_and_token_auth():
 
 
 if __name__ == "__main__":
+    setup_module(None)
     test_verify_login()
     test_decorators_and_token_auth()
     print("OK")

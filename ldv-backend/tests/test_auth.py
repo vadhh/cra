@@ -8,14 +8,21 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 _TMP = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
 _TMP.close()
-os.environ["LDV_DB_PATH"] = _TMP.name
-os.environ["LDV_SECRET_KEY"] = "test-key"
+_DB_PATH = _TMP.name
 
+import importlib
 import database  # noqa: E402
+importlib.reload(database)
 import auth      # noqa: E402
+importlib.reload(auth)
 import app as app_module  # noqa: E402
+importlib.reload(app_module)
 
-database.init_db()
+def setup_module(module):
+    os.environ["LDV_DB_PATH"] = _DB_PATH
+    os.environ["LDV_SECRET_KEY"] = "test-key"
+    database.init_db()
+
 client = app_module.app.test_client()
 
 
@@ -88,6 +95,7 @@ def test_admin_endpoints_gated():
 
 
 if __name__ == "__main__":
+    setup_module(None)
     test_anonymous_blocked()
     setup()  # Seed users before test_bad_login to ensure existing-user password test
     test_bad_login()

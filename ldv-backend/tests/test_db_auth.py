@@ -3,16 +3,19 @@ import os
 import sys
 import tempfile
 
-# Point the DB at a throwaway file BEFORE importing database.
 _TMP = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
 _TMP.close()
-os.environ["LDV_DB_PATH"] = _TMP.name
+_DB_PATH = _TMP.name
 
 # Add parent directory to path to import database
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import importlib
 import database  # noqa: E402
+importlib.reload(database)
 
-database.init_db()
+def setup_module(module):
+    os.environ["LDV_DB_PATH"] = _DB_PATH
+    database.init_db()
 
 
 def test_org_and_user_roundtrip():
@@ -42,6 +45,7 @@ def test_document_ownership_flows_to_result():
 
 
 if __name__ == "__main__":
+    setup_module(None)
     test_org_and_user_roundtrip()
     test_document_ownership_flows_to_result()
     print("OK")
