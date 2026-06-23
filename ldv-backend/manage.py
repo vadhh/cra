@@ -12,6 +12,8 @@ import os
 import secrets
 import sys
 
+from cryptography.fernet import Fernet
+
 import auth
 import database
 
@@ -61,6 +63,36 @@ def create_user_cmd(email: str, org_name: str, role: str) -> None:
     print(f"  api token: {token}")
 
 
+def purge_cmd(dry_run: bool) -> None:
+    victims = database.purge_expired(dry_run=dry_run)
+    for v in victims:
+        if not dry_run and v.get("file_path"):
+            try:
+                os.remove(v["file_path"])
+            except FileNotFoundError:
+                pass
+        tag = "would purge" if dry_run else "PURGE"
+        print(f"{tag}: doc_id={v['document_id']} file={v['file_path']} expired={v['expires_at']}")
+    verb = "eligible" if dry_run else "purged"
+    print(f"{'(dry-run) ' if dry_run else ''}{len(victims)} document(s) {verb}.")
+
+
+def purge_doc_cmd(public_id: str) -> None:
+    info = database.delete_analysis(public_id)
+    if info is None:
+        sys.exit(f"No analysis with id {public_id}.")
+    if info.get("file_path"):
+        try:
+            os.remove(info["file_path"])
+        except FileNotFoundError:
+            pass
+    print(f"Purged analysis {public_id} (doc_id={info['document_id']}).")
+
+
+def gen_key_cmd() -> None:
+    print(Fernet.generate_key().decode())
+
+
 def main() -> None:
     database.init_db()
     parser = argparse.ArgumentParser(description="LDV auth provisioning")
@@ -72,6 +104,11 @@ def main() -> None:
     pu.add_argument("email")
     pu.add_argument("org")
     pu.add_argument("--role", default="user", choices=["user", "admin"])
+    pp = sub.add_parser("purge")
+    pp.add_argument("--dry-run", action="store_true")
+    pd = sub.add_parser("purge-doc")
+    pd.add_argument("public_id")
+    sub.add_parser("gen-key")
     args = parser.parse_args()
 
     if args.cmd == "seed-admin":
@@ -80,6 +117,12 @@ def main() -> None:
         create_org_cmd(args.name)
     elif args.cmd == "create-user":
         create_user_cmd(args.email, args.org, args.role)
+    elif args.cmd == "purge":
+        purge_cmd(args.dry_run)
+    elif args.cmd == "purge-doc":
+        purge_doc_cmd(args.public_id)
+    elif args.cmd == "gen-key":
+        gen_key_cmd()
 
 
 if __name__ == "__main__":
