@@ -94,6 +94,42 @@ def init_db() -> None:
             conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
         if "error_message" not in cols:
             conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
+
+        # Check if result_json has an outdated NOT NULL constraint
+        info = conn.execute("PRAGMA table_info(analyses)").fetchall()
+        result_json_not_null = False
+        for row in info:
+            if row[1] == "result_json" and row[3] == 1:
+                result_json_not_null = True
+                break
+
+        if result_json_not_null:
+            conn.execute("PRAGMA foreign_keys=OFF")
+            conn.execute("ALTER TABLE analyses RENAME TO analyses_old")
+            conn.executescript("""
+            CREATE TABLE analyses (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                public_id     TEXT UNIQUE,
+                document_id   INTEGER NOT NULL REFERENCES documents(id),
+                jurisdiction  TEXT,
+                document_type TEXT,
+                risk_score    INTEGER,
+                risk_label    TEXT,
+                result_json   TEXT,
+                status        TEXT NOT NULL DEFAULT 'completed',
+                error_message TEXT,
+                analyzed_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id ON analyses(public_id);
+            """)
+            conn.execute("""
+            INSERT INTO analyses (id, public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message, analyzed_at)
+            SELECT id, public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message, analyzed_at
+            FROM analyses_old
+            """)
+            conn.execute("DROP TABLE analyses_old")
+            conn.execute("PRAGMA foreign_keys=ON")
+
         # Ownership columns for tenant isolation (CR-01). Added if missing so
         # pre-auth databases keep working; existing rows stay NULL-org
         # (admin-visible only) until backfilled by manage.py seed-admin.

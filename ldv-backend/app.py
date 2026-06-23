@@ -134,7 +134,7 @@ def _validate_and_extract(file) -> tuple[bytes, str, str]:
         text = _extract_txt(data)
 
     if not text.strip():
-        raise ValueError("Could not extract text from file")
+        raise ValueError("Scan/OCR required. No usable text could be extracted from this document.")
 
     return data, ext, text
 
@@ -261,6 +261,7 @@ def upload():
     try:
         data, ext, text = _validate_and_extract(file)
     except ValueError as e:
+        logger.warning("Upload validation failed for %s: %s", file.filename, e)
         return jsonify({"error": str(e)}), 400
 
     # Save file to disk
