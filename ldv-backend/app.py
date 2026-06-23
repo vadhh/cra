@@ -20,6 +20,7 @@ from translator import translate_text
 from sydeco_engine import classify_clauses as _sydeco_classify
 import database
 import auth
+import crypto
 
 logging.basicConfig(
     level=logging.INFO,
@@ -265,7 +266,7 @@ def upload():
     stored_name = f"{uuid.uuid4().hex}{ext}"
     file_path   = os.path.join(UPLOADS_DIR, stored_name)
     with open(file_path, "wb") as f:
-        f.write(data)
+        f.write(crypto.enc_bytes(data))
 
     # Detect language
     try:
@@ -331,6 +332,25 @@ def api_result(analysis_id: str):
     row["result"] = json.loads(row["result_json"])
     del row["result_json"]
     return jsonify(row)
+
+
+@app.route("/api/result/<analysis_id>", methods=["DELETE"])
+@auth.login_required
+def api_delete_result(analysis_id: str):
+    row = database.get_result(analysis_id)
+    if row is None:
+        return jsonify({"error": "Not found"}), 404
+    user = g.user
+    if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+    info = database.delete_analysis(analysis_id)
+    if info and info.get("file_path"):
+        try:
+            os.remove(info["file_path"])
+        except FileNotFoundError:
+            pass
+    logger.info("DELETE: id=%s org=%s by=%s", analysis_id, row.get("org_id"), user["email"])
+    return jsonify({"deleted": True, "id": analysis_id})
 
 
 # ── Admin API ──────────────────────────────────────────────────────────────────
@@ -430,6 +450,8 @@ def health():
         "layer3_scorer":     "ready",
         "layer4_qwen":       qwen_loaded,
         "sydeco_mlp":        mlp_available(),
+        "encryption":        {"enabled": crypto.is_enabled()},
+        "retention_days":    database.retention_days(),
     })
 
 
