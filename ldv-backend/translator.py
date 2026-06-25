@@ -4,19 +4,70 @@ from deep_translator import GoogleTranslator
 
 logger = logging.getLogger(__name__)
 
+# Helsinki-NLP/opus-mt model ids per langdetect source code
+# ponytail: mul-en covers anything not listed; models download lazily on first use
+_OPUS_MT = {
+    "id": "Helsinki-NLP/opus-mt-id-en",
+    "fr": "Helsinki-NLP/opus-mt-fr-en",
+    "nl": "Helsinki-NLP/opus-mt-nl-en",
+    "de": "Helsinki-NLP/opus-mt-de-en",
+    "es": "Helsinki-NLP/opus-mt-es-en",
+    "it": "Helsinki-NLP/opus-mt-it-en",
+    "pt": "Helsinki-NLP/opus-mt-pt-en",
+}
+_OPUS_MT_FALLBACK = "Helsinki-NLP/opus-mt-mul-en"
 
-def translate_text(text, target_lang):
-    # Confidentiality gate: translation sends the full document text to
-    # Google's API. For legal documents this must be an explicit opt-in.
-    if os.getenv("LDV_REMOTE_TRANSLATION", "0") != "1":
+_local_model_cache: dict = {}  # model_id → (model, tokenizer)
+
+
+def _local_translate(text: str, src_lang: str) -> str:
+    """Translate using a locally-cached Helsinki-NLP Marian model (no network after download)."""
+    from transformers import MarianMTModel, MarianTokenizer
+
+    model_id = _OPUS_MT.get(src_lang, _OPUS_MT_FALLBACK)
+    if model_id not in _local_model_cache:
+        logger.info("Local translation: loading %s (first use, may download ~300 MB)", model_id)
+        try:
+            tok = MarianTokenizer.from_pretrained(model_id)
+            mdl = MarianMTModel.from_pretrained(model_id)
+            _local_model_cache[model_id] = (mdl, tok)
+        except Exception as e:
+            logger.warning("Local translation model load failed (%s): %s — returning original text", model_id, e)
+            return text
+
+    mdl, tok = _local_model_cache[model_id]
+
+    # Marian has a 512-token limit; chunk on sentences for safety
+    chunks = [text[i : i + 1500] for i in range(0, len(text), 1500)]
+    out = []
+    for chunk in chunks:
+        try:
+            inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512)
+            translated = mdl.generate(**inputs)
+            out.append(tok.decode(translated[0], skip_special_tokens=True))
+        except Exception as e:
+            logger.warning("Local translation chunk failed: %s", e)
+            out.append(chunk)
+    return "\n".join(out)
+
+
+def translate_text(text, target_lang, src_lang: str = "auto"):
+    backend = os.getenv("LDV_REMOTE_TRANSLATION", "0")
+
+    if backend == "local":
+        logger.info("Local translation: src=%s → %s", src_lang, target_lang)
+        return _local_translate(text, src_lang)
+
+    if backend != "1":
         logger.warning(
-            "Remote translation disabled — document text stays local "
-            "(set LDV_REMOTE_TRANSLATION=1 to allow sending text to Google). "
+            "Translation disabled — document text stays local "
+            "(set LDV_REMOTE_TRANSLATION=1 for Google, =local for offline Marian MT). "
             "Non-English ML layers will run on the original text."
         )
         return text
 
-    chunks = [text[i:i+5000] for i in range(0, len(text), 5000)]
+    # Google path (LDV_REMOTE_TRANSLATION=1)
+    chunks = [text[i : i + 5000] for i in range(0, len(text), 5000)]
     translated_chunks = []
     for chunk in chunks:
         try:

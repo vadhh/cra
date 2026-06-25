@@ -1,0 +1,26 @@
+SERVICE CONTRACT
+
+Between MegaCorp Inc (Provider) and SmallBiz Ltd (Client).
+
+1. Services
+Provider will deliver marketing services at its sole discretion.
+
+2. Payment
+Client shall pay USD 10,000 per month.
+A penalty of 25% per day applies to late payments.
+Late payment fee of 30% per month compounded daily on all outstanding balances.
+
+3. Rights Waiver
+Client irrevocably waives all rights to dispute any invoice or charge issued by Provider.
+Client surrenders all legal rights under applicable law upon signing this agreement.
+
+4. Liability
+Provider accepts no liability whatsoever for any damages, losses or claims of any kind.
+
+5. Modification
+Provider may modify the terms of this contract at any time without notice to Client.
+
+6. Profits
+All profits shall be allocated exclusively to Provider regardless of Client's contribution.
+
+Signed:

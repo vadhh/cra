@@ -1,0 +1,25 @@
+CONTRACT FOR SERVICES
+
+Between Alpha Provider and Beta Client.
+
+1. Services
+Alpha Provider will deliver [services TBD].
+
+2. Payment
+Client must pay USD 5,000 per week.
+A penalty of 50% per day applies for late payment.
+Failure to pay within 3 days triggers a penalty of 50% of the total amount due.
+
+3. Termination
+Alpha Provider may terminate immediately and without cause at its sole discretion.
+Client waives any right to compensation in the event of early termination by the provider.
+
+4. Disputes
+All disputes shall be resolved exclusively in favour of the service provider.
+
+5. Liability
+No liability whatsoever shall be incurred by the service provider under any circumstances.
+
+6. Governing Law
+[Governing law: TBD — to be confirmed by both parties at a later stage.]
+[Jurisdiction: to be discussed and confirmed at a later date.]

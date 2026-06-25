@@ -32,8 +32,13 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 logger = logging.getLogger(__name__)
 
 import os as _os
+_ENV_MODEL   = _os.getenv("LDV_DISTILBERT_MODEL", "")
 _LOCAL_MODEL = _os.path.join(_os.path.dirname(__file__), "..", "models", "distilbert-base-uncased-mnli")
-MODEL_ID = _LOCAL_MODEL if _os.path.isdir(_LOCAL_MODEL) else "typeform/distilbert-base-uncased-mnli"
+MODEL_ID = (
+    _ENV_MODEL   if _ENV_MODEL   and _os.path.isdir(_ENV_MODEL)
+    else _LOCAL_MODEL if _os.path.isdir(_LOCAL_MODEL)
+    else "typeform/distilbert-base-uncased-mnli"
+)
 
 # ── Multilingual keyword-based document type detection ────────────────────────
 # Used as a fallback / tiebreaker when NLI confidence is below the threshold.

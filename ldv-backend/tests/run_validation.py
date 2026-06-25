@@ -1,11 +1,14 @@
 """
 Sydeco LightML Contract Risk Analyzer — Backend Validation Runner
-Usage: python tests/run_validation.py [--url http://127.0.0.1:5000]
+Usage: python tests/run_validation.py [--url http://127.0.0.1:5000] [--token <api_token>]
 
 Expects the Flask server to already be running.
+If --token is omitted, checks LDV_TEST_TOKEN env var, then auto-provisions a
+test user directly in the DB (requires running from ldv-backend/).
 """
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -181,15 +184,41 @@ TESTS = [
     },
 ]
 
-REQUIRED_KEYS_200 = {
-    "language", "jurisdiction", "document_type",
-    "clause_by_clause", "risk_score", "legal_compliance",
-}
+REQUIRED_KEYS_200 = {"language", "jurisdiction", "layer1", "layer2", "layer3"}
 
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
-def run(base_url: str) -> int:
+def _ensure_token() -> str:
+    """Return a valid API token for test requests, provisioning one if needed."""
+    token = os.getenv("LDV_TEST_TOKEN", "")
+    if token:
+        return token
+    # Auto-provision a test org + user directly in the DB
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+    import secrets as _secrets
+    import auth as _auth
+    import database as _database
+    _database.init_db()
+    org = _database.get_org_by_name("__test__")
+    if not org:
+        _database.create_org("__test__")
+        org = _database.get_org_by_name("__test__")
+    email = "test-runner@ldv.internal"
+    user = _database.get_user_by_email(email)
+    if user:
+        token = user["api_token"]
+    else:
+        token = _secrets.token_urlsafe(32)
+        _database.create_user(org["id"], email, _auth.hash_password(_secrets.token_urlsafe(16)), "analyst", token)
+    print(f"  Test token: {token}  (set LDV_TEST_TOKEN to skip auto-provision)")
+    return token
+
+
+def run(base_url: str, token: str | None = None) -> int:
+    if token is None:
+        token = _ensure_token()
+    headers = {"Authorization": f"Bearer {token}"}
     results = []
     llm_active = None  # detected on first 200 response
 
@@ -204,6 +233,7 @@ def run(base_url: str) -> int:
                 resp = requests.post(
                     f"{base_url}/analyze",
                     files={"file": (path.name, f)},
+                    headers=headers,
                     timeout=120,
                 )
         except requests.exceptions.ConnectionError:
@@ -232,9 +262,9 @@ def run(base_url: str) -> int:
             if missing_keys:
                 detail_lines.append(f"missing keys: {missing_keys}")
 
-            # Detect if LLM is active
+            # Detect if L4 (Qwen) is active
             if llm_active is None:
-                llm_active = body.get("document_type") is not None
+                llm_active = body.get("layer4", {}).get("available") is True
 
             # risk_score shape
             rs = body.get("risk_score")
@@ -309,5 +339,6 @@ def run(base_url: str) -> int:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default="http://127.0.0.1:5000")
+    parser.add_argument("--token", default=None, help="Bearer API token (or set LDV_TEST_TOKEN)")
     args = parser.parse_args()
-    sys.exit(run(args.url))
+    sys.exit(run(args.url, token=args.token))

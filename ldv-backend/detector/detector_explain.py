@@ -36,11 +36,48 @@ dict:
 from __future__ import annotations
 
 import logging
+import re
 from typing import Optional
 
 from send_prompt import query_llm
 
 logger = logging.getLogger(__name__)
+
+
+def _select_excerpt(text: str, layer1: dict, budget: int = 2000) -> str:
+    """Pick preamble + paragraphs that contain red-flag evidence, then fill to budget."""
+    evidence = [f.get("evidence", "")[:60] for f in layer1.get("red_flags", []) if f.get("evidence")]
+    paragraphs = [p.strip() for p in re.split(r"\n{2,}|\n(?=[A-Z0-9\(\[])", text) if p.strip()]
+    if not paragraphs:
+        return text[:budget]
+
+    selected: list[str] = []
+    used: set[int] = set()
+    total = 0
+
+    first = paragraphs[0][:500]
+    selected.append(first)
+    used.add(0)
+    total += len(first)
+
+    for i, para in enumerate(paragraphs[1:], 1):
+        if total >= budget:
+            break
+        if any(ev.lower() in para.lower() for ev in evidence if ev):
+            chunk = para[:400]
+            selected.append(chunk)
+            used.add(i)
+            total += len(chunk)
+
+    for i, para in enumerate(paragraphs[1:], 1):
+        if total >= budget:
+            break
+        if i not in used:
+            chunk = para[: budget - total]
+            selected.append(chunk)
+            total += len(chunk)
+
+    return "\n\n".join(selected)
 
 
 # ── Context builders ───────────────────────────────────────────────────────────
@@ -108,7 +145,7 @@ def _summary_prompt(findings: str, text_excerpt: str) -> str:
         "plain-language summary of the contract's main legal risks. "
         "Do not repeat the findings verbatim — synthesise them.\n\n"
         f"FINDINGS:\n{findings}\n\n"
-        f"CONTRACT EXCERPT:\n{text_excerpt[:600]}\n\n"
+        f"CONTRACT EXCERPT:\n{text_excerpt}\n\n"
         "RISK SUMMARY:"
     )
 
@@ -119,7 +156,7 @@ def _commentary_prompt(findings: str, text_excerpt: str) -> str:
         "Based on the findings below, briefly comment on each flagged issue: "
         "what is wrong and why it matters legally. Use bullet points.\n\n"
         f"FINDINGS:\n{findings}\n\n"
-        f"CONTRACT EXCERPT:\n{text_excerpt[:800]}\n\n"
+        f"CONTRACT EXCERPT:\n{text_excerpt}\n\n"
         "CLAUSE COMMENTARY:"
     )
 
@@ -176,9 +213,9 @@ def layer4_explain(
     layer3 = layer3 or {}
 
     findings = _build_findings_summary(jurisdiction, layer1, layer2, layer3)
-    excerpt  = text[:1000]
+    excerpt  = _select_excerpt(text, layer1, budget=2000)
 
-    logger.info("Layer 4: querying Qwen for explanations...")
+    logger.info("Layer 4: querying Qwen for explanations (excerpt=%d chars)...", len(excerpt))
 
     summary     = query_llm(_summary_prompt(findings, excerpt))
     commentary  = query_llm(_commentary_prompt(findings, excerpt))

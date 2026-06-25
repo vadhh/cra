@@ -1,0 +1,23 @@
+LOAN AGREEMENT
+
+Between First Capital Bank (Lender) and Sunrise Retail Ltd (Borrower).
+
+1. Loan Amount
+Lender agrees to lend USD 250,000 to Borrower.
+
+2. Interest Rate
+Interest at 8% per annum, calculated monthly.
+
+3. Repayment
+Borrower shall repay the loan in 36 equal monthly instalments beginning 1 June 2026.
+
+4. Security
+The loan is secured by a first charge over Borrower's inventory.
+
+5. Default
+In the event of default, the full outstanding balance becomes immediately due.
+
+6. Governing Law
+This agreement is governed by the laws of New York State.
+
+Signed 1 April 2026.

@@ -1,0 +1,21 @@
+SOFTWARE LICENSE AGREEMENT
+
+Between SoftTech Ltd (Licensor) and RetailGroup Inc (Licensee).
+
+1. License Grant
+Licensor grants Licensee a non-exclusive, non-transferable license to use the Software.
+
+2. Payment
+Annual license fee of USD 12,000, payable within 30 days of invoice.
+Late payments accrue interest at 18% per annum.
+
+3. Restrictions
+Licensee shall not sublicense, copy, or reverse engineer the Software.
+
+4. Warranties
+Licensor warrants that the Software will substantially perform as described.
+
+5. Governing Law
+This agreement shall be governed by the laws of the State of California.
+
+Signed 1 April 2026.

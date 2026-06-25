@@ -151,7 +151,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
     analysis_text = text
     if lang not in ("en", "unknown"):
         try:
-            analysis_text = translate_text(text, "en")
+            analysis_text = translate_text(text, "en", src_lang=lang)
         except Exception as e:
             logger.warning("Translation failed, using original: %s", e)
 
@@ -468,7 +468,7 @@ def analyze():
         analysis_text = text
         if lang not in ("en", "unknown"):
             try:
-                analysis_text = translate_text(text, "en")
+                analysis_text = translate_text(text, "en", src_lang=lang)
             except Exception:
                 pass
         result["layer4"] = layer4_explain(

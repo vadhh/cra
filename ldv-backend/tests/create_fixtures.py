@@ -411,6 +411,308 @@ Guidance for Q2 2026: revenue expected between USD 4.5 and 4.7 billion.
 """,
 )
 
+# Additional fixtures for risk scorer bootstrap diversity
+make_txt(
+    FIXTURES / "txt" / "06_high_risk_leonine_en.txt",
+    """SERVICE CONTRACT
+
+Between MegaCorp Inc (Provider) and SmallBiz Ltd (Client).
+
+1. Services
+Provider will deliver marketing services at its sole discretion.
+
+2. Payment
+Client shall pay USD 10,000 per month.
+A penalty of 25% per day applies to late payments.
+Late payment fee of 30% per month compounded daily on all outstanding balances.
+
+3. Rights Waiver
+Client irrevocably waives all rights to dispute any invoice or charge issued by Provider.
+Client surrenders all legal rights under applicable law upon signing this agreement.
+
+4. Liability
+Provider accepts no liability whatsoever for any damages, losses or claims of any kind.
+
+5. Modification
+Provider may modify the terms of this contract at any time without notice to Client.
+
+6. Profits
+All profits shall be allocated exclusively to Provider regardless of Client's contribution.
+
+Signed:
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "07_high_risk_missing_clauses_en.txt",
+    """CONSULTING AGREEMENT
+
+Between Strategy Partners LLC and Apex Holdings.
+
+1. Services
+[Description of services to be confirmed at a later stage.]
+
+2. Payment
+USD [AMOUNT TBD] payable as per separate schedule to be agreed.
+
+3. Term
+[Insert start and end date here.]
+
+4. Governing Law
+[Governing law clause to be added by legal team.]
+
+5. Dispute Resolution
+[Dispute resolution mechanism to be negotiated between the parties.]
+
+6. Termination
+[Termination clause pending review by counsel.]
+
+7. Intellectual Property
+Section 7 — Intellectual Property: [DRAFT — INCOMPLETE]
+
+Signatures: [TO BE COMPLETED]
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "08_medium_risk_partial_en.txt",
+    """SOFTWARE LICENSE AGREEMENT
+
+Between SoftTech Ltd (Licensor) and RetailGroup Inc (Licensee).
+
+1. License Grant
+Licensor grants Licensee a non-exclusive, non-transferable license to use the Software.
+
+2. Payment
+Annual license fee of USD 12,000, payable within 30 days of invoice.
+Late payments accrue interest at 18% per annum.
+
+3. Restrictions
+Licensee shall not sublicense, copy, or reverse engineer the Software.
+
+4. Warranties
+Licensor warrants that the Software will substantially perform as described.
+
+5. Governing Law
+This agreement shall be governed by the laws of the State of California.
+
+Signed 1 April 2026.
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "09_medium_risk_no_venue_en.txt",
+    """LOAN AGREEMENT
+
+Between First Capital Bank (Lender) and Sunrise Retail Ltd (Borrower).
+
+1. Loan Amount
+Lender agrees to lend USD 250,000 to Borrower.
+
+2. Interest Rate
+Interest at 8% per annum, calculated monthly.
+
+3. Repayment
+Borrower shall repay the loan in 36 equal monthly instalments beginning 1 June 2026.
+
+4. Security
+The loan is secured by a first charge over Borrower's inventory.
+
+5. Default
+In the event of default, the full outstanding balance becomes immediately due.
+
+6. Governing Law
+This agreement is governed by the laws of New York State.
+
+Signed 1 April 2026.
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "10_low_risk_complete_en.txt",
+    """MASTER SERVICES AGREEMENT
+
+Between Precision Consulting Group Ltd (Consultant) and BuildCo Holdings Ltd (Client).
+
+1. Parties
+Consultant: Precision Consulting Group Ltd, London, England.
+Client: BuildCo Holdings Ltd, Manchester, England.
+
+2. Services
+Consultant will provide project management consulting as detailed in Schedule A.
+
+3. Fees and Payment
+Fees are as set out in Schedule A. Invoices are payable within 30 days.
+Late payments accrue interest at 4% per annum above the Bank of England base rate.
+
+4. Intellectual Property
+All deliverables produced specifically for Client become Client's property upon full payment.
+
+5. Confidentiality
+Both parties agree to keep all information exchanged under this agreement strictly confidential.
+
+6. Limitation of Liability
+Neither party is liable for indirect or consequential loss. Total liability is capped at fees paid.
+
+7. Termination
+Either party may terminate with 30 days written notice. Immediate termination for material breach.
+
+8. Dispute Resolution
+Disputes shall be resolved by mediation, then arbitration under LCIA rules in London.
+
+9. Governing Law
+This agreement is governed by the laws of England and Wales.
+
+Signed: 1 April 2026.
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "11_low_risk_employment_en.txt",
+    """EMPLOYMENT CONTRACT
+
+Between Horizon Tech Solutions Ltd (Employer) and James O'Brien (Employee).
+
+1. Position
+Employee is appointed as Senior Software Engineer effective 1 May 2026.
+
+2. Salary
+Monthly gross salary of GBP 6,500, payable on the last business day of each month.
+
+3. Working Hours
+37.5 hours per week, Monday to Friday.
+
+4. Annual Leave
+25 days paid annual leave per year, plus public holidays.
+
+5. Notice Period
+During probation (6 months): 1 week notice by either party.
+After probation: 3 months notice by either party.
+
+6. Confidentiality
+Employee shall keep all company information strictly confidential during and after employment.
+
+7. Governing Law
+This contract is governed by the laws of England and Wales.
+
+Signed: 1 April 2026.
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "12_high_risk_unilateral_id.txt",
+    """PERJANJIAN LAYANAN
+
+Antara PT Solusi Digital (Penyedia) dan CV Mitra Usaha (Klien).
+
+1. Layanan
+Penyedia akan menyediakan layanan pengembangan perangkat lunak.
+
+2. Pembayaran
+Klien wajib membayar Rp 50.000.000 per bulan.
+Denda 15% per hari akan dikenakan atas keterlambatan pembayaran.
+Bunga keterlambatan sebesar 20% per bulan akan dikenakan secara otomatis.
+
+3. Perubahan Sepihak
+Penyedia layanan dapat mengubah perjanjian ini kapan saja tanpa pemberitahuan.
+Pihak pertama melepaskan semua hak hukum yang dimilikinya berdasarkan perjanjian ini.
+
+4. Tanggung Jawab
+Penyedia tidak bertanggung jawab atas kerugian apapun yang dialami Klien.
+
+5. Penyelesaian Sengketa
+[Klausul penyelesaian sengketa akan ditambahkan kemudian.]
+
+Ditandatangani:
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "13_medium_risk_lease_nl.txt",
+    """HUUROVEREENKOMST
+
+Tussen Van der Berg Vastgoed BV (Verhuurder) en Innovate NL BV (Huurder).
+
+Artikel 1 - Partijen
+Verhuurder: Van der Berg Vastgoed BV, Amsterdam. Huurder: Innovate NL BV, Utrecht.
+
+Artikel 2 - Gehuurde
+Kantoorruimte aan de Keizersgracht 200, Amsterdam, Nederland (BW).
+
+Artikel 3 - Huurprijs
+EUR 3.500 per maand, te betalen voor de 1e van elke maand.
+Rente van 15% per maand wordt in rekening gebracht op achterstallige betalingen.
+
+Artikel 4 - Duur
+3 jaar vanaf 1 mei 2026.
+
+Artikel 5 - Toepasselijk recht
+Nederlands recht (Burgerlijk Wetboek).
+
+Ondertekend: 1 april 2026.
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "14_low_risk_nda_en.txt",
+    """NON-DISCLOSURE AGREEMENT
+
+Between Quantum Analytics Ltd (Disclosing Party) and DataSystems Inc (Receiving Party).
+
+1. Purpose
+The parties wish to explore a potential commercial partnership and may share confidential information.
+
+2. Confidential Information
+All business, technical, and financial data shared between the parties under this agreement.
+
+3. Obligations
+Receiving Party shall not disclose or use confidential information for any purpose other than
+evaluating the potential partnership, without prior written consent.
+
+4. Exceptions
+Obligations do not apply to information that is publicly available or required by law to be disclosed.
+
+5. Duration
+This agreement is effective for 3 years from the date of signing.
+
+6. Governing Law
+This agreement is governed by the laws of England and Wales.
+Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.
+
+Signed: 1 April 2026.
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "15_critical_risk_no_law_en.txt",
+    """CONTRACT FOR SERVICES
+
+Between Alpha Provider and Beta Client.
+
+1. Services
+Alpha Provider will deliver [services TBD].
+
+2. Payment
+Client must pay USD 5,000 per week.
+A penalty of 50% per day applies for late payment.
+Failure to pay within 3 days triggers a penalty of 50% of the total amount due.
+
+3. Termination
+Alpha Provider may terminate immediately and without cause at its sole discretion.
+Client waives any right to compensation in the event of early termination by the provider.
+
+4. Disputes
+All disputes shall be resolved exclusively in favour of the service provider.
+
+5. Liability
+No liability whatsoever shall be incurred by the service provider under any circumstances.
+
+6. Governing Law
+[Governing law: TBD — to be confirmed by both parties at a later stage.]
+[Jurisdiction: to be discussed and confirmed at a later date.]
+""",
+)
+
 
 # ── Negative fixtures ─────────────────────────────────────────────────────────
 

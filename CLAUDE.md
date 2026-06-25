@@ -35,7 +35,9 @@ Accepts `.pdf`, `.docx`, `.txt` (max 10 MB). Response: `{language, jurisdiction,
 | `LDV_DB_PATH` | `ldv-backend/sydeco.db` | Overrides the SQLite database path (used by tests and deployments). |
 | `LDV_ADMIN_EMAIL` | unset | Email for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_PASSWORD`). |
 | `LDV_ADMIN_PASSWORD` | unset | Password for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_EMAIL`). |
-| `LDV_REMOTE_TRANSLATION` | `0` | `1` allows sending document text to Google Translate. Off = non-English docs analyzed untranslated (L1 is multilingual; L2 degrades). |
+| `LDV_REMOTE_TRANSLATION` | `0` | `0` = no translation (default). `1` = Google Translate API. `local` = offline Helsinki-NLP Marian MT via transformers (downloads ~300 MB per language pair on first use; no Google). |
+| `LDV_USE_MLP_SCORER` | `0` | `1` uses the bootstrap MLP scorer (`data/risk_scorer.pkl`) instead of the deterministic formula. Generate pkl: `python3 scripts/train_risk_scorer.py`. Falls back to deterministic if pkl absent. |
+| `LDV_RISK_SCORER_PATH` | `data/risk_scorer.pkl` | Override path for the MLP risk scorer pickle (only used when `LDV_USE_MLP_SCORER=1`). |
 | `LDV_CORS_ORIGINS` | unset | Comma-separated origins. Unset = no CORS headers (same-origin only). |
 | `LDV_DEBUG` | `0` | `1` enables Flask debug mode (Werkzeug debugger — never in production). |
 
@@ -112,7 +114,7 @@ Results saved to `tests/validation_report.json` and `tests/validation_report.md`
 - **Pillow ≥ 9.1.0 required** — `PIL.Image.Resampling` was added in 9.1.0; older versions block all `transformers` imports via `image_utils.py`. Run `pip3 install --upgrade Pillow` if you see `AttributeError: module 'PIL.Image' has no attribute 'Resampling'`.
 - **libmagic + DOCX** — on this Ubuntu system, `python-magic` returns `application/octet-stream` for valid DOCX files. Workaround in `app.py`: if `application/octet-stream` + `.docx` + `data[:2] == b"PK"` → treat as `application/zip`.
 - **PyTorch inference mode** — security hook blocks `.eval()` calls. Use `model.training = False` to set inference mode instead.
-- **No GPU** — 2 CPU cores, CUDA unavailable. L2 (DistilBERT) takes 5–15s; L4 (Qwen) takes several minutes per request.
+- **GPU available** — NVIDIA GeForce RTX 4050 Laptop (5 GB VRAM), CUDA enabled. L2 (DistilBERT) and DistilBERT fine-tuning both fit comfortably (~1 GB). Qwen3-1.7B fits in ~3–4 GB float16.
 - **Models cached:** Qwen3-1.7B fully at `~/.cache/huggingface/hub/models--Qwen--Qwen3-1.7B/` (3.8 GB complete). DistilBERT cached at `typeform/distilbert-base-uncased-mnli`.
 - **~~googletrans alpha~~** — RESOLVED: `translator.py` now uses `deep-translator` (GoogleTranslator), a maintained library. However, translation still hits Google's API (not local).
 
@@ -146,13 +148,13 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 
 ### P2 — Quality
 
-5. **DistilBERT fine-tuning** — currently zero-shot with no training data in codebase. Need to create labeled dataset (200+ per label) and fine-tune `distilbert-base-multilingual-cased`.
-6. **Increase L4 text window** — prompts truncate at 600/800/1000 chars (`detector_explain.py:111,122,179`). Multi-page contracts lose all context beyond the first page. Implement chunking.
+5. ~~**DistilBERT fine-tuning infrastructure**~~ — **DONE (scripts).** `scripts/generate_nli_training_data.py` generates NLI triples from existing clause data; `scripts/finetune_distilbert.py` fine-tunes `typeform/distilbert-base-uncased-mnli`. Still TODO: collect 200+ real labeled examples per class and run fine-tuning on GPU; wire `LDV_DISTILBERT_MODEL` into `detector_distilbert.py`.
+6. ~~**Increase L4 text window**~~ — **DONE.** `_select_excerpt()` in `detector_explain.py` replaces naive `text[:N]` slicing with evidence-aware paragraph selection (preamble + red-flag paragraphs, up to 2000 chars). In-prompt truncations removed.
 7. ~~**Add legal source traceability**~~ — **DONE (mechanism).** `detector/citation_db.py` + `datasets/legal_citations.csv` attach inline per-finding citations (red flags + clauses) with a `verified`/`draft` trust flag. Seeded with confident `draft` rows (FR/ID/BE); **needs lawyer review to verify and expand the CSV** — the code is complete, the data is a starting seed.
 8. ~~**Provide `legal_mlp.pkl` model**~~ — **DONE (decoupled).** `sydeco_engine.py` decoupled from pickle loading, uses rule-based patterns directly.
-9. **Layer 3 MLP training** — replace deterministic formula with trained `sklearn.MLPClassifier` once labeled risk data exists (feature vector interface already in place via `layer3.features`).
+9. ~~**Layer 3 MLP training infrastructure**~~ — **DONE (bootstrap).** `scripts/train_risk_scorer.py` bootstraps from fixtures (weak labels = deterministic scorer output), trains sklearn MLP regressor, saves to `data/risk_scorer.pkl`. Activated via `LDV_USE_MLP_SCORER=1`. Still TODO: replace bootstrap labels with expert-labeled risk scores to get real accuracy gains.
 10. ~~**Expand jurisdiction coverage**~~ — **DONE.** Expanded `detector_jurisdiction.py` to cover all 6 primary jurisdictions (ID/BE/FR/NL/EN&W/US) with explicit governing law pattern checking.
-11. **Local translation** — `deep-translator` still calls Google's API. For full sovereign AI, replace with a local translation model.
+11. ~~**Local translation**~~ — **DONE.** `translator.py` now supports `LDV_REMOTE_TRANSLATION=local` using Helsinki-NLP Marian MT models (lazy download via `transformers`). Covers ID/FR/NL/DE/ES/IT/PT→EN; falls back to `opus-mt-mul-en` for other languages.
 
 ### P3 — Nice to have
 

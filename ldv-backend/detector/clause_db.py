@@ -35,7 +35,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # datasets/ lives at the repo root: detector/ -> ldv-backend/ -> LDV/
-_CSV_PATH = Path(__file__).resolve().parent.parent.parent / "datasets" / "required_clauses.csv"
+_CSV_PATH = Path(__file__).resolve().parent.parent.parent / "datasets" / "required_clauses_MASTER.csv"
 
 # ── Reconciliation: our clause_id  ->  Ilham's Clause_Name ──────────────────────
 # Only confident 1:1 matches.  This map is *complete* as far as the two
@@ -102,20 +102,25 @@ def _load() -> dict[str, dict[str, dict]]:
         return _DB
 
     try:
-        with open(_CSV_PATH, newline="", encoding="utf-8") as f:
+        with open(_CSV_PATH, newline="", encoding="utf-8-sig") as f:
             for row in csv.DictReader(f):
                 name = (row.get("Clause_Name") or "").strip()
                 lang = (row.get("Language") or _DEFAULT_LANG).strip().upper()
                 if not name:
                     continue
                 db.setdefault(name, {})[lang] = {
-                    "clause_name":     name,
-                    "impact_level":    (row.get("Impact_Level") or "").strip(),
-                    "risk_score":      _to_int(row.get("Risk_Score")),
-                    "keywords":        _split_keywords(row.get("Keywords")),
-                    "reason":          (row.get("Reason") or "").strip(),
-                    "recommendation":  (row.get("Recommendation") or "").strip(),
-                    "business_impact": (row.get("Business_Impact") or "").strip(),
+                    "clause_name":       name,
+                    "impact_level":      (row.get("Impact_Level") or "").strip(),
+                    "risk_score":        _to_int(row.get("Risk_Score")),
+                    "keywords":          _split_keywords(row.get("Keywords")),
+                    "reason":            (row.get("Reason") or "").strip(),
+                    "recommendation":    (row.get("Recommendation") or "").strip(),
+                    "business_impact":   (row.get("Business_Impact") or "").strip(),
+                    # MASTER-only fields
+                    "contract_type":     (row.get("Contract_Type") or "").strip(),
+                    "jurisdiction":      (row.get("Jurisdiction") or "").strip(),
+                    "requirement_level": (row.get("Requirement_Level") or "").strip(),
+                    "legal_reference":   (row.get("Legal_Reference") or "").strip(),
                 }
         logger.info("Loaded required-clause DB: %d clauses from %s", len(db), _CSV_PATH.name)
     except Exception as e:  # malformed CSV must not break analysis
