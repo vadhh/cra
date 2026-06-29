@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sydeco LightML | Report Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#dee2f4",
+                    "outline-variant": "#4d4635",
+                    "on-tertiary-fixed-variant": "#414754",
+                    "surface-container-highest": "#303542",
+                    "on-surface-variant": "#d0c5af",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#dde2f3",
+                    "secondary-fixed-dim": "#f1bc8c",
+                    "surface-dim": "#0e131f",
+                    "background": "#0e131f",
+                    "on-error": "#690005",
+                    "primary": "#f2ca50",
+                    "on-tertiary": "#2a303d",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#735c00",
+                    "tertiary": "#c9cedf",
+                    "on-secondary": "#492905",
+                    "on-primary-fixed": "#241a00",
+                    "on-primary": "#3c2f00",
+                    "surface-container": "#1b1f2c",
+                    "surface-tint": "#e9c349",
+                    "surface-container-high": "#252a37",
+                    "on-secondary-container": "#e2ae7f",
+                    "primary-fixed": "#ffe088",
+                    "secondary-fixed": "#ffdcbf",
+                    "on-tertiary-fixed": "#161c27",
+                    "surface-container-lowest": "#090e1a",
+                    "on-surface": "#dee2f4",
+                    "outline": "#99907c",
+                    "surface-container-low": "#161b28",
+                    "tertiary-fixed-dim": "#c1c6d7",
+                    "on-primary-container": "#554300",
+                    "secondary": "#f1bc8c",
+                    "on-secondary-fixed-variant": "#633f19",
+                    "inverse-surface": "#dee2f4",
+                    "tertiary-container": "#adb3c3",
+                    "secondary-container": "#66411b",
+                    "on-secondary-fixed": "#2d1600",
+                    "primary-fixed-dim": "#e9c349",
+                    "primary-container": "#d4af37",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#3f4553",
+                    "surface-variant": "#303542",
+                    "surface": "#0e131f",
+                    "surface-bright": "#343946",
+                    "inverse-on-surface": "#2b303d",
+                    "on-primary-fixed-variant": "#574500"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-tablet": "32px",
+                    "margin-mobile": "16px",
+                    "container-max": "1440px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Playfair Display"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Playfair Display"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(14, 19, 31, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(242, 202, 80, 0.1);
+        }
+        .burnished-gradient {
+            background: linear-gradient(135deg, #f2ca50 0%, #d4af37 100%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-ring {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 70;
+            transition: stroke-dashoffset 1s ease-in-out;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #4d4635; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- TopNavBar Component -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-background/40 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
+<div class="font-display-lg text-headline-md text-primary tracking-tight">Sydeco LightML</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Dashboard</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Clauses</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Analytics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Risk Map</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="h-10 w-10 rounded-full border border-primary/30 overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKXX4MK8NYY-lAjNpflbrGYeCWRKJOmWtyUKLevamtiwGQN6kK9KkJx_lQ3BvkDG2ChQPOxm0j8T0J3owq33E3YVqQTrE4jB5JCornbSoSPZueS4vZITKWeVvTpxxxJ9dwUlzRFIXij0EIGB08LrRQGDLWugfkyz6bRg8xHnRa9LUtkDLJAsjatbUC9ZFGOiSNyC_2CP8wKbCiDz2Ncn_7jMQWy64OzOFJ_UvvahzhyHFVOUz59dVXBHpHXteE3_bmtvoHMTDGGsKz"/>
+</div>
+<button class="text-primary-fixed-dim font-label-md border border-primary-fixed-dim/20 px-4 py-2 rounded-lg hover:bg-primary/10 transition-all">Secure Logout</button>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-20 h-[calc(100vh-80px)] w-64 flex flex-col py-6 bg-surface-container/40 backdrop-blur-2xl border-r border-outline-variant/10 shadow-2xl z-40">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-3xl">verified_user</span>
+<div>
+<div class="font-display-lg text-label-md text-primary leading-tight">Sovereign Control</div>
+<div class="text-[10px] text-on-surface-variant uppercase tracking-widest">Enterprise Legal Intel</div>
+</div>
+</div>
+<button class="w-full mt-4 bg-primary-container text-on-primary-container py-3 rounded-lg font-label-md flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform active:scale-95">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Analysis
+            </button>
+</div>
+<div class="flex-1 flex flex-col gap-1">
+<a class="mx-2 px-4 py-3 text-on-surface-variant flex items-center gap-3 hover:bg-surface-variant/30 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">upload_file</span>
+<span class="font-label-md">Portal</span>
+</a>
+<a class="mx-2 px-4 py-3 text-on-surface-variant flex items-center gap-3 hover:bg-surface-variant/30 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">lock</span>
+<span class="font-label-md">Security Gate</span>
+</a>
+<a class="mx-2 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg flex items-center gap-3" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md">Risk Suite</span>
+</a>
+<a class="mx-2 px-4 py-3 text-on-surface-variant flex items-center gap-3 hover:bg-surface-variant/30 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="font-label-md">Telemetry</span>
+</a>
+<a class="mx-2 px-4 py-3 text-on-surface-variant flex items-center gap-3 hover:bg-surface-variant/30 rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-label-md">Admin</span>
+</a>
+</div>
+<div class="mt-auto px-4 border-t border-outline-variant/10 pt-4">
+<a class="flex items-center gap-3 px-2 py-2 text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">help_outline</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-2 py-2 text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">
+<span class="material-symbols-outlined text-lg">history</span>
+                Logs
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 min-h-screen px-margin-desktop pb-32">
+<!-- Header Section -->
+<header class="flex justify-between items-end mb-12">
+<div>
+<nav class="flex gap-2 text-label-sm text-on-surface-variant mb-4">
+<span>Reports</span> <span class="material-symbols-outlined text-[12px] pt-0.5">chevron_right</span> <span>Preview</span>
+</nav>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Global Master Service Agreement</h1>
+<p class="text-on-surface-variant mt-2 font-body-md">Diagnostic Intelligence Report — ID: SR-99281-GL</p>
+</div>
+<div class="flex flex-col items-end gap-4">
+<div class="flex items-center gap-3 bg-surface-container-high px-4 py-2 rounded-full border border-primary/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-primary font-label-md uppercase tracking-widest">Approved</span>
+<span class="h-4 w-[1px] bg-outline-variant/30 mx-1"></span>
+<span class="text-on-surface-variant text-label-sm">Secured by Vault-7</span>
+</div>
+<button class="burnished-gradient text-on-primary-container px-8 py-4 rounded-lg font-label-md shadow-xl hover:shadow-primary/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center gap-3" id="generateBtn">
+<span class="material-symbols-outlined">enhanced_encryption</span>
+                    Generate Secure Download Link
+                </button>
+</div>
+</header>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Controls Sidebar (Preview) -->
+<div class="col-span-3 space-y-6">
+<section class="glass-panel p-6 rounded-xl">
+<h3 class="font-label-md text-primary mb-6 uppercase tracking-widest">Report Composition</h3>
+<div class="space-y-4">
+<label class="flex items-center justify-between group cursor-pointer">
+<span class="text-on-surface font-body-md">Executive Summary</span>
+<input checked="" class="form-checkbox bg-transparent border-primary/30 rounded-sm text-primary focus:ring-0" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between group cursor-pointer">
+<span class="text-on-surface font-body-md">Risk Scorecard</span>
+<input checked="" class="form-checkbox bg-transparent border-primary/30 rounded-sm text-primary focus:ring-0" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between group cursor-pointer">
+<span class="text-on-surface font-body-md">Liability Analysis</span>
+<input checked="" class="form-checkbox bg-transparent border-primary/30 rounded-sm text-primary focus:ring-0" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between group cursor-pointer">
+<span class="text-on-surface font-body-md">Compliance Matrix</span>
+<input class="form-checkbox bg-transparent border-primary/30 rounded-sm text-primary focus:ring-0" type="checkbox"/>
+</label>
+<label class="flex items-center justify-between group cursor-pointer">
+<span class="text-on-surface font-body-md">Actionable Remedies</span>
+<input checked="" class="form-checkbox bg-transparent border-primary/30 rounded-sm text-primary focus:ring-0" type="checkbox"/>
+</label>
+</div>
+</section>
+<section class="glass-panel p-6 rounded-xl">
+<h3 class="font-label-md text-primary mb-4 uppercase tracking-widest">Protocol Metadata</h3>
+<div class="space-y-4 text-label-sm">
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="text-on-surface-variant">Scoring Version</span>
+<span class="text-on-surface font-semibold">v4.8.2 (Metallic)</span>
+</div>
+<div class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="text-on-surface-variant">Jurisdiction Pack</span>
+<span class="text-on-surface font-semibold">EU/UK Legal (2024)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">Intelligence Depth</span>
+<span class="text-on-surface font-semibold">High Priority</span>
+</div>
+</div>
+</section>
+<div class="p-6 border border-primary/10 rounded-xl bg-primary/5">
+<p class="text-label-sm text-on-surface-variant leading-relaxed">
+<span class="text-primary font-bold">Secure Link Protocol:</span> Generated links are one-time use and strictly time-limited to <span class="text-on-surface font-bold">15 minutes</span>. IP tracking is enabled.
+                    </p>
+</div>
+</div>
+<!-- Report Document Preview -->
+<div class="col-span-9 relative">
+<div class="glass-panel rounded-xl shadow-2xl p-12 min-h-[800px] border-primary/5 relative overflow-hidden">
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png')"></div>
+<div class="max-w-3xl mx-auto space-y-12 relative z-10">
+<!-- Report Header -->
+<div class="flex justify-between items-start border-b-2 border-primary/20 pb-8">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest border border-primary/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl">description</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface uppercase tracking-tight">Intelligence Report</h2>
+<p class="font-label-md text-on-surface-variant">SYDECO-ML PROPRIETARY DATA</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-label-sm text-on-surface-variant">ISSUED</p>
+<p class="font-label-md text-on-surface">MAY 24, 2024</p>
+</div>
+</div>
+<!-- Summary Block -->
+<div class="grid grid-cols-2 gap-8">
+<div>
+<h3 class="font-label-md text-primary mb-3 uppercase tracking-widest">Executive Summary</h3>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                                    The "Global Master Service Agreement" exhibits a standard high-risk profile in Liability Limitation (Section 14.2). AI diagnostics flag a critical mismatch between Indemnity clauses and recent EU privacy directives.
+                                </p>
+</div>
+<div class="bg-surface-container-low p-6 rounded border-l-4 border-primary flex items-center justify-between">
+<div>
+<h4 class="text-label-sm text-on-surface-variant uppercase">Aggregated Risk Score</h4>
+<div class="text-4xl font-display-lg text-primary mt-1">78.4<span class="text-lg opacity-50">/100</span></div>
+</div>
+<div class="relative w-16 h-16">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-outline-variant/20" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary active-ring" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175" stroke-dashoffset="38" stroke-width="4"></circle>
+</svg>
+</div>
+</div>
+</div>
+<!-- Findings Table -->
+<div class="space-y-6">
+<h3 class="font-label-md text-primary uppercase tracking-widest">Critical Findings</h3>
+<div class="border border-outline-variant/20 rounded-lg overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-surface-container-high">
+<tr class="text-label-sm text-on-surface-variant uppercase tracking-tighter">
+<th class="px-6 py-4">Clause ID</th>
+<th class="px-6 py-4">Subject</th>
+<th class="px-6 py-4">Risk Level</th>
+<th class="px-6 py-4">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 font-label-md text-on-surface">C-14.2</td>
+<td class="px-6 py-4 text-on-surface-variant">Limitation of Liability</td>
+<td class="px-6 py-4"><span class="bg-error/10 text-error px-2 py-1 rounded text-xs border border-error/20">CRITICAL</span></td>
+<td class="px-6 py-4"><span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">priority_high</span></td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 font-label-md text-on-surface">C-08.1</td>
+<td class="px-6 py-4 text-on-surface-variant">Data Sovereignty</td>
+<td class="px-6 py-4"><span class="bg-primary/10 text-primary px-2 py-1 rounded text-xs border border-primary/20">MODERATE</span></td>
+<td class="px-6 py-4"><span class="material-symbols-outlined text-on-surface-variant opacity-50">check</span></td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-6 py-4 font-label-md text-on-surface">C-22.9</td>
+<td class="px-6 py-4 text-on-surface-variant">Termination Rights</td>
+<td class="px-6 py-4"><span class="bg-primary-fixed-dim/10 text-primary-fixed-dim px-2 py-1 rounded text-xs border border-primary-fixed-dim/20">ADVISORY</span></td>
+<td class="px-6 py-4"><span class="material-symbols-outlined text-on-surface-variant opacity-50">check</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Legal Language Segment -->
+<div class="p-8 border-2 border-dashed border-outline-variant/30 rounded-xl bg-surface-container-lowest/50">
+<h3 class="font-label-md text-on-surface-variant mb-4 uppercase tracking-widest text-center">Fragment Preview</h3>
+<p class="text-body-md text-on-surface/80 italic leading-loose">
+                                "...Notwithstanding any provision to the contrary, the Provider's total aggregate liability arising out of or related to this Agreement, whether in contract, tort, or otherwise, shall not exceed the total fees paid by Customer..."
+                            </p>
+<div class="mt-4 flex justify-center">
+<span class="bg-primary-container/20 text-primary text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tighter border border-primary/20">ML-Flag: Ambiguous Indemnity</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-margin-desktop flex flex-col md:flex-row justify-between items-center bg-surface-container-lowest border-t border-outline-variant/5">
+<div class="font-display-lg text-label-md text-primary mb-4 md:mb-0">Sydeco LightML</div>
+<div class="text-on-tertiary-fixed-variant font-label-sm text-center md:text-left">
+            © 2024 Sydeco LightML. Sovereign Intelligence Protocol.
+        </div>
+<div class="flex gap-6 mt-4 md:mt-0">
+<a class="text-on-tertiary-fixed-variant font-label-sm hover:text-primary transition-opacity duration-200" href="#">Privacy</a>
+<a class="text-on-tertiary-fixed-variant font-label-sm hover:text-primary transition-opacity duration-200" href="#">Terms</a>
+<a class="text-on-tertiary-fixed-variant font-label-sm hover:text-primary transition-opacity duration-200" href="#">Compliance</a>
+<a class="text-on-tertiary-fixed-variant font-label-sm hover:text-primary transition-opacity duration-200" href="#">Security Documentation</a>
+</div>
+</footer>
+<!-- Generating Modal (Overlay) -->
+<div class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6" id="genModal">
+<div class="absolute inset-0 bg-background/80 backdrop-blur-2xl"></div>
+<div class="relative glass-panel w-full max-w-lg p-10 rounded-2xl border-2 border-primary/20 shadow-[0_0_50px_rgba(242,202,80,0.1)]">
+<div class="text-center space-y-6">
+<div class="inline-flex items-center justify-center w-20 h-20 rounded-full border-4 border-primary/20 relative">
+<span class="material-symbols-outlined text-primary text-4xl animate-pulse">key</span>
+<div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Securing Intelligence Pack</h2>
+<p class="text-on-surface-variant font-body-md">Encrypting document segments and generating one-time-access credentials...</p>
+<div class="hidden" id="linkOutput">
+<div class="bg-surface-container-high p-4 rounded border border-primary/20 flex items-center justify-between">
+<code class="text-primary text-sm font-mono truncate mr-4">sydeco.io/secure/DL-x78a2-99m</code>
+<button class="text-on-surface-variant hover:text-primary" onclick="copyLink()"><span class="material-symbols-outlined">content_copy</span></button>
+</div>
+<div class="mt-4 flex items-center justify-center gap-2 text-error text-label-sm uppercase">
+<span class="material-symbols-outlined text-sm">timer</span>
+                        Expires in <span id="timer">15:00</span>
+</div>
+</div>
+<button class="hidden w-full text-on-surface-variant font-label-md mt-4 hover:text-on-surface" id="closeGen">Dismiss</button>
+</div>
+</div>
+</div>
+<script>
+        const genBtn = document.getElementById('generateBtn');
+        const modal = document.getElementById('genModal');
+        const linkOutput = document.getElementById('linkOutput');
+        const closeGen = document.getElementById('closeGen');
+        const timerSpan = document.getElementById('timer');
+
+        genBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            genBtn.disabled = true;
+            genBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span> Securing...`;
+            
+            setTimeout(() => {
+                linkOutput.classList.remove('hidden');
+                closeGen.classList.remove('hidden');
+                startTimer(900, timerSpan);
+            }, 2500);
+        });
+
+        closeGen.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            genBtn.disabled = false;
+            genBtn.innerHTML = `<span class="material-symbols-outlined">enhanced_encryption</span> Generate Secure Download Link`;
+        });
+
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            const interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = minutes + ":" + seconds;
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    display.textContent = "EXPIRED";
+                }
+            }, 1000);
+        }
+
+        function copyLink() {
+            alert('Link copied to secure clipboard (Protected by Vault-7)');
+        }
+    </script>
+</body></html>

@@ -15,10 +15,10 @@
         "legal_compliance"
       ],
       "llm_dependent": true,
-      "outcome": "WARN",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Ditandatangani di Jakarta, 1 April 2026.\", \"label\": \"abusive_clause\"}], \"jurisdiction\": \"In"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Indonesia\", \"language\": \"id\", \"layer1\": {\"c"
     },
     {
       "file": "pdf/02_lease_be.pdf",
@@ -33,10 +33,10 @@
         "legal_compliance"
       ],
       "llm_dependent": true,
-      "outcome": "WARN",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Locataire: Jean Dupont, n\\u00e9 5 mai 1985.\", \"label\": \"abusive_clause\"}, {\"clause\": \"Artic"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Belgium\", \"language\": \"fr\", \"layer1\": {\"cla"
     },
     {
       "file": "pdf/03_nda_en.pdf",
@@ -50,10 +50,10 @@
         "clause_by_clause"
       ],
       "llm_dependent": true,
-      "outcome": "WARN",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Beta Ltd may receive\\nconfidential information from Alpha Corp for evaluation purposes only"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"England & Wales\", \"language\": \"en\", \"layer1"
     },
     {
       "file": "pdf/04_incomplete_en.pdf",
@@ -64,10 +64,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"SERVICE CONTRACT (DRAFT)\\nBetween TechStudio Inc and Client ABC.\", \"label\": \"missing_mandat"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Unknown\", \"language\": \"en\", \"layer1\": {\"cla"
     },
     {
       "file": "pdf/05_brochure_en.pdf",
@@ -79,10 +79,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"This brochure is for informational purposes only and does not constitute a contract.\", \"lab"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Unknown\", \"language\": \"en\", \"layer1\": {\"cla"
     },
     {
       "file": "docx/01_service_agreement_en.docx",
@@ -95,10 +95,10 @@
         "document_type"
       ],
       "llm_dependent": true,
-      "outcome": "WARN",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Liability Limitation\\nNeither party shall be liable for indirect or consequential damages.\""
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"France\", \"language\": \"en\", \"layer1\": {\"clau"
     },
     {
       "file": "docx/02_employment_fr.docx",
@@ -111,10 +111,10 @@
         "document_type"
       ],
       "llm_dependent": true,
-      "outcome": "WARN",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Article 6 - Cong\\u00e9s\\n25 jours de cong\\u00e9s pay\\u00e9s par an selon la loi.\", \"label\":"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"France\", \"language\": \"fr\", \"layer1\": {\"clau"
     },
     {
       "file": "docx/03_nda_nl.docx",
@@ -127,10 +127,10 @@
         "document_type"
       ],
       "llm_dependent": true,
-      "outcome": "WARN",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"GEHEIMHOUDINGSOVEREENKOMST\\nTussen Innovatie BV (Openbarende Partij) en Consultancy Nederla"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Netherlands\", \"language\": \"nl\", \"layer1\": {"
     },
     {
       "file": "docx/04_legal_memo_en.docx",
@@ -141,10 +141,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [], \"jurisdiction\": \"Unknown\", \"language\": \"en\", \"layer1\": {\"clause_presence\": [{\"clause_id\": \"governing"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Unknown\", \"language\": \"en\", \"layer1\": {\"cla"
     },
     {
       "file": "docx/05_general_terms_en.docx",
@@ -155,10 +155,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [], \"document_type_note\": \"This document appears to be a receipt. Full contractual clause analysis is no"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"document_type_note\": \"This document appears to be a receipt"
     },
     {
       "file": "txt/01_employment_id.txt",
@@ -169,10 +169,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [], \"jurisdiction\": \"Indonesia\", \"language\": \"id\", \"layer1\": {\"clause_presence\": [{\"clause_id\": \"governi"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Indonesia\", \"language\": \"id\", \"layer1\": {\"c"
     },
     {
       "file": "txt/02_lease_be.txt",
@@ -183,10 +183,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [], \"document_type_note\": \"This document appears to be an invoice. Full contractual clause analysis is n"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"document_type_note\": \"This document appears to be an invoic"
     },
     {
       "file": "txt/03_short_contract_en.txt",
@@ -197,10 +197,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"Between DesignStudio Ltd (Client) and Mark Hughes (Freelancer).\", \"label\": \"abusive_clause\""
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"England & Wales\", \"language\": \"en\", \"layer1"
     },
     {
       "file": "txt/04_long_agreement_en.txt",
@@ -211,10 +211,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"COMPENSATION\\nClient shall pay Company according to the rates specified in each SOW.\", \"lab"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"United States\", \"language\": \"en\", \"layer1\":"
     },
     {
       "file": "txt/05_irrelevant_en.txt",
@@ -226,10 +226,10 @@
       },
       "not_null": [],
       "llm_dependent": true,
-      "outcome": "FAIL",
+      "outcome": "PASS",
       "status": 200,
-      "detail": "missing keys: {'clause_by_clause', 'document_type', 'risk_score', 'legal_compliance'}",
-      "body_snippet": "{\"clause_tags\": [{\"clause\": \"QUARTERLY EARNINGS REPORT \\u2013 Q1 2026\", \"label\": \"abusive_clause\"}, {\"clause\": \"Key high"
+      "detail": "",
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Unknown\", \"language\": \"en\", \"layer1\": {\"cla"
     },
     {
       "file": "negative/empty.pdf",

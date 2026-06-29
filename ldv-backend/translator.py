@@ -24,25 +24,42 @@ def _local_translate(text: str, src_lang: str) -> str:
     """Translate using a locally-cached Helsinki-NLP Marian model (no network after download)."""
     from transformers import MarianMTModel, MarianTokenizer
 
-    model_id = _OPUS_MT.get(src_lang, _OPUS_MT_FALLBACK)
-    if model_id not in _local_model_cache:
-        logger.info("Local translation: loading %s (first use, may download ~300 MB)", model_id)
+    model_name = _OPUS_MT.get(src_lang, _OPUS_MT_FALLBACK)
+    folder_name = model_name.split("/")[-1]
+    
+    # Try custom models directory first, then default local models/ directory, then download from HF
+    env_dir = os.getenv("LDV_MODELS_DIR", "")
+    local_dir = os.path.join(os.path.dirname(__file__), "models")
+    
+    model_path = model_name
+    if env_dir and os.path.isdir(os.path.join(env_dir, folder_name)):
+        model_path = os.path.join(env_dir, folder_name)
+    elif os.path.isdir(os.path.join(local_dir, folder_name)):
+        model_path = os.path.join(local_dir, folder_name)
+
+    if model_path not in _local_model_cache:
+        logger.info("Local translation: loading %s", model_path)
         try:
-            tok = MarianTokenizer.from_pretrained(model_id)
-            mdl = MarianMTModel.from_pretrained(model_id)
-            _local_model_cache[model_id] = (mdl, tok)
+            tok = MarianTokenizer.from_pretrained(model_path)
+            mdl = MarianMTModel.from_pretrained(model_path)
+            # Ensure model runs on GPU if available
+            import torch
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            mdl = mdl.to(device)
+            _local_model_cache[model_path] = (mdl, tok)
         except Exception as e:
-            logger.warning("Local translation model load failed (%s): %s — returning original text", model_id, e)
+            logger.warning("Local translation model load failed (%s): %s — returning original text", model_path, e)
             return text
 
-    mdl, tok = _local_model_cache[model_id]
+    mdl, tok = _local_model_cache[model_path]
 
     # Marian has a 512-token limit; chunk on sentences for safety
     chunks = [text[i : i + 1500] for i in range(0, len(text), 1500)]
     out = []
+    device = next(mdl.parameters()).device
     for chunk in chunks:
         try:
-            inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512)
+            inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
             translated = mdl.generate(**inputs)
             out.append(tok.decode(translated[0], skip_special_tokens=True))
         except Exception as e:

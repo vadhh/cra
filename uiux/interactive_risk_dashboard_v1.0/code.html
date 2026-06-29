@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sydeco LightML | Interactive Risk Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#d4af37",
+                        "on-primary": "#000000",
+                        "secondary": "#525e7d",
+                        "background": "#0e131f",
+                        "surface": "#0e131f",
+                        "surface-dim": "#0e131f",
+                        "surface-bright": "#343946",
+                        "surface-container-lowest": "#090e1a",
+                        "surface-container-low": "#161b28",
+                        "surface-container": "#1c222f",
+                        "surface-container-high": "#252b37",
+                        "surface-container-highest": "#303643",
+                        "obsidian": "#0E131F",
+                        "burnished-gold": "#D4AF37",
+                        "border-gray": "#1F2937",
+                        "ink-primary": "#F9FAFB",
+                        "ink-secondary": "#9CA3AF",
+                        "risk-critical": "#7A271A",
+                        "risk-high": "#D92D20",
+                        "risk-medium": "#DC6803",
+                        "risk-low": "#039855"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "margin-desktop": "32px",
+                        "component-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "display": ["Playfair Display", "serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "legal": ["Inter", "sans-serif"],
+                        "code": ["JetBrains Mono", "monospace"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0e131f;
+            color: #F9FAFB;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: #161b28;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.25rem;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 2px;
+        }
+
+        @keyframes progress {
+            from { stroke-dashoffset: 282.7; }
+            to { stroke-dashoffset: 79.1; }
+        }
+
+        .risk-ring-progress {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-dasharray: 282.7;
+            stroke-dashoffset: 282.7;
+            animation: progress 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pt-20">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface-dim/95 backdrop-blur-xl border-b border-white/5">
+<div class="flex items-center gap-3">
+<img alt="Sydeco LightML" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLvbncpyu0bd7PTz1007-qxJf_GjFwK4c36zo2GakNST-HvyGQugMWDSGdTa0TvpIQdpkAiqVU__0C_QBXfWXm_vyGNavhUEEUAPJXZoMGhpq0wlE13wGdpcTVVCSfujfvNeMNReB7kJPBr2DM52_3COuCwoVnrxbfsAPQdcG5fgSydvr2Ji0ZBt4U5yhHMavzhlvxCDrfUMtoamlRxaLFKRjAgP_6Gw4vn8QGiKJhcCJJS5Se2LGPLlMAE"/>
+<span class="font-display text-2xl font-bold text-burnished-gold tracking-tight">Sydeco LightML</span>
+</div>
+<div class="hidden md:flex items-center gap-8 h-full">
+<a class="text-ink-secondary font-medium hover:text-burnished-gold transition-colors" href="#">Dashboard</a>
+<div class="h-full flex items-center relative">
+<a class="text-burnished-gold font-semibold" href="#">Clauses</a>
+<div class="absolute bottom-0 left-0 w-full h-0.5 bg-burnished-gold"></div>
+</div>
+<a class="text-ink-secondary font-medium hover:text-burnished-gold transition-colors" href="#">Analytics</a>
+<a class="text-ink-secondary font-medium hover:text-burnished-gold transition-colors" href="#">Risk Map</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-ink-secondary hover:text-risk-high transition-colors font-medium">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span>Secure Logout</span>
+</button>
+<div class="relative">
+<span class="material-symbols-outlined text-ink-secondary cursor-pointer hover:text-burnished-gold transition-colors">notifications</span>
+<span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-risk-high rounded-full border-2 border-surface-dim"></span>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow grid grid-cols-12 gap-gutter px-margin-desktop py-8 max-w-container-max mx-auto w-full">
+<!-- Left Column: Summary & Recommendations -->
+<aside class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- Risk Score Card -->
+<div class="glass-panel p-8 flex flex-col items-center text-center">
+<h3 class="text-xs font-bold text-burnished-gold uppercase tracking-[0.2em] mb-8 font-body">Contract Risk Analysis</h3>
+<div class="relative w-48 h-48 flex items-center justify-center">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle class="text-white/5" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-risk-high risk-ring-progress" cx="50" cy="50" fill="transparent" r="45" stroke="currentColor" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-5xl font-bold text-ink-primary font-display">72</span>
+<span class="text-xs font-medium text-ink-secondary mt-1 font-body">OF 100</span>
+</div>
+</div>
+<div class="mt-8">
+<p class="text-xl font-bold text-risk-high font-display">High Risk Detected</p>
+<p class="text-sm text-ink-secondary mt-2 font-body">Multiple abusive liability clauses found requiring immediate attention.</p>
+</div>
+</div>
+<!-- Action Items -->
+<div class="glass-panel p-6">
+<h3 class="text-lg font-semibold mb-6 flex items-center gap-3 font-display">
+<span class="material-symbols-outlined text-burnished-gold">fact_check</span>
+                    Priority Actions
+                </h3>
+<ul class="space-y-4">
+<li class="flex gap-4 p-4 bg-surface-container-low rounded border border-white/5">
+<span class="material-symbols-outlined text-burnished-gold text-[20px]">warning</span>
+<div>
+<p class="font-semibold text-ink-primary text-sm font-body">Review Liability Cap</p>
+<p class="text-xs text-ink-secondary mt-1 font-body">Clause 4.2 exceeds standard industry limits for service providers.</p>
+</div>
+</li>
+<li class="flex gap-4 p-4 bg-surface-container-low rounded border border-white/5">
+<span class="material-symbols-outlined text-burnished-gold text-[20px]">security</span>
+<div>
+<p class="font-semibold text-ink-primary text-sm font-body">Update Data Privacy</p>
+<p class="text-xs text-ink-secondary mt-1 font-body">GDPR compliance mapping required for Section 8 data processing.</p>
+</div>
+</li>
+<li class="flex gap-4 p-4 bg-surface-container-low rounded border border-white/5">
+<span class="material-symbols-outlined text-burnished-gold text-[20px]">cancel_presentation</span>
+<div>
+<p class="font-semibold text-ink-primary text-sm font-body">Clarify Termination</p>
+<p class="text-xs text-ink-secondary mt-1 font-body">Notice period is currently undefined, creating operational risk.</p>
+</div>
+</li>
+</ul>
+</div>
+</aside>
+<!-- Right Column: Metadata & Details -->
+<section class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- Top Metadata & Checklist Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Profile Metadata -->
+<div class="glass-panel p-6">
+<h4 class="text-xs font-bold text-burnished-gold mb-5 uppercase tracking-wider font-body">Document Metadata</h4>
+<div class="space-y-3.5 text-sm font-body">
+<div class="flex justify-between">
+<span class="text-ink-secondary">Filename</span>
+<span class="text-ink-primary font-medium truncate ml-4">MSA_Global_Tech_v4.pdf</span>
+</div>
+<div class="flex justify-between">
+<span class="text-ink-secondary">File Size</span>
+<span class="text-ink-primary">2.4 MB</span>
+</div>
+<div class="flex justify-between">
+<span class="text-ink-secondary">Total Pages</span>
+<span class="text-ink-primary">24</span>
+</div>
+<div class="flex justify-between">
+<span class="text-ink-secondary">OCR Status</span>
+<span class="text-risk-low flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+                                Verified
+                            </span>
+</div>
+</div>
+</div>
+<!-- Clause Checklist -->
+<div class="glass-panel p-6">
+<h4 class="text-xs font-bold text-burnished-gold mb-5 uppercase tracking-wider font-body">Required Clauses</h4>
+<div class="space-y-3 font-body">
+<div class="flex items-center justify-between text-sm">
+<span class="text-ink-primary">Intellectual Property</span>
+<span class="material-symbols-outlined text-risk-low text-[20px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<span class="text-ink-primary">Confidentiality</span>
+<span class="material-symbols-outlined text-risk-low text-[20px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<span class="text-ink-primary">Indemnification</span>
+<span class="material-symbols-outlined text-risk-critical text-[20px]">error</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<span class="text-ink-primary">Governing Law</span>
+<span class="material-symbols-outlined text-risk-low text-[20px]">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Risks & Abusive Clauses (Side-by-Side) -->
+<div class="glass-panel p-6">
+<h3 class="text-xl font-bold mb-6 font-display">Risk Remediation</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-5 bg-risk-critical/5 border border-risk-critical/20 rounded">
+<div class="flex items-center gap-2 text-risk-high mb-4">
+<span class="material-symbols-outlined text-[18px]">warning</span>
+<span class="text-xs font-bold uppercase tracking-wider font-body">Original Clause (Abusive)</span>
+</div>
+<p class="font-body italic text-ink-secondary leading-relaxed text-[15px]">
+                            "The Provider shall not be liable for any damages whatsoever, including direct or indirect losses, arising from system failure, regardless of negligence or intent."
+                        </p>
+</div>
+<div class="p-5 bg-risk-low/5 border border-risk-low/20 rounded">
+<div class="flex items-center gap-2 text-risk-low mb-4">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+<span class="text-xs font-bold uppercase tracking-wider font-body">Safe Legal Rewrite</span>
+</div>
+<p class="font-body text-ink-primary leading-relaxed text-[15px]">
+                            "Provider's total liability for direct damages shall be capped at 12 months of service fees. Provider remains liable for gross negligence and willful misconduct."
+                        </p>
+</div>
+</div>
+</div>
+<!-- Scoring Penalty Table -->
+<div class="glass-panel overflow-hidden border border-white/5">
+<div class="p-6 border-b border-white/5 flex justify-between items-center bg-surface-container-low">
+<h3 class="text-lg font-bold font-display">Penalty Breakdown</h3>
+<span class="text-xs font-bold px-3 py-1 bg-risk-high/10 text-risk-high border border-risk-high/20 rounded-full font-body">-28 Points Total</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse font-body">
+<thead>
+<tr class="bg-surface-container-lowest text-xs font-bold text-burnished-gold uppercase tracking-wider">
+<th class="p-5">Category</th>
+<th class="p-5">Issue Found</th>
+<th class="p-5">Severity</th>
+<th class="p-5 text-right">Impact</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+<td class="p-5 font-semibold text-ink-primary">Liability</td>
+<td class="p-5 text-ink-secondary">Unlimited Liability Waiver</td>
+<td class="p-5"><span class="text-risk-critical font-bold">Critical</span></td>
+<td class="p-5 text-right text-risk-critical font-code">-15</td>
+</tr>
+<tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+<td class="p-5 font-semibold text-ink-primary">Jurisdiction</td>
+<td class="p-5 text-ink-secondary">Foreign Court Selection</td>
+<td class="p-5"><span class="text-risk-medium font-bold">Medium</span></td>
+<td class="p-5 text-right font-code text-risk-medium">-8</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="p-5 font-semibold text-ink-primary">Termination</td>
+<td class="p-5 text-ink-secondary">One-Sided Termination</td>
+<td class="p-5"><span class="text-risk-low font-bold">Low</span></td>
+<td class="p-5 text-right font-code text-risk-low">-5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Extracted Text Pane -->
+<div class="glass-panel flex flex-col h-[320px] border border-white/5">
+<div class="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-surface-container-low">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-burnished-gold">description</span>
+<h3 class="text-xs font-bold uppercase tracking-widest text-ink-primary font-body">Raw Extracted Text</h3>
+</div>
+<div class="flex gap-4">
+<button class="text-ink-secondary hover:text-burnished-gold transition-colors">
+<span class="material-symbols-outlined text-[20px]">content_copy</span>
+</button>
+<button class="text-ink-secondary hover:text-burnished-gold transition-colors">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+</div>
+</div>
+<div class="flex-grow overflow-y-auto p-8 custom-scrollbar bg-surface-container-lowest/40">
+<pre class="font-body text-ink-secondary whitespace-pre-wrap leading-relaxed text-base italic">MASTER SERVICES AGREEMENT
+Version 4.0 - Confidential
+
+1. DEFINITIONS AND INTERPRETATION
+1.1 "Services" refers to the cloud-based intelligence platform...
+1.2 "Data" refers to all client-proprietary information...
+
+4. LIMITATION OF LIABILITY
+4.1 TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE PROVIDER OR ITS AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF USE, DATA OR PROFITS, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OR PERFORMANCE OF THE SOFTWARE, WITH THE DELAY OR INABILITY TO USE THE SOFTWARE...
+
+8. DATA PROTECTION AND PRIVACY
+The parties shall comply with all applicable data protection laws. Client grants Provider a perpetual, royalty-free license to use aggregated, anonymized data for training models...
+
+12. GOVERNING LAW AND DISPUTE RESOLUTION
+This Agreement shall be governed by the laws of the Cayman Islands...
+                </pre>
+</div>
+</div>
+</section>
+</main>
+</body></html>

@@ -12,3 +12,7 @@ tokenizers==0.22.2
 gunicorn==23.0.0
 reportlab==4.5.1
 cryptography==48.0.0
+flask-limiter==4.1.1
+limits==5.8.0
+redis==5.0.4
+pyotp==2.9.0

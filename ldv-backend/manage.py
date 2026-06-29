@@ -93,6 +93,14 @@ def gen_key_cmd() -> None:
     print(Fernet.generate_key().decode())
 
 
+def set_retention_cmd(org_name: str, days: int) -> None:
+    org = database.get_org_by_name(org_name)
+    if org is None:
+        sys.exit(f"No org named '{org_name}'.")
+    database.set_org_retention(org["id"], days)
+    print(f"Retention for '{org_name}' set to {days} days.")
+
+
 def main() -> None:
     database.init_db()
     parser = argparse.ArgumentParser(description="LDV auth provisioning")
@@ -109,6 +117,9 @@ def main() -> None:
     pd = sub.add_parser("purge-doc")
     pd.add_argument("public_id")
     sub.add_parser("gen-key")
+    pr = sub.add_parser("set-retention")
+    pr.add_argument("org")
+    pr.add_argument("days", type=int)
     args = parser.parse_args()
 
     if args.cmd == "seed-admin":
@@ -123,6 +134,8 @@ def main() -> None:
         purge_doc_cmd(args.public_id)
     elif args.cmd == "gen-key":
         gen_key_cmd()
+    elif args.cmd == "set-retention":
+        set_retention_cmd(args.org, args.days)
 
 
 if __name__ == "__main__":

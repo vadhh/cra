@@ -231,7 +231,7 @@ def run(base_url: str, token: str | None = None) -> int:
         try:
             with open(path, "rb") as f:
                 resp = requests.post(
-                    f"{base_url}/analyze",
+                    f"{base_url}/api/v1/analyze",
                     files={"file": (path.name, f)},
                     headers=headers,
                     timeout=120,

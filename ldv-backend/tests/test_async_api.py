@@ -49,7 +49,7 @@ def test_async_api_flow():
         headers = {
             "Authorization": f"Bearer {user_token}"
         }
-        resp = client.post("/upload", data=data, headers=headers, content_type="multipart/form-data")
+        resp = client.post("/api/v1/upload", data=data, headers=headers, content_type="multipart/form-data")
         assert resp.status_code == 202, resp.status_code
         res_json = resp.json
         assert "id" in res_json
@@ -63,14 +63,14 @@ def test_async_api_flow():
 
         # --- Test Result Polling (GET /api/result/<id>) ---
         # 1. Queued state
-        resp = client.get(f"/api/result/{analysis_id}", headers=headers)
+        resp = client.get(f"/api/v1/result/{analysis_id}", headers=headers)
         assert resp.status_code == 200, resp.status_code
         assert resp.json["status"] == "queued"
         assert resp.json["result"] is None
 
         # 2. Running state
         database.update_analysis(analysis_id, status="running")
-        resp = client.get(f"/api/result/{analysis_id}", headers=headers)
+        resp = client.get(f"/api/v1/result/{analysis_id}", headers=headers)
         assert resp.status_code == 200, resp.status_code
         assert resp.json["status"] == "running"
         assert resp.json["result"] is None
@@ -78,17 +78,26 @@ def test_async_api_flow():
         # 3. Completed state
         mock_result = {"layer1": {}, "layer2": {}, "layer3": {"score": 5, "label": "LOW"}}
         database.update_analysis(analysis_id, status="completed", risk_score=5, risk_label="LOW", result=mock_result)
-        resp = client.get(f"/api/result/{analysis_id}", headers=headers)
+        resp = client.get(f"/api/v1/result/{analysis_id}", headers=headers)
         assert resp.status_code == 200, resp.status_code
         assert resp.json["status"] == "completed"
         assert resp.json["result"] == mock_result
+
+        # Verify raw_text / extracted_text is excluded by default
+        assert "extracted_text" not in resp.json
+        assert "raw_text" not in resp.json
+
+        # Verify raw_text is included when ?debug=1 is provided
+        resp_debug = client.get(f"/api/v1/result/{analysis_id}?debug=1", headers=headers)
+        assert resp_debug.status_code == 200
+        assert resp_debug.json.get("raw_text") == "This is a dummy contract document."
 
         # --- Test Access Control ---
         # Accessing result from another organization must fail with 403
         other_headers = {
             "Authorization": f"Bearer {other_token}"
         }
-        resp = client.get(f"/api/result/{analysis_id}", headers=other_headers)
+        resp = client.get(f"/api/v1/result/{analysis_id}", headers=other_headers)
         assert resp.status_code == 403, resp.status_code
     finally:
         os.remove(db_path)

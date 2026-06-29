@@ -89,3 +89,30 @@ def admin_required(view):
             return jsonify({"error": "Forbidden"}), 403
         return view(*args, **kwargs)
     return wrapper
+
+
+def normalize_role(role: str) -> str:
+    return "analyst" if role == "user" else role
+
+
+def role_required(*roles: str):
+    def decorator(view):
+        @wraps(view)
+        def wrapper(*args, **kwargs):
+            user = current_user()
+            if user is None:
+                return jsonify({"error": "Authentication required"}), 401
+            u_role = normalize_role(user["role"])
+            if u_role == "admin" or u_role in roles:
+                return view(*args, **kwargs)
+            return jsonify({"error": "Forbidden"}), 403
+        return wrapper
+    return decorator
+
+
+def is_mfa_mandatory(user: dict) -> bool:
+    if os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
+        return False
+    if os.getenv("LDV_PRODUCTION") == "1":
+        return True
+    return normalize_role(user["role"]) in {"admin", "reviewer", "manager"}

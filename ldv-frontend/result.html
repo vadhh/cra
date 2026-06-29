@@ -1,398 +1,362 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html class="dark" lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Analysis Result — Sydeco LightML</title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Risk Assessment — Sydeco LightML</title>
   <link rel="icon" type="image/png" href="images/law icon.png">
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <!-- Tailwind play CDN is a dynamic build endpoint — SRI not possible; replace with CLI build for production -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "background": "#0e131f", "surface-container": "#1b1f2c",
+            "surface-container-low": "#161b28", "surface-container-lowest": "#090e1a",
+            "surface-container-high": "#252a37",
+            "on-surface": "#dee2f4", "on-surface-variant": "#d0c5af",
+            "primary": "#d4af37", "outline-variant": "#4d4635",
+          },
+          fontFamily: { "display": ["Playfair Display","serif"], "body": ["Plus Jakarta Sans","sans-serif"], "mono": ["JetBrains Mono","monospace"] },
+        }
+      }
+    }
+  </script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0d1b2a;
-      color: #e8ecf1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    :root {
+      --font-base: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --font-display: 'Playfair Display', serif;
+      --bg-surface: rgba(27,31,44,0.75);
+      --bg-surface-elevated: rgba(37,42,55,0.85);
+      --border-color: rgba(212,175,55,0.1);
+      --border-color-hover: rgba(212,175,55,0.22);
+      --border-focus: #d4af37;
+      --text-primary: #dee2f4;
+      --text-secondary: #d0c5af;
+      --text-muted: hsl(215,12%,52%);
+      --color-accent: #d4af37;
+      --color-accent-glow: rgba(212,175,55,0.12);
+      --color-low: hsl(150,40%,48%); --color-low-bg: hsla(150,40%,48%,0.12);
+      --color-medium: hsl(36,68%,52%); --color-medium-bg: hsla(36,68%,52%,0.12);
+      --color-high: hsl(355,62%,54%); --color-high-bg: hsla(355,62%,54%,0.12);
+      --color-critical: hsl(325,64%,48%); --color-critical-bg: hsla(325,64%,48%,0.12);
+      --transition-fast: 0.15s cubic-bezier(0.16,1,0.3,1);
+      --transition-normal: 0.3s cubic-bezier(0.16,1,0.3,1);
+      --shadow-lg: 0 16px 40px rgba(0,0,0,0.5);
     }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--font-base); background:#0e131f; color:var(--text-primary); min-height:100vh; -webkit-font-smoothing:antialiased; }
+    ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:#0e131f; }
+    ::-webkit-scrollbar-thumb { background:rgba(212,175,55,0.15); border-radius:4px; }
 
-    nav {
-      background: #1a2744;
-      padding: 14px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .nav-brand { font-size: 1.1rem; font-weight: 700; color: #fff; text-decoration: none; }
-    .nav-brand span { color: #4a90d9; }
-    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; margin-left: 24px; font-size: 0.9rem; }
-    .nav-links a:hover { color: #fff; }
+    main { max-width:1280px; margin:0 auto; padding:32px 24px; }
+    @media(max-width:768px){ main{ padding:20px 16px; } }
 
-    main { flex: 1; max-width: 900px; margin: 0 auto; padding: 32px 20px; width: 100%; }
+    #loadingState { display:flex; flex-direction:column; align-items:center; gap:20px; text-align:center; padding:80px 24px; color:var(--text-secondary); }
+    #errorState { display:none; text-align:center; padding:80px 24px; }
+    #content { display:none; }
+    .error-box { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:40px; max-width:480px; margin:0 auto; }
+    .error-box h2 { font-family:var(--font-display); font-size:1.4rem; margin-bottom:12px; }
+    .spinner-ring { width:44px; height:44px; border:3px solid rgba(212,175,55,0.15); border-top-color:var(--color-accent); border-radius:50%; animation:spin 0.9s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    @keyframes dropIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
 
-    /* ── Loading state ── */
-    #loadingState {
-      text-align: center;
-      padding: 80px 20px;
-      color: rgba(255,255,255,0.5);
-    }
-    .spinner-ring {
-      display: inline-block;
-      width: 32px; height: 32px;
-      border: 3px solid rgba(255,255,255,0.15);
-      border-top-color: #4a90d9;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin-bottom: 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .glass-card { background:var(--bg-surface); backdrop-filter:blur(12px); border:1px solid var(--border-color); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.35); transition:border-color var(--transition-normal); }
+    .glass-card:hover { border-color:var(--border-color-hover); }
 
-    /* ── Error state ── */
-    #errorState {
-      display: none;
-      text-align: center;
-      padding: 80px 20px;
-    }
-    .error-box {
-      background: rgba(220,53,69,0.12);
-      border: 1px solid rgba(220,53,69,0.4);
-      border-radius: 8px;
-      padding: 24px;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    .error-box h2 { color: #ff8a94; margin-bottom: 8px; }
-    .error-box p { color: rgba(255,255,255,0.6); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 20px; font-family:var(--font-base); font-size:0.85rem; font-weight:700; border-radius:6px; border:1px solid transparent; cursor:pointer; letter-spacing:0.03em; text-transform:uppercase; transition:all var(--transition-fast); }
+    .btn-primary { background:linear-gradient(135deg,#d4af37 0%,#b8952e 100%); color:#0e131f; box-shadow:0 4px 15px rgba(212,175,55,0.2); }
+    .btn-primary:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 20px rgba(212,175,55,0.35); }
+    .btn-outline { background:transparent; border-color:var(--border-color); color:var(--color-accent); }
+    .btn-outline:hover:not(:disabled) { background:rgba(212,175,55,0.05); border-color:var(--color-accent); }
+    .btn:disabled { opacity:0.4; cursor:not-allowed; }
 
-    /* ── Content ── */
-    #content { display: none; }
+    .file-card { padding:24px; margin-bottom:24px; }
+    .file-card-content { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; }
+    .file-main-info { display:flex; align-items:center; gap:16px; }
+    .file-avatar { width:48px; height:48px; border-radius:10px; background:var(--color-accent-glow); color:var(--border-focus); display:flex; align-items:center; justify-content:center; }
+    .file-text-details h2 { font-size:1.1rem; font-weight:700; word-break:break-all; }
+    .file-sub-details { font-size:0.78rem; color:var(--text-muted); margin-top:4px; }
+    .file-actions-row { display:flex; gap:12px; }
 
-    /* File header */
-    .file-header {
-      background: #162235;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 18px 22px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .file-icon { font-size: 2rem; }
-    .file-info { flex: 1; }
-    .file-info h2 { font-size: 1rem; font-weight: 600; word-break: break-all; }
-    .file-meta { font-size: 0.8rem; color: rgba(255,255,255,0.45); margin-top: 3px; }
-    .file-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn { padding: 8px 16px; border-radius: 5px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: .2s; border: none; }
-    .btn-primary { background: #4a90d9; color: #fff; }
-    .btn-primary:hover { background: #357abd; }
-    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #e8ecf1; }
-    .btn-outline:hover { border-color: #fff; }
-    .btn:disabled { opacity: .6; cursor: not-allowed; }
+    .result-container { display:grid; grid-template-columns:1fr; gap:20px; animation:dropIn 0.5s cubic-bezier(0.16,1,0.3,1); }
+    @media(min-width:1024px){ .result-container{ grid-template-columns:340px 1fr; } }
 
-    /* Risk hero */
-    .risk-hero {
-      border-radius: 10px;
-      padding: 28px 26px;
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .risk-score-big { font-size: 3.6rem; font-weight: 800; line-height: 1; }
-    .risk-divider { font-size: 1.5rem; opacity: .5; align-self: flex-end; margin-bottom: 6px; }
-    .risk-of { font-size: 1.2rem; opacity: .6; align-self: flex-end; margin-bottom: 10px; }
-    .risk-label-big { font-size: 1.5rem; font-weight: 700; }
-    .risk-desc { font-size: 0.85rem; opacity: .75; margin-top: 4px; }
-    .risk-LOW      { background: rgba(25,135,84,0.2);  border: 1px solid rgba(25,135,84,0.5); }
-    .risk-MEDIUM   { background: rgba(253,126,20,0.15); border: 1px solid rgba(253,126,20,0.5); }
-    .risk-HIGH     { background: rgba(220,53,69,0.15); border: 1px solid rgba(220,53,69,0.5); }
-    .risk-CRITICAL { background: rgba(139,0,0,0.25);   border: 1px solid rgba(139,0,0,0.6); }
-    .c-LOW      { color: #4ade80; }
-    .c-MEDIUM   { color: #fb923c; }
-    .c-HIGH     { color: #f87171; }
-    .c-CRITICAL { color: #ff4444; }
+    .risk-hero-panel { padding:28px 20px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; position:relative; overflow:hidden; }
+    .risk-glow-effect { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:150px; height:150px; border-radius:50%; filter:blur(40px); z-index:1; opacity:0.2; }
+    .risk-circle-container { position:relative; width:140px; height:140px; z-index:2; }
+    .risk-circle-svg { transform:rotate(-90deg); width:140px; height:140px; }
+    .risk-circle-bg { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:8; }
+    .risk-circle-bar { fill:none; stroke-width:8; stroke-linecap:round; stroke-dasharray:377; stroke-dashoffset:377; transition:stroke-dashoffset 1.5s cubic-bezier(0.16,1,0.3,1); }
+    .risk-score-value { position:absolute; top:0; left:0; width:140px; height:140px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .risk-score-num { font-family:var(--font-display); font-size:2.2rem; font-weight:800; line-height:1; }
+    .risk-score-label { font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.05em; margin-top:2px; }
+    .risk-badge { display:inline-block; padding:5px 14px; border-radius:20px; font-family:var(--font-display); font-size:0.82rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:10px; }
+    .risk-hero-desc { font-size:0.82rem; color:var(--text-secondary); line-height:1.5; }
 
-    /* Sections */
-    .section {
-      background: #162235;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-    .section-header {
-      padding: 14px 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      user-select: none;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .section-header:hover { background: rgba(255,255,255,0.03); }
-    .section-title { font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
-    .section-toggle { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
-    .section-body { padding: 18px 20px; }
-    .section-body.hidden { display: none; }
+    .level-LOW  { --level-color:var(--color-low); --level-bg:var(--color-low-bg); }
+    .level-MEDIUM { --level-color:var(--color-medium); --level-bg:var(--color-medium-bg); }
+    .level-HIGH { --level-color:var(--color-high); --level-bg:var(--color-high-bg); }
+    .level-CRITICAL { --level-color:var(--color-critical); --level-bg:var(--color-critical-bg); }
+    .risk-circle-bar { stroke:var(--level-color,#d4af37); }
+    .risk-glow-effect { background-color:var(--level-color,#d4af37); }
+    .risk-score-num { color:var(--level-color,#d4af37); }
+    .risk-badge { background-color:var(--level-bg,rgba(212,175,55,0.12)); color:var(--level-color,#d4af37); border:1px solid color-mix(in srgb,var(--level-color,#d4af37) 25%,transparent); }
 
-    /* Summary grid */
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 12px;
-    }
-    .summary-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 6px;
-      padding: 12px 14px;
-    }
-    .summary-card .label { font-size: 0.72rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
-    .summary-card .value { font-size: 0.9rem; font-weight: 600; word-break: break-word; }
+    .details-column { display:flex; flex-direction:column; gap:14px; }
+    .section-card { border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:var(--bg-surface); transition:border-color var(--transition-normal); }
+    .section-card:hover { border-color:var(--border-color-hover); }
+    .section-header { padding:14px 18px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; transition:background var(--transition-fast); }
+    .section-header:hover { background:rgba(255,255,255,0.02); }
+    .section-title-wrapper { display:flex; align-items:center; gap:10px; font-weight:700; font-size:0.9rem; }
+    .section-title-wrapper svg { width:16px; height:16px; fill:none; stroke:var(--text-secondary); stroke-width:2px; flex-shrink:0; }
+    .section-toggle-icon { color:var(--text-muted); display:flex; align-items:center; transition:transform var(--transition-normal); }
+    .section-body { padding:18px; border-top:1px solid var(--border-color); }
 
-    /* Clause checklist */
-    .clause-list { list-style: none; }
-    .clause-list li { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
-    .clause-list li:last-child { border-bottom: none; }
-    .badge-ok   { color: #4ade80; font-weight: 700; }
-    .badge-miss { color: #f87171; font-weight: 700; }
-    .badge-req  { font-size: 0.7rem; background: rgba(253,126,20,0.2); color: #fb923c; border-radius: 3px; padding: 2px 6px; margin-left: auto; }
+    .meta-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
+    .meta-item { background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:8px; padding:12px; }
+    .meta-label { font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:5px; }
+    .meta-value { font-size:0.88rem; font-weight:600; word-break:break-word; }
 
-    /* Dangerous clauses */
-    .flag-item {
-      background: rgba(220,53,69,0.08);
-      border-left: 3px solid #dc3545;
-      border-radius: 4px;
-      padding: 10px 14px;
-      margin-bottom: 10px;
-      font-size: 0.88rem;
-    }
-    .flag-item.medium { border-left-color: #fd7e14; background: rgba(253,126,20,0.08); }
-    .flag-item .flag-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
-    .flag-item .sev { font-size: 0.72rem; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
-    .sev-HIGH     { background: rgba(220,53,69,0.3);  color: #f87171; }
-    .sev-MEDIUM   { background: rgba(253,126,20,0.3); color: #fb923c; }
-    .flag-desc { font-weight: 600; }
-    .flag-evidence { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 3px; font-style: italic; }
-    .rewrite-box {
-      margin-top: 8px;
-      background: rgba(25,135,84,0.12);
-      border: 1px solid rgba(25,135,84,0.3);
-      border-radius: 4px;
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      color: #4ade80;
-    }
-    .ai-flag {
-      background: rgba(74,144,217,0.08);
-      border-left: 3px solid #4a90d9;
-      border-radius: 4px;
-      padding: 8px 14px;
-      margin-bottom: 8px;
-      font-size: 0.88rem;
-      color: #93c5fd;
-    }
+    .check-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+    .check-item { display:flex; align-items:center; gap:10px; font-size:0.88rem; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); }
+    .check-indicator { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .check-item.present .check-indicator { background:var(--color-low-bg); color:var(--color-low); }
+    .check-item.missing .check-indicator { background:var(--color-high-bg); color:var(--color-high); }
+    .check-name { font-weight:500; flex:1; }
+    .check-required-badge { margin-left:auto; font-size:0.62rem; font-weight:700; padding:2px 7px; border-radius:4px; background:rgba(212,175,55,0.12); color:var(--color-medium); border:1px solid rgba(212,175,55,0.2); white-space:nowrap; }
 
-    /* Recommendations */
-    .rec-list { list-style: none; }
-    .rec-list li { padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.88rem; display: flex; gap: 10px; }
-    .rec-list li:last-child { border-bottom: none; }
-    .rec-list li::before { content: "→"; color: #4a90d9; flex-shrink: 0; }
+    .danger-list { display:flex; flex-direction:column; gap:12px; }
+    .danger-card { border:1px solid var(--border-color); border-radius:10px; padding:14px; background:var(--bg-surface-elevated); }
+    .danger-card.severity-HIGH { border-left:3px solid var(--color-high); }
+    .danger-card.severity-MEDIUM { border-left:3px solid var(--color-medium); }
+    .danger-card.severity-LOW { border-left:3px solid var(--color-low); }
+    .danger-card-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .danger-severity-badge { font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:4px; letter-spacing:0.05em; }
+    .severity-HIGH .danger-severity-badge { background:var(--color-high-bg); color:var(--color-high); }
+    .severity-MEDIUM .danger-severity-badge { background:var(--color-medium-bg); color:var(--color-medium); }
+    .severity-LOW .danger-severity-badge { background:var(--color-low-bg); color:var(--color-low); }
+    .danger-title { font-size:0.88rem; font-weight:700; }
+    .danger-evidence { font-size:0.8rem; color:var(--text-secondary); font-style:italic; background:rgba(0,0,0,0.15); padding:8px 12px; border-radius:6px; margin-top:6px; line-height:1.5; border-left:2px solid var(--border-color-hover); }
+    .danger-rewrite { margin-top:10px; background:var(--color-low-bg); border:1px solid rgba(76,175,80,0.2); border-radius:6px; padding:8px 12px; font-size:0.8rem; color:var(--color-low); line-height:1.5; }
+    .ai-finding-card { background:var(--color-accent-glow); border:1px solid rgba(212,175,55,0.15); border-left:3px solid var(--border-focus); border-radius:8px; padding:10px 14px; font-size:0.82rem; color:var(--text-secondary); display:flex; align-items:center; gap:10px; }
 
-    /* Extracted text */
-    .extracted-text {
-      background: rgba(0,0,0,0.25);
-      border-radius: 6px;
-      padding: 14px;
-      font-family: "Courier New", monospace;
-      font-size: 0.78rem;
-      line-height: 1.6;
-      max-height: 320px;
-      overflow-y: auto;
-      color: rgba(255,255,255,0.7);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+    .rec-item { display:flex; align-items:flex-start; gap:10px; font-size:0.85rem; color:var(--text-secondary); padding:8px 0; border-bottom:1px solid var(--border-color); }
+    .rec-item:last-child { border-bottom:none; }
+    .rec-bullet { color:var(--border-focus); flex-shrink:0; margin-top:2px; }
 
-    /* Score breakdown */
-    .breakdown-list { list-style: none; }
-    .breakdown-list li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; display: flex; justify-content: space-between; }
-    .breakdown-list li:last-child { border-bottom: none; }
-    .pts { color: #f87171; font-weight: 600; }
-    .pts.pos { color: #4ade80; }
+    .breakdown-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+    .breakdown-table tr { border-bottom:1px solid var(--border-color); }
+    .breakdown-table tr:last-child { border-bottom:none; }
+    .breakdown-table td { padding:9px 0; vertical-align:middle; }
+    .breakdown-pts { text-align:right; font-weight:700; }
+    .breakdown-pts.negative { color:var(--color-high); }
+    .breakdown-pts.positive { color:var(--color-low); }
 
-    .empty { color: rgba(255,255,255,0.35); font-size: 0.88rem; font-style: italic; }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: rgba(255,255,255,0.25);
-      font-size: 0.78rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
+    .text-pane { background:rgba(0,0,0,0.25); border-radius:8px; padding:14px; font-family:'JetBrains Mono',monospace; font-size:0.76rem; line-height:1.6; max-height:360px; overflow-y:auto; color:var(--text-secondary); white-space:pre-wrap; word-break:break-word; border:1px solid var(--border-color); }
+    .empty-state { font-size:0.82rem; color:var(--text-muted); font-style:italic; }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a class="nav-brand" href="/">SYDECO <span>LightML</span></a>
-    <div class="nav-links">
-      <a href="/">← New Analysis</a>
-      <a href="/admin">Admin</a>
+  <header class="sticky top-0 z-50 border-b border-outline-variant/10" style="background:rgba(14,19,31,0.85);backdrop-filter:blur(20px);">
+    <div class="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
+      <a class="font-display text-xl text-primary tracking-tight" href="/" style="text-decoration:none;">Sydeco LightML</a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="/" style="text-decoration:none;">Upload New</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="/admin" style="text-decoration:none;">Dashboard</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="/citations" style="text-decoration:none;">Citations</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
   <main>
     <div id="loadingState">
       <div class="spinner-ring"></div>
-      <p>Loading analysis result…</p>
+      <p>Loading assessment data…</p>
     </div>
 
     <div id="errorState">
       <div class="error-box">
-        <h2>Result Not Found</h2>
-        <p id="errorText">This analysis ID does not exist or was not saved.</p>
-        <br>
-        <a href="/" class="btn btn-primary" style="display:inline-block; text-decoration:none; margin-top:10px;">
-          ← Analyze Another Contract
-        </a>
+        <h2>Assessment Not Found</h2>
+        <p id="errorText" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:20px;">This analysis ID does not exist or access was denied.</p>
+        <a href="/" class="btn btn-primary" style="text-decoration:none;">← Run New Analysis</a>
       </div>
     </div>
 
     <div id="content">
-
-      <!-- File header -->
-      <div class="file-header">
-        <div class="file-icon" id="fileIcon">📄</div>
-        <div class="file-info">
-          <h2 id="fileNameEl">—</h2>
-          <div class="file-meta" id="fileMeta">—</div>
-        </div>
-        <div class="file-actions">
-          <button class="btn btn-primary" onclick="downloadPDF(this)">⬇ PDF Report</button>
-          <a href="/" class="btn btn-outline" style="text-decoration:none;">+ New Analysis</a>
-        </div>
-      </div>
-
-      <!-- Risk hero -->
-      <div class="risk-hero" id="riskHero">
-        <div>
-          <div style="display:flex;align-items:baseline;gap:4px;">
-            <div class="risk-score-big" id="riskScore">—</div>
-            <div class="risk-divider">/</div>
-            <div class="risk-of">100</div>
+      <div class="glass-card file-card">
+        <div class="file-card-content">
+          <div class="file-main-info">
+            <div class="file-avatar">
+              <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2px;" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
+              </svg>
+            </div>
+            <div class="file-text-details">
+              <h2 id="fileNameEl">—</h2>
+              <div class="file-sub-details" id="fileMeta">—</div>
+            </div>
+          </div>
+          <div class="file-actions-row">
+            <button class="btn btn-primary" onclick="downloadPDF(this)">
+              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2px;" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+              </svg>
+              PDF Report
+            </button>
+            <a href="/" class="btn btn-outline" style="text-decoration:none;">+ New Analysis</a>
           </div>
         </div>
-        <div>
-          <div class="risk-label-big" id="riskLabel">—</div>
-          <div class="risk-desc" id="riskDesc">—</div>
-        </div>
       </div>
 
-      <!-- Contract details -->
-      <div class="section">
-        <div class="section-header" onclick="toggle(this)">
-          <span class="section-title">📋 Contract Details</span>
-          <span class="section-toggle">▾</span>
+      <div class="result-container">
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="glass-card risk-hero-panel" id="riskCard">
+            <div class="risk-glow-effect"></div>
+            <div class="risk-circle-container">
+              <svg class="risk-circle-svg" viewBox="0 0 130 130">
+                <circle class="risk-circle-bg" cx="65" cy="65" r="58"/>
+                <circle class="risk-circle-bar" id="scoreCircle" cx="65" cy="65" r="58"/>
+              </svg>
+              <div class="risk-score-value">
+                <span class="risk-score-num" id="riskScore">—</span>
+                <span class="risk-score-label">Risk Score</span>
+              </div>
+            </div>
+            <div style="z-index:2;width:100%;text-align:center;">
+              <span class="risk-badge" id="riskLabel">Pending</span>
+              <p class="risk-hero-desc" id="riskDesc">—</p>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header" style="cursor:default;">
+              <div class="section-title-wrapper">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>
+                <span>Action Items</span>
+              </div>
+            </div>
+            <div class="section-body"><div id="recList"></div></div>
+          </div>
         </div>
-        <div class="section-body">
-          <div class="summary-grid" id="summaryGrid"></div>
+
+        <div class="details-column">
+
+          <div class="section-card" x-data="{open:true}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Contract Profiles &amp; Metadata</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body" x-show="open" x-transition>
+              <div class="meta-grid" id="summaryGrid"></div>
+            </div>
+          </div>
+
+          <div class="section-card" x-data="{open:true}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Mandatory Clause Checklist</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body" x-show="open" x-transition>
+              <ul class="check-list" id="clauseList"></ul>
+            </div>
+          </div>
+
+          <div class="section-card" x-data="{open:true}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper">
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Detected Risks &amp; Abusive Clauses</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body" x-show="open" x-transition>
+              <div class="danger-list" id="dangerousClauses"></div>
+            </div>
+          </div>
+
+          <div class="section-card" x-data="{open:false}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span>Scoring Penalty Audit</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body" x-show="open" x-transition>
+              <table class="breakdown-table"><tbody id="breakdownList"></tbody></table>
+            </div>
+          </div>
+
+          <div class="section-card" x-data="{open:false}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Extracted Agreement Text</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body" x-show="open" x-transition>
+              <pre class="text-pane" id="extractedText"></pre>
+            </div>
+          </div>
+
         </div>
       </div>
-
-      <!-- Missing clauses -->
-      <div class="section">
-        <div class="section-header" onclick="toggle(this)">
-          <span class="section-title">📝 Clause Checklist</span>
-          <span class="section-toggle">▾</span>
-        </div>
-        <div class="section-body">
-          <ul class="clause-list" id="clauseList"></ul>
-        </div>
-      </div>
-
-      <!-- Dangerous clauses -->
-      <div class="section">
-        <div class="section-header" onclick="toggle(this)">
-          <span class="section-title">⚠️ Dangerous Clauses</span>
-          <span class="section-toggle">▾</span>
-        </div>
-        <div class="section-body" id="dangerousClauses"></div>
-      </div>
-
-      <!-- Recommendations -->
-      <div class="section">
-        <div class="section-header" onclick="toggle(this)">
-          <span class="section-title">💡 Recommendations</span>
-          <span class="section-toggle">▾</span>
-        </div>
-        <div class="section-body">
-          <ul class="rec-list" id="recList"></ul>
-        </div>
-      </div>
-
-      <!-- Score breakdown -->
-      <div class="section">
-        <div class="section-header" onclick="toggle(this)">
-          <span class="section-title">📊 Score Breakdown</span>
-          <span class="section-toggle">▾</span>
-        </div>
-        <div class="section-body section-body hidden">
-          <ul class="breakdown-list" id="breakdownList"></ul>
-        </div>
-      </div>
-
-      <!-- Extracted text (collapsed by default) -->
-      <div class="section">
-        <div class="section-header" onclick="toggle(this)">
-          <span class="section-title">📄 Extracted Text</span>
-          <span class="section-toggle">▾</span>
-        </div>
-        <div class="section-body section-body hidden">
-          <pre class="extracted-text" id="extractedText"></pre>
-        </div>
-      </div>
-
-    </div><!-- /#content -->
+    </div>
   </main>
 
-  <footer>© PT SYDECO — Sydeco LightML Contract Risk Analyzer</footer>
+  <footer class="text-center py-8 text-xs border-t border-outline-variant/10" style="color:var(--text-muted);font-family:var(--font-base);">
+    © PT SYDECO — Sydeco LightML Sovereign Intelligence Protocol
+  </footer>
 
   <script>
   const _REWRITES = {
-    leonine_profit: "Suggested rewrite: 'Profits shall be distributed proportionally to each party's contribution as set out in Schedule A. No party may be excluded from losses while retaining the right to profits.'",
-    leonine_no_loss: "Suggested rewrite: 'Each party shall bear losses in proportion to their respective investment or contribution share as defined herein.'",
-    excessive_penalty: "Suggested rewrite: 'Late payment interest shall not exceed 0.5% per month (6% per annum) calculated on the overdue outstanding amount.'",
-    rights_waiver: "Suggested rewrite: 'Each party retains all statutory rights and remedies afforded under applicable law. No general waiver of rights is granted by this agreement.'",
-    unilateral_modification: "Suggested rewrite: 'This agreement may only be amended by a written instrument signed by authorised representatives of all parties, with a minimum notice period of 30 days.'",
-    total_liability_exclusion: "Suggested rewrite: 'The total aggregate liability of either party shall not exceed the total fees paid under this agreement in the 12 months preceding the event giving rise to liability.'",
-    auto_renewal_no_notice: "Suggested rewrite: 'This agreement renews automatically for successive 12-month terms unless either party provides written notice of non-renewal at least 60 days before the current term expires.'",
-    illegal_object: "Action required: This clause may be void or unenforceable under applicable law. Seek qualified legal advice before signing.",
+    leonine_profit: "Suggested rewrite: 'Profits shall be distributed proportionally to each party's contribution as set out in Schedule A.'",
+    leonine_no_loss: "Suggested rewrite: 'Each party shall bear losses in proportion to their respective investment or contribution share.'",
+    excessive_penalty: "Suggested rewrite: 'Late payment interest shall not exceed 0.5% per month (6% per annum) on overdue amounts.'",
+    rights_waiver: "Suggested rewrite: 'Each party retains all statutory rights and remedies afforded under applicable law.'",
+    unilateral_modification: "Suggested rewrite: 'This agreement may only be amended by written instrument signed by all parties, with 30 days notice.'",
+    total_liability_exclusion: "Suggested rewrite: 'Total aggregate liability shall not exceed fees paid in the 12 months preceding the event.'",
+    auto_renewal_no_notice: "Suggested rewrite: 'Agreement renews automatically unless either party provides 60 days written notice of non-renewal.'",
+    illegal_object: "Action required: This clause may be void under applicable law. Seek qualified legal advice before signing.",
   };
 
   const _RISK_DESCS = {
-    LOW:      "This contract appears relatively safe. Standard review recommended before signing.",
-    MEDIUM:   "This contract has some concerning clauses that warrant careful review.",
-    HIGH:     "This contract poses significant legal risk. Have a lawyer review it before signing.",
-    CRITICAL: "This contract is highly dangerous and may contain illegal or severely unfair clauses.",
+    LOW:      "This agreement is generally clean. Standard signature procedures apply.",
+    MEDIUM:   "Moderately critical clauses identified. Minor review or negotiations advised.",
+    HIGH:     "Substantial contractual risk present. Review with legal counsel is strongly recommended.",
+    CRITICAL: "Highly dangerous liabilities or illegal parameters detected. Re-negotiation advised.",
   };
 
-  let _result = null;  // full API response cached for PDF
+  let _result = null;
 
   function esc(s) {
     return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function toggle(header) {
-    const body = header.nextElementSibling;
-    const arrow = header.querySelector('.section-toggle');
-    body.classList.toggle('hidden');
-    arrow.textContent = body.classList.contains('hidden') ? '▸' : '▾';
   }
 
   function formatBytes(b) {
@@ -406,34 +370,36 @@
     _result = row;
     const r = row.result || {};
     const layer1 = r.layer1 || {};
-    const layer2 = (r.layer2 || {});
+    const layer2 = r.layer2 || {};
     const layer3 = r.layer3 || {};
 
-    // File header
     const ext = (row.file_type || '').replace('.','').toUpperCase();
-    const icons = { PDF: '📕', DOCX: '📘', TXT: '📄' };
-    document.getElementById('fileIcon').textContent = icons[ext] || '📄';
-    document.getElementById('fileNameEl').textContent = row.original_filename || 'Unknown file';
+    document.getElementById('fileNameEl').textContent = row.original_filename || 'Agreement document';
     document.getElementById('fileMeta').textContent = [
       ext, formatBytes(row.file_size),
       row.language ? row.language.toUpperCase() : null,
       row.analyzed_at ? new Date(row.analyzed_at + 'Z').toLocaleString() : null,
     ].filter(Boolean).join(' · ');
 
-    // Risk hero
-    const score = layer3.score ?? '—';
-    const label = layer3.label || 'UNKNOWN';
-    document.getElementById('riskHero').className = 'risk-hero risk-' + label;
-    document.getElementById('riskScore').className = 'risk-score-big c-' + label;
-    document.getElementById('riskScore').textContent = score;
-    document.getElementById('riskLabel').className = 'risk-label-big c-' + label;
+    const label = layer3.label || 'LOW';
+    const score = layer3.score !== undefined ? layer3.score : 0;
+    const riskCard = document.getElementById('riskCard');
+    riskCard.className = 'glass-card risk-hero-panel level-' + label;
+    document.getElementById('riskScore').textContent = layer3.score !== undefined ? layer3.score : '—';
     document.getElementById('riskLabel').textContent = label;
     document.getElementById('riskDesc').textContent = _RISK_DESCS[label] || '';
 
-    // Summary grid
+    const circle = document.getElementById('scoreCircle');
+    const circumference = 2 * Math.PI * circle.r.baseVal.value;
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    setTimeout(() => {
+      const offset = circumference - (Math.max(0, Math.min(100, score)) / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+    }, 150);
+
     const govLaw = layer1.governing_law || 'Not detected';
     const venue  = layer1.venue         || 'Not detected';
-    const _dt = layer2.document_type;
+    const _dt    = layer2.document_type;
     const docType = (_dt && typeof _dt === 'object' ? _dt.label : _dt) || 'Not detected';
     const juris   = r.jurisdiction      || 'Not detected';
     const redFlags = layer1.red_flags   || [];
@@ -441,189 +407,148 @@
     const clauses  = layer1.clause_presence || [];
     const missing  = clauses.filter(c => c.required && !c.present);
 
-    const cards = [
-      ['Document Type',     docType],
-      ['Jurisdiction',      juris],
-      ['Governing Law',     govLaw],
-      ['Venue / Forum',     venue],
-      ['Dangerous Clauses', String(redFlags.length + l2flags.length)],
-      ['Missing Clauses',   String(missing.length)],
-    ];
-    document.getElementById('summaryGrid').innerHTML = cards.map(([lbl, val]) =>
-      `<div class="summary-card"><div class="label">${esc(lbl)}</div><div class="value">${esc(val)}</div></div>`
+    document.getElementById('summaryGrid').innerHTML = [
+      ['Document Classification', docType],
+      ['Primary Jurisdiction', juris],
+      ['Governing Law Provision', govLaw],
+      ['Venue / Dispute Forum', venue],
+      ['Unfair Clauses', String(redFlags.length + l2flags.length)],
+      ['Missing Mandatory Clauses', String(missing.length)],
+    ].map(([lbl, val]) =>
+      `<div class="meta-item"><div class="meta-label">${esc(lbl)}</div><div class="meta-value">${esc(val)}</div></div>`
     ).join('');
 
-    // Clause checklist
     const clauseList = document.getElementById('clauseList');
-    if (!clauses.length) {
-      clauseList.innerHTML = '<li><span class="empty">No clause data available.</span></li>';
-    } else {
-      clauseList.innerHTML = clauses.map(c => {
-        const present = !!c.present;
-        const title = esc(c.title || c.clause_id || 'Unknown');
-        const reqBadge = c.required ? '<span class="badge-req">REQUIRED</span>' : '';
-        return `<li>
-          <span class="${present ? 'badge-ok' : 'badge-miss'}">${present ? '✓' : '✗'}</span>
-          <span>${title}</span>
-          ${reqBadge}
-        </li>`;
-      }).join('');
-    }
+    clauseList.innerHTML = !clauses.length
+      ? '<li class="empty-state">No checklist parameters mapped for this document type.</li>'
+      : clauses.map(c => {
+          const present = !!c.present;
+          const icon = present
+            ? `<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;stroke-width:3.5px;fill:none;display:block;"><path d="M20 6L9 17l-5-5"/></svg>`
+            : `<svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;stroke-width:3.5px;fill:none;display:block;"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
+          return `<li class="check-item ${present ? 'present' : 'missing'}">
+            <div class="check-indicator">${icon}</div>
+            <span class="check-name">${esc(c.title || c.clause_id || 'Unknown')}</span>
+            ${c.required ? '<span class="check-required-badge">REQUIRED</span>' : ''}
+          </li>`;
+        }).join('');
 
-    // Dangerous clauses
-    const dangerDiv = document.getElementById('dangerousClauses');
     let dangerHTML = '';
     for (const flag of redFlags) {
-      const sev  = flag.severity || 'MEDIUM';
-      const id   = flag.id || '';
-      const desc = esc(flag.description || flag.type || 'Unknown flag');
-      const ev   = esc(flag.evidence || '');
-      const rw   = _REWRITES[id] ? `<div class="rewrite-box">${esc(_REWRITES[id])}</div>` : '';
-      dangerHTML += `
-        <div class="flag-item ${sev === 'MEDIUM' ? 'medium' : ''}">
-          <div class="flag-head">
-            <span class="sev sev-${esc(sev)}">${esc(sev)}</span>
-            <span class="flag-desc">${desc}</span>
-          </div>
-          ${ev ? `<div class="flag-evidence">"…${ev}…"</div>` : ''}
-          ${rw}
-        </div>`;
+      const sev = flag.severity || 'MEDIUM';
+      const rw = _REWRITES[flag.id] ? `<div class="danger-rewrite"><strong>Revision:</strong> ${esc(_REWRITES[flag.id])}</div>` : '';
+      dangerHTML += `<div class="danger-card severity-${esc(sev)}">
+        <div class="danger-card-header"><span class="danger-severity-badge">${esc(sev)}</span><span class="danger-title">${esc(flag.description || flag.type || 'Flagged clause')}</span></div>
+        ${flag.evidence ? `<div class="danger-evidence">"…${esc(flag.evidence)}…"</div>` : ''}${rw}</div>`;
     }
     for (const fl of l2flags) {
       const lbl = esc((fl.label || '').replace(/_/g,' '));
-      const sc  = fl.score !== undefined ? (fl.score * 100).toFixed(0) + '% confidence' : '';
-      dangerHTML += `<div class="ai-flag">[AI] ${lbl}${sc ? ' — ' + esc(sc) : ''}</div>`;
+      const sc  = fl.score !== undefined ? ` (${(fl.score*100).toFixed(0)}% confidence)` : '';
+      dangerHTML += `<div class="ai-finding-card">
+        <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2px;flex-shrink:0;">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Classifier flagged <strong>${lbl}</strong>${esc(sc)}</span></div>`;
     }
-    dangerDiv.innerHTML = dangerHTML || '<span class="empty">No dangerous clauses detected.</span>';
+    document.getElementById('dangerousClauses').innerHTML = dangerHTML || '<div class="empty-state">No dangerous or abusive clauses detected.</div>';
 
-    // Recommendations
     const recs = buildRecs(layer1, layer2, layer3, r.jurisdiction);
-    document.getElementById('recList').innerHTML = recs.map(r =>
-      `<li>${esc(r)}</li>`
-    ).join('') || '<li class="empty">No recommendations generated.</li>';
+    document.getElementById('recList').innerHTML = recs.map(rec =>
+      `<div class="rec-item"><span class="rec-bullet">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#d4af37;stroke-width:2.5px;fill:none;display:block;">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/>
+        </svg></span><span>${esc(rec)}</span></div>`
+    ).join('') || '<div class="empty-state">No action items required.</div>';
 
-    // Score breakdown
     const breakdown = layer3.breakdown || [];
-    const bkList = document.getElementById('breakdownList');
-    if (!breakdown.length) {
-      bkList.innerHTML = '<li><span class="empty">No breakdown available.</span></li>';
-    } else {
-      bkList.innerHTML = breakdown.map(b => {
-        const reason = esc(typeof b === 'object' ? (b.reason || JSON.stringify(b)) : String(b));
-        const pts    = typeof b === 'object' && b.points !== undefined ? b.points : null;
-        const ptsStr = pts !== null
-          ? `<span class="pts ${pts > 0 ? 'pos' : ''}">${pts > 0 ? '+' : ''}${pts}</span>`
-          : '';
-        return `<li><span>${reason}</span>${ptsStr}</li>`;
-      }).join('');
-    }
+    document.getElementById('breakdownList').innerHTML = !breakdown.length
+      ? '<tr><td class="empty-state">No point modifications recorded.</td></tr>'
+      : breakdown.map(b => {
+          const reason = esc(typeof b === 'object' ? (b.reason || JSON.stringify(b)) : String(b));
+          const pts = typeof b === 'object' && b.points !== undefined ? b.points : null;
+          const ptsHtml = pts !== null
+            ? `<span class="breakdown-pts ${pts < 0 ? 'negative' : 'positive'}">${pts < 0 ? '' : '+'}${pts}</span>`
+            : '';
+          return `<tr><td>${reason}</td><td style="text-align:right;">${ptsHtml}</td></tr>`;
+        }).join('');
 
-    // Extracted text
-    document.getElementById('extractedText').textContent = row.extracted_text || '(no text extracted)';
-
+    document.getElementById('extractedText').textContent = row.extracted_text || '(Text unavailable)';
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('content').style.display = 'block';
   }
 
   function buildRecs(layer1, layer2, layer3, juris) {
     const recs = [];
-    const clauses   = layer1.clause_presence || [];
-    const missing   = clauses.filter(c => c.required && !c.present);
-    const redFlags  = layer1.red_flags || [];
-    const govLaw    = layer1.governing_law;
-    const venue     = layer1.venue;
-    const label     = layer3.label || '';
+    const clauses  = layer1.clause_presence || [];
+    const missing  = clauses.filter(c => c.required && !c.present);
+    const redFlags = layer1.red_flags || [];
+    const label    = layer3.label || '';
 
-    if (missing.length) {
-      const titles = missing.map(c => c.title || c.clause_id).join(', ');
-      recs.push(`Add the following missing required clauses: ${titles}.`);
-    }
+    if (missing.length) recs.push(`Missing mandatory provisions: ${missing.map(c => c.title || c.clause_id).join(', ')}. Incorporate these to prevent regulatory exposure.`);
     const highFlags = redFlags.filter(f => f.severity === 'HIGH');
-    if (highFlags.length) {
-      recs.push(`Address ${highFlags.length} HIGH-severity clause(s) before signing — these create significant legal exposure.`);
-    }
-    if (!govLaw) {
-      recs.push('Add a governing law clause specifying which country\'s law governs the contract.');
-    }
-    if (!venue) {
-      recs.push('Add a jurisdiction/venue clause specifying where disputes will be resolved.');
-    }
-    if (label === 'HIGH' || label === 'CRITICAL') {
-      recs.push('This contract presents substantial risk. Have a qualified lawyer review it before signing.');
-    }
-    if (!recs.length) {
-      recs.push('Contract appears well-structured. Standard legal review is still recommended before signing.');
-    }
+    if (highFlags.length) recs.push(`Contains ${highFlags.length} high-severity anomalies. Apply the suggested contract revisions before signing.`);
+    if (!layer1.governing_law) recs.push('Lacks explicit governing law. Introduce a standard choice-of-law clause.');
+    if (!layer1.venue) recs.push('Dispute forum is unspecified. Nominate a specific court system or arbitration panel.');
+    if (label === 'HIGH' || label === 'CRITICAL') recs.push('This agreement carries significant legal risk. Suspend standard signature procedures until reviewed by legal counsel.');
+    if (!recs.length) recs.push('Document structures conform well to standard profiles. Standard signature clearance recommended.');
     return recs;
   }
 
   async function downloadPDF(btn) {
     if (!_result) return;
-    btn.disabled = true;
-    btn.textContent = 'Generating…';
+    const orig = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Generating…';
     try {
-      const resp = await fetch('/report', {
+      const resp = await fetch('/api/v1/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(_result.result),
       });
       if (resp.status === 401) { window.location.href = '/login'; return; }
-      if (!resp.ok) { alert('PDF generation failed.'); return; }
+      if (!resp.ok) { alert('Report generation failed.'); return; }
       const blob = await resp.blob();
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-      a.href     = url;
-      a.download = 'contract_risk_report.pdf';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      a.href = url; a.download = `${_result.original_filename || 'contract'}_risk_report.pdf`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch (e) {
-      alert('Could not reach the server.');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '⬇ PDF Report';
-    }
+    } catch { alert('Network error during report download.'); }
+    finally { btn.disabled = false; btn.innerHTML = orig; }
   }
 
-  // ── Bootstrap ──────────────────────────────────────────────────────────────
   (async () => {
     const parts = window.location.pathname.split('/').filter(Boolean);
     const id    = parts[parts.length - 1];
-
-    if (!id || isNaN(Number(id))) {
+    if (!id) {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('errorState').style.display  = 'block';
-      document.getElementById('errorText').textContent = 'No analysis ID found in URL.';
+      document.getElementById('errorText').textContent = 'No assessment reference key in URL.';
       return;
     }
-
     try {
-      const resp = await fetch('/api/result/' + id);
+      const resp = await fetch('/api/v1/result/' + id);
       if (resp.status === 401) { window.location.href = '/login'; return; }
+      document.getElementById('loadingState').style.display = 'none';
       if (resp.status === 403) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('errorState').style.display  = 'block';
-        document.getElementById('errorText').textContent = 'You do not have access to this analysis.';
+        document.getElementById('errorState').style.display = 'block';
+        document.getElementById('errorText').textContent = 'Access denied — this document belongs to another organization.';
         return;
       }
       if (resp.status === 404) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('errorState').style.display  = 'block';
+        document.getElementById('errorState').style.display = 'block';
         return;
       }
       const data = await resp.json();
       if (data.error) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('errorState').style.display  = 'block';
+        document.getElementById('errorState').style.display = 'block';
         document.getElementById('errorText').textContent = data.error;
         return;
       }
       render(data);
-    } catch (e) {
+    } catch {
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('errorState').style.display  = 'block';
-      document.getElementById('errorText').textContent = 'Could not connect to the server.';
+      document.getElementById('errorText').textContent = 'Unable to reach the server.';
     }
   })();
   </script>

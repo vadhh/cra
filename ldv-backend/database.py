@@ -44,31 +44,78 @@ CREATE TABLE IF NOT EXISTS analyses (
 );
 
 CREATE TABLE IF NOT EXISTS organizations (
-    id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    name        TEXT NOT NULL UNIQUE,
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    name           TEXT NOT NULL UNIQUE,
+    retention_days INTEGER,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS users (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    org_id        INTEGER NOT NULL REFERENCES organizations(id),
-    email         TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    role          TEXT NOT NULL DEFAULT 'user',
-    api_token     TEXT UNIQUE,
-    active        INTEGER NOT NULL DEFAULT 1,
-    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    org_id             INTEGER NOT NULL REFERENCES organizations(id),
+    email              TEXT NOT NULL UNIQUE,
+    password_hash      TEXT NOT NULL,
+    role               TEXT NOT NULL DEFAULT 'user',
+    api_token          TEXT UNIQUE,
+    active             INTEGER NOT NULL DEFAULT 1,
+    mfa_secret         TEXT,
+    mfa_recovery_codes TEXT,
+    created_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS audit_log (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    ts          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    action      TEXT NOT NULL,
+    user_id     INTEGER REFERENCES users(id),
+    org_id      INTEGER REFERENCES organizations(id),
+    resource_id TEXT,
+    ip          TEXT,
+    detail      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_audit_ts ON audit_log(ts DESC);
+
+CREATE TABLE IF NOT EXISTS download_links (
+    token       TEXT PRIMARY KEY,
+    analysis_id TEXT NOT NULL,
+    expires_at  INTEGER NOT NULL,
+    one_time    INTEGER DEFAULT 0,
+    revoked     INTEGER DEFAULT 0,
+    used        INTEGER DEFAULT 0
 );
 """
 
 
 def retention_days() -> int:
-    """Days a document is kept before purge. Invalid/≤0 → 30."""
+    """Global default retention days from env. Invalid/≤0 → 30."""
     try:
         n = int(os.getenv("LDV_RETENTION_DAYS", "30"))
         return n if n > 0 else 30
     except ValueError:
         return 30
+
+
+def org_retention_days(org_id: int | None) -> int:
+    """Per-org override if set, else global default."""
+    if org_id is None:
+        return retention_days()
+    try:
+        with _conn() as db:
+            row = db.execute(
+                "SELECT retention_days FROM organizations WHERE id = ?", (org_id,)
+            ).fetchone()
+        if row and row[0] is not None and int(row[0]) > 0:
+            return int(row[0])
+    except Exception:
+        pass
+    return retention_days()
+
+
+def set_org_retention(org_id: int, days: int) -> None:
+    with _conn() as db:
+        db.execute(
+            "UPDATE organizations SET retention_days = ? WHERE id = ?", (days, org_id)
+        )
 
 
 def init_db() -> None:
@@ -146,6 +193,17 @@ def init_db() -> None:
                 "WHERE expires_at IS NULL",
                 (f"+{retention_days()} days",),
             )
+        org_cols = {row[1] for row in conn.execute("PRAGMA table_info(organizations)")}
+        if "retention_days" not in org_cols:
+            conn.execute("ALTER TABLE organizations ADD COLUMN retention_days INTEGER")
+
+        user_cols = {row[1] for row in conn.execute("PRAGMA table_info(users)")}
+        if "mfa_secret" not in user_cols:
+            conn.execute("ALTER TABLE users ADD COLUMN mfa_secret TEXT")
+        if "mfa_recovery_codes" not in user_cols:
+            conn.execute("ALTER TABLE users ADD COLUMN mfa_recovery_codes TEXT")
+        if "download_disabled" not in user_cols:
+            conn.execute("ALTER TABLE users ADD COLUMN download_disabled INTEGER DEFAULT 0")
 
 
 @contextmanager
@@ -175,7 +233,7 @@ def save_document(
     owner_id: int | None = None,
 ) -> int:
     enc_text = crypto.enc_str(extracted_text) if extracted_text is not None else None
-    expires_at = (datetime.utcnow() + timedelta(days=retention_days())).strftime(
+    expires_at = (datetime.utcnow() + timedelta(days=org_retention_days(org_id))).strftime(
         "%Y-%m-%d %H:%M:%S"
     )
     with _conn() as db:
@@ -360,6 +418,45 @@ def get_user_by_token(token: str) -> dict | None:
         return dict(row) if row else None
 
 
+def update_user_mfa(user_id: int, mfa_secret: str | None, mfa_recovery_codes: str | None) -> None:
+    with _conn() as db:
+        db.execute(
+            "UPDATE users SET mfa_secret = ?, mfa_recovery_codes = ? WHERE id = ?",
+            (mfa_secret, mfa_recovery_codes, user_id)
+        )
+
+
+def save_download_link(token: str, analysis_id: str, expires_at: int, one_time: int) -> None:
+    with _conn() as db:
+        db.execute(
+            "INSERT INTO download_links (token, analysis_id, expires_at, one_time) VALUES (?, ?, ?, ?)",
+            (token, analysis_id, expires_at, one_time)
+        )
+
+
+def get_download_link(token: str) -> dict | None:
+    with _conn() as db:
+        row = db.execute(
+            "SELECT * FROM download_links WHERE token = ?", (token,)
+        ).fetchone()
+        return dict(row) if row else None
+
+
+def mark_download_link_used(token: str) -> None:
+    with _conn() as db:
+        db.execute("UPDATE download_links SET used = 1 WHERE token = ?", (token,))
+
+
+def revoke_download_link(token: str) -> None:
+    with _conn() as db:
+        db.execute("UPDATE download_links SET revoked = 1 WHERE token = ?", (token,))
+
+
+def revoke_all_download_links(analysis_id: str) -> None:
+    with _conn() as db:
+        db.execute("UPDATE download_links SET revoked = 1 WHERE analysis_id = ?", (analysis_id,))
+
+
 def delete_analysis(public_id: str) -> dict | None:
     """Delete one analysis and its parent document. Returns the document's
     file_path so the caller can unlink it, or None if public_id is unknown."""
@@ -376,6 +473,18 @@ def delete_analysis(public_id: str) -> dict | None:
         db.execute("DELETE FROM analyses WHERE document_id = ?", (doc_id,))
         db.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
         return {"file_path": row["file_path"], "document_id": doc_id}
+
+
+def get_document_file_info(public_id: str) -> dict | None:
+    """Return file_path, file_type, original_filename, org_id for download."""
+    with _conn() as db:
+        row = db.execute(
+            """SELECT d.file_path, d.file_type, d.original_filename, d.org_id
+               FROM analyses a JOIN documents d ON a.document_id = d.id
+               WHERE a.public_id = ?""",
+            (public_id,),
+        ).fetchone()
+        return dict(row) if row else None
 
 
 def purge_expired(dry_run: bool = False) -> list[dict]:
@@ -401,3 +510,103 @@ def purge_expired(dry_run: bool = False) -> list[dict]:
     with sqlite3.connect(get_db_path()) as c:
         c.execute("VACUUM")
     return victims
+
+
+def write_audit(
+    action: str,
+    user_id: int | None = None,
+    org_id: int | None = None,
+    resource_id: str | None = None,
+    ip: str | None = None,
+    detail: str | None = None,
+) -> None:
+    """Append one row to audit_log. Fire-and-forget — never raises.
+    Dual-writes high-impact events to a durable append-only log file."""
+    high_impact_actions = {
+        "delete", "cite.verify", "user.role_change", 
+        "org.retention_change", "user.suspend", "user.unsuspend",
+        "mfa.disable", "user.mfa_reset", "user.download.disable"
+    }
+    
+    if action in high_impact_actions:
+        try:
+            durable_path = os.path.join(os.path.dirname(get_db_path()), "audit_durable.log")
+            log_line = json.dumps({
+                "ts": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+                "action": action,
+                "user_id": user_id,
+                "org_id": org_id,
+                "resource_id": resource_id,
+                "ip": ip,
+                "detail": detail
+            })
+            with open(durable_path, "a") as f:
+                f.write(log_line + "\n")
+        except Exception as e:
+            import logging
+            logging.critical("DURABLE AUDIT WRITE FAILURE: Could not write to audit_durable.log. Error: %s", str(e))
+
+    try:
+        with _conn() as db:
+            db.execute(
+                "INSERT INTO audit_log (action, user_id, org_id, resource_id, ip, detail) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                (action, user_id, org_id, resource_id, ip, detail),
+            )
+    except Exception as e:
+        import logging
+        logging.critical("AUDIT DATABASE WRITE FAILURE: Could not write action '%s'. Error: %s", action, str(e))
+
+
+def get_audit_log(limit: int = 100, org_id: int | None = None) -> list[dict]:
+    """Return recent audit rows, newest first. Admins pass org_id=None for all orgs."""
+    with _conn() as db:
+        if org_id is not None:
+            rows = db.execute(
+                "SELECT * FROM audit_log WHERE org_id = ? ORDER BY ts DESC LIMIT ?",
+                (org_id, limit),
+            ).fetchall()
+        else:
+            rows = db.execute(
+                "SELECT * FROM audit_log ORDER BY ts DESC LIMIT ?", (limit,)
+            ).fetchall()
+        return [dict(r) for r in rows]
+
+
+def get_all_users() -> list[dict]:
+    with _conn() as db:
+        rows = db.execute("SELECT u.*, o.name AS org_name FROM users u JOIN organizations o ON u.org_id = o.id").fetchall()
+        return [dict(r) for r in rows]
+
+
+def get_users_by_org(org_id: int) -> list[dict]:
+    with _conn() as db:
+        rows = db.execute("SELECT u.*, o.name AS org_name FROM users u JOIN organizations o ON u.org_id = o.id WHERE u.org_id = ?", (org_id,)).fetchall()
+        return [dict(r) for r in rows]
+
+
+def get_all_orgs() -> list[dict]:
+    with _conn() as db:
+        rows = db.execute("SELECT * FROM organizations").fetchall()
+        return [dict(r) for r in rows]
+
+
+def update_user_status(user_id: int, active: int) -> None:
+    with _conn() as db:
+        db.execute("UPDATE users SET active = ? WHERE id = ?", (active, user_id))
+
+
+def update_user_role(user_id: int, role: str) -> None:
+    with _conn() as db:
+        db.execute("UPDATE users SET role = ? WHERE id = ?", (role, user_id))
+
+
+def update_user_download_access(user_id: int, download_disabled: int) -> None:
+    with _conn() as db:
+        db.execute("UPDATE users SET download_disabled = ? WHERE id = ?", (download_disabled, user_id))
+
+
+def count_active_admins() -> int:
+    with _conn() as db:
+        row = db.execute("SELECT COUNT(*) FROM users WHERE role = 'admin' AND active = 1").fetchone()
+        return row[0] if row else 0

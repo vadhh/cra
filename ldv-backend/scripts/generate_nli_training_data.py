@@ -47,7 +47,9 @@ _HYPOTHESES: dict[str, list[tuple[str, str]]] = {
 def _from_master_reasons(datasets_dir: Path) -> list[dict]:
     """Pull Reason text from dangerous_clauses_MASTER.csv as abusive_clause premises."""
     rows: list[dict] = []
-    path = datasets_dir / "dangerous_clauses_MASTER.csv"
+    path = datasets_dir / "dangerous_clauses_MASTERv2.csv"
+    if not path.exists():
+        path = datasets_dir / "dangerous_clauses_MASTER.csv"  # ponytail: fallback to v1
     if not path.exists():
         return rows
     with open(path, newline="", encoding="utf-8-sig") as f:

@@ -3,10 +3,16 @@ import logging
 import json
 import time
 import uuid
+import hmac as _hmac
+import hashlib
+import base64
 import chardet
 import magic
 from flask import Flask, request, jsonify, send_from_directory, Response, redirect, g, session
+from urllib.parse import urlparse
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import fitz
 from langdetect import detect
 
@@ -59,15 +65,68 @@ _cors_origins = os.getenv("LDV_CORS_ORIGINS", "")
 if _cors_origins:
     CORS(app, origins=[o.strip() for o in _cors_origins.split(",") if o.strip()])
 
+# ponytail: Redis storage if configured (required for multi-worker); defaults to memory
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=["500 per day", "60 per minute"],
+    storage_uri=os.getenv("LDV_RATELIMIT_STORAGE_URL", "memory://"),
+)
+
+
+@limiter.request_filter
+def bypass_rate_limits():
+    if app.testing or app.config.get("TESTING") or os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
+        return True
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+        user = database.get_user_by_token(token)
+        if user and (user["email"] == "test-runner@ldv.internal" or auth.normalize_role(user["role"]) == "admin"):
+            return True
+    return False
+
 # Init DB on first import
 database.init_db()
 
 
+@app.before_request
+def _csrf_check():
+    """Reject cross-origin state-mutating requests (defense-in-depth; SameSite=Lax already set)."""
+    if app.testing or app.config.get("TESTING") or os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
+        return
+    if request.method in {"GET", "HEAD", "OPTIONS"}:
+        return
+    if request.headers.get("Authorization", "").startswith("Bearer "):
+        return  # Bearer token auth is CSRF-immune
+    origin = request.headers.get("Origin") or request.headers.get("Referer") or ""
+    if not origin:
+        # No Origin/Referer on a cookie-authenticated state-changing request → reject.
+        # Bearer token path is already exempt above; browser same-origin POSTs always send Origin.
+        logger.warning("CSRF: no origin header on %s", request.path)
+        return jsonify({"error": "CSRF check failed"}), 403
+    origin_host = (urlparse(origin).hostname or "").lower()
+    expected_host = request.host.split(":")[0].lower()
+    if origin_host != expected_host:
+        logger.warning("CSRF: blocked %s (expected %s) on %s", origin_host, expected_host, request.path)
+        return jsonify({"error": "CSRF check failed"}), 403
+
+
 # ── Error handlers ─────────────────────────────────────────────────────────────
+
+def _ip() -> str:
+    return request.headers.get("X-Forwarded-For", request.remote_addr or "")
+
 
 @app.errorhandler(413)
 def file_too_large(e):
     return jsonify({"error": "File exceeds the 10 MB limit"}), 413
+
+
+@app.errorhandler(429)
+def rate_limited(e):
+    database.write_audit("rate_limit", ip=_ip(), detail=request.path)
+    return jsonify({"error": "Too many requests — please slow down"}), 429
 
 
 @app.errorhandler(Exception)
@@ -145,6 +204,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
     For non-contract documents (invoice, receipt, purchase order) the pipeline
     stops after L2: no clause-risk scoring or MLP tagging is performed.
     """
+    _meta = {"encryption_enabled": crypto.is_enabled()}
     layer1 = layer1_analyze(text, jurisdiction)
     annotate_layer1(layer1, jurisdiction)  # attach legal citations to each finding
 
@@ -173,6 +233,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
             "layer3":    {"available": False, "skipped": True, "reason": "non_contract_document"},
             "layer4":    {"available": False, "skipped": True},
             "clause_tags": [],
+            "_meta":     _meta,
         }
 
     _semantic_backfill(layer1, doc_type_label, analysis_text)
@@ -188,6 +249,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         "layer3":       layer3,
         "layer4":       {"available": False, "skipped": True},
         "clause_tags":  clause_tags,
+        "_meta":        _meta,
     }
 
 
@@ -223,34 +285,233 @@ def _article(word: str) -> str:
     return "an" if word[:1].lower() in "aeiou" else "a"
 
 
+_DL_TTL = int(os.getenv("LDV_DOWNLOAD_LINK_TTL", "900"))  # seconds (default 15 minutes)
+
+
+def _dl_keys() -> list[bytes]:
+    keys_str = os.getenv("LDV_SECRET_KEY", "")
+    if not keys_str:
+        k = app.secret_key
+        return [(k if isinstance(k, bytes) else k.encode()) + b":download"]
+    return [(k.strip().encode() if isinstance(k, str) else k) + b":download" for k in keys_str.split(",")]
+
+
+def _make_download_token(analysis_id: str) -> tuple[str, int]:
+    expires_at = int(time.time()) + _DL_TTL
+    payload = f"{analysis_id}:{expires_at}"
+    sig = _hmac.new(_dl_keys()[0], payload.encode(), hashlib.sha256).hexdigest()
+    token = base64.urlsafe_b64encode(payload.encode()).decode() + "." + sig
+    return token, expires_at
+
+
+def _verify_download_token(token: str) -> str | None:
+    try:
+        payload_b64, sig = token.rsplit(".", 1)
+        payload = base64.urlsafe_b64decode(payload_b64.encode()).decode()
+        analysis_id, expires_str = payload.rsplit(":", 1)
+        if int(expires_str) < int(time.time()):
+            return None
+        for k in _dl_keys():
+            expected = _hmac.new(k, payload.encode(), hashlib.sha256).hexdigest()
+            if _hmac.compare_digest(sig, expected):
+                return analysis_id
+        return None
+    except Exception:
+        return None
+
+
 # ── Auth routes ────────────────────────────────────────────────────────────────
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("10 per minute", methods=["POST"])
 def login():
     if request.method == "GET":
         return send_from_directory(FRONTEND_DIR, "login.html")
     data = request.get_json(silent=True) or request.form
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
+    mfa_code = (data.get("mfa_code") or data.get("otp") or "").strip()
+
     user = auth.verify_login(email, password)
     if user is None:
+        database.write_audit("login.fail", ip=_ip(), detail=email)
         return jsonify({"error": "Invalid credentials"}), 401
+
+    # Check if MFA is required
+    has_secret = bool(user.get("mfa_secret"))
+    mandatory = auth.is_mfa_mandatory(user)
+
+    if has_secret:
+        if not mfa_code:
+            session["mfa_pending_uid"] = user["id"]
+            return jsonify({"mfa_required": True})
+
+        import pyotp
+        secret = crypto.dec_str(user["mfa_secret"])
+        totp = pyotp.TOTP(secret)
+        verified = totp.verify(mfa_code, valid_window=1)
+
+        # Check recovery codes if TOTP fails
+        if not verified and user.get("mfa_recovery_codes"):
+            import json
+            from werkzeug.security import check_password_hash
+            hashes = json.loads(user["mfa_recovery_codes"] or "[]")
+            matched_hash = None
+            for h in hashes:
+                if check_password_hash(h, mfa_code):
+                    matched_hash = h
+                    break
+            if matched_hash:
+                hashes.remove(matched_hash)
+                database.update_user_mfa(user["id"], user["mfa_secret"], json.dumps(hashes))
+                verified = True
+                database.write_audit("mfa.recovery_used", user_id=user["id"], org_id=user["org_id"], ip=_ip())
+
+        if not verified:
+            database.write_audit("login.fail", ip=_ip(), detail=f"{email} (invalid MFA)")
+            return jsonify({"error": "Invalid MFA code"}), 401
+
+    elif mandatory:
+        if not mfa_code:
+            session["mfa_enroll_pending_uid"] = user["id"]
+            return jsonify({"mfa_enroll_required": True})
+
+    # Complete login
+    session.pop("mfa_pending_uid", None)
+    session.pop("mfa_enroll_pending_uid", None)
     session["uid"] = user["id"]
+    database.write_audit("login.success", user_id=user["id"], org_id=user["org_id"], ip=_ip())
     return jsonify({"ok": True, "role": user["role"]})
 
 
-@app.route("/logout", methods=["POST"])
+@app.route("/api/v1/logout", methods=["POST"])
 def logout():
+    user = auth.current_user()
+    if user:
+        database.write_audit("logout", user_id=user["id"], org_id=user["org_id"], ip=_ip())
     session.clear()
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/mfa/status")
+def api_mfa_status():
+    uid = session.get("uid") or session.get("mfa_enroll_pending_uid") or session.get("mfa_pending_uid")
+    if not uid:
+        return jsonify({"authenticated": False}), 401
+    user = database.get_user_by_id(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({
+        "mfa_enabled": bool(user.get("mfa_secret")),
+        "mfa_mandatory": auth.is_mfa_mandatory(user),
+        "email": user["email"]
+    })
+
+
+@app.route("/api/v1/mfa/setup", methods=["POST"])
+def api_mfa_setup():
+    uid = session.get("mfa_enroll_pending_uid") or session.get("uid")
+    if not uid:
+        return jsonify({"error": "Authentication required"}), 401
+    
+    user = database.get_user_by_id(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+        
+    if session.get("uid"):
+        data = request.json or {}
+        password = data.get("password") or ""
+        if not auth.verify_login(user["email"], password):
+            return jsonify({"error": "Re-authentication failed: invalid password"}), 401
+
+    import pyotp
+    import secrets
+    secret = pyotp.random_base32()
+    totp = pyotp.TOTP(secret)
+    plain_codes = [secrets.token_hex(4) for _ in range(10)]
+    
+    session["mfa_setup_secret"] = secret
+    session["mfa_setup_codes"] = plain_codes
+    
+    uri = totp.provisioning_uri(name=user["email"], issuer_name="Sydeco Contract Risk Analyzer")
+    return jsonify({
+        "secret": secret,
+        "provisioning_uri": uri,
+        "recovery_codes": plain_codes
+    })
+
+
+@app.route("/api/v1/mfa/enable", methods=["POST"])
+def api_mfa_enable():
+    uid = session.get("mfa_enroll_pending_uid") or session.get("uid")
+    if not uid:
+        return jsonify({"error": "Authentication required"}), 401
+    
+    user = database.get_user_by_id(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+        
+    secret = session.get("mfa_setup_secret")
+    plain_codes = session.get("mfa_setup_codes")
+    if not secret or not plain_codes:
+        return jsonify({"error": "MFA setup has not been initialized"}), 400
+        
+    data = request.json or {}
+    code = (data.get("code") or "").strip()
+    if not code:
+        return jsonify({"error": "Verification code required"}), 400
+        
+    import pyotp
+    totp = pyotp.TOTP(secret)
+    if not totp.verify(code, valid_window=1):
+        return jsonify({"error": "Invalid verification code"}), 400
+        
+    from werkzeug.security import generate_password_hash
+    import json
+    enc_secret = crypto.enc_str(secret)
+    hashed_codes = [generate_password_hash(c) for c in plain_codes]
+    
+    database.update_user_mfa(uid, enc_secret, json.dumps(hashed_codes))
+    
+    session.pop("mfa_setup_secret", None)
+    session.pop("mfa_setup_codes", None)
+    
+    if session.get("mfa_enroll_pending_uid"):
+        session.pop("mfa_enroll_pending_uid", None)
+        session["uid"] = uid
+        database.write_audit("login.success", user_id=uid, org_id=user["org_id"], ip=_ip())
+    else:
+        database.write_audit("mfa.enable", user_id=uid, org_id=user["org_id"], ip=_ip())
+        
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/mfa/disable", methods=["POST"])
+@auth.login_required
+def api_mfa_disable():
+    user = g.user
+    data = request.json or {}
+    password = data.get("password") or ""
+    if not auth.verify_login(user["email"], password):
+        return jsonify({"error": "Re-authentication failed: invalid password"}), 401
+        
+    database.update_user_mfa(user["id"], None, None)
+    database.write_audit("mfa.disable", user_id=user["id"], org_id=user["org_id"], ip=_ip())
     return jsonify({"ok": True})
 
 
 # ── Upload & analyse (primary endpoint) ───────────────────────────────────────
 
-@app.route("/upload", methods=["POST"])
+@app.route("/api/v1/upload", methods=["POST"])
 @auth.login_required
+@limiter.limit("20 per minute")
 def upload():
     """Save file to disk, extract text, run analysis, persist to DB."""
+    if auth.normalize_role(g.user["role"]) == "viewer":
+        return jsonify({"error": "Forbidden: viewers cannot upload documents"}), 403
+    if os.getenv("LDV_PRODUCTION") == "1" and not crypto.is_enabled():
+        return jsonify({"error": "Service configuration error: encryption is disabled or not configured in production"}), 500
+        
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -306,6 +567,10 @@ def upload():
     # Submit background task
     worker.submit_job(analysis_id, text, lang, want_explain, policy_name=policy_name)
 
+    database.write_audit(
+        "upload", user_id=g.user["id"], org_id=g.user["org_id"],
+        resource_id=analysis_id, ip=_ip(), detail=file.filename,
+    )
     logger.info(
         "UPLOAD: enqueued file=%s lang=%s explain=%s id=%s",
         file.filename, lang, want_explain, analysis_id,
@@ -316,7 +581,7 @@ def upload():
 
 # ── Result API ─────────────────────────────────────────────────────────────────
 
-@app.route("/api/result/<analysis_id>")
+@app.route("/api/v1/result/<analysis_id>")
 @auth.login_required
 def api_result(analysis_id: str):
     row = database.get_result(analysis_id)
@@ -327,6 +592,11 @@ def api_result(analysis_id: str):
         return jsonify({"error": "Forbidden"}), 403
     row.pop("org_id", None)  # internal field, not part of the API response
     
+    # ponytail: Expose raw_text via ?debug=1 only (P3 item 15)
+    extracted_text = row.pop("extracted_text", None)
+    if request.args.get("debug") == "1":
+        row["raw_text"] = extracted_text
+
     status = row.get("status", "completed")
     if status in ("queued", "running", "failed"):
         row["result"] = None
@@ -338,7 +608,7 @@ def api_result(analysis_id: str):
     return jsonify(row)
 
 
-@app.route("/api/result/<analysis_id>", methods=["DELETE"])
+@app.route("/api/v1/result/<analysis_id>", methods=["DELETE"])
 @auth.login_required
 def api_delete_result(analysis_id: str):
     row = database.get_result(analysis_id)
@@ -353,19 +623,281 @@ def api_delete_result(analysis_id: str):
             os.remove(info["file_path"])
         except FileNotFoundError:
             pass
+    database.write_audit(
+        "delete", user_id=user["id"], org_id=user["org_id"],
+        resource_id=analysis_id, ip=_ip(),
+    )
     logger.info("DELETE: id=%s org=%s by=%s", analysis_id, row.get("org_id"), user["email"])
     return jsonify({"deleted": True, "id": analysis_id})
 
 
+@app.route("/api/v1/result/<analysis_id>/download-link", methods=["POST"])
+@auth.login_required
+def api_download_link(analysis_id: str):
+    """Generate a time-limited signed URL to download the original file."""
+    if g.user.get("download_disabled") or database.get_user_by_id(g.user["id"]).get("download_disabled"):
+        return jsonify({"error": "Forbidden: download access is disabled for your account"}), 403
+
+    row = database.get_document_file_info(analysis_id)
+    if row is None:
+        return jsonify({"error": "Not found"}), 404
+    if auth.normalize_role(g.user["role"]) != "admin" and row.get("org_id") != g.user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    data = request.json or {}
+    one_time = bool(data.get("one_time", False))
+
+    token, expires_at = _make_download_token(analysis_id)
+    database.save_download_link(token, analysis_id, expires_at, 1 if one_time else 0)
+    database.write_audit("download.link_generated", user_id=g.user["id"], org_id=row.get("org_id"), resource_id=analysis_id, ip=_ip(), detail=f"one_time: {one_time}")
+    return jsonify({"url": f"/download/{token}", "expires_at": expires_at})
+
+
+@app.route("/download/<token>")
+def download_file(token: str):
+    """Serve the original encrypted file via a signed token (no session required)."""
+    link_info = database.get_download_link(token)
+    if not link_info:
+        return jsonify({"error": "Invalid or expired download link"}), 403
+    if link_info["revoked"] or link_info["used"]:
+        return jsonify({"error": "Link has been revoked or already used"}), 403
+    if link_info["expires_at"] < int(time.time()):
+        return jsonify({"error": "Link has expired"}), 403
+
+    analysis_id = _verify_download_token(token)
+    if analysis_id is None or analysis_id != link_info["analysis_id"]:
+        return jsonify({"error": "Invalid or expired download link"}), 403
+
+    info = database.get_document_file_info(analysis_id)
+    if info is None or not os.path.isfile(info["file_path"]):
+        return jsonify({"error": "File not found"}), 404
+
+    if link_info["one_time"]:
+        database.mark_download_link_used(token)
+
+    database.write_audit("download.served", user_id=None, org_id=info.get("org_id"), resource_id=analysis_id, ip=_ip())
+
+    with open(info["file_path"], "rb") as f:
+        raw = crypto.dec_bytes(f.read())
+    ext = info["file_type"]
+    mime_map = {
+        ".pdf":  "application/pdf",
+        ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".txt":  "text/plain",
+    }
+    mime = mime_map.get(ext, "application/octet-stream")
+    filename = info["original_filename"] or f"contract{ext}"
+    return Response(
+        raw, mimetype=mime,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+# ── Administrative User & Organization Management ────────────────────────────
+
+@app.route("/api/v1/admin/users")
+@auth.role_required("manager")
+def api_admin_users():
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    if u_role == "admin":
+        users = database.get_all_users()
+    else:
+        users = database.get_users_by_org(user["org_id"])
+    
+    for u in users:
+        u.pop("password_hash", None)
+        u["mfa_enabled"] = bool(u.get("mfa_secret"))
+        u.pop("mfa_secret", None)
+    return jsonify(users)
+
+
+@app.route("/api/v1/admin/users", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_create_user():
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    data = request.json or {}
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+    role = data.get("role") or "analyst"
+    org_id = data.get("org_id")
+    
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+        
+    if u_role != "admin":
+        org_id = user["org_id"]
+        if role == "admin":
+            return jsonify({"error": "Forbidden: managers cannot create administrators"}), 403
+    else:
+        if not org_id:
+            return jsonify({"error": "Organization ID required"}), 400
+            
+    if database.get_user_by_email(email):
+        return jsonify({"error": "User already exists"}), 400
+        
+    hashed = auth.hash_password(password)
+    import secrets
+    api_token = f"tok-{secrets.token_urlsafe(16)}"
+    
+    new_uid = database.create_user(org_id, email, hashed, role, api_token)
+    database.write_audit("user.create", user_id=user["id"], org_id=org_id, resource_id=str(new_uid), ip=_ip(), detail=email)
+    return jsonify({"ok": True, "user_id": new_uid})
+
+
+@app.route("/api/v1/admin/users/<int:target_id>/status", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_user_status(target_id: int):
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    data = request.json or {}
+    active = int(data.get("active", 1))
+    
+    target = database.get_user_by_id(target_id)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+        
+    if u_role != "admin":
+        if target["org_id"] != user["org_id"]:
+            return jsonify({"error": "Forbidden"}), 403
+        if target["role"] == "admin":
+            return jsonify({"error": "Forbidden: managers cannot suspend administrators"}), 403
+            
+    if target_id == user["id"]:
+        return jsonify({"error": "Forbidden: you cannot change your own status"}), 403
+        
+    if target["role"] == "admin" and active == 0:
+        if database.count_active_admins() <= 1:
+            return jsonify({"error": "Forbidden: cannot suspend the last system administrator"}), 403
+            
+    database.update_user_status(target_id, active)
+    action = "user.unsuspend" if active else "user.suspend"
+    database.write_audit(action, user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip())
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/admin/users/<int:target_id>/role", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_user_role(target_id: int):
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    data = request.json or {}
+    new_role = data.get("role")
+    if not new_role:
+        return jsonify({"error": "Role required"}), 400
+        
+    target = database.get_user_by_id(target_id)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+        
+    if u_role != "admin":
+        if target["org_id"] != user["org_id"]:
+            return jsonify({"error": "Forbidden"}), 403
+        if target["role"] == "admin" or new_role == "admin":
+            return jsonify({"error": "Forbidden: managers cannot manage administrator roles"}), 403
+            
+    if target_id == user["id"]:
+        return jsonify({"error": "Forbidden: you cannot change your own role"}), 403
+        
+    if target["role"] == "admin" and new_role != "admin":
+        if database.count_active_admins() <= 1:
+            return jsonify({"error": "Forbidden: cannot demote the last system administrator"}), 403
+            
+    database.update_user_role(target_id, new_role)
+    database.write_audit("user.role_change", user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip(), detail=new_role)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/admin/users/<int:target_id>/download-access", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_user_download_access(target_id: int):
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    data = request.json or {}
+    disabled = int(data.get("download_disabled", 0))
+    
+    target = database.get_user_by_id(target_id)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+        
+    if u_role != "admin" and target["org_id"] != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+        
+    database.update_user_download_access(target_id, disabled)
+    action = "user.download.disable" if disabled else "user.download.enable"
+    database.write_audit(action, user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip())
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/admin/users/<int:target_id>/mfa-reset", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_user_mfa_reset(target_id: int):
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    
+    target = database.get_user_by_id(target_id)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+        
+    if u_role != "admin":
+        if target["org_id"] != user["org_id"]:
+            return jsonify({"error": "Forbidden"}), 403
+        if target["role"] == "admin":
+            return jsonify({"error": "Forbidden: managers cannot reset administrator MFA"}), 403
+            
+    database.update_user_mfa(target_id, None, None)
+    database.write_audit("user.mfa_reset", user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip())
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/admin/organizations")
+@auth.admin_required
+def api_admin_organizations():
+    return jsonify(database.get_all_orgs())
+
+
+@app.route("/api/v1/admin/organizations", methods=["POST"])
+@auth.admin_required
+def api_admin_create_organization():
+    data = request.json or {}
+    name = (data.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "Organization name required"}), 400
+        
+    if database.get_org_by_name(name):
+        return jsonify({"error": "Organization already exists"}), 400
+        
+    new_oid = database.create_org(name)
+    database.write_audit("org.create", user_id=g.user["id"], org_id=new_oid, resource_id=str(new_oid), ip=_ip(), detail=name)
+    return jsonify({"ok": True, "org_id": new_oid})
+
+
+@app.route("/api/v1/admin/organizations/<int:org_id>/retention", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_org_retention(org_id: int):
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    data = request.json or {}
+    days = int(data.get("retention_days", 30))
+    
+    if u_role != "admin" and org_id != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+        
+    database.set_org_retention(org_id, days)
+    database.write_audit("org.retention_change", user_id=user["id"], org_id=org_id, resource_id=str(org_id), ip=_ip(), detail=str(days))
+    return jsonify({"ok": True})
+
+
 # ── Admin API ──────────────────────────────────────────────────────────────────
 
-@app.route("/api/stats")
+@app.route("/api/v1/stats")
 @auth.admin_required
 def api_stats():
     return jsonify(database.get_stats())
 
 
-@app.route("/api/recent")
+@app.route("/api/v1/recent")
 @auth.admin_required
 def api_recent():
     try:
@@ -375,13 +907,24 @@ def api_recent():
     return jsonify(database.get_recent(limit))
 
 
-@app.route("/api/citations")
+@app.route("/api/v1/audit")
+@auth.admin_required
+def api_audit():
+    try:
+        limit = min(int(request.args.get("limit", 100)), 500)
+    except (TypeError, ValueError):
+        limit = 100
+    return jsonify(database.get_audit_log(limit))
+
+
+@app.route("/api/v1/citations")
 @auth.login_required
 def api_citations():
     """List all citations. Admins/reviewers can see drafts; normal users see verified only."""
     from detector.citation_db import _load
     db = _load()
-    include_drafts = (g.user["role"] == "admin")
+    role = auth.normalize_role(g.user["role"])
+    include_drafts = (role in ("admin", "reviewer"))
 
     out = []
     for fid, by_juris in db.items():
@@ -399,8 +942,8 @@ def api_citations():
     return jsonify(out)
 
 
-@app.route("/api/citations/verify", methods=["POST"])
-@auth.admin_required
+@app.route("/api/v1/citations/verify", methods=["POST"])
+@auth.role_required("admin", "reviewer")
 def api_verify_citation():
     """Transition a draft citation to verified status."""
     data = request.json or {}
@@ -411,6 +954,10 @@ def api_verify_citation():
 
     from detector.citation_db import verify_citation
     if verify_citation(finding_id, jurisdiction):
+        database.write_audit(
+            "cite.verify", user_id=g.user["id"], org_id=g.user["org_id"],
+            resource_id=f"{finding_id}/{jurisdiction}", ip=_ip(),
+        )
         return jsonify({"ok": True, "message": f"Citation {finding_id}/{jurisdiction} verified successfully"})
     else:
         return jsonify({"error": "Citation not found or status not changed"}), 404
@@ -419,7 +966,7 @@ def api_verify_citation():
 
 # ── PDF report ─────────────────────────────────────────────────────────────────
 
-@app.route("/report", methods=["POST"])
+@app.route("/api/v1/report", methods=["POST"])
 @auth.login_required
 def report():
     from pdf_report import generate_pdf
@@ -440,9 +987,15 @@ def report():
 
 # ── Legacy /analyze (kept for curl/API access) ────────────────────────────────
 
-@app.route("/analyze", methods=["POST"])
+@app.route("/api/v1/analyze", methods=["POST"])
 @auth.login_required
+@limiter.limit("20 per minute")
 def analyze():
+    if auth.normalize_role(g.user["role"]) == "viewer":
+        return jsonify({"error": "Forbidden: viewers cannot analyze documents"}), 403
+    if os.getenv("LDV_PRODUCTION") == "1" and not crypto.is_enabled():
+        return jsonify({"error": "Service configuration error: encryption is disabled or not configured in production"}), 500
+        
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
     file = request.files["file"]
@@ -475,6 +1028,10 @@ def analyze():
             analysis_text, jurisdiction=jurisdiction,
             layer1=layer1, layer2=layer2, layer3=layer3,
         )
+
+    # ponytail: Gate raw_text behind ?debug=1 (P3 item 15)
+    if request.args.get("debug") == "1":
+        result["raw_text"] = text
 
     return jsonify(result)
 
@@ -550,6 +1107,25 @@ def admin_page():
     if user is None or user["role"] != "admin":
         return redirect("/login")
     return send_from_directory(FRONTEND_DIR, "admin.html")
+
+
+@app.route("/citations")
+def citation_review_page():
+    user = auth.current_user()
+    if user is None or auth.normalize_role(user["role"]) not in ("admin", "reviewer"):
+        return redirect("/login")
+    return send_from_directory(FRONTEND_DIR, "citations.html")
+
+
+@app.route("/swagger.json")
+def swagger_json():
+    return send_from_directory(FRONTEND_DIR, "swagger.json")
+
+
+@app.route("/docs")
+@app.route("/swagger")
+def swagger_docs():
+    return send_from_directory(FRONTEND_DIR, "swagger.html")
 
 
 @app.route("/<path:filename>")

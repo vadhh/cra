@@ -1,116 +1,377 @@
-.navbar {
-  background-color: #000000; /* Default background-color (solid) */
-  transition: background-color 0.5s ease; /* Animasi untuk perubahan background-color */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* ── Core Design Tokens: Prestige Legal Theme ── */
+:root {
+  --font-base: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --font-serif: 'Lora', Georgia, serif;
+
+  /* Color Palette (Obsidian Blue & Burnished Gold) */
+  --bg-base: hsl(220, 32%, 7%);
+  --bg-surface: hsla(220, 28%, 11%, 0.75);
+  --bg-surface-elevated: hsla(220, 24%, 15%, 0.85);
+  --bg-nav: hsla(220, 32%, 8%, 0.85);
+  
+  /* Gold-tinted Border Accents */
+  --border-color: hsla(36, 38%, 64%, 0.1);
+  --border-color-hover: hsla(36, 38%, 64%, 0.22);
+  --border-focus: hsl(36, 38%, 64%);
+  
+  --text-primary: hsl(210, 25%, 98%);
+  --text-secondary: hsl(215, 16%, 76%);
+  --text-muted: hsl(215, 12%, 52%);
+  
+  /* Brand Accent: Burnished Gold & Bronze */
+  --color-accent: hsl(36, 38%, 64%);
+  --color-accent-hover: hsl(36, 45%, 70%);
+  --color-accent-glow: hsla(36, 38%, 64%, 0.12);
+  --color-accent-gradient: linear-gradient(135deg, hsl(36, 38%, 64%) 0%, hsl(45, 45%, 52%) 100%);
+  
+  /* Editorial Semantic Scales */
+  --color-low: hsl(150, 40%, 48%);
+  --color-low-bg: hsla(150, 40%, 48%, 0.12);
+  --color-low-glow: hsla(150, 40%, 48%, 0.2);
+
+  --color-medium: hsl(36, 68%, 52%);
+  --color-medium-bg: hsla(36, 68%, 52%, 0.12);
+  --color-medium-glow: hsla(36, 68%, 52%, 0.2);
+
+  --color-high: hsl(355, 62%, 54%);
+  --color-high-bg: hsla(355, 62%, 54%, 0.12);
+  --color-high-glow: hsla(355, 62%, 54%, 0.2);
+
+  --color-critical: hsl(325, 64%, 48%);
+  --color-critical-bg: hsla(325, 64%, 48%, 0.12);
+  --color-critical-glow: hsla(325, 64%, 48%, 0.2);
+
+  /* Animation Utilities */
+  --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px var(--color-accent-glow);
 }
-.navbar.scrolled {
-  background-color: rgba(0, 0, 0, 0.25); 
+
+/* ── Light Mode Overrides (Warm Editorial Parchment) ── */
+:root.light-mode {
+  --bg-base: hsl(36, 24%, 93%);
+  --bg-surface: hsla(36, 20%, 98%, 0.85);
+  --bg-surface-elevated: hsl(0, 0%, 100%);
+  --bg-nav: hsla(36, 24%, 93%, 0.85);
+  
+  --border-color: hsla(36, 38%, 30%, 0.15);
+  --border-color-hover: hsla(36, 38%, 30%, 0.28);
+  --border-focus: hsl(36, 52%, 36%);
+  
+  --text-primary: hsl(220, 32%, 12%);
+  --text-secondary: hsl(220, 20%, 32%);
+  --text-muted: hsl(220, 15%, 52%);
+  
+  --color-accent: hsl(36, 52%, 36%);
+  --color-accent-hover: hsl(36, 58%, 30%);
+  --color-accent-glow: hsla(36, 52%, 36%, 0.1);
+  --color-accent-gradient: linear-gradient(135deg, hsl(36, 52%, 36%) 0%, hsl(45, 52%, 30%) 100%);
+
+  --color-low: hsl(150, 48%, 32%);
+  --color-low-bg: hsla(150, 48%, 32%, 0.1);
+  --color-medium: hsl(36, 72%, 40%);
+  --color-medium-bg: hsla(36, 72%, 40%, 0.1);
+  --color-high: hsl(355, 68%, 46%);
+  --color-high-bg: hsla(355, 68%, 46%, 0.1);
+  --color-critical: hsl(295, 68%, 38%);
+  --color-critical-bg: hsla(295, 68%, 38%, 0.1);
 }
-.nav-link {
-  position: relative;
-  display: inline-block;
-  color: #FFFFFF;
+
+/* Theme Toggle Button Styling */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+.theme-toggle:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: hsla(36, 38%, 64%, 0.05);
+}
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2px;
+}
+
+
+/* ── Global Styles ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--bg-base);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(36, 38%, 64%, 0.08) 0px, transparent 40%),
+    radial-gradient(at 100% 100%, hsla(220, 40%, 15%, 0.15) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: hsla(36, 38%, 64%, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsla(36, 38%, 64%, 0.3);
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.serif-body {
+  font-family: var(--font-serif);
+}
+
+a {
+  color: var(--text-primary);
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  margin-right: 1rem; /* Tambahkan jarak antara menu */
+  transition: color var(--transition-fast);
 }
+
+/* ── Navbar Component ── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-nav);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--text-primary) 30%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-brand svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--color-accent);
+  stroke-width: 2.2px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-link {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  position: relative;
+  padding: 6px 0;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
 .nav-link::after {
   content: '';
   position: absolute;
-  left: 0;
   bottom: 0;
+  left: 0;
   width: 0;
   height: 2px;
-  background-color: #FFFFFF;
-  transition: width 0.3s ease;
+  background: var(--color-accent-gradient);
+  transition: width var(--transition-normal);
 }
-.nav-link:hover::after {
-  width: 100%;
-}
+
+.nav-link:hover::after,
 .nav-link.active::after {
   width: 100%;
 }
-.nav-link.active {
-  color: #FFFFFF;
-  font-weight: bold;
+
+.nav-link:hover {
+  color: var(--text-primary);
 }
-#beranda {
-  background-color: #000000; /* Ubah background color menjadi #1F1D36 */
-  padding: 125px 0px 225px 0px; /* Pastikan padding tetap ada */
+
+/* ── Glassmorphic Cards ── */
+.glass-card {
+  background: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal), transform var(--transition-normal);
 }
-.text-beranda {
-  margin-top: 20px; /* Jarak antara logo dan teks */
-  margin-bottom:  10px;
-  color: #FFFFFF; /* Warna teks */
-  font-size: 1.25rem; /* Ukuran font */
+
+.glass-card:hover {
+  border-color: var(--border-color-hover);
 }
-.text-result {
-  margin-top: 20px; /* Jarak antara logo dan teks */
-  margin-bottom:  10px;
-  color: #FFFFFF; /* Warna teks */
-  font-size: 1.25rem; /* Ukuran font */
-}
-/* Underline style for h2 */
-.underlined {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 5px; /* Geser teks lebih ke atas untuk memberi ruang pada garis bawah */
-  margin-bottom: 20px;
-}
-.underlined::after {
-  content: '';
-  position: absolute;
-  left: 50%; /* Tempatkan garis di tengah */
-  transform: translateX(-50%); /* Pindahkan garis ke kiri 50% dari lebar garis */
-  bottom: -10px; /* Geser garis lebih ke bawah */
-  width: 100%; /* Atur panjang garis menjadi 50% dari panjang teks */
-  height: 3px; /* Tinggi garis */
-  background-color: currentColor; /* Warna garis mengikuti warna teks */
-}
-.justify-text {
-  text-align: justify;
-}
-/* CSS for social icons */
-.social-icons {
-  margin-top: -15px;
-}
-.social-icons a {
-  color: #333333; /* Warna ikon */
-  font-size: 2em;
-  margin: 0px 5px;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-.social-icons a:hover {
-  color: rgba(51, 51, 51, 0.75); 
-}
-input[type="file"] {
-  display: none;
-}
-.custom-file-upload {
-  display: inline-block;
-  background: #007bff;
-  border: 1px solid #007bff;
-  padding: 5px 10px;
-  color: white;
-  border-radius: 3px;
+
+/* ── General Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  font-family: var(--font-base);
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 1px solid transparent;
   cursor: pointer;
-  width: 150px; /* Set the width of the upload button */
-  text-align: center; /* Center the content */
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
 }
-.custom-file-upload img {
-  height: 20px; /* Set the height of the upload icon */
+
+.btn-primary {
+  background: var(--color-accent-gradient);
+  color: hsl(220, 32%, 7%);
+  box-shadow: 0 4px 15px var(--color-accent-glow);
 }
-.custom-file-upload:hover {
-  background: #0056b3; /* Darker blue for hover effect */
-  border-color: #0056b3;
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px hsla(36, 38%, 64%, 0.35);
+  background: linear-gradient(135deg, hsl(36, 45%, 70%) 0%, hsl(45, 55%, 58%) 100%);
 }
-#fileName {
-  color: white;
-  margin-top: 10px;
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
-.file-size-info {
-  font-size: 0.75em; /* Slightly smaller font size */
-  font-style: italic; /* Italicize the text */
-  color: #f0f0f0; /* Light color for better visibility */
-  margin-top: 5px; /* Space between the button and the text */
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border-color);
+  color: var(--color-accent);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: hsla(36, 38%, 64%, 0.05);
+  border-color: var(--color-accent);
+  color: var(--text-primary);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Inputs ── */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: var(--text-primary);
+  font-family: var(--font-base);
+  font-size: 0.9rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px hsla(36, 38%, 64%, 0.15);
+}
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 36px 20px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+  letter-spacing: 0.02em;
+}
+
+/* ── Layout & Responsiveness ── */
+main {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 16px 20px;
+  }
+  main {
+    padding: 32px 16px;
+  }
 }

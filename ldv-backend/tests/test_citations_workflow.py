@@ -52,6 +52,9 @@ def test_citations_workflow():
     admin_token = "admin-token"
     database.create_user(oid, "admin@testorg.com", auth.hash_password("password"), "admin", admin_token)
 
+    reviewer_token = "reviewer-token"
+    database.create_user(oid, "reviewer@testorg.com", auth.hash_password("password"), "reviewer", reviewer_token)
+
     # Import app to initialize routes using correct env
     import app
     importlib.reload(app)
@@ -68,13 +71,13 @@ def test_citations_workflow():
         assert res is True
         assert citation_db.citations_for("leonine_profit", "FR")[0]["status"] == "verified"
 
-        # --- Test 2: GET /api/citations endpoint ---
+        # --- Test 2: GET /api/v1/citations endpoint ---
         # 2a. Anonymous blocked
-        resp = client.get("/api/citations")
+        resp = client.get("/api/v1/citations")
         assert resp.status_code == 401
 
         # 2b. Normal user sees only verified
-        resp = client.get("/api/citations", headers={"Authorization": f"Bearer {user_token}"})
+        resp = client.get("/api/v1/citations", headers={"Authorization": f"Bearer {user_token}"})
         assert resp.status_code == 200
         user_cites = resp.json
         # Under user, the newly verified 'leonine_profit' and originally verified 'payment_terms' are visible.
@@ -88,31 +91,57 @@ def test_citations_workflow():
             ])
         citation_db._DB = None  # Clear cache
 
-        resp = client.get("/api/citations", headers={"Authorization": f"Bearer {user_token}"})
+        resp = client.get("/api/v1/citations", headers={"Authorization": f"Bearer {user_token}"})
         assert resp.status_code == 200
         user_cites = resp.json
         assert len(user_cites) == 1
         assert user_cites[0]["finding_id"] == "payment_terms"
 
         # 2c. Admin sees both drafts and verified
-        resp = client.get("/api/citations", headers={"Authorization": f"Bearer {admin_token}"})
+        resp = client.get("/api/v1/citations", headers={"Authorization": f"Bearer {admin_token}"})
         assert resp.status_code == 200
         admin_cites = resp.json
         assert len(admin_cites) == 2
 
-        # --- Test 3: POST /api/citations/verify endpoint ---
+        # 2d. Reviewer sees both drafts and verified
+        resp = client.get("/api/v1/citations", headers={"Authorization": f"Bearer {reviewer_token}"})
+        assert resp.status_code == 200
+        reviewer_cites = resp.json
+        assert len(reviewer_cites) == 2
+
+        # --- Test 3: POST /api/v1/citations/verify endpoint ---
         # 3a. Normal user blocked (403 Forbidden)
-        resp = client.post("/api/citations/verify", json={"finding_id": "leonine_profit", "jurisdiction": "FR"}, headers={"Authorization": f"Bearer {user_token}"})
+        resp = client.post("/api/v1/citations/verify", json={"finding_id": "leonine_profit", "jurisdiction": "FR"}, headers={"Authorization": f"Bearer {user_token}"})
         assert resp.status_code == 403
 
         # 3b. Admin verify succeeds
-        resp = client.post("/api/citations/verify", json={"finding_id": "leonine_profit", "jurisdiction": "FR"}, headers={"Authorization": f"Bearer {admin_token}"})
+        resp = client.post("/api/v1/citations/verify", json={"finding_id": "leonine_profit", "jurisdiction": "FR"}, headers={"Authorization": f"Bearer {admin_token}"})
         assert resp.status_code == 200
         assert resp.json["ok"] is True
 
         # Now normal user can see it since it's verified
         citation_db._DB = None  # Clear cache
-        resp = client.get("/api/citations", headers={"Authorization": f"Bearer {user_token}"})
+        resp = client.get("/api/v1/citations", headers={"Authorization": f"Bearer {user_token}"})
+        assert resp.status_code == 200
+        assert len(resp.json) == 2
+
+        # 3c. Reviewer verify succeeds
+        # reset to draft first
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows([
+                {"finding_id": "leonine_profit", "jurisdiction": "FR", "article": "Art. 1844-1", "source": "Civil Code", "note": "Profit exclusion", "status": "draft"},
+                {"finding_id": "payment_terms", "jurisdiction": "ID", "article": "Pasal 1234", "source": "KUHPerdata", "note": "Payment requirements", "status": "verified"},
+            ])
+        citation_db._DB = None
+        resp = client.post("/api/v1/citations/verify", json={"finding_id": "leonine_profit", "jurisdiction": "FR"}, headers={"Authorization": f"Bearer {reviewer_token}"})
+        assert resp.status_code == 200
+        assert resp.json["ok"] is True
+
+        # Now normal user can see it since it's verified by reviewer
+        citation_db._DB = None  # Clear cache
+        resp = client.get("/api/v1/citations", headers={"Authorization": f"Bearer {user_token}"})
         assert resp.status_code == 200
         assert len(resp.json) == 2
 

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sydeco LightML | Admin Analytics &amp; History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(14, 19, 31, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #f2ca50 0%, #d4af37 100%);
+        }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090e1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4d4635;
+            border-radius: 3px;
+        }
+        .animate-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(242, 202, 80, 0.05), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#dee2f4",
+                        "outline-variant": "#4d4635",
+                        "background": "#0e131f",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#2d1600",
+                        "secondary-fixed": "#ffdcbf",
+                        "secondary": "#f1bc8c",
+                        "primary": "#d4af37",
+                        "inverse-on-surface": "#2b303d",
+                        "on-primary": "#3c2f00",
+                        "on-primary-container": "#554300",
+                        "on-secondary-fixed-variant": "#633f19",
+                        "surface-tint": "#d4af37",
+                        "on-tertiary-fixed-variant": "#414754",
+                        "outline": "#99907c",
+                        "inverse-surface": "#dee2f4",
+                        "on-tertiary-container": "#3f4553",
+                        "on-secondary-container": "#e2ae7f",
+                        "primary-container": "#d4af37",
+                        "tertiary": "#c9cedf",
+                        "surface-container-highest": "#303542",
+                        "on-tertiary-fixed": "#161c27",
+                        "on-secondary": "#492905",
+                        "primary-fixed": "#ffe088",
+                        "tertiary-fixed-dim": "#c1c6d7",
+                        "on-surface-variant": "#d0c5af",
+                        "inverse-primary": "#735c00",
+                        "surface-container": "#1b1f2c",
+                        "surface-variant": "#303542",
+                        "surface-container-high": "#252a37",
+                        "surface-container-lowest": "#090e1a",
+                        "on-primary-fixed-variant": "#574500",
+                        "tertiary-container": "#adb3c3",
+                        "tertiary-fixed": "#dde2f3",
+                        "secondary-container": "#66411b",
+                        "on-error-container": "#ffdad6",
+                        "surface-bright": "#343946",
+                        "error": "#ffb4ab",
+                        "surface": "#0e131f",
+                        "surface-container-low": "#161b28",
+                        "on-primary-fixed": "#241a00",
+                        "secondary-fixed-dim": "#f1bc8c",
+                        "surface-dim": "#0e131f",
+                        "on-tertiary": "#2a303d",
+                        "on-surface": "#dee2f4",
+                        "primary-fixed-dim": "#d4af37",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "4px",
+                        "sm": "2px",
+                        "md": "4px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "margin-tablet": "32px",
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter", "Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-sm": ["Inter", "Plus Jakarta Sans"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-md": ["Inter", "Plus Jakarta Sans"],
+                        "body-lg": ["Inter", "Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    },
+                    "boxShadow": {
+                        "1": "0px 1px 2px rgba(16, 24, 40, 0.05)"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary/30">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-background/40 backdrop-blur-xl border-b border-outline-variant/10 shadow-sm">
+<div class="flex items-center gap-4">
+<img alt="Sydeco LightML Logo" class="h-10 w-auto" src="data:image/png;base64,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"/>
+<span class="font-display-lg text-headline-md text-primary tracking-tight">Sydeco LightML</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Clauses</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Analytics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Risk Map</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined">settings</span></button>
+</div>
+<button class="px-6 py-2 gold-gradient text-on-primary font-label-md rounded-md shadow-1 hover:opacity-90 transition-opacity">Secure Logout</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-20 h-[calc(100vh-80px)] w-64 bg-surface-container/40 backdrop-blur-2xl border-r border-outline-variant/10 flex flex-col py-6 z-40 hidden lg:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary" data-weight="fill">shield</span>
+</div>
+<div>
+<h3 class="font-label-md text-on-surface leading-none">Sovereign Control</h3>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest mt-1">Enterprise Legal Intel</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">upload_file</span>
+<span class="font-label-md">Portal</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">lock</span>
+<span class="font-label-md">Security Gate</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 bg-primary text-on-primary rounded-md mx-2 group" href="#">
+<span class="material-symbols-outlined ml-4" data-weight="fill">analytics</span>
+<span class="font-label-md">Risk Suite</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">query_stats</span>
+<span class="font-label-md">Telemetry</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/30 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">admin_panel_settings</span>
+<span class="font-label-md">Admin</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 border border-primary/30 text-primary font-label-md rounded-md hover:bg-primary/5 transition-all flex items-center justify-center gap-2 mb-6">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+            New Analysis
+        </button>
+<div class="space-y-1 border-t border-outline-variant/10 pt-4">
+<a class="flex items-center gap-4 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span class="text-xs font-label-md">Support</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">history</span>
+<span class="text-xs font-label-md">Logs</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-24 px-margin-desktop pb-12 min-h-screen">
+<div class="max-w-container-max mx-auto grid grid-cols-12 gap-gutter">
+<!-- Page Header -->
+<div class="col-span-12 flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-background mb-2">Admin Intelligence</h1>
+<p class="text-on-surface-variant font-body-lg">Real-time telemetry and sovereign risk auditing across the enterprise repository.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="glass-panel px-4 py-2 rounded-md flex items-center gap-3 shadow-1">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+<span class="font-label-md text-on-surface-variant uppercase tracking-tighter tabular-nums">Last 30 Days</span>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</div>
+<button class="p-2 glass-panel hover:bg-surface-variant/30 transition-all rounded-md shadow-1">
+<span class="material-symbols-outlined text-primary">download</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Grid -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-2">
+<!-- Stored Documents -->
+<div class="glass-panel p-4 rounded-md relative overflow-hidden group shadow-1">
+<div class="animate-shimmer absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-md">folder_managed</span>
+<span class="text-secondary font-label-sm tabular-nums">+12.5%</span>
+</div>
+<h4 class="text-on-surface-variant font-label-md uppercase tracking-widest mb-1">Stored Documents</h4>
+<p class="text-4xl font-display-lg text-on-background tabular-nums">12,482</p>
+</div>
+</div>
+<!-- Total Analyses -->
+<div class="glass-panel p-4 rounded-md relative overflow-hidden group shadow-1">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-md">batch_prediction</span>
+<span class="text-secondary font-label-sm tabular-nums">+8.2%</span>
+</div>
+<h4 class="text-on-surface-variant font-label-md uppercase tracking-widest mb-1">Total Analyses</h4>
+<p class="text-4xl font-display-lg text-on-background tabular-nums">8,941</p>
+</div>
+</div>
+<!-- Avg Risk Index -->
+<div class="glass-panel p-4 rounded-md relative overflow-hidden group shadow-1">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-md">speed</span>
+<span class="text-error font-label-sm tabular-nums">+2.1%</span>
+</div>
+<h4 class="text-on-surface-variant font-label-md uppercase tracking-widest mb-1">Avg Risk Index</h4>
+<p class="text-4xl font-display-lg text-on-background tabular-nums">42.8<span class="text-label-md text-on-surface-variant">/100</span></p>
+</div>
+</div>
+<!-- Risky Agreements -->
+<div class="glass-panel p-4 rounded-md relative overflow-hidden group shadow-1">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-error p-2 bg-error/10 rounded-md">warning</span>
+<span class="text-secondary font-label-sm tabular-nums">-4.5%</span>
+</div>
+<h4 class="text-on-surface-variant font-label-md uppercase tracking-widest mb-1">Risky Agreements</h4>
+<p class="text-4xl font-display-lg text-error tabular-nums">312</p>
+</div>
+</div>
+</div>
+<!-- Analytics Distribution & Alert Section -->
+<div class="col-span-12 lg:col-span-8 glass-panel p-4 rounded-md shadow-1">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h3 class="font-headline-md text-on-surface">Risk Class Distribution</h3>
+<p class="text-on-surface-variant text-label-sm">Anomaly patterns identified across document classification tiers.</p>
+</div>
+<div class="flex gap-4">
+<span class="flex items-center gap-2 text-label-sm font-body-md"><div class="w-2 h-2 rounded-full bg-primary"></div> This Quarter</span>
+<span class="flex items-center gap-2 text-label-sm font-body-md"><div class="w-2 h-2 rounded-full bg-outline-variant"></div> Previous</span>
+</div>
+</div>
+<div class="h-64 flex items-end justify-between gap-4 px-4 border-b border-outline-variant/20 pb-2 font-body-md">
+<!-- LOW -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[60px] flex items-end gap-1 h-full">
+<div class="bg-outline-variant/30 w-1/2 h-[70%] transition-all"></div>
+<div class="bg-primary/40 w-1/2 h-[85%] transition-all group-hover:bg-primary/60"></div>
+</div>
+<span class="mt-4 font-label-md text-on-surface-variant">LOW</span>
+</div>
+<!-- MEDIUM -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[60px] flex items-end gap-1 h-full">
+<div class="bg-outline-variant/30 w-1/2 h-[60%] transition-all"></div>
+<div class="bg-primary/60 w-1/2 h-[75%] transition-all group-hover:bg-primary/80"></div>
+</div>
+<span class="mt-4 font-label-md text-on-surface-variant">MEDIUM</span>
+</div>
+<!-- HIGH -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[60px] flex items-end gap-1 h-full">
+<div class="bg-outline-variant/30 w-1/2 h-[40%] transition-all"></div>
+<div class="bg-secondary w-1/2 h-[25%] transition-all group-hover:opacity-80"></div>
+</div>
+<span class="mt-4 font-label-md text-on-surface-variant">HIGH</span>
+</div>
+<!-- CRITICAL -->
+<div class="flex-1 flex flex-col items-center group">
+<div class="w-full max-w-[60px] flex items-end gap-1 h-full">
+<div class="bg-outline-variant/30 w-1/2 h-[20%] transition-all"></div>
+<div class="bg-error w-1/2 h-[10%] transition-all group-hover:opacity-80"></div>
+</div>
+<span class="mt-4 font-label-md text-on-surface-variant">CRITICAL</span>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 glass-panel p-4 rounded-md shadow-1">
+<h3 class="font-headline-md text-on-surface mb-6">Recent Alerts</h3>
+<div class="space-y-6 font-body-md">
+<div class="flex gap-4 items-start">
+<div class="w-2 h-2 mt-2 rounded-full bg-error ring-4 ring-error/20"></div>
+<div>
+<p class="text-on-surface text-label-md">High-Risk Clause Found</p>
+<p class="text-on-surface-variant text-label-sm">Standard Services Agreement (V4.2)</p>
+<span class="text-[10px] text-primary mt-1 inline-block tabular-nums">2 MINS AGO</span>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-2 h-2 mt-2 rounded-full bg-secondary ring-4 ring-secondary/20"></div>
+<div>
+<p class="text-on-surface text-label-md">Bulk Upload Complete</p>
+<p class="text-on-surface-variant text-label-sm">242 NDAs processed in Batch #902</p>
+<span class="text-[10px] text-primary mt-1 inline-block tabular-nums">1 HOUR AGO</span>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="w-2 h-2 mt-2 rounded-full bg-primary ring-4 ring-primary/20"></div>
+<div>
+<p class="text-on-surface text-label-md">New Model Synchronized</p>
+<p class="text-on-surface-variant text-label-sm">Legal Language Model 2.0.4 Live</p>
+<span class="text-[10px] text-primary mt-1 inline-block tabular-nums">3 HOURS AGO</span>
+</div>
+</div>
+</div>
+<button class="w-full mt-8 py-3 bg-surface-variant/30 text-on-surface font-label-md rounded-md hover:bg-surface-variant/50 transition-all">View All Activity</button>
+</div>
+<!-- Historical Reports Table -->
+<div class="col-span-12 glass-panel rounded-md overflow-hidden mb-12 shadow-1">
+<div class="p-4 border-b border-outline-variant/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div>
+<h3 class="font-headline-md text-on-surface">Historical Reports</h3>
+<p class="text-on-surface-variant text-label-sm">Full audit trail of all processed legal instruments.</p>
+</div>
+<div class="flex items-center gap-4 font-body-md">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-low border-outline-variant/30 text-on-surface text-label-sm pl-10 pr-4 py-2 w-64 focus:ring-primary focus:border-primary rounded-md transition-all" placeholder="Search by Document ID or Party..." type="text"/>
+</div>
+<button class="flex items-center gap-2 bg-surface-container-low border border-outline-variant/30 px-4 py-2 text-label-sm text-on-surface rounded-md">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                        Filters
+                    </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-md">
+<thead class="bg-surface-container-high/50 border-b border-outline-variant/10">
+<tr>
+<th class="px-8 py-4 font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Document Name</th>
+<th class="px-8 py-4 font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Processing Date</th>
+<th class="px-8 py-4 font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Analyst</th>
+<th class="px-8 py-4 font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Risk Score</th>
+<th class="px-8 py-4 font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Status</th>
+<th class="px-8 py-4 font-label-md text-on-surface-variant uppercase tracking-widest text-[10px]">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-variant/10 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary/60">description</span>
+<span class="font-label-md text-on-surface">MSA_Global_Tech_2024.pdf</span>
+</div>
+</td>
+<td class="px-8 py-5 text-label-md text-on-surface-variant tabular-nums">Oct 24, 2024 • 14:20</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-[10px] text-primary">JD</div>
+<span class="text-label-md text-on-surface">J. Donovan</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="flex-1 h-1.5 bg-outline-variant/20 rounded-full w-24">
+<div class="h-full bg-primary rounded-full" style="width: 32%"></div>
+</div>
+<span class="text-label-md text-on-surface font-semibold tabular-nums">32%</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold rounded-full">AUDITED</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-variant/10 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary/60">description</span>
+<span class="font-label-md text-on-surface">Cloud_SLA_Microsoft_AZ.pdf</span>
+</div>
+</td>
+<td class="px-8 py-5 text-label-md text-on-surface-variant tabular-nums">Oct 23, 2024 • 09:12</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary/20 border border-secondary/30 flex items-center justify-center text-[10px] text-secondary">AM</div>
+<span class="text-label-md text-on-surface">A. Markov</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="flex-1 h-1.5 bg-outline-variant/20 rounded-full w-24">
+<div class="h-full bg-secondary rounded-full" style="width: 68%"></div>
+</div>
+<span class="text-label-md text-on-surface font-semibold tabular-nums">68%</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-secondary/10 text-secondary border border-secondary/20 text-[10px] font-bold rounded-full">FLAGGED</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-variant/10 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary/60">description</span>
+<span class="font-label-md text-on-surface">Lease_NYC_Hub_Tower.docx</span>
+</div>
+</td>
+<td class="px-8 py-5 text-label-md text-on-surface-variant tabular-nums">Oct 22, 2024 • 11:45</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-[10px] text-primary">JD</div>
+<span class="text-label-md text-on-surface">J. Donovan</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-4">
+<div class="flex-1 h-1.5 bg-outline-variant/20 rounded-full w-24">
+<div class="h-full bg-error rounded-full" style="width: 88%"></div>
+</div>
+<span class="text-label-md text-on-surface font-semibold tabular-nums">88%</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-error/10 text-error border border-error/20 text-[10px] font-bold rounded-full">CRITICAL</span>
+</td>
+<td class="px-8 py-5">
+<button class="text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/10 flex justify-between items-center bg-surface-container-low/30 font-body-md">
+<span class="text-label-sm text-on-surface-variant tabular-nums">Showing 1 to 10 of 1,280 entries</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-outline-variant/30 text-on-surface-variant text-label-sm rounded-md hover:text-primary tabular-nums">Previous</button>
+<button class="px-3 py-1 bg-primary/10 border border-primary/30 text-primary text-label-sm rounded-md tabular-nums">1</button>
+<button class="px-3 py-1 border border-outline-variant/30 text-on-surface-variant text-label-sm rounded-md hover:text-primary tabular-nums">2</button>
+<button class="px-3 py-1 border border-outline-variant/30 text-on-surface-variant text-label-sm rounded-md hover:text-primary tabular-nums">3</button>
+<button class="px-3 py-1 border border-outline-variant/30 text-on-surface-variant text-label-sm rounded-md hover:text-primary tabular-nums">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-margin-desktop flex flex-col md:flex-row justify-between items-center bg-surface-container-lowest border-t border-outline-variant/5">
+<div class="mb-4 md:mb-0">
+<span class="font-display-lg text-label-md text-primary">© 2024 Sydeco LightML. Sovereign Intelligence Protocol.</span>
+</div>
+<div class="flex flex-wrap justify-center gap-8 font-body-md">
+<a class="font-label-sm text-on-tertiary-fixed-variant hover:text-primary transition-opacity duration-200" href="#">Privacy</a>
+<a class="font-label-sm text-on-tertiary-fixed-variant hover:text-primary transition-opacity duration-200" href="#">Terms</a>
+<a class="font-label-sm text-on-tertiary-fixed-variant hover:text-primary transition-opacity duration-200" href="#">Compliance</a>
+<a class="font-label-sm text-on-tertiary-fixed-variant hover:text-primary transition-opacity duration-200" href="#">Security Documentation</a>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const panels = document.querySelectorAll('.glass-panel');
+        panels.forEach((panel, index) => {
+            panel.style.opacity = '0';
+            panel.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                panel.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                panel.style.opacity = '1';
+                panel.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+</body></html>

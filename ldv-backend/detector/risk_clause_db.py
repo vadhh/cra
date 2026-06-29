@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 # datasets/ at repo root: detector/ -> ldv-backend/ -> LDV/
 _DIR = Path(__file__).resolve().parent.parent.parent / "datasets"
-_FILES = ["abusive_clauses.csv", "dangerous_clauses_MASTER.csv",
+_FILES = ["abusive_clauses.csv", "dangerous_clauses_MASTERv2.csv",
           "illegal_clauses.csv", "leonine_clauses.csv"]
 
 # Impact_Level -> red-flag severity used by _layer1_score (HIGH/MEDIUM counted).

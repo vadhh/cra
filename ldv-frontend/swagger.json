@@ -1,0 +1,246 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sydeco LightML Contract Risk Analyzer API",
+    "description": "API documentation for the Sydeco LightML Contract Risk Analyzer platform. Provides endpoints for uploading contracts, executing NLI-based risk assessments, managing citations, and administrative telemetry.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "v1 API Root"
+    }
+  ],
+  "paths": {
+    "/analyze": {
+      "post": {
+        "summary": "Synchronously analyze a contract document",
+        "description": "Extracts text from the uploaded PDF, DOCX, or TXT file and runs it through the 4-layer ML analysis pipeline.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Contract file to analyze (PDF, DOCX, TXT; max 10MB)"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "language": { "type": "string", "example": "en" },
+                    "jurisdiction": { "type": "string", "example": "Indonesia" },
+                    "layer1": { "type": "object" },
+                    "layer2": { "type": "object" },
+                    "layer3": { "type": "object" },
+                    "layer4": { "type": "object" },
+                    "clause_tags": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "No file uploaded or unsupported file format" },
+          "401": { "description": "Authentication required" }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "summary": "Asynchronously upload a contract for analysis",
+        "description": "Immediately enqueues the analysis job and returns a reference token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Contract file (PDF, DOCX, TXT; max 10MB)"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Analysis enqueued successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string", "example": "a1b2c3d4e5f67890" },
+                    "status": { "type": "string", "example": "queued" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid file upload" },
+          "401": { "description": "Authentication required" }
+        }
+      }
+    },
+    "/result/{analysis_id}": {
+      "get": {
+        "summary": "Retrieve async analysis result",
+        "description": "Returns status and results for the enqueued analysis job.",
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "The unique reference key returned from /upload"
+          },
+          {
+            "name": "debug",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "Set to '1' to include raw extracted text"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Result structure" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Forbidden: cross-organization access" },
+          "404": { "description": "Result not found" }
+        }
+      },
+      "delete": {
+        "summary": "Permanently delete an analysis record and file",
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Deleted successfully" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/result/{analysis_id}/download-link": {
+      "post": {
+        "summary": "Generate expiring signed download link for original file",
+        "parameters": [
+          {
+            "name": "analysis_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Signed download URL",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": { "type": "string", "example": "/download/abc123token" },
+                    "expires_at": { "type": "integer", "example": 1780000000 }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Forbidden: download access disabled" }
+        }
+      }
+    },
+    "/citations": {
+      "get": {
+        "summary": "List citations",
+        "description": "Lists legal source citations. Admins and Reviewers see both draft and verified items; other roles see verified only.",
+        "responses": {
+          "200": { "description": "List of citations" },
+          "401": { "description": "Authentication required" }
+        }
+      }
+    },
+    "/citations/verify": {
+      "post": {
+        "summary": "Verify draft citation",
+        "description": "Approves a draft citation for general customer-facing reports. Gated to Admin and Reviewer roles.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "finding_id": { "type": "string", "example": "governing_law" },
+                  "jurisdiction": { "type": "string", "example": "ID" }
+                },
+                "required": ["finding_id", "jurisdiction"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Verified successfully" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Citation not found" }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "summary": "Retrieve system telemetry overview",
+        "description": "Gated to admin role only.",
+        "responses": {
+          "200": { "description": "Telemetry stats object" },
+          "401": { "description": "Authentication required" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/recent": {
+      "get": {
+        "summary": "List recent processed risk reports",
+        "description": "Gated to admin role only.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 10 }
+          }
+        ],
+        "responses": {
+          "200": { "description": "List of recent assessments" }
+        }
+      }
+    }
+  }
+}

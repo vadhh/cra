@@ -17,6 +17,8 @@ import auth      # noqa: E402
 importlib.reload(auth)
 import app as app_module  # noqa: E402
 importlib.reload(app_module)
+app_module.app.config["TESTING"] = True
+app_module.app.testing = True
 
 def setup_module(module):
     os.environ["LDV_DB_PATH"] = _DB_PATH
@@ -54,8 +56,8 @@ def setup():
 
 
 def test_anonymous_blocked():
-    assert client.get("/api/result/whatever").status_code == 401
-    assert client.post("/upload").status_code == 401
+    assert client.get("/api/v1/result/whatever").status_code == 401
+    assert client.post("/api/v1/upload").status_code == 401
 
 
 def test_bad_login():
@@ -70,28 +72,28 @@ def test_owner_and_cross_org_and_admin():
     # Owner (same org) — 200
     c = app_module.app.test_client()
     assert c.post("/login", json={"email": "a@a.com", "password": "pw"}).status_code == 200
-    assert c.get("/api/result/" + pub).status_code == 200
+    assert c.get("/api/v1/result/" + pub).status_code == 200
 
     # Cross-org user — 403 even with a valid UUID
     c2 = app_module.app.test_client()
     c2.post("/login", json={"email": "b@b.com", "password": "pw"})
-    assert c2.get("/api/result/" + pub).status_code == 403
+    assert c2.get("/api/v1/result/" + pub).status_code == 403
 
     # Admin — 200 for any org
     c3 = app_module.app.test_client()
     c3.post("/login", json={"email": "admin@a.com", "password": "pw"})
-    assert c3.get("/api/result/" + pub).status_code == 200
+    assert c3.get("/api/v1/result/" + pub).status_code == 200
 
     # API token auth works programmatically
     assert client.get(
-        "/api/result/" + pub, headers={"Authorization": "Bearer tok-a@a.com"}
+        "/api/v1/result/" + pub, headers={"Authorization": "Bearer tok-a@a.com"}
     ).status_code == 200
 
 
 def test_admin_endpoints_gated():
     # user token -> 403, admin token -> 200
-    assert client.get("/api/stats", headers={"Authorization": "Bearer tok-a@a.com"}).status_code == 403
-    assert client.get("/api/stats", headers={"Authorization": "Bearer tok-admin@a.com"}).status_code == 200
+    assert client.get("/api/v1/stats", headers={"Authorization": "Bearer tok-a@a.com"}).status_code == 403
+    assert client.get("/api/v1/stats", headers={"Authorization": "Bearer tok-admin@a.com"}).status_code == 200
 
 
 if __name__ == "__main__":

@@ -293,9 +293,11 @@ def _load_model():
         logger.info("Loading DistilBERT NLI model: %s", MODEL_ID)
         _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
         m = AutoModelForSequenceClassification.from_pretrained(MODEL_ID)
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        m = m.to(device)
         m.training = False  # inference mode without using eval()
         _model = m
-        logger.info("DistilBERT NLI model loaded.")
+        logger.info("DistilBERT NLI model loaded on %s.", device)
     except Exception as exc:
         logger.error("Failed to load DistilBERT model: %s", exc)
         _model = None
@@ -313,6 +315,7 @@ def is_available() -> bool:
 
 def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
     """Return the entailment probability for (premise, hypothesis) pair."""
+    device = next(model.parameters()).device
     inputs = tokenizer(
         premise,
         hypothesis,
@@ -320,7 +323,7 @@ def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
         truncation=True,
         max_length=512,
         padding=True,
-    )
+    ).to(device)
     with torch.no_grad():
         logits = model(**inputs).logits
 

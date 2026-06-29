@@ -54,11 +54,44 @@ def _warn(section: str, label: str, detail: str = "") -> None:
 
 # ── HTTP helpers ──────────────────────────────────────────────────────────────
 
+import os
+
+_token = None
+
+def _ensure_token() -> str:
+    global _token
+    if _token is not None:
+        return _token
+    token = os.getenv("LDV_TEST_TOKEN", "")
+    if token:
+        _token = token
+        return token
+    import secrets as _secrets
+    import auth as _auth
+    import database as _database
+    _database.init_db()
+    org = _database.get_org_by_name("__test__")
+    if not org:
+        _database.create_org("__test__")
+        org = _database.get_org_by_name("__test__")
+    email = "test-runner@ldv.internal"
+    user = _database.get_user_by_email(email)
+    if user:
+        token = user["api_token"]
+    else:
+        token = _secrets.token_urlsafe(32)
+        _database.create_user(org["id"], email, _auth.hash_password(_secrets.token_urlsafe(16)), "analyst", token)
+    _token = token
+    return token
+
+
 def _post(url: str, filepath: Path) -> requests.Response:
+    token = _ensure_token()
     with open(filepath, "rb") as f:
         return requests.post(
-            f"{url}/analyze",
+            f"{url}/api/v1/analyze",
             files={"file": (filepath.name, f)},
+            headers={"Authorization": f"Bearer {token}"},
             timeout=300,
         )
 
@@ -82,7 +115,8 @@ def check_1_1(url: str) -> None:
     r = requests.get(url, timeout=10)
     _add(sec, "GET / returns 200", r.status_code == 200)
 
-    r = requests.post(f"{url}/analyze", timeout=10)
+    token = _ensure_token()
+    r = requests.post(f"{url}/api/v1/analyze", headers={"Authorization": f"Bearer {token}"}, timeout=10)
     _add(sec, "No file uploaded → 400 JSON with 'error' key",
          r.status_code == 400 and _is_json(r) and "error" in _body(r))
 
@@ -222,7 +256,7 @@ def check_4(url: str) -> None:
 
     # 4.2 Implicit or unknown jurisdiction
     ambiguous = [
-        ("pdf/03_nda_en.pdf",           "NDA with no jurisdiction keywords"),
+        ("pdf/04_incomplete_en.pdf",    "Contract with no jurisdiction keywords"),
         ("pdf/05_brochure_en.pdf",      "Marketing brochure"),
         ("txt/05_irrelevant_en.txt",    "Earnings report"),
     ]
