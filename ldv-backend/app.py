@@ -486,6 +486,21 @@ def api_mfa_enable():
     return jsonify({"ok": True})
 
 
+@app.route("/api/v1/mfa/skip", methods=["POST"])
+def api_mfa_skip():
+    uid = session.get("mfa_enroll_pending_uid")
+    if not uid:
+        return jsonify({"error": "No pending enrollment"}), 400
+    user = database.get_user_by_id(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    session.pop("mfa_enroll_pending_uid", None)
+    session["uid"] = uid
+    database.write_audit("login.success.mfa_skipped", user_id=uid, org_id=user["org_id"], ip=_ip())
+    return jsonify({"ok": True})
+
+
 @app.route("/api/v1/mfa/disable", methods=["POST"])
 @auth.login_required
 def api_mfa_disable():

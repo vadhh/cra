@@ -4,96 +4,201 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Access Gate — Sydeco LightML</title>
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <!-- Tailwind play CDN is a dynamic build endpoint — SRI not possible; replace with CLI build for production -->
+  <link rel="icon" type="image/png" href="images/law icon.png">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script>
+  <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
-          colors: {
-            "background": "#0e131f",
-            "surface-container-lowest": "#090e1a",
-            "on-surface": "#dee2f4",
-            "on-surface-variant": "#d0c5af",
-            "primary": "#d4af37",
-            "on-primary-fixed": "#241a00",
+          "colors": {
+            "on-background": "#dee2f4",
             "outline-variant": "#4d4635",
+            "background": "#0e131f",
+            "on-error": "#690005",
+            "on-secondary-fixed": "#2d1600",
+            "secondary-fixed": "#ffdcbf",
+            "secondary": "#f1bc8c",
+            "primary": "#d4af37",
+            "inverse-on-surface": "#2b303d",
+            "on-primary": "#241a00",
+            "on-primary-container": "#554300",
+            "on-secondary-fixed-variant": "#633f19",
+            "surface-tint": "#d4af37",
+            "on-tertiary-fixed-variant": "#414754",
+            "outline": "#99907c",
+            "inverse-surface": "#dee2f4",
+            "on-tertiary-container": "#3f4553",
+            "on-secondary-container": "#e2ae7f",
+            "primary-container": "#d4af37",
+            "tertiary": "#c9cedf",
+            "surface-container-highest": "#303542",
+            "on-tertiary-fixed": "#161c27",
+            "on-secondary": "#492905",
+            "primary-fixed": "#ffe088",
+            "tertiary-fixed-dim": "#c1c6d7",
+            "on-surface-variant": "#d0c5af",
+            "inverse-primary": "#735c00",
+            "surface-container": "#1b1f2c",
+            "surface-variant": "#303542",
+            "surface-container-high": "#252a37",
+            "surface-container-lowest": "#090e1a",
+            "on-primary-fixed-variant": "#574500",
+            "tertiary-container": "#adb3c3",
+            "tertiary-fixed": "#dde2f3",
+            "secondary-container": "#66411b",
+            "on-error-container": "#ffdad6",
+            "surface-bright": "#343946",
+            "error": "#ffb4ab",
+            "surface": "#0e131f",
+            "surface-container-low": "#161b28",
+            "on-primary-fixed": "#241a00",
+            "secondary-fixed-dim": "#f1bc8c",
+            "surface-dim": "#0e131f",
+            "on-tertiary": "#2a303d",
+            "on-surface": "#dee2f4",
+            "primary-fixed-dim": "#d4af37",
+            "error-container": "#93000a"
           },
-          fontFamily: {
+          "borderRadius": {
+            "DEFAULT": "4px",
+            "md": "8px",
+            "lg": "12px",
+            "xl": "16px",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "64px",
+            "margin-tablet": "32px",
+            "margin-mobile": "16px",
+            "base": "8px",
+            "gutter": "24px",
+            "container-max": "1440px"
+          },
+          "fontFamily": {
             "display": ["Playfair Display", "serif"],
-            "body": ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+            "body": ["Inter", "Plus Jakarta Sans", "sans-serif"],
+            "display-lg": ["Playfair Display"],
+            "body-md": ["Inter"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "label-sm": ["Inter"],
+            "headline-lg": ["Playfair Display"],
+            "label-md": ["Inter"],
+            "body-lg": ["Inter"]
           },
-          spacing: { "margin-desktop": "64px", "margin-mobile": "16px" }
-        }
-      }
+          "fontSize": {
+            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+            "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+            "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
     }
   </script>
   <style>
-    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
-    .obsidian-panel { background:#161b28; border:1px solid rgba(212,175,55,0.15); box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); }
-    .gold-btn { background:linear-gradient(135deg,#d4af37 0%,#b8952e 100%); transition:all 0.3s cubic-bezier(0.4,0,0.2,1); }
-    .gold-btn:hover:not(:disabled) { box-shadow:0 0 25px rgba(212,175,55,0.3); filter:brightness(1.1); }
-    .gold-btn:disabled { opacity:0.7; cursor:not-allowed; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .obsidian-panel {
+      background: #161b28;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .gold-prestige-btn {
+      background: linear-gradient(135deg, #d4af37 0%, #b8952e 100%);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gold-prestige-btn:hover:not(:disabled) {
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+      filter: brightness(1.1);
+    }
+    .gold-prestige-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .shadow-3 {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
-<body class="bg-background text-on-surface font-body">
-  <main
-    class="min-h-screen flex flex-col items-center justify-center px-4 md:px-16 py-12"
-    x-data="{ email: '', password: '', loading: false, errorMsg: '' }"
-  >
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-y-auto">
+  <!-- Subtle Ambient Background -->
+  <div class="fixed inset-0 pointer-events-none z-0">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+  </div>
+
+  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-12"
+        x-data="loginApp()">
+    
+    <!-- Header Branding -->
     <div class="mb-10 text-center">
+      <!-- Inline SVG Logo -->
+      <svg class="h-16 w-16 mx-auto mb-6" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 20L40 50V100C40 137.01 65.59 171.41 100 180C134.41 171.41 160 137.01 160 100V50L100 20Z" stroke="#D4AF37" stroke-width="8" stroke-linejoin="round"/>
+        <path d="M100 60V140" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+        <path d="M70 80L130 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+        <path d="M80 120L120 120" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+      </svg>
       <h1 class="font-display text-5xl text-primary tracking-tight">Access Gate</h1>
-      <p class="text-xs text-on-surface-variant uppercase tracking-[0.3em] mt-3 font-semibold">Sovereign Intelligence Protocol</p>
+      <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-[0.3em] mt-3 font-semibold">Sovereign Intelligence Protocol</p>
     </div>
 
-    <section class="obsidian-panel w-full max-w-md p-10 rounded-lg">
-      <div class="space-y-8">
+    <!-- State 1: Login Form (Email & Password) -->
+    <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'login'" x-transition>
+      <div class="space-y-8 relative z-10">
         <header>
           <h2 class="font-display text-2xl text-on-surface">Secure Identity Verification</h2>
           <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Authorized personnel only.</p>
         </header>
 
-        <form class="space-y-5" @submit.prevent="
-          loading = true; errorMsg = '';
-          try {
-            const resp = await fetch('/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, password }),
-            });
-            if (resp.ok) { window.location.href = '/'; return; }
-            errorMsg = 'Invalid credentials. Please try again.';
-          } catch (err) {
-            errorMsg = 'Server unreachable. Please try again later.';
-          } finally { loading = false; }
-        ">
+        <form class="space-y-6" @submit.prevent="submitLogin()">
+          <!-- Email Input -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="email">
-              <span class="material-symbols-outlined text-[16px]">mail</span>Institutional Email
+            <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="email">
+              <span class="material-symbols-outlined text-[18px]">mail</span>
+              Institutional Email
             </label>
-            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-all text-sm placeholder:text-on-surface/20"
-              id="email" type="email" x-model="email" placeholder="name@sydeco.legal" required autocomplete="email"/>
+            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
+                   id="email" type="email" x-model="email" placeholder="name@sydeco.legal" required autocomplete="email"/>
           </div>
 
+          <!-- Password Input -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="password">
-              <span class="material-symbols-outlined text-[16px]">lock</span>Access Key
-            </label>
-            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/40 transition-all text-sm placeholder:text-on-surface/20"
-              id="password" type="password" x-model="password" placeholder="••••••••" required autocomplete="current-password"/>
+            <div class="flex justify-between items-center">
+              <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="password">
+                <span class="material-symbols-outlined text-[18px]">lock</span>
+                Access Key
+              </label>
+              <a class="text-xs text-primary/80 hover:text-primary transition-colors" href="#">Recover Identity</a>
+            </div>
+            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
+                   id="password" type="password" x-model="password" placeholder="••••••••" required autocomplete="current-password"/>
           </div>
 
+          <!-- Security Options -->
+          <div class="flex items-center gap-3">
+            <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer" id="remember" type="checkbox"/>
+            <label class="text-xs text-on-surface-variant cursor-pointer" for="remember">Grant persistent session (24h)</label>
+          </div>
+
+          <!-- Error Alert -->
           <div class="flex items-center gap-2 bg-red-900/20 border border-red-500/30 rounded px-4 py-3 text-red-300 text-sm"
-            x-show="errorMsg" x-transition x-text="errorMsg" style="display:none;"></div>
+               x-show="errorMsg" x-transition x-text="errorMsg" style="display:none;"></div>
 
-          <button class="gold-btn w-full py-4 rounded font-bold text-on-primary-fixed uppercase tracking-widest flex items-center justify-center gap-3 text-sm"
-            type="submit" :disabled="loading">
+          <!-- CTA Button -->
+          <button class="gold-prestige-btn w-full py-4 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center gap-3 mt-4"
+                  type="submit" :disabled="loading">
             <span x-text="loading ? 'Authenticating…' : 'Initiate Portal Access'">Initiate Portal Access</span>
-            <svg x-show="loading" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24" style="display:none;">
+            <svg x-show="loading" class="animate-spin h-5 w-5 text-on-primary" fill="none" viewBox="0 0 24 24" style="display:none;">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
             </svg>
@@ -102,21 +207,265 @@
 
         <footer class="pt-6 border-t border-outline-variant/10 text-center">
           <p class="text-xs text-on-surface-variant/60 leading-relaxed">
-            Connection secured via AES-256 Sovereign Protocol.<br/>
-            Need assistance? <a class="text-primary/80 hover:text-primary transition-colors" href="#">Contact System Admin</a>
+            Connection secured via AES-256 Sovereign Protocol. 
+            <br/>Need assistance? <a class="text-primary/80 hover:text-primary transition-colors" href="#">Contact System Admin</a>
           </p>
         </footer>
       </div>
     </section>
 
-    <div class="mt-16 w-full flex flex-col md:flex-row justify-between items-center opacity-40 text-xs">
-      <div class="font-semibold tracking-wide">© 2024 Sydeco LightML. Sovereign Intelligence Protocol.</div>
+    <!-- State 2: MFA Verification Challenge -->
+    <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'mfa_challenge'" x-transition style="display:none;">
+      <div class="space-y-8 relative z-10">
+        <header>
+          <h2 class="font-display text-2xl text-on-surface">Multi-Factor Verification</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Enter the verification code from your authenticator app.</p>
+        </header>
+
+        <form class="space-y-6" @submit.prevent="submitLogin()">
+          <!-- Code Input -->
+          <div class="space-y-2">
+            <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="mfaCode">
+              <span class="material-symbols-outlined text-[18px]">lock</span>
+              Verification Code
+            </label>
+            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface text-center tracking-[0.5em] px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-xl font-bold placeholder:text-on-surface/20"
+                   id="mfaCode" type="text" x-model="mfaCode" placeholder="000000" maxlength="6" required autocomplete="one-time-code"/>
+          </div>
+
+          <!-- Error Alert -->
+          <div class="flex items-center gap-2 bg-red-900/20 border border-red-500/30 rounded px-4 py-3 text-red-300 text-sm"
+               x-show="errorMsg" x-transition x-text="errorMsg" style="display:none;"></div>
+
+          <div class="flex gap-4">
+            <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+              Cancel
+            </button>
+            <button class="gold-prestige-btn flex-[2] py-3 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center gap-2"
+                    type="submit" :disabled="loading">
+              <span x-text="loading ? 'Verifying…' : 'Verify & Access'">Verify & Access</span>
+              <svg x-show="loading" class="animate-spin h-5 w-5 text-on-primary" fill="none" viewBox="0 0 24 24" style="display:none;">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- State 3: MFA Enrollment Setup -->
+    <section class="obsidian-panel shadow-3 w-full max-w-lg p-8 rounded-lg relative overflow-hidden" x-show="state === 'mfa_enroll'" x-transition style="display:none;">
+      <div class="space-y-6 relative z-10">
+        <header>
+          <h2 class="font-display text-2xl text-on-surface">MFA Enrollment Required</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Multi-Factor Authentication is mandatory for your corporate account security.</p>
+        </header>
+
+        <div class="space-y-6 text-sm leading-relaxed text-on-surface-variant">
+          <!-- Step 1: QR Code -->
+          <div class="flex flex-col md:flex-row gap-6 items-center bg-surface-container-lowest/30 p-5 border border-outline-variant/10 rounded">
+            <div class="bg-white p-3 rounded shrink-0">
+              <img :src="mfaSetup.qrCodeUrl" class="w-40 h-40 object-contain" alt="MFA Ingestion QR Code"/>
+            </div>
+            <div class="space-y-2">
+              <p class="font-bold text-on-surface text-base">1. Scan QR Code</p>
+              <p>Scan this QR code using Google Authenticator, Duo, or any TOTP application on your secure mobile device.</p>
+              <p class="text-xs mt-2">Manual entry key: <code class="bg-surface-container px-2 py-1 rounded text-primary font-bold tracking-wider" x-text="mfaSetup.secret"></code></p>
+            </div>
+          </div>
+
+          <!-- Step 2: Recovery Codes -->
+          <div class="p-5 border border-outline-variant/15 rounded bg-surface-container-low/50">
+            <p class="font-bold text-on-surface text-base mb-2">2. Secure Recovery Codes</p>
+            <p class="mb-4">These recovery keys allow access if you lose your authentication device. Store them in a secure physical vault.</p>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-2 font-mono text-xs text-primary font-bold text-center bg-background/50 p-3 rounded border border-outline-variant/10">
+              <template x-for="code in mfaSetup.recoveryCodes">
+                <span x-text="code"></span>
+              </template>
+            </div>
+          </div>
+
+          <!-- Step 3: Verification Verification Code -->
+          <form class="space-y-4 pt-2 border-t border-outline-variant/10" @submit.prevent="verifyMfaEnroll()">
+            <div class="space-y-2">
+              <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="enrollCode">
+                3. Verify TOTP Code
+              </label>
+              <p class="text-xs">Enter the generated 6-digit code from your authenticator app to enable MFA and sign in.</p>
+              <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface text-center tracking-[0.5em] px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-xl font-bold placeholder:text-on-surface/20"
+                     id="enrollCode" type="text" x-model="mfaCode" placeholder="000000" maxlength="6" required autocomplete="off"/>
+            </div>
+
+            <!-- Error Alert -->
+            <div class="flex items-center gap-2 bg-red-900/20 border border-red-500/30 rounded px-4 py-3 text-red-300 text-sm"
+                 x-show="errorMsg" x-transition x-text="errorMsg" style="display:none;"></div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+                Cancel
+              </button>
+              <button type="button" @click="skipMfaEnroll()" class="flex-1 py-3 border border-primary/30 hover:bg-primary/5 transition-colors rounded text-sm font-semibold text-primary" :disabled="loading">
+                Skip for now
+              </button>
+              <button class="gold-prestige-btn flex-[2] py-3 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center gap-2"
+                      type="submit" :disabled="loading">
+                <span x-text="loading ? 'Enabling…' : 'Enable MFA & Access'">Enable MFA & Access</span>
+                <svg x-show="loading" class="animate-spin h-5 w-5 text-on-primary" fill="none" viewBox="0 0 24 24" style="display:none;">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-8 w-full flex flex-col md:flex-row justify-between items-center opacity-40 text-xs z-10">
+      <div class="tracking-wide">
+        © 2026 PT SYDECO. Contract Risk Analyzer.
+      </div>
       <div class="flex gap-8 mt-4 md:mt-0">
         <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
         <a class="hover:text-primary transition-colors" href="#">Terms of Use</a>
         <a class="hover:text-primary transition-colors" href="#">Compliance</a>
       </div>
-    </div>
+    </footer>
   </main>
+
+  <script>
+    function loginApp() {
+      return {
+        email: '',
+        password: '',
+        mfaCode: '',
+        loading: false,
+        errorMsg: '',
+        state: 'login', // 'login', 'mfa_challenge', 'mfa_enroll'
+        mfaSetup: {
+          secret: '',
+          qrCodeUrl: '',
+          recoveryCodes: []
+        },
+
+        async submitLogin() {
+          this.loading = true;
+          this.errorMsg = '';
+          try {
+            const resp = await fetch('/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: this.email, password: this.password, mfa_code: this.mfaCode }),
+            });
+            const data = await resp.json().catch(() => ({}));
+            
+            if (resp.status === 429) {
+              this.errorMsg = 'Too many login attempts. Please wait before trying again.';
+              return;
+            }
+            if (resp.ok) {
+              if (data.mfa_required) {
+                this.state = 'mfa_challenge';
+                this.mfaCode = '';
+                return;
+              }
+              if (data.mfa_enroll_required) {
+                await this.initMfaSetup();
+                return;
+              }
+              if (data.ok) {
+                window.location.href = '/';
+                return;
+              }
+            }
+            this.errorMsg = data.error || 'Invalid credentials. Please try again.';
+          } catch (err) {
+            this.errorMsg = 'Server unreachable. Please try again later.';
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        async initMfaSetup() {
+          this.loading = true;
+          this.errorMsg = '';
+          try {
+            const resp = await fetch('/api/v1/mfa/setup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await resp.json().catch(() => ({}));
+            if (resp.ok) {
+              this.mfaSetup.secret = data.secret;
+              this.mfaSetup.qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chl=' + encodeURIComponent(data.provisioning_uri) + '&chs=200x200&chld=L|0';
+              this.mfaSetup.recoveryCodes = data.recovery_codes || [];
+              this.state = 'mfa_enroll';
+              this.mfaCode = '';
+            } else {
+              this.errorMsg = data.error || 'MFA setup failed.';
+              this.state = 'login';
+            }
+          } catch (err) {
+            this.errorMsg = 'Server error during MFA setup.';
+            this.state = 'login';
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        async verifyMfaEnroll() {
+          this.loading = true;
+          this.errorMsg = '';
+          try {
+            const resp = await fetch('/api/v1/mfa/enable', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code: this.mfaCode }),
+            });
+            const data = await resp.json().catch(() => ({}));
+            if (resp.ok) {
+              window.location.href = '/';
+            } else {
+              this.errorMsg = data.error || 'Verification code failed.';
+            }
+          } catch (err) {
+            this.errorMsg = 'Server error during MFA verification.';
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        async skipMfaEnroll() {
+          this.loading = true;
+          this.errorMsg = '';
+          try {
+            const resp = await fetch('/api/v1/mfa/skip', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+            });
+            const data = await resp.json().catch(() => ({}));
+            if (resp.ok) {
+              localStorage.setItem('mfa_skipped_alert', 'true');
+              window.location.href = '/';
+            } else {
+              this.errorMsg = data.error || 'Failed to skip MFA.';
+            }
+          } catch (err) {
+            this.errorMsg = 'Server error during MFA skip.';
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        resetToLogin() {
+          this.state = 'login';
+          this.mfaCode = '';
+          this.errorMsg = '';
+        }
+      }
+    }
+  </script>
 </body>
 </html>

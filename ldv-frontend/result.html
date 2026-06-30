@@ -5,220 +5,611 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Risk Assessment — Sydeco LightML</title>
   <link rel="icon" type="image/png" href="images/law icon.png">
-  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
-  <!-- Tailwind play CDN is a dynamic build endpoint — SRI not possible; replace with CLI build for production -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script>
+  <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
       theme: {
         extend: {
-          colors: {
-            "background": "#0e131f", "surface-container": "#1b1f2c",
-            "surface-container-low": "#161b28", "surface-container-lowest": "#090e1a",
+          "colors": {
+            "on-background": "#dee2f4",
+            "outline-variant": "#4d4635",
+            "background": "#0e131f",
+            "on-error": "#690005",
+            "on-secondary-fixed": "#2d1600",
+            "secondary-fixed": "#ffdcbf",
+            "secondary": "#f1bc8c",
+            "primary": "#d4af37",
+            "inverse-on-surface": "#2b303d",
+            "on-primary": "#241a00",
+            "on-primary-container": "#554300",
+            "on-secondary-fixed-variant": "#633f19",
+            "surface-tint": "#d4af37",
+            "on-tertiary-fixed-variant": "#414754",
+            "outline": "#99907c",
+            "inverse-surface": "#dee2f4",
+            "on-tertiary-container": "#3f4553",
+            "on-secondary-container": "#e2ae7f",
+            "primary-container": "#d4af37",
+            "tertiary": "#c9cedf",
+            "surface-container-highest": "#303542",
+            "on-tertiary-fixed": "#161c27",
+            "on-secondary": "#492905",
+            "primary-fixed": "#ffe088",
+            "tertiary-fixed-dim": "#c1c6d7",
+            "on-surface-variant": "#d0c5af",
+            "inverse-primary": "#735c00",
+            "surface-container": "#1b1f2c",
+            "surface-variant": "#303542",
             "surface-container-high": "#252a37",
-            "on-surface": "#dee2f4", "on-surface-variant": "#d0c5af",
-            "primary": "#d4af37", "outline-variant": "#4d4635",
+            "surface-container-lowest": "#090e1a",
+            "on-primary-fixed-variant": "#574500",
+            "tertiary-container": "#adb3c3",
+            "tertiary-fixed": "#dde2f3",
+            "secondary-container": "#66411b",
+            "on-error-container": "#ffdad6",
+            "surface-bright": "#343946",
+            "error": "#ffb4ab",
+            "surface": "#0e131f",
+            "surface-container-low": "#161b28",
+            "on-primary-fixed": "#241a00",
+            "secondary-fixed-dim": "#f1bc8c",
+            "surface-dim": "#0e131f",
+            "on-tertiary": "#2a303d",
+            "on-surface": "#dee2f4",
+            "primary-fixed-dim": "#d4af37",
+            "error-container": "#93000a"
           },
-          fontFamily: { "display": ["Playfair Display","serif"], "body": ["Plus Jakarta Sans","sans-serif"], "mono": ["JetBrains Mono","monospace"] },
-        }
-      }
+          "borderRadius": {
+            "DEFAULT": "4px",
+            "md": "8px",
+            "lg": "12px",
+            "xl": "16px",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "64px",
+            "margin-tablet": "32px",
+            "margin-mobile": "16px",
+            "base": "8px",
+            "gutter": "24px",
+            "container-max": "1280px"
+          },
+          "fontFamily": {
+            "display": ["Playfair Display", "serif"],
+            "body": ["Inter", "Plus Jakarta Sans", "sans-serif"],
+            "display-lg": ["Playfair Display"],
+            "body-md": ["Inter"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "label-sm": ["Inter"],
+            "headline-lg": ["Playfair Display"],
+            "label-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+            "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+            "label-sm": ["12px", {"lineHeight": "1.4", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+            "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+          }
+        },
+      },
     }
   </script>
   <style>
     :root {
-      --font-base: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-display: 'Playfair Display', serif;
       --bg-surface: rgba(27,31,44,0.75);
-      --bg-surface-elevated: rgba(37,42,55,0.85);
       --border-color: rgba(212,175,55,0.1);
-      --border-color-hover: rgba(212,175,55,0.22);
-      --border-focus: #d4af37;
-      --text-primary: #dee2f4;
-      --text-secondary: #d0c5af;
-      --text-muted: hsl(215,12%,52%);
-      --color-accent: #d4af37;
-      --color-accent-glow: rgba(212,175,55,0.12);
-      --color-low: hsl(150,40%,48%); --color-low-bg: hsla(150,40%,48%,0.12);
-      --color-medium: hsl(36,68%,52%); --color-medium-bg: hsla(36,68%,52%,0.12);
-      --color-high: hsl(355,62%,54%); --color-high-bg: hsla(355,62%,54%,0.12);
-      --color-critical: hsl(325,64%,48%); --color-critical-bg: hsla(325,64%,48%,0.12);
-      --transition-fast: 0.15s cubic-bezier(0.16,1,0.3,1);
-      --transition-normal: 0.3s cubic-bezier(0.16,1,0.3,1);
-      --shadow-lg: 0 16px 40px rgba(0,0,0,0.5);
+      --color-low: #039855; --color-low-bg: rgba(3,152,85,0.12);
+      --color-medium: #DC6803; --color-medium-bg: rgba(220,104,3,0.12);
+      --color-high: #D92D20; --color-high-bg: rgba(217,45,32,0.12);
+      --color-critical: #7A271A; --color-critical-bg: rgba(122,39,26,0.12);
     }
-    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
-    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    body { font-family:var(--font-base); background:#0e131f; color:var(--text-primary); min-height:100vh; -webkit-font-smoothing:antialiased; }
-    ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:#0e131f; }
-    ::-webkit-scrollbar-thumb { background:rgba(212,175,55,0.15); border-radius:4px; }
+    body {
+      background-color: #0e131f;
+      color: #dee2f4;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .font-editorial {
+      font-family: 'Playfair Display', serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .glass-card {
+      background: rgba(14, 19, 31, 0.4);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .section-card {
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(27, 31, 44, 0.45);
+      backdrop-filter: blur(12px);
+    }
+    .section-header {
+      padding: 14px 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .section-header:hover {
+      background: rgba(255,255,255,0.02);
+    }
+    .section-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .section-title-wrapper svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: #d0c5af;
+      stroke-width: 2px;
+      flex-shrink: 0;
+    }
+    .section-toggle-icon {
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    .section-body {
+      padding: 18px;
+      border-top: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    
+    /* Risk Levels colors */
+    .level-LOW { --level-color: var(--color-low); --level-bg: var(--color-low-bg); }
+    .level-MEDIUM { --level-color: var(--color-medium); --level-bg: var(--color-medium-bg); }
+    .level-HIGH { --level-color: var(--color-high); --level-bg: var(--color-high-bg); }
+    .level-CRITICAL { --level-color: var(--color-critical); --level-bg: var(--color-critical-bg); }
 
-    main { max-width:1280px; margin:0 auto; padding:32px 24px; }
-    @media(max-width:768px){ main{ padding:20px 16px; } }
+    .risk-hero-panel {
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .risk-glow-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      filter: blur(40px);
+      z-index: 1;
+      opacity: 0.2;
+      background-color: var(--level-color, #d4af37);
+    }
+    .risk-circle-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      z-index: 2;
+    }
+    .risk-circle-svg {
+      transform: rotate(-90deg);
+      width: 140px;
+      height: 140px;
+    }
+    .risk-circle-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.05);
+      stroke-width: 8;
+    }
+    .risk-circle-bar {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 364.4;
+      stroke-dashoffset: 364.4;
+      stroke: var(--level-color, #d4af37);
+      transition: stroke-dashoffset 0.18s ease;
+    }
+    .risk-score-value {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .risk-score-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--level-color, #d4af37);
+    }
+    .risk-score-label {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+    .risk-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      background-color: var(--level-bg, rgba(212,175,55,0.12));
+      color: var(--level-color, #d4af37);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+    .risk-hero-desc {
+      font-size: 0.82rem;
+      color: #d0c5af;
+      line-height: 1.5;
+    }
 
-    #loadingState { display:flex; flex-direction:column; align-items:center; gap:20px; text-align:center; padding:80px 24px; color:var(--text-secondary); }
-    #errorState { display:none; text-align:center; padding:80px 24px; }
-    #content { display:none; }
-    .error-box { background:var(--bg-surface); border:1px solid var(--border-color); border-radius:12px; padding:40px; max-width:480px; margin:0 auto; }
-    .error-box h2 { font-family:var(--font-display); font-size:1.4rem; margin-bottom:12px; }
-    .spinner-ring { width:44px; height:44px; border:3px solid rgba(212,175,55,0.15); border-top-color:var(--color-accent); border-radius:50%; animation:spin 0.9s linear infinite; }
-    @keyframes spin { to{transform:rotate(360deg)} }
-    @keyframes dropIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      transition: all 0.15s cubic-bezier(0.16,1,0.3,1);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #d4af37 0%, #b8952e 100%);
+      color: #0e131f;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.2);
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212,175,55,0.35);
+    }
+    .btn-outline {
+      background: transparent;
+      border-color: rgba(212,175,55,0.15);
+      color: #d4af37;
+    }
+    .btn-outline:hover:not(:disabled) {
+      background: rgba(212,175,55,0.05);
+      border-color: #d4af37;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
 
-    .glass-card { background:var(--bg-surface); backdrop-filter:blur(12px); border:1px solid var(--border-color); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.35); transition:border-color var(--transition-normal); }
-    .glass-card:hover { border-color:var(--border-color-hover); }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .meta-item {
+      background: rgba(48, 53, 66, 0.3);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      border-radius: 4px;
+      padding: 12px;
+    }
+    .meta-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 5px;
+    }
+    .meta-value {
+      font-size: 0.88rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
 
-    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 20px; font-family:var(--font-base); font-size:0.85rem; font-weight:700; border-radius:6px; border:1px solid transparent; cursor:pointer; letter-spacing:0.03em; text-transform:uppercase; transition:all var(--transition-fast); }
-    .btn-primary { background:linear-gradient(135deg,#d4af37 0%,#b8952e 100%); color:#0e131f; box-shadow:0 4px 15px rgba(212,175,55,0.2); }
-    .btn-primary:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 20px rgba(212,175,55,0.35); }
-    .btn-outline { background:transparent; border-color:var(--border-color); color:var(--color-accent); }
-    .btn-outline:hover:not(:disabled) { background:rgba(212,175,55,0.05); border-color:var(--color-accent); }
-    .btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .check-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    .check-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .check-item.present .check-indicator {
+      background: rgba(6, 95, 70, 0.15);
+      color: #039855;
+    }
+    .check-item.missing .check-indicator {
+      background: rgba(153, 27, 27, 0.15);
+      color: #ffb4ab;
+    }
+    .check-name {
+      font-weight: 500;
+      flex: 1;
+    }
+    .check-required-badge {
+      margin-left: auto;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 2px;
+      background: rgba(212,175,55,0.12);
+      color: #d4af37;
+      border: 1px solid rgba(212,175,55,0.2);
+      white-space: nowrap;
+    }
 
-    .file-card { padding:24px; margin-bottom:24px; }
-    .file-card-content { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; }
-    .file-main-info { display:flex; align-items:center; gap:16px; }
-    .file-avatar { width:48px; height:48px; border-radius:10px; background:var(--color-accent-glow); color:var(--border-focus); display:flex; align-items:center; justify-content:center; }
-    .file-text-details h2 { font-size:1.1rem; font-weight:700; word-break:break-all; }
-    .file-sub-details { font-size:0.78rem; color:var(--text-muted); margin-top:4px; }
-    .file-actions-row { display:flex; gap:12px; }
+    .danger-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .danger-card {
+      border: 1px solid rgba(212, 175, 55, 0.1);
+      border-radius: 4px;
+      padding: 14px;
+      background: rgba(48, 53, 66, 0.3);
+    }
+    .danger-card.severity-HIGH { border-left: 3px solid #991B1B; }
+    .danger-card.severity-MEDIUM { border-left: 3px solid #B45309; }
+    .danger-card.severity-LOW { border-left: 3px solid #065F46; }
+    .danger-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .danger-severity-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+    .severity-HIGH .danger-severity-badge { background: rgba(217,45,32,0.15); color: #ffb4ab; }
+    .severity-MEDIUM .danger-severity-badge { background: rgba(220,104,3,0.15); color: #f1bc8c; }
+    .severity-LOW .danger-severity-badge { background: rgba(3,152,85,0.15); color: #039855; }
+    .danger-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .danger-evidence {
+      font-size: 0.8rem;
+      font-family: 'Source Serif 4', Georgia, serif;
+      color: #dee2f4;
+      font-style: italic;
+      background: rgba(0,0,0,0.15);
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-top: 6px;
+      line-height: 1.5;
+      border-left: 2px solid rgba(212, 175, 55, 0.3);
+    }
+    .danger-rewrite {
+      margin-top: 10px;
+      background: rgba(6, 95, 70, 0.08);
+      border: 1px solid rgba(6, 95, 70, 0.2);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #dee2f4;
+      line-height: 1.5;
+    }
+    .ai-finding-card {
+      background: rgba(212,175,55,0.05);
+      border: 1px solid rgba(212,175,55,0.15);
+      border-left: 3px solid #d4af37;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #dee2f4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    .result-container { display:grid; grid-template-columns:1fr; gap:20px; animation:dropIn 0.5s cubic-bezier(0.16,1,0.3,1); }
-    @media(min-width:1024px){ .result-container{ grid-template-columns:340px 1fr; } }
+    .rec-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: #dee2f4;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    .rec-item:last-child {
+      border-bottom: none;
+    }
+    .rec-bullet {
+      color: #d4af37;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
 
-    .risk-hero-panel { padding:28px 20px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px; position:relative; overflow:hidden; }
-    .risk-glow-effect { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:150px; height:150px; border-radius:50%; filter:blur(40px); z-index:1; opacity:0.2; }
-    .risk-circle-container { position:relative; width:140px; height:140px; z-index:2; }
-    .risk-circle-svg { transform:rotate(-90deg); width:140px; height:140px; }
-    .risk-circle-bg { fill:none; stroke:rgba(255,255,255,0.05); stroke-width:8; }
-    .risk-circle-bar { fill:none; stroke-width:8; stroke-linecap:round; stroke-dasharray:377; stroke-dashoffset:377; transition:stroke-dashoffset 1.5s cubic-bezier(0.16,1,0.3,1); }
-    .risk-score-value { position:absolute; top:0; left:0; width:140px; height:140px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .risk-score-num { font-family:var(--font-display); font-size:2.2rem; font-weight:800; line-height:1; }
-    .risk-score-label { font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.05em; margin-top:2px; }
-    .risk-badge { display:inline-block; padding:5px 14px; border-radius:20px; font-family:var(--font-display); font-size:0.82rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:10px; }
-    .risk-hero-desc { font-size:0.82rem; color:var(--text-secondary); line-height:1.5; }
+    .breakdown-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+    .breakdown-table tr {
+      border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    .breakdown-table tr:last-child {
+      border-bottom: none;
+    }
+    .breakdown-table td {
+      padding: 9px 0;
+      vertical-align: middle;
+    }
+    .breakdown-pts {
+      text-align: right;
+      font-weight: 700;
+    }
+    .breakdown-pts.negative {
+      color: #ffb4ab;
+    }
+    .breakdown-pts.positive {
+      color: #039855;
+    }
 
-    .level-LOW  { --level-color:var(--color-low); --level-bg:var(--color-low-bg); }
-    .level-MEDIUM { --level-color:var(--color-medium); --level-bg:var(--color-medium-bg); }
-    .level-HIGH { --level-color:var(--color-high); --level-bg:var(--color-high-bg); }
-    .level-CRITICAL { --level-color:var(--color-critical); --level-bg:var(--color-critical-bg); }
-    .risk-circle-bar { stroke:var(--level-color,#d4af37); }
-    .risk-glow-effect { background-color:var(--level-color,#d4af37); }
-    .risk-score-num { color:var(--level-color,#d4af37); }
-    .risk-badge { background-color:var(--level-bg,rgba(212,175,55,0.12)); color:var(--level-color,#d4af37); border:1px solid color-mix(in srgb,var(--level-color,#d4af37) 25%,transparent); }
-
-    .details-column { display:flex; flex-direction:column; gap:14px; }
-    .section-card { border:1px solid var(--border-color); border-radius:12px; overflow:hidden; background:var(--bg-surface); transition:border-color var(--transition-normal); }
-    .section-card:hover { border-color:var(--border-color-hover); }
-    .section-header { padding:14px 18px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; transition:background var(--transition-fast); }
-    .section-header:hover { background:rgba(255,255,255,0.02); }
-    .section-title-wrapper { display:flex; align-items:center; gap:10px; font-weight:700; font-size:0.9rem; }
-    .section-title-wrapper svg { width:16px; height:16px; fill:none; stroke:var(--text-secondary); stroke-width:2px; flex-shrink:0; }
-    .section-toggle-icon { color:var(--text-muted); display:flex; align-items:center; transition:transform var(--transition-normal); }
-    .section-body { padding:18px; border-top:1px solid var(--border-color); }
-
-    .meta-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
-    .meta-item { background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:8px; padding:12px; }
-    .meta-label { font-size:0.68rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:5px; }
-    .meta-value { font-size:0.88rem; font-weight:600; word-break:break-word; }
-
-    .check-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
-    .check-item { display:flex; align-items:center; gap:10px; font-size:0.88rem; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); }
-    .check-indicator { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .check-item.present .check-indicator { background:var(--color-low-bg); color:var(--color-low); }
-    .check-item.missing .check-indicator { background:var(--color-high-bg); color:var(--color-high); }
-    .check-name { font-weight:500; flex:1; }
-    .check-required-badge { margin-left:auto; font-size:0.62rem; font-weight:700; padding:2px 7px; border-radius:4px; background:rgba(212,175,55,0.12); color:var(--color-medium); border:1px solid rgba(212,175,55,0.2); white-space:nowrap; }
-
-    .danger-list { display:flex; flex-direction:column; gap:12px; }
-    .danger-card { border:1px solid var(--border-color); border-radius:10px; padding:14px; background:var(--bg-surface-elevated); }
-    .danger-card.severity-HIGH { border-left:3px solid var(--color-high); }
-    .danger-card.severity-MEDIUM { border-left:3px solid var(--color-medium); }
-    .danger-card.severity-LOW { border-left:3px solid var(--color-low); }
-    .danger-card-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-    .danger-severity-badge { font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:4px; letter-spacing:0.05em; }
-    .severity-HIGH .danger-severity-badge { background:var(--color-high-bg); color:var(--color-high); }
-    .severity-MEDIUM .danger-severity-badge { background:var(--color-medium-bg); color:var(--color-medium); }
-    .severity-LOW .danger-severity-badge { background:var(--color-low-bg); color:var(--color-low); }
-    .danger-title { font-size:0.88rem; font-weight:700; }
-    .danger-evidence { font-size:0.8rem; color:var(--text-secondary); font-style:italic; background:rgba(0,0,0,0.15); padding:8px 12px; border-radius:6px; margin-top:6px; line-height:1.5; border-left:2px solid var(--border-color-hover); }
-    .danger-rewrite { margin-top:10px; background:var(--color-low-bg); border:1px solid rgba(76,175,80,0.2); border-radius:6px; padding:8px 12px; font-size:0.8rem; color:var(--color-low); line-height:1.5; }
-    .ai-finding-card { background:var(--color-accent-glow); border:1px solid rgba(212,175,55,0.15); border-left:3px solid var(--border-focus); border-radius:8px; padding:10px 14px; font-size:0.82rem; color:var(--text-secondary); display:flex; align-items:center; gap:10px; }
-
-    .rec-item { display:flex; align-items:flex-start; gap:10px; font-size:0.85rem; color:var(--text-secondary); padding:8px 0; border-bottom:1px solid var(--border-color); }
-    .rec-item:last-child { border-bottom:none; }
-    .rec-bullet { color:var(--border-focus); flex-shrink:0; margin-top:2px; }
-
-    .breakdown-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
-    .breakdown-table tr { border-bottom:1px solid var(--border-color); }
-    .breakdown-table tr:last-child { border-bottom:none; }
-    .breakdown-table td { padding:9px 0; vertical-align:middle; }
-    .breakdown-pts { text-align:right; font-weight:700; }
-    .breakdown-pts.negative { color:var(--color-high); }
-    .breakdown-pts.positive { color:var(--color-low); }
-
-    .text-pane { background:rgba(0,0,0,0.25); border-radius:8px; padding:14px; font-family:'JetBrains Mono',monospace; font-size:0.76rem; line-height:1.6; max-height:360px; overflow-y:auto; color:var(--text-secondary); white-space:pre-wrap; word-break:break-word; border:1px solid var(--border-color); }
-    .empty-state { font-size:0.82rem; color:var(--text-muted); font-style:italic; }
+    .text-pane {
+      background: rgba(0,0,0,0.25);
+      border-radius: 4px;
+      padding: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      line-height: 1.6;
+      max-height: 360px;
+      overflow-y: auto;
+      color: #dee2f4;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    .empty-state {
+      font-size: 0.82rem;
+      color: #9ca3af;
+      font-style: italic;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(31, 41, 55, 0.5);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #D4AF37;
+      border-radius: 2px;
+    }
   </style>
 </head>
 <body>
 
+  <!-- TopNavBar -->
   <header class="sticky top-0 z-50 border-b border-outline-variant/10" style="background:rgba(14,19,31,0.85);backdrop-filter:blur(20px);">
     <div class="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
-      <a class="font-display text-xl text-primary tracking-tight" href="/" style="text-decoration:none;">Sydeco LightML</a>
+      <div class="flex items-center gap-3">
+        <!-- Inline SVG Logo -->
+        <svg class="h-8 w-8" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 20L40 50V100C40 137.01 65.59 171.41 100 180C134.41 171.41 160 137.01 160 100V50L100 20Z" stroke="#D4AF37" stroke-width="8" stroke-linejoin="round"/>
+          <path d="M100 60V140" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+          <path d="M70 80L130 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+          <path d="M80 120L120 120" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <a class="font-editorial text-xl text-primary tracking-tight" href="/" style="text-decoration:none;">Sydeco LightML</a>
+      </div>
       <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="/" style="text-decoration:none;">Upload New</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="/admin" style="text-decoration:none;">Dashboard</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium" href="/citations" style="text-decoration:none;">Citations</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/" style="text-decoration:none;">New Analysis</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/admin" style="text-decoration:none;">Dashboard</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/citations" style="text-decoration:none;">Citation Library</a>
       </nav>
+      <div class="flex items-center gap-6">
+        <a href="/logout" class="text-ink-secondary hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider">Secure Logout</a>
+      </div>
     </div>
   </header>
 
-  <main>
+  <main class="py-8 px-6 md:px-margin-desktop">
+    <!-- Loading State -->
     <div id="loadingState">
       <div class="spinner-ring"></div>
-      <p>Loading assessment data…</p>
+      <p class="font-body text-sm mt-3 text-on-surface-variant">Loading assessment data…</p>
     </div>
 
-    <div id="errorState">
+    <!-- Error State -->
+    <div id="errorState" style="display:none;">
       <div class="error-box">
-        <h2>Assessment Not Found</h2>
-        <p id="errorText" style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:20px;">This analysis ID does not exist or access was denied.</p>
+        <h2 class="font-editorial text-2xl text-risk-high mb-2">Assessment Not Found</h2>
+        <p id="errorText" class="font-body text-on-surface-variant text-sm mb-6">This analysis ID does not exist or access was denied.</p>
         <a href="/" class="btn btn-primary" style="text-decoration:none;">← Run New Analysis</a>
       </div>
     </div>
 
-    <div id="content">
-      <div class="glass-card file-card">
-        <div class="file-card-content">
-          <div class="file-main-info">
+    <!-- Main Results Content -->
+    <div id="content" style="display:none;">
+      <!-- File Metadata Card -->
+      <div class="glass-card file-card p-6 mb-8">
+        <div class="file-card-content flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="file-main-info flex items-center gap-4">
             <div class="file-avatar">
-              <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2px;" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
               </svg>
             </div>
             <div class="file-text-details">
-              <h2 id="fileNameEl">—</h2>
-              <div class="file-sub-details" id="fileMeta">—</div>
+              <h2 id="fileNameEl" class="font-editorial text-xl font-bold">—</h2>
+              <div class="file-sub-details font-body text-xs text-on-surface-variant mt-1" id="fileMeta">—</div>
             </div>
           </div>
-          <div class="file-actions-row">
-            <button class="btn btn-primary" onclick="downloadPDF(this)">
-              <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2px;" stroke-linecap="round" stroke-linejoin="round">
+          <div class="file-actions-row flex gap-3">
+            <button class="btn btn-primary font-body text-xs font-bold uppercase tracking-wider" onclick="downloadPDF(this)">
+              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
               </svg>
               PDF Report
             </button>
-            <a href="/" class="btn btn-outline" style="text-decoration:none;">+ New Analysis</a>
+            <a href="/" class="btn btn-outline font-body text-xs font-bold uppercase tracking-wider" style="text-decoration:none;">+ New Analysis</a>
           </div>
         </div>
       </div>
 
+      <!-- Main Columns -->
       <div class="result-container">
-
-        <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Left Sidebar: Score & Recommendations -->
+        <div class="flex flex-col gap-6">
+          <!-- Risk score hero panel -->
           <div class="glass-card risk-hero-panel" id="riskCard">
             <div class="risk-glow-effect"></div>
             <div class="risk-circle-container">
@@ -231,28 +622,33 @@
                 <span class="risk-score-label">Risk Score</span>
               </div>
             </div>
-            <div style="z-index:2;width:100%;text-align:center;">
+            <div class="relative z-10 w-full text-center">
               <span class="risk-badge" id="riskLabel">Pending</span>
               <p class="risk-hero-desc" id="riskDesc">—</p>
             </div>
+            <p style="font-size:0.68rem;color:#9ca3af;text-align:center;padding:10px 12px 0;line-height:1.5;border-top:1px solid rgba(212,175,55,0.08);margin-top:8px;">Decision support only — not legal advice. Does not guarantee validity or enforceability.</p>
           </div>
 
+          <!-- Priority Actions -->
           <div class="section-card">
             <div class="section-header" style="cursor:default;">
-              <div class="section-title-wrapper">
+              <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>
-                <span>Action Items</span>
+                <span>Priority Actions</span>
               </div>
             </div>
-            <div class="section-body"><div id="recList"></div></div>
+            <div class="section-body font-body">
+              <div id="recList" class="space-y-1"></div>
+            </div>
           </div>
         </div>
 
+        <!-- Right Side: Details and Audits -->
         <div class="details-column">
-
+          <!-- Metadata and summary -->
           <div class="section-card" x-data="{open:true}">
             <div class="section-header" @click="open=!open">
-              <div class="section-title-wrapper">
+              <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 <span>Contract Profiles &amp; Metadata</span>
               </div>
@@ -260,14 +656,15 @@
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
-            <div class="section-body" x-show="open" x-transition>
+            <div class="section-body font-body" x-show="open" x-transition>
               <div class="meta-grid" id="summaryGrid"></div>
             </div>
           </div>
 
+          <!-- Mandatory Clause Checklist -->
           <div class="section-card" x-data="{open:true}">
             <div class="section-header" @click="open=!open">
-              <div class="section-title-wrapper">
+              <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span>Mandatory Clause Checklist</span>
               </div>
@@ -275,14 +672,15 @@
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
-            <div class="section-body" x-show="open" x-transition>
+            <div class="section-body font-body" x-show="open" x-transition>
               <ul class="check-list" id="clauseList"></ul>
             </div>
           </div>
 
+          <!-- Detected Risks & Abusive Clauses -->
           <div class="section-card" x-data="{open:true}">
             <div class="section-header" @click="open=!open">
-              <div class="section-title-wrapper">
+              <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span>Detected Risks &amp; Abusive Clauses</span>
               </div>
@@ -290,14 +688,15 @@
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
-            <div class="section-body" x-show="open" x-transition>
+            <div class="section-body font-body" x-show="open" x-transition>
               <div class="danger-list" id="dangerousClauses"></div>
             </div>
           </div>
 
+          <!-- Scoring Penalty Audit -->
           <div class="section-card" x-data="{open:false}">
             <div class="section-header" @click="open=!open">
-              <div class="section-title-wrapper">
+              <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                 <span>Scoring Penalty Audit</span>
               </div>
@@ -305,14 +704,31 @@
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
-            <div class="section-body" x-show="open" x-transition>
+            <div class="section-body font-body" x-show="open" x-transition>
               <table class="breakdown-table"><tbody id="breakdownList"></tbody></table>
             </div>
           </div>
 
+          <!-- Analysis Limitations -->
           <div class="section-card" x-data="{open:false}">
             <div class="section-header" @click="open=!open">
-              <div class="section-title-wrapper">
+              <div class="section-title-wrapper font-editorial">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>
+                <span>Analysis Limitations</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body font-body" x-show="open" x-transition>
+              <div id="limitationsList" class="space-y-1 text-sm text-on-surface-variant"></div>
+            </div>
+          </div>
+
+          <!-- Extracted Agreement Text -->
+          <div class="section-card" x-data="{open:false}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 <span>Extracted Agreement Text</span>
               </div>
@@ -320,18 +736,17 @@
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
-            <div class="section-body" x-show="open" x-transition>
-              <pre class="text-pane" id="extractedText"></pre>
+            <div class="section-body font-body" x-show="open" x-transition>
+              <pre class="text-pane custom-scrollbar" id="extractedText"></pre>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </main>
 
-  <footer class="text-center py-8 text-xs border-t border-outline-variant/10" style="color:var(--text-muted);font-family:var(--font-base);">
-    © PT SYDECO — Sydeco LightML Sovereign Intelligence Protocol
+  <footer class="text-center py-8 text-xs border-t border-outline-variant/10 font-body" style="color:#9ca3af;">
+    © 2026 PT SYDECO — Contract Risk Analyzer
   </footer>
 
   <script>
@@ -347,7 +762,7 @@
   };
 
   const _RISK_DESCS = {
-    LOW:      "This agreement is generally clean. Standard signature procedures apply.",
+    LOW:      "Fewer risks detected under current rules. This does not guarantee validity or enforceability — obtain legal review before signing.",
     MEDIUM:   "Moderately critical clauses identified. Minor review or negotiations advised.",
     HIGH:     "Substantial contractual risk present. Review with legal counsel is strongly recommended.",
     CRITICAL: "Highly dangerous liabilities or illegal parameters detected. Re-negotiation advised.",
@@ -472,9 +887,27 @@
           return `<tr><td>${reason}</td><td style="text-align:right;">${ptsHtml}</td></tr>`;
         }).join('');
 
+    const limitations = buildLimitations(r, layer1, layer2);
+    document.getElementById('limitationsList').innerHTML = limitations.map(lim =>
+      `<div class="rec-item"><span class="rec-bullet"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#9ca3af;stroke-width:2px;fill:none;display:block;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg></span><span>${esc(lim)}</span></div>`
+    ).join('');
+
     document.getElementById('extractedText').textContent = row.extracted_text || '(Text unavailable)';
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('content').style.display = 'block';
+  }
+
+  function buildLimitations(r, layer1, layer2) {
+    const items = [];
+    const juris = r.jurisdiction || '';
+    if (!juris || juris === 'Unknown') items.push('Jurisdiction could not be determined with confidence. Select it manually before generating a professional report.');
+    if (r.language && r.language.toLowerCase() !== 'en') items.push('Document was translated from ' + r.language.toUpperCase() + ' to English for analysis. Translation may affect clause detection accuracy.');
+    if (!layer2.layer2_available) items.push('Semantic clause classifier (L2) was unavailable. Detection relied on rules and keywords only.');
+    const citations = (layer1.red_flags || []).concat(layer1.clause_presence || []).flatMap(f => f.citations || []);
+    const hasDraft = citations.some(c => c.status === 'draft');
+    if (hasDraft) items.push('Some legal source citations are pending lawyer verification and are not shown in this view.');
+    items.push('Automated screening does not replace qualified legal review. Results depend on the configured rules and available legal sources.');
+    return items;
   }
 
   function buildRecs(layer1, layer2, layer3, juris) {
@@ -519,10 +952,8 @@
   (async () => {
     const parts = window.location.pathname.split('/').filter(Boolean);
     const id    = parts[parts.length - 1];
-    if (!id) {
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('errorState').style.display  = 'block';
-      document.getElementById('errorText').textContent = 'No assessment reference key in URL.';
+    if (!id || id === 'result') {
+      window.location.href = '/';
       return;
     }
     try {
