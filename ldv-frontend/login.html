@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Access Gate — Sydeco LightML</title>
-  <link rel="icon" type="image/png" href="images/law icon.png">
+  <title>Access Gate — Sydeco CRA</title>
+  <link rel="icon" type="image/svg+xml" href="images/sydeco_shield.svg">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
@@ -130,14 +130,14 @@
     }
   </style>
 </head>
-<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-y-auto">
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-y-auto"
+      x-data="loginApp()" x-init="initApp()">
   <!-- Subtle Ambient Background -->
   <div class="fixed inset-0 pointer-events-none z-0">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
   </div>
 
-  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-12"
-        x-data="loginApp()">
+  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-12">
     
     <!-- Header Branding -->
     <div class="mb-10 text-center">
@@ -178,15 +178,25 @@
                 <span class="material-symbols-outlined text-[18px]">lock</span>
                 Access Key
               </label>
-              <a class="text-xs text-primary/80 hover:text-primary transition-colors" href="#">Recover Identity</a>
+              <button type="button" @click="state = 'forgot_password'; errorMsg = ''" class="text-xs text-primary/80 hover:text-primary transition-colors">Forgot Password?</button>
             </div>
             <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
                    id="password" type="password" x-model="password" placeholder="••••••••" required autocomplete="current-password"/>
           </div>
 
+          <!-- Organization Context (Optional) -->
+          <div class="space-y-2">
+            <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="orgCode">
+              <span class="material-symbols-outlined text-[18px]">corporate_fare</span>
+              Organization Context <span class="text-xs text-on-surface-variant/40">(Optional)</span>
+            </label>
+            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
+                   id="orgCode" type="text" x-model="orgCode" placeholder="Default Organization"/>
+          </div>
+
           <!-- Security Options -->
           <div class="flex items-center gap-3">
-            <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer" id="remember" type="checkbox"/>
+            <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer" id="remember" type="checkbox" x-model="rememberSession"/>
             <label class="text-xs text-on-surface-variant cursor-pointer" for="remember">Grant persistent session (24h)</label>
           </div>
 
@@ -208,7 +218,7 @@
         <footer class="pt-6 border-t border-outline-variant/10 text-center">
           <p class="text-xs text-on-surface-variant/60 leading-relaxed">
             Connection secured via AES-256 Sovereign Protocol. 
-            <br/>Need assistance? <a class="text-primary/80 hover:text-primary transition-colors" href="#">Contact System Admin</a>
+            <br/>Need assistance? <button @click="state = 'forgot_password'; errorMsg = ''" class="text-primary/80 hover:text-primary transition-colors underline font-medium">Contact System Admin</button>
           </p>
         </footer>
       </div>
@@ -218,19 +228,34 @@
     <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'mfa_challenge'" x-transition style="display:none;">
       <div class="space-y-8 relative z-10">
         <header>
-          <h2 class="font-display text-2xl text-on-surface">Multi-Factor Verification</h2>
-          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Enter the verification code from your authenticator app.</p>
+          <h2 class="font-display text-2xl text-on-surface" x-text="recoveryMode ? 'MFA Recovery Authentication' : 'Multi-Factor Verification'">Multi-Factor Verification</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm" x-text="recoveryMode ? 'Enter one of your 8-character backup recovery codes.' : 'Enter the verification code from your authenticator app.'"></p>
         </header>
 
         <form class="space-y-6" @submit.prevent="submitLogin()">
           <!-- Code Input -->
           <div class="space-y-2">
-            <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="mfaCode">
-              <span class="material-symbols-outlined text-[18px]">lock</span>
-              Verification Code
+            <label class="font-label-md text-label-sm text-on-surface-variant flex items-center justify-between uppercase tracking-widest" for="mfaCode">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">lock</span>
+                <span x-text="recoveryMode ? 'Recovery Code' : 'Verification Code'">Verification Code</span>
+              </span>
+              <button type="button" @click="toggleRecoveryMode()" class="text-xs text-primary/80 hover:text-primary transition-colors lowercase tracking-normal" x-text="recoveryMode ? 'Use TOTP app code' : 'Use recovery code'"></button>
             </label>
-            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface text-center tracking-[0.5em] px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-xl font-bold placeholder:text-on-surface/20"
-                   id="mfaCode" type="text" x-model="mfaCode" placeholder="000000" maxlength="6" required autocomplete="one-time-code"/>
+            <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface text-center px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-xl font-bold placeholder:text-on-surface/20"
+                   :class="recoveryMode ? 'font-mono tracking-widest uppercase' : 'tracking-[0.5em]'"
+                   id="mfaCode" type="text" x-model="mfaCode" :placeholder="recoveryMode ? 'a1b2c3d4' : '000000'" :maxlength="recoveryMode ? 10 : 6" required autocomplete="off"/>
+          </div>
+
+          <!-- Trusted Device Checkbox & Policy -->
+          <div class="p-4 bg-surface-container-low/50 border border-outline-variant/10 rounded space-y-3 font-body">
+            <div class="flex items-center gap-3">
+              <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer" id="trustDevice" type="checkbox" x-model="trustDevice"/>
+              <label class="text-xs font-semibold text-on-surface cursor-pointer" for="trustDevice">Trust this device for 30 days</label>
+            </div>
+            <p class="text-[11px] text-on-surface-variant/60 leading-relaxed">
+              <strong>Trusted Device Policy:</strong> Do not select this option on shared or public terminals. Selecting this will bypass multi-factor enrollment checks on this browser session for the next 30 days.
+            </p>
           </div>
 
           <!-- Error Alert -->
@@ -286,7 +311,7 @@
             </div>
           </div>
 
-          <!-- Step 3: Verification Verification Code -->
+          <!-- Step 3: Verification Code -->
           <form class="space-y-4 pt-2 border-t border-outline-variant/10" @submit.prevent="verifyMfaEnroll()">
             <div class="space-y-2">
               <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="enrollCode">
@@ -322,6 +347,89 @@
       </div>
     </section>
 
+    <!-- State 4: Recover Identity (Forgot Password) -->
+    <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'forgot_password'" x-transition style="display:none;">
+      <div class="space-y-8 relative z-10">
+        <header>
+          <h2 class="font-display text-2xl text-on-surface">Recover Access coordinates</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Submit your institutional email to request a security key reset.</p>
+        </header>
+
+        <!-- Form Block -->
+        <div x-show="!recoveryRequested">
+          <form class="space-y-6" @submit.prevent="submitRecoveryRequest()">
+            <div class="space-y-2">
+              <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="recoveryEmail">
+                <span class="material-symbols-outlined text-[18px]">mail</span>
+                Institutional Email
+              </label>
+              <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
+                     id="recoveryEmail" type="email" x-model="recoveryEmail" placeholder="name@sydeco.legal" required autocomplete="email"/>
+            </div>
+
+            <p class="text-xs text-on-surface-variant/70 leading-relaxed font-body">
+              <strong>Sovereign Policy Note:</strong> In compliance with secure corporate identity directives, password credentials cannot be self-reset. Submitting this form issues an audit event and alerts your organization's security administrator to release a temporary access token.
+            </p>
+
+            <div class="flex gap-4">
+              <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+                Cancel
+              </button>
+              <button class="gold-prestige-btn flex-[2] py-3 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center"
+                      type="submit" :disabled="loading">
+                <span x-text="loading ? 'Requesting…' : 'Alert Security Admin'">Alert Security Admin</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Success Block -->
+        <div x-show="recoveryRequested" class="space-y-6 text-sm font-body">
+          <div class="flex gap-3 bg-primary/10 border border-primary/30 p-4 rounded text-primary-fixed">
+            <span class="material-symbols-outlined text-primary text-[24px] shrink-0">check_circle</span>
+            <div>
+              <p class="font-bold text-sm">Access Request Initiated</p>
+              <p class="text-xs text-on-surface-variant/90 mt-1">Coordination alert dispatched to your system security officers.</p>
+            </div>
+          </div>
+          <p class="text-on-surface-variant leading-relaxed">
+            Please contact your organization's designated administrator or internal IT Help Desk to authorize the credential release for <strong class="text-on-surface font-semibold" x-text="recoveryEmail"></strong>.
+          </p>
+          <button type="button" @click="resetToLogin(); recoveryRequested = false;" class="w-full py-3.5 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+            Return to Sign In
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- State 5: Session Expired Alert Screen -->
+    <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'session_expired'" x-transition style="display:none;">
+      <div class="space-y-8 relative z-10 text-center flex flex-col items-center">
+        <div class="p-5 rounded-full bg-red-950/40 border border-red-500/20 text-red-400">
+          <span class="material-symbols-outlined text-[48px] animate-pulse">lock_person</span>
+        </div>
+
+        <header class="space-y-2">
+          <h2 class="font-display text-2xl text-on-surface">Security Session Expired</h2>
+          <p class="text-red-300 font-semibold text-xs tracking-wider uppercase">Inactivity Limit Reached</p>
+        </header>
+
+        <p class="text-on-surface-variant text-sm leading-relaxed font-body">
+          To protect proprietary legal assets and institutional configurations, your sovereign access session has been terminated. Any unsaved contract analysis progress has been safely wiped from the browser viewport.
+        </p>
+
+        <div class="w-full pt-4 space-y-4">
+          <button type="button" @click="resetToLogin()"
+                  class="gold-prestige-btn w-full py-4 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest">
+            Re-Authenticate Portal
+          </button>
+          <p class="text-[10px] text-on-surface-variant/50">
+            Secure Endpoint: PT SYDECO LightML Contract Risk Analyzer v1.0
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer class="mt-auto py-8 w-full flex flex-col md:flex-row justify-between items-center opacity-40 text-xs z-10">
       <div class="tracking-wide">
@@ -341,13 +449,42 @@
         email: '',
         password: '',
         mfaCode: '',
+        orgCode: '',
+        recoveryEmail: '',
+        rememberSession: false,
+        trustDevice: false,
+        recoveryMode: false,
         loading: false,
         errorMsg: '',
-        state: 'login', // 'login', 'mfa_challenge', 'mfa_enroll'
+        state: 'login', // 'login', 'mfa_challenge', 'mfa_enroll', 'forgot_password', 'session_expired'
+        recoveryRequested: false,
         mfaSetup: {
           secret: '',
           qrCodeUrl: '',
           recoveryCodes: []
+        },
+
+        initApp() {
+          const params = new URLSearchParams(window.location.search);
+          if (params.has('expired') || params.get('reason') === 'session_expired') {
+            this.state = 'session_expired';
+            // Clear URL params cleanly
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        },
+
+        toggleRecoveryMode() {
+          this.recoveryMode = !this.recoveryMode;
+          this.mfaCode = '';
+          this.errorMsg = '';
+        },
+
+        submitRecoveryRequest() {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.recoveryRequested = true;
+          }, 1000);
         },
 
         async submitLogin() {
@@ -357,12 +494,21 @@
             const resp = await fetch('/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: this.email, password: this.password, mfa_code: this.mfaCode }),
+              body: JSON.stringify({ 
+                email: this.email, 
+                password: this.password, 
+                mfa_code: this.mfaCode,
+                org_code: this.orgCode
+              }),
             });
             const data = await resp.json().catch(() => ({}));
             
             if (resp.status === 429) {
               this.errorMsg = 'Too many login attempts. Please wait before trying again.';
+              return;
+            }
+            if (resp.status === 403) {
+              this.errorMsg = 'Your account has been temporarily locked or disabled. Contact Security Admin.';
               return;
             }
             if (resp.ok) {
@@ -372,10 +518,19 @@
                 return;
               }
               if (data.mfa_enroll_required) {
+                // If device was previously trusted in the last 30 days, skip
+                if (localStorage.getItem('mfa_skipped_alert') === 'true' && this.trustDevice) {
+                  await this.skipMfaEnroll();
+                  return;
+                }
                 await this.initMfaSetup();
                 return;
               }
               if (data.ok) {
+                if (this.trustDevice) {
+                  localStorage.setItem('mfa_device_trusted', 'true');
+                  localStorage.setItem('mfa_device_trusted_until', Date.now() + 30 * 24 * 60 * 60 * 1000);
+                }
                 window.location.href = '/';
                 return;
               }
@@ -463,6 +618,7 @@
           this.state = 'login';
           this.mfaCode = '';
           this.errorMsg = '';
+          this.recoveryMode = false;
         }
       }
     }

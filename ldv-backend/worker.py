@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 _executor = ThreadPoolExecutor(max_workers=1)
 
 
-def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None) -> None:
+def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None, override_jurisdiction: str | None = None, override_type: str | None = None) -> None:
     import database
     from app import _run_analysis, translate_text, logger as app_logger
     from detector.detector_explain import layer4_explain
@@ -19,22 +19,33 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
     import inspect
 
     try:
-        database.update_analysis(public_id, status="running")
+        database.update_analysis(public_id, status="running", progress_pct=20, progress_stage="extracting")
         t_start = time.monotonic()
 
         # Run core L1-L3 analysis
-        from detector.detector_jurisdiction import detect_jurisdiction
-        jurisdiction = detect_jurisdiction(text)
+        if override_jurisdiction:
+            jurisdiction = override_jurisdiction
+        else:
+            from detector.detector_jurisdiction import detect_jurisdiction
+            jurisdiction = detect_jurisdiction(text)
+        
+        database.update_analysis(public_id, status="running", progress_pct=40, progress_stage="classifying")
         
         # Check signature to support 3-arg mocks in tests
         sig = inspect.signature(_run_analysis)
+        kwargs = {}
         if "policy_name" in sig.parameters:
-            result = _run_analysis(text, jurisdiction, lang, policy_name=policy_name)
-        else:
-            result = _run_analysis(text, jurisdiction, lang)
+            kwargs["policy_name"] = policy_name
+        if "override_type" in sig.parameters:
+            kwargs["override_type"] = override_type
+
+        database.update_analysis(public_id, status="running", progress_pct=60, progress_stage="analyzing")
+        result = _run_analysis(text, jurisdiction, lang, **kwargs)
+        database.update_analysis(public_id, status="running", progress_pct=80, progress_stage="scoring")
 
         # Run L4 optional LLM explanation
         if explain:
+            database.update_analysis(public_id, status="running", progress_pct=90, progress_stage="preparing")
             layer1 = result.get("layer1")
             layer2 = result.get("layer2")
             layer3 = result.get("layer3")
@@ -62,7 +73,9 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
             document_type=doc_type_str,
             risk_score=layer3_data.get("score"),
             risk_label=layer3_data.get("label"),
-            result=result
+            result=result,
+            progress_pct=100,
+            progress_stage="preparing"
         )
 
         app_logger.info(
@@ -73,11 +86,11 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         err_msg = f"{str(e)}\n{traceback.format_exc()}"
         app_logger.error("ASYNC WORKER ERROR: id=%s err=%s", public_id, err_msg)
         try:
-            database.update_analysis(public_id, status="failed", error_message=err_msg)
+            database.update_analysis(public_id, status="failed", error_message=err_msg, progress_pct=100, progress_stage="preparing")
         except Exception as db_err:
             app_logger.critical("ASYNC WORKER DB UPDATE FAILED: id=%s err=%s", public_id, db_err)
 
 
-def submit_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None) -> None:
+def submit_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None, override_jurisdiction: str | None = None, override_type: str | None = None) -> None:
     """Submit a contract analysis job to the background worker pool."""
-    _executor.submit(_run_job, public_id, text, lang, explain, policy_name)
+    _executor.submit(_run_job, public_id, text, lang, explain, policy_name, override_jurisdiction, override_type)

@@ -25,8 +25,20 @@ def _load_model():
         logger.info("Loading model %s...", MODEL_ID)
         device = "cuda" if torch.cuda.is_available() else "cpu"
         dtype = torch.float16 if device == "cuda" else torch.float32
-        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-        m = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=dtype).to(device)
+        
+        # ponytail: prevent blocking background threads with massive model downloads unless explicitly allowed
+        download_allowed = os.getenv("LDV_DOWNLOAD_MODELS", "0") == "1"
+        hf_cache_dir = os.getenv("HF_HOME") or os.path.expanduser("~/.cache/huggingface")
+        model_slug = MODEL_ID.replace("/", "--")
+        qwen_cached = os.path.exists(os.path.join(hf_cache_dir, "hub", f"models--{model_slug}"))
+        
+        local_files_only = not download_allowed and not qwen_cached
+        if local_files_only:
+            logger.warning("Model %s is not cached locally and LDV_DOWNLOAD_MODELS is not 1. Skipping download.", MODEL_ID)
+            raise RuntimeError("Model not cached locally and downloads are disabled.")
+
+        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, local_files_only=local_files_only)
+        m = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=dtype, local_files_only=local_files_only).to(device)
         m.training = False
         _model = m
         logger.info("Model loaded on %s.", device)

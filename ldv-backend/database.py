@@ -141,6 +141,10 @@ def init_db() -> None:
             conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
         if "error_message" not in cols:
             conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
+        if "progress_pct" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN progress_pct INTEGER DEFAULT 0")
+        if "progress_stage" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN progress_stage TEXT DEFAULT 'queued'")
 
         # Check if result_json has an outdated NOT NULL constraint
         info = conn.execute("PRAGMA table_info(analyses)").fetchall()
@@ -280,6 +284,8 @@ def update_analysis(
     risk_label: str | None = None,
     result: dict | None = None,
     error_message: str | None = None,
+    progress_pct: int | None = None,
+    progress_stage: str | None = None,
 ) -> None:
     updates = ["status = ?"]
     params = [status]
@@ -301,6 +307,12 @@ def update_analysis(
     if error_message is not None:
         updates.append("error_message = ?")
         params.append(error_message)
+    if progress_pct is not None:
+        updates.append("progress_pct = ?")
+        params.append(progress_pct)
+    if progress_stage is not None:
+        updates.append("progress_stage = ?")
+        params.append(progress_stage)
     params.append(public_id)
     query = f"UPDATE analyses SET {', '.join(updates)} WHERE public_id = ?"
     with _conn() as db:
@@ -312,6 +324,7 @@ def get_result(public_id: str) -> dict | None:
         row = db.execute(
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.jurisdiction,
                       a.document_type, a.result_json, a.analyzed_at, a.status, a.error_message,
+                      a.progress_pct, a.progress_stage,
                       d.original_filename, d.file_size, d.file_type, d.language,
                       d.extracted_text, d.uploaded_at, d.org_id
                FROM analyses a
@@ -345,13 +358,13 @@ def get_stats() -> dict:
         total_analyses = db.execute("SELECT COUNT(*) FROM analyses").fetchone()[0]
         avg            = db.execute("SELECT AVG(risk_score) FROM analyses").fetchone()[0]
         dist           = db.execute(
-            "SELECT risk_label, COUNT(*) AS cnt FROM analyses GROUP BY risk_label"
+            "SELECT COALESCE(risk_label, 'PENDING') AS label, COUNT(*) AS cnt FROM analyses GROUP BY risk_label"
         ).fetchall()
         return {
             "total_documents":   total_docs,
             "total_analyses":    total_analyses,
             "average_risk_score": round(avg, 1) if avg else 0,
-            "distribution":      {r["risk_label"]: r["cnt"] for r in dist},
+            "distribution":      {r["label"]: r["cnt"] for r in dist},
         }
 
 
@@ -570,7 +583,7 @@ def get_audit_log(limit: int = 100, org_id: int | None = None) -> list[dict]:
             rows = db.execute(
                 "SELECT * FROM audit_log ORDER BY ts DESC LIMIT ?", (limit,)
             ).fetchall()
-        return [dict(r) for r in rows]
+        return [{**dict(r), "timestamp": r["ts"]} for r in rows]
 
 
 def get_all_users() -> list[dict]:
@@ -610,3 +623,12 @@ def count_active_admins() -> int:
     with _conn() as db:
         row = db.execute("SELECT COUNT(*) FROM users WHERE role = 'admin' AND active = 1").fetchone()
         return row[0] if row else 0
+
+
+def cleanup_stuck_analyses() -> None:
+    """Reset any analysis records left in 'running' or 'queued' status on startup."""
+    with _conn() as db:
+        db.execute(
+            "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
+            "WHERE status IN ('running', 'queued')"
+        )

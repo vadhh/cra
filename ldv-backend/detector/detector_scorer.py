@@ -261,7 +261,7 @@ def _required_clauses_report(features: dict, lang: str) -> list[dict]:
                 "reason":          g["reason"],
                 "recommendation":  g["recommendation"],
                 "business_impact": g["business_impact"],
-                "source":          "ilham_required_clauses",
+                "source":          "kb_required_clauses",
             })
         report.append(entry)
     return report

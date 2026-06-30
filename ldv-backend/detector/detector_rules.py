@@ -517,7 +517,7 @@ def check_clause_presence(text: str, jurisdiction: Optional[str] = None) -> list
                     evidence = text[start:end].strip().replace("\n", " ")
                     evidence_span = [idx, idx + len(kw)]
                     present = True
-                    source = "ilham_keywords"
+                    source = "kb_keywords"
                     break
 
         results.append({

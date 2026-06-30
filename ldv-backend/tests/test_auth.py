@@ -96,6 +96,19 @@ def test_admin_endpoints_gated():
     assert client.get("/api/v1/stats", headers={"Authorization": "Bearer tok-admin@a.com"}).status_code == 200
 
 
+def test_get_logout():
+    c = app_module.app.test_client()
+    res = c.post("/login", json={"email": "a@a.com", "password": "pw"})
+    assert res.status_code == 200
+    with c.session_transaction() as sess:
+        assert sess.get("uid") is not None
+    res_logout = c.get("/logout")
+    assert res_logout.status_code == 302
+    assert "/login" in res_logout.headers.get("Location", "")
+    with c.session_transaction() as sess:
+        assert sess.get("uid") is None
+
+
 if __name__ == "__main__":
     setup_module(None)
     test_anonymous_blocked()
@@ -103,4 +116,5 @@ if __name__ == "__main__":
     test_bad_login()
     test_owner_and_cross_org_and_admin()
     test_admin_endpoints_gated()
+    test_get_logout()
     print("OK")

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Risk Assessment — Sydeco LightML</title>
-  <link rel="icon" type="image/png" href="images/law icon.png">
+  <title>Risk Assessment — Sydeco CRA</title>
+  <link rel="icon" type="image/svg+xml" href="images/sydeco_shield.svg">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
@@ -24,7 +24,7 @@
             "secondary": "#f1bc8c",
             "primary": "#d4af37",
             "inverse-on-surface": "#2b303d",
-            "on-primary": "#241a00",
+            "on-primary": "#101828",
             "on-primary-container": "#554300",
             "on-secondary-fixed-variant": "#633f19",
             "surface-tint": "#d4af37",
@@ -123,10 +123,6 @@
     .font-editorial {
       font-family: 'Playfair Display', serif;
     }
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-      vertical-align: middle;
-    }
     .glass-card {
       background: rgba(14, 19, 31, 0.4);
       backdrop-filter: blur(20px);
@@ -178,8 +174,6 @@
       padding: 18px;
       border-top: 1px solid rgba(212, 175, 55, 0.1);
     }
-    
-    /* Risk Levels colors */
     .level-LOW { --level-color: var(--color-low); --level-bg: var(--color-low-bg); }
     .level-MEDIUM { --level-color: var(--color-medium); --level-bg: var(--color-medium-bg); }
     .level-HIGH { --level-color: var(--color-high); --level-bg: var(--color-high-bg); }
@@ -278,7 +272,6 @@
       color: #d0c5af;
       line-height: 1.5;
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -316,7 +309,6 @@
       opacity: 0.4;
       cursor: not-allowed;
     }
-
     .meta-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -341,7 +333,6 @@
       font-weight: 600;
       word-break: break-word;
     }
-
     .check-list {
       list-style: none;
       display: flex;
@@ -390,7 +381,6 @@
       border: 1px solid rgba(212,175,55,0.2);
       white-space: nowrap;
     }
-
     .danger-list {
       display: flex;
       flex-direction: column;
@@ -402,9 +392,11 @@
       padding: 14px;
       background: rgba(48, 53, 66, 0.3);
     }
+    .danger-card.severity-CRITICAL { border-left: 3px solid #7A271A; }
     .danger-card.severity-HIGH { border-left: 3px solid #991B1B; }
     .danger-card.severity-MEDIUM { border-left: 3px solid #B45309; }
     .danger-card.severity-LOW { border-left: 3px solid #065F46; }
+    
     .danger-card-header {
       display: flex;
       align-items: center;
@@ -418,6 +410,7 @@
       border-radius: 2px;
       letter-spacing: 0.05em;
     }
+    .severity-CRITICAL .danger-severity-badge { background: rgba(122,39,26,0.15); color: #ffb4ab; }
     .severity-HIGH .danger-severity-badge { background: rgba(217,45,32,0.15); color: #ffb4ab; }
     .severity-MEDIUM .danger-severity-badge { background: rgba(220,104,3,0.15); color: #f1bc8c; }
     .severity-LOW .danger-severity-badge { background: rgba(3,152,85,0.15); color: #039855; }
@@ -459,7 +452,6 @@
       align-items: center;
       gap: 10px;
     }
-
     .rec-item {
       display: flex;
       align-items: flex-start;
@@ -477,7 +469,6 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
-
     .breakdown-table {
       width: 100%;
       border-collapse: collapse;
@@ -503,7 +494,6 @@
     .breakdown-pts.positive {
       color: #039855;
     }
-
     .text-pane {
       background: rgba(0,0,0,0.25);
       border-radius: 4px;
@@ -511,7 +501,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.76rem;
       line-height: 1.6;
-      max-height: 360px;
+      max-height: 380px;
       overflow-y: auto;
       color: #dee2f4;
       white-space: pre-wrap;
@@ -533,9 +523,21 @@
       background: #D4AF37;
       border-radius: 2px;
     }
+    
+    /* Responsive Grid */
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 1024px) {
+      .grid-side { grid-column: span 12 / span 12 !important; }
+      .grid-main { grid-column: span 12 / span 12 !important; }
+    }
   </style>
 </head>
-<body>
+<body class="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col justify-between"
+      x-data="resultApp()" x-init="init()">
 
   <!-- TopNavBar -->
   <header class="sticky top-0 z-50 border-b border-outline-variant/10" style="background:rgba(14,19,31,0.85);backdrop-filter:blur(20px);">
@@ -548,7 +550,7 @@
           <path d="M70 80L130 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
           <path d="M80 120L120 120" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
         </svg>
-        <a class="font-editorial text-xl text-primary tracking-tight" href="/" style="text-decoration:none;">Sydeco LightML</a>
+        <a class="font-editorial text-xl text-primary tracking-tight" href="/" style="text-decoration:none;">Sydeco CRA</a>
       </div>
       <nav class="hidden md:flex items-center gap-6 text-sm">
         <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/" style="text-decoration:none;">New Analysis</a>
@@ -556,80 +558,175 @@
         <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/citations" style="text-decoration:none;">Citation Library</a>
       </nav>
       <div class="flex items-center gap-6">
-        <a href="/logout" class="text-ink-secondary hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider">Secure Logout</a>
+        <a href="/logout" class="text-on-surface-variant hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider" style="text-decoration:none;">Secure Logout</a>
       </div>
     </div>
   </header>
 
-  <main class="py-8 px-6 md:px-margin-desktop">
+  <main class="py-8 px-6 md:px-margin-desktop max-w-[1280px] mx-auto w-full flex-1">
+    
     <!-- Loading State -->
-    <div id="loadingState">
-      <div class="spinner-ring"></div>
-      <p class="font-body text-sm mt-3 text-on-surface-variant">Loading assessment data…</p>
+    <div x-show="loading" class="flex flex-col items-center justify-center py-20">
+      <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+      <p class="font-body text-sm mt-3 text-on-surface-variant">Decrypting and loading assessment data…</p>
     </div>
 
     <!-- Error State -->
-    <div id="errorState" style="display:none;">
-      <div class="error-box">
-        <h2 class="font-editorial text-2xl text-risk-high mb-2">Assessment Not Found</h2>
-        <p id="errorText" class="font-body text-on-surface-variant text-sm mb-6">This analysis ID does not exist or access was denied.</p>
-        <a href="/" class="btn btn-primary" style="text-decoration:none;">← Run New Analysis</a>
+    <div x-show="!loading && errorMsg" style="display:none;" class="max-w-xl mx-auto py-12">
+      <div class="bg-red-950/20 border border-red-500/30 rounded p-8 text-center space-y-6">
+        <h2 class="font-editorial text-2xl text-red-400">Assessment Error</h2>
+        <p class="font-body text-on-surface-variant text-sm" x-text="errorMsg"></p>
+        <a href="/" class="btn btn-primary inline-flex">← Run New Analysis</a>
+      </div>
+    </div>
+
+    <!-- In-Progress Processing State -->
+    <div x-show="!loading && !errorMsg && isProcessing" style="display:none;" class="max-w-xl mx-auto py-12 flex flex-col items-center py-6 text-center space-y-8">
+      <div class="relative flex items-center justify-center">
+        <div class="w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></div>
+        <span class="material-symbols-outlined text-primary text-[36px] absolute">sync_saved_locally</span>
+      </div>
+      <div class="space-y-2">
+        <h3 class="font-editorial text-2xl text-primary">Sovereign Pipeline Processing…</h3>
+        <p class="text-on-surface-variant text-sm font-body max-w-lg">
+          Your document is executing inside the secure partition. This report will automatically load upon completion.
+        </p>
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-full bg-surface-container-low p-5 border border-outline-variant/15 rounded-md space-y-3 text-left">
+        <div class="flex justify-between items-center text-xs font-semibold font-body">
+          <span class="text-on-surface-variant uppercase tracking-widest font-bold text-[10px]">Overall Progress</span>
+          <span class="text-primary font-mono font-bold text-sm" x-text="progressPct + '%'">0%</span>
+        </div>
+        <div class="w-full bg-surface-variant/40 rounded-full h-2 overflow-hidden border border-outline-variant/10">
+          <div class="bg-gradient-to-r from-primary to-primary-container h-full transition-all duration-500 ease-out" :style="'width: ' + progressPct + '%'"></div>
+        </div>
+        <div class="text-[10px] text-on-surface-variant/70 font-mono tracking-tight text-right uppercase" x-text="progressText">
+          Queued…
+        </div>
       </div>
     </div>
 
     <!-- Main Results Content -->
-    <div id="content" style="display:none;">
-      <!-- File Metadata Card -->
-      <div class="glass-card file-card p-6 mb-8">
-        <div class="file-card-content flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div class="file-main-info flex items-center gap-4">
-            <div class="file-avatar">
-              <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>
-              </svg>
+    <div x-show="!loading && !errorMsg && !isProcessing" style="display:none;" class="space-y-8">
+      
+      <!-- Case Header (Priority 1) -->
+      <div class="glass-card p-6 border-l-4 border-l-primary">
+        <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-6">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-3">
+              <h2 class="font-editorial text-2xl font-bold text-on-surface" x-text="result ? result.original_filename : 'Agreement Document'"></h2>
+              <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+                    :class="{'bg-green-900/40 text-green-400 border border-green-500/30': reviewStatus === 'Completed', 'bg-amber-900/40 text-amber-300 border border-amber-500/30': reviewStatus === 'Under Review', 'bg-blue-900/40 text-blue-300 border border-blue-500/30': reviewStatus === 'Draft'}"
+                    x-text="reviewStatus"></span>
             </div>
-            <div class="file-text-details">
-              <h2 id="fileNameEl" class="font-editorial text-xl font-bold">—</h2>
-              <div class="file-sub-details font-body text-xs text-on-surface-variant mt-1" id="fileMeta">—</div>
+            <div class="font-body text-xs text-on-surface-variant flex flex-wrap items-center gap-x-4 gap-y-2">
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">file_present</span> <span x-text="docMetaString"></span></span>
+              <span class="text-on-surface-variant/40">|</span>
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">corporate_fare</span> <span x-text="orgMetaString"></span></span>
+              <span class="text-on-surface-variant/40">|</span>
+              <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">person_outline</span> <span x-text="ownerMetaString"></span></span>
             </div>
           </div>
-          <div class="file-actions-row flex gap-3">
-            <button class="btn btn-primary font-body text-xs font-bold uppercase tracking-wider" onclick="downloadPDF(this)">
-              <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-              </svg>
-              PDF Report
+          <div class="flex items-center gap-3 font-body">
+            <button class="btn btn-primary text-xs tracking-wider" :disabled="pdfLoading" @click="downloadReport()">
+              <span class="material-symbols-outlined text-[18px]" x-text="pdfLoading ? 'sync' : 'download'"></span>
+              <span x-text="pdfLoading ? 'Generating…' : 'PDF Report'">PDF Report</span>
             </button>
-            <a href="/" class="btn btn-outline font-body text-xs font-bold uppercase tracking-wider" style="text-decoration:none;">+ New Analysis</a>
+            <a href="/" class="btn btn-outline text-xs tracking-wider" style="text-decoration:none;">+ New Scan</a>
           </div>
         </div>
       </div>
 
-      <!-- Main Columns -->
-      <div class="result-container">
-        <!-- Left Sidebar: Score & Recommendations -->
-        <div class="flex flex-col gap-6">
-          <!-- Risk score hero panel -->
-          <div class="glass-card risk-hero-panel" id="riskCard">
+      <!-- Bento Grid Layout -->
+      <div class="result-grid">
+        
+        <!-- LEFT SIDEBAR: SCORE, RECOMMENDATIONS, ACTIONS (span 4 cols) -->
+        <div class="grid-side lg:col-span-4 flex flex-col gap-6">
+          
+          <!-- Risk Score Hero Panel (Priority 2) -->
+          <div class="glass-card risk-hero-panel" :class="'level-' + riskLevel" id="riskCard">
             <div class="risk-glow-effect"></div>
+            
+            <!-- Provisional / Calibrated Status -->
+            <div class="absolute top-4 right-4 z-10 flex gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase border"
+                    :class="isCalibrated ? 'bg-teal-950/40 text-teal-400 border-teal-500/20' : 'bg-purple-950/40 text-purple-300 border-purple-500/20'"
+                    x-text="isCalibrated ? 'Calibrated' : 'Provisional'"></span>
+            </div>
+
+            <!-- Score ring -->
             <div class="risk-circle-container">
               <svg class="risk-circle-svg" viewBox="0 0 130 130">
                 <circle class="risk-circle-bg" cx="65" cy="65" r="58"/>
-                <circle class="risk-circle-bar" id="scoreCircle" cx="65" cy="65" r="58"/>
+                <circle class="risk-circle-bar" id="scoreCircle" cx="65" cy="65" r="58"
+                        :style="circleStyle"/>
               </svg>
               <div class="risk-score-value">
-                <span class="risk-score-num" id="riskScore">—</span>
+                <span class="risk-score-num" x-text="riskScore"></span>
                 <span class="risk-score-label">Risk Score</span>
               </div>
             </div>
-            <div class="relative z-10 w-full text-center">
-              <span class="risk-badge" id="riskLabel">Pending</span>
-              <p class="risk-hero-desc" id="riskDesc">—</p>
+
+            <!-- Score label -->
+            <div class="relative z-10 w-full text-center space-y-2">
+              <span class="risk-badge" x-text="riskLevel"></span>
+              <p class="risk-hero-desc font-body" x-text="riskDescription"></p>
             </div>
-            <p style="font-size:0.68rem;color:#9ca3af;text-align:center;padding:10px 12px 0;line-height:1.5;border-top:1px solid rgba(212,175,55,0.08);margin-top:8px;">Decision support only — not legal advice. Does not guarantee validity or enforceability.</p>
+
+            <!-- Separate Confidence Meter -->
+            <div class="w-full pt-4 border-t border-outline-variant/10 z-10 flex flex-col items-center gap-2">
+              <div class="flex items-center justify-between w-full px-2 text-xs font-body text-on-surface-variant">
+                <span>Pipeline Confidence:</span>
+                <span class="font-bold text-on-surface" x-text="confidencePercent + '%'"></span>
+              </div>
+              <div class="flex gap-1.5 w-full px-2">
+                <div class="h-2 flex-1 rounded-full" :class="confidencePercent >= 33 ? confidenceColor : 'bg-surface-container-highest'"></div>
+                <div class="h-2 flex-1 rounded-full" :class="confidencePercent >= 65 ? confidenceColor : 'bg-surface-container-highest'"></div>
+                <div class="h-2 flex-1 rounded-full" :class="confidencePercent >= 85 ? confidenceColor : 'bg-surface-container-highest'"></div>
+              </div>
+              <p class="text-[10px] text-on-surface-variant/60 text-center font-body italic mt-1">
+                Calibrated against doc type NLI classifier telemetry.
+              </p>
+            </div>
+
+            <p style="font-size:0.68rem;color:#9ca3af;text-align:center;padding:10px 12px 0;line-height:1.5;border-top:1px solid rgba(212,175,55,0.08);margin-top:8px;">
+              Decision support only — not legal advice. Does not guarantee validity or enforceability.
+            </p>
           </div>
 
-          <!-- Priority Actions -->
+          <!-- Next Actions (Priority 5) -->
+          <div class="glass-card p-6 space-y-4">
+            <h3 class="font-editorial text-sm font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10 pb-2">Next Actions</h3>
+            <div class="space-y-3 font-body text-xs">
+              <div class="flex flex-col gap-1 bg-surface-container/20 p-3 rounded border border-outline-variant/10">
+                <span class="text-[10px] uppercase text-on-surface-variant/60 font-semibold">Current Assignee</span>
+                <span class="font-bold text-on-surface" x-text="reviewerName"></span>
+              </div>
+              
+              <button class="w-full py-3 rounded border border-primary/20 hover:bg-primary/5 text-primary font-semibold transition-all uppercase tracking-wider"
+                      @click="showAssignModal = true">
+                Assign Reviewer
+              </button>
+
+              <button class="w-full py-3 rounded text-on-primary font-bold transition-all uppercase tracking-wider"
+                      :class="reviewSubmitted ? 'bg-teal-700/40 text-teal-300 border border-teal-500/20' : 'gold-button'"
+                      :disabled="reviewSubmitted"
+                      @click="submitForReview()">
+                <span x-text="reviewSubmitted ? 'Submitted for Review' : 'Submit for Review'"></span>
+              </button>
+
+              <!-- Version comparison stub -->
+              <div class="pt-2">
+                <label class="text-[10px] uppercase text-on-surface-variant/60 font-semibold block mb-1">Compare Versions</label>
+                <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-xs">
+                  <option value="">No previous versions</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Priority Actions (Priority 3) -->
           <div class="section-card">
             <div class="section-header" style="cursor:default;">
               <div class="section-title-wrapper font-editorial">
@@ -638,30 +735,154 @@
               </div>
             </div>
             <div class="section-body font-body">
-              <div id="recList" class="space-y-1"></div>
+              <div class="space-y-1">
+                <template x-for="rec in recommendations">
+                  <div class="rec-item">
+                    <span class="rec-bullet">
+                      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#d4af37;stroke-width:2.5px;fill:none;display:block;">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <span x-text="rec"></span>
+                  </div>
+                </template>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Right Side: Details and Audits -->
-        <div class="details-column">
-          <!-- Metadata and summary -->
-          <div class="section-card" x-data="{open:true}">
-            <div class="section-header" @click="open=!open">
+        <!-- RIGHT MAIN COLUMN: FINDINGS, CLUES, TEXT (span 8 cols) -->
+        <div class="grid-main lg:col-span-8 flex flex-col gap-6">
+          
+          <!-- Findings View & Filters (Priority 3 & 4) -->
+          <div class="section-card">
+            <div class="section-header" style="cursor:default;">
               <div class="section-title-wrapper font-editorial">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                <span>Contract Profiles &amp; Metadata</span>
+                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Detected Findings &amp; Anomalies</span>
               </div>
-              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
-                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
+              <span class="text-xs text-on-surface-variant font-body font-semibold" x-text="'Showing ' + filteredFindings.length + ' of ' + findings.length"></span>
             </div>
-            <div class="section-body font-body" x-show="open" x-transition>
-              <div class="meta-grid" id="summaryGrid"></div>
+            
+            <div class="section-body font-body space-y-6">
+              <!-- Advanced Filtering & Searching (Section 10.F) -->
+              <div class="flex flex-col md:flex-row gap-4 p-4 bg-surface-container-low border border-outline-variant/15 rounded-md text-xs">
+                <!-- Search bar -->
+                <div class="flex-1 relative flex items-center">
+                  <span class="material-symbols-outlined text-[18px] text-on-surface-variant/40 absolute left-3">search</span>
+                  <input type="text" x-model="filters.search" placeholder="Search evidence or categories…"
+                         class="w-full bg-surface-container border border-outline-variant/20 rounded pl-10 pr-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0"/>
+                </div>
+                <!-- Severity Filter -->
+                <div class="flex flex-col gap-1 shrink-0">
+                  <select x-model="filters.severity" class="bg-surface-container border border-outline-variant/20 rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0">
+                    <option value="all">All Severities</option>
+                    <option value="CRITICAL">Critical Severity</option>
+                    <option value="HIGH">High Severity</option>
+                    <option value="MEDIUM">Medium Severity</option>
+                    <option value="LOW">Low Severity</option>
+                  </select>
+                </div>
+                <!-- Category Filter -->
+                <div class="flex flex-col gap-1 shrink-0">
+                  <select x-model="filters.category" class="bg-surface-container border border-outline-variant/20 rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0">
+                    <option value="all">All Categories</option>
+                    <option value="Unfair Clause">Unfair Clauses</option>
+                    <option value="AI Classifier Finding">AI Classifier Findings</option>
+                    <option value="Missing Required Clause">Missing Required Clauses</option>
+                  </select>
+                </div>
+                <!-- Status Filter -->
+                <div class="flex flex-col gap-1 shrink-0">
+                  <select x-model="filters.status" class="bg-surface-container border border-outline-variant/20 rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0">
+                    <option value="all">All Statuses</option>
+                    <option value="Unreviewed">Unreviewed</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Findings List -->
+              <div class="space-y-4">
+                <template x-for="finding in filteredFindings" :key="finding.id + finding.title">
+                  <div class="danger-card relative" :class="'severity-' + finding.severity">
+                    <div class="flex justify-between items-start gap-4">
+                      <div class="space-y-2 flex-1">
+                        <div class="danger-card-header">
+                          <span class="danger-severity-badge" x-text="finding.severity"></span>
+                          <span class="danger-title text-on-surface font-bold" x-text="finding.title"></span>
+                        </div>
+                        <div class="text-[10px] text-on-surface-variant/60 font-semibold uppercase tracking-wider flex items-center gap-4">
+                          <span x-text="'Category: ' + finding.category"></span>
+                          <span>·</span>
+                          <span x-text="'Source: ' + finding.source"></span>
+                          <span>·</span>
+                          <span x-text="'Status: ' + finding.status" :class="{'text-green-400': finding.status === 'Confirmed', 'text-red-400': finding.status === 'Rejected'}"></span>
+                        </div>
+                        
+                        <!-- Evidence text highlight check -->
+                        <template x-if="finding.evidence">
+                          <div class="danger-evidence" x-text="'“' + finding.evidence + '”'"></div>
+                        </template>
+                        
+                        <!-- Custom Rewrite / Recommendation -->
+                        <template x-if="finding.recommendation">
+                          <div class="danger-rewrite">
+                            <strong>Revision Recommendation:</strong> <span x-text="finding.recommendation"></span>
+                          </div>
+                        </template>
+
+                        <!-- Legal Citations (Inline verified citations only) -->
+                        <template x-if="finding.citations && finding.citations.length">
+                          <div class="mt-3 flex flex-wrap gap-2 items-center text-[10px] text-on-surface-variant font-semibold">
+                            <span>Verified Citations:</span>
+                            <template x-for="cite in finding.citations">
+                              <span class="px-2 py-0.5 rounded bg-teal-950/40 text-teal-400 border border-teal-500/10 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px]">verified</span>
+                                <span x-text="cite.article + ' ' + cite.jurisdiction"></span>
+                              </span>
+                            </template>
+                          </div>
+                        </template>
+                      </div>
+
+                      <!-- Interactive Review Actions (Section 10.F) -->
+                      <div class="flex flex-col gap-2 shrink-0 font-body text-xs">
+                        <template x-if="finding.evidence">
+                          <button class="px-3 py-1.5 rounded border border-outline-variant/30 hover:border-primary/50 text-[11px] font-semibold text-on-surface-variant hover:text-primary transition-all flex items-center gap-1 justify-center"
+                                  @click="highlightText(finding.evidence)">
+                            <span class="material-symbols-outlined text-[14px]">find_in_page</span>
+                            View Excerpt
+                          </button>
+                        </template>
+                        <div class="flex gap-1">
+                          <button class="px-2.5 py-1.5 rounded bg-green-950/20 hover:bg-green-900/40 text-green-400 border border-green-500/20 text-[10px] font-bold uppercase transition-all"
+                                  @click="confirmFinding(finding)">Confirm</button>
+                          <button class="px-2.5 py-1.5 rounded bg-red-950/20 hover:bg-red-900/40 text-red-400 border border-red-500/20 text-[10px] font-bold uppercase transition-all"
+                                  @click="rejectFinding(finding)">Reject</button>
+                        </div>
+                        <button class="px-3 py-1.5 rounded border border-outline-variant/30 hover:border-primary/50 text-[10px] font-semibold text-on-surface-variant hover:text-primary transition-all uppercase"
+                                @click="openEditRecommendation(finding)">Edit Spec</button>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Zero findings state (Section 10.F) -->
+                <div x-show="filteredFindings.length === 0" style="display:none;" class="text-center py-12 border border-dashed border-outline-variant/20 rounded p-6">
+                  <span class="material-symbols-outlined text-[48px] text-on-surface-variant/30 mb-3">checklist_rtl</span>
+                  <p class="font-editorial text-lg mb-2 text-on-surface">No findings match the current filter matrix</p>
+                  <p class="text-xs text-on-surface-variant/60 max-w-md mx-auto leading-relaxed">
+                    Note: Automated screening is a decision support tool and may not detect all compliance violations. Obtain professional legal review before final signature.
+                  </p>
+                </div>
+              </div>
+
             </div>
           </div>
 
-          <!-- Mandatory Clause Checklist -->
+          <!-- Mandatory Clause Checklist (Priority 4) -->
           <div class="section-card" x-data="{open:true}">
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
@@ -673,23 +894,42 @@
               </span>
             </div>
             <div class="section-body font-body" x-show="open" x-transition>
-              <ul class="check-list" id="clauseList"></ul>
+              <ul class="check-list">
+                <template x-for="c in clauseChecklist" :key="c.clause_id">
+                  <li class="check-item" :class="c.present ? 'present' : 'missing'">
+                    <div class="check-indicator">
+                      <template x-if="c.present">
+                        <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;stroke-width:3.5px;fill:none;display:block;"><path d="M20 6L9 17l-5-5"/></svg>
+                      </template>
+                      <template x-if="!c.present">
+                        <svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;stroke-width:3.5px;fill:none;display:block;"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                      </template>
+                    </div>
+                    <span class="check-name" x-text="c.title || c.clause_id"></span>
+                    <span class="text-[10px] text-on-surface-variant/50 mr-4 font-semibold uppercase" x-text="c.source ? ('Source: ' + c.source) : ''"></span>
+                    <template x-if="c.required">
+                      <span class="check-required-badge">REQUIRED</span>
+                    </template>
+                  </li>
+                </template>
+              </ul>
             </div>
           </div>
 
-          <!-- Detected Risks & Abusive Clauses -->
+          <!-- Extracted Agreement Text & Interactive Excerpt Viewer -->
           <div class="section-card" x-data="{open:true}">
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
-                <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Detected Risks &amp; Abusive Clauses</span>
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>Extracted Agreement Text &amp; Evidence Viewer</span>
               </div>
               <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
             <div class="section-body font-body" x-show="open" x-transition>
-              <div class="danger-list" id="dangerousClauses"></div>
+              <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-2">matched evidence phrases are highlighted in the document scroll panel below.</p>
+              <pre class="text-pane custom-scrollbar" id="extractedText" x-html="highlightedText"></pre>
             </div>
           </div>
 
@@ -705,11 +945,23 @@
               </span>
             </div>
             <div class="section-body font-body" x-show="open" x-transition>
-              <table class="breakdown-table"><tbody id="breakdownList"></tbody></table>
+              <table class="breakdown-table">
+                <tbody>
+                  <template x-for="b in scoringAudit" :key="b.reason">
+                    <tr>
+                      <td x-text="b.reason"></td>
+                      <td style="text-align:right;">
+                        <span class="breakdown-pts" :class="b.points < 0 ? 'negative' : 'positive'"
+                              x-text="(b.points < 0 ? '' : '+') + b.points"></span>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
             </div>
           </div>
 
-          <!-- Analysis Limitations -->
+          <!-- Analysis Limitations (Priority 6) -->
           <div class="section-card" x-data="{open:false}">
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
@@ -721,28 +973,74 @@
               </span>
             </div>
             <div class="section-body font-body" x-show="open" x-transition>
-              <div id="limitationsList" class="space-y-1 text-sm text-on-surface-variant"></div>
+              <div class="space-y-1 text-sm text-on-surface-variant">
+                <template x-for="lim in limitations">
+                  <div class="rec-item">
+                    <span class="rec-bullet">
+                      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#9ca3af;stroke-width:2px;fill:none;display:block;flex-shrink:0;">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <span x-text="lim"></span>
+                  </div>
+                </template>
+              </div>
             </div>
           </div>
 
-          <!-- Extracted Agreement Text -->
-          <div class="section-card" x-data="{open:false}">
-            <div class="section-header" @click="open=!open">
-              <div class="section-title-wrapper font-editorial">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Extracted Agreement Text</span>
-              </div>
-              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
-                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
-              </span>
-            </div>
-            <div class="section-body font-body" x-show="open" x-transition>
-              <pre class="text-pane custom-scrollbar" id="extractedText"></pre>
-            </div>
-          </div>
         </div>
       </div>
     </div>
+
+    <!-- Edit Recommendation Modal (10.F) -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 font-body" x-show="showEditModal" style="display:none;" x-transition>
+      <div class="obsidian-panel w-full max-w-lg p-8 rounded-lg space-y-6">
+        <header>
+          <h3 class="font-editorial text-xl text-on-surface font-bold">Edit Finding specification</h3>
+          <p class="text-xs text-on-surface-variant mt-1" x-text="editingFinding ? editingFinding.title : ''"></p>
+        </header>
+        <div class="space-y-4">
+          <div class="flex flex-col gap-2">
+            <label class="font-semibold text-xs text-on-surface-variant uppercase tracking-wider" for="recomInput">Revision Recommendation Wording</label>
+            <textarea id="recomInput" x-model="editingRecommendationText" rows="4"
+                      class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface p-3 rounded focus:outline-none focus:border-primary/50 text-sm"></textarea>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 pt-4 border-t border-outline-variant/10">
+          <button type="button" class="px-5 py-2.5 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold text-on-surface-variant transition-colors"
+                  @click="showEditModal = false">Cancel</button>
+          <button type="button" class="gold-button px-6 py-2.5 rounded text-xs font-bold transition-all"
+                  @click="saveEditRecommendation()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assign Reviewer Modal -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 font-body" x-show="showAssignModal" style="display:none;" x-transition>
+      <div class="obsidian-panel w-full max-w-md p-8 rounded-lg space-y-6">
+        <header>
+          <h3 class="font-editorial text-xl text-on-surface font-bold">Assign Case Reviewer</h3>
+          <p class="text-xs text-on-surface-variant mt-1">Select an active reviewer to delegate legal verification.</p>
+        </header>
+        <div class="space-y-4 text-xs font-body">
+          <div class="flex flex-col gap-2">
+            <label class="font-semibold text-on-surface-variant uppercase tracking-wider">Select Reviewer</label>
+            <select x-model="assignedReviewer" class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3 rounded text-sm focus:outline-none focus:border-primary/50 focus:ring-0">
+              <option value="auto">System Default / Auto-Assign</option>
+              <option value="Lead Analyst Team">Lead Analyst Team</option>
+              <option value="Senior Corporate Reviewer">Senior Corporate Reviewer</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-3 pt-4 border-t border-outline-variant/10">
+          <button type="button" class="px-5 py-2.5 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold text-on-surface-variant transition-colors"
+                  @click="showAssignModal = false">Cancel</button>
+          <button type="button" class="gold-button px-6 py-2.5 rounded text-xs font-bold transition-all"
+                  @click="saveReviewerAssignment()">Assign Case</button>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <footer class="text-center py-8 text-xs border-t border-outline-variant/10 font-body" style="color:#9ca3af;">
@@ -750,238 +1048,392 @@
   </footer>
 
   <script>
-  const _REWRITES = {
-    leonine_profit: "Suggested rewrite: 'Profits shall be distributed proportionally to each party's contribution as set out in Schedule A.'",
-    leonine_no_loss: "Suggested rewrite: 'Each party shall bear losses in proportion to their respective investment or contribution share.'",
-    excessive_penalty: "Suggested rewrite: 'Late payment interest shall not exceed 0.5% per month (6% per annum) on overdue amounts.'",
-    rights_waiver: "Suggested rewrite: 'Each party retains all statutory rights and remedies afforded under applicable law.'",
-    unilateral_modification: "Suggested rewrite: 'This agreement may only be amended by written instrument signed by all parties, with 30 days notice.'",
-    total_liability_exclusion: "Suggested rewrite: 'Total aggregate liability shall not exceed fees paid in the 12 months preceding the event.'",
-    auto_renewal_no_notice: "Suggested rewrite: 'Agreement renews automatically unless either party provides 60 days written notice of non-renewal.'",
-    illegal_object: "Action required: This clause may be void under applicable law. Seek qualified legal advice before signing.",
-  };
+    const _REWRITES = {
+      leonine_profit: "Suggested rewrite: 'Profits shall be distributed proportionally to each party's contribution as set out in Schedule A.'",
+      leonine_no_loss: "Suggested rewrite: 'Each party shall bear losses in proportion to their respective investment or contribution share.'",
+      excessive_penalty: "Suggested rewrite: 'Late payment interest shall not exceed 0.5% per month (6% per annum) on overdue amounts.'",
+      rights_waiver: "Suggested rewrite: 'Each party retains all statutory rights and remedies afforded under applicable law.'",
+      unilateral_modification: "Suggested rewrite: 'This agreement may only be amended by written instrument signed by all parties, with 30 days notice.'",
+      total_liability_exclusion: "Suggested rewrite: 'Total aggregate liability shall not exceed fees paid in the 12 months preceding the event.'",
+      auto_renewal_no_notice: "Suggested rewrite: 'Agreement renews automatically unless either party provides 60 days written notice of non-renewal.'",
+      illegal_object: "Action required: This clause may be void under applicable law. Seek qualified legal advice before signing.",
+    };
 
-  const _RISK_DESCS = {
-    LOW:      "Fewer risks detected under current rules. This does not guarantee validity or enforceability — obtain legal review before signing.",
-    MEDIUM:   "Moderately critical clauses identified. Minor review or negotiations advised.",
-    HIGH:     "Substantial contractual risk present. Review with legal counsel is strongly recommended.",
-    CRITICAL: "Highly dangerous liabilities or illegal parameters detected. Re-negotiation advised.",
-  };
+    const _RISK_DESCS = {
+      LOW:      "Fewer risks detected under current rules. This does not guarantee validity or enforceability — obtain legal review before signing.",
+      MEDIUM:   "Moderately critical clauses identified. Minor review or negotiations advised.",
+      HIGH:     "Substantial contractual risk present. Review with legal counsel is strongly recommended.",
+      CRITICAL: "Highly dangerous liabilities or illegal parameters detected. Re-negotiation advised.",
+    };
 
-  let _result = null;
-
-  function esc(s) {
-    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function formatBytes(b) {
-    if (!b) return '—';
-    if (b < 1024) return b + ' B';
-    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
-    return (b/1048576).toFixed(1) + ' MB';
-  }
-
-  function render(row) {
-    _result = row;
-    const r = row.result || {};
-    const layer1 = r.layer1 || {};
-    const layer2 = r.layer2 || {};
-    const layer3 = r.layer3 || {};
-
-    const ext = (row.file_type || '').replace('.','').toUpperCase();
-    document.getElementById('fileNameEl').textContent = row.original_filename || 'Agreement document';
-    document.getElementById('fileMeta').textContent = [
-      ext, formatBytes(row.file_size),
-      row.language ? row.language.toUpperCase() : null,
-      row.analyzed_at ? new Date(row.analyzed_at + 'Z').toLocaleString() : null,
-    ].filter(Boolean).join(' · ');
-
-    const label = layer3.label || 'LOW';
-    const score = layer3.score !== undefined ? layer3.score : 0;
-    const riskCard = document.getElementById('riskCard');
-    riskCard.className = 'glass-card risk-hero-panel level-' + label;
-    document.getElementById('riskScore').textContent = layer3.score !== undefined ? layer3.score : '—';
-    document.getElementById('riskLabel').textContent = label;
-    document.getElementById('riskDesc').textContent = _RISK_DESCS[label] || '';
-
-    const circle = document.getElementById('scoreCircle');
-    const circumference = 2 * Math.PI * circle.r.baseVal.value;
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    setTimeout(() => {
-      const offset = circumference - (Math.max(0, Math.min(100, score)) / 100) * circumference;
-      circle.style.strokeDashoffset = offset;
-    }, 150);
-
-    const govLaw = layer1.governing_law || 'Not detected';
-    const venue  = layer1.venue         || 'Not detected';
-    const _dt    = layer2.document_type;
-    const docType = (_dt && typeof _dt === 'object' ? _dt.label : _dt) || 'Not detected';
-    const juris   = r.jurisdiction      || 'Not detected';
-    const redFlags = layer1.red_flags   || [];
-    const l2flags  = layer2.flagged_clauses || [];
-    const clauses  = layer1.clause_presence || [];
-    const missing  = clauses.filter(c => c.required && !c.present);
-
-    document.getElementById('summaryGrid').innerHTML = [
-      ['Document Classification', docType],
-      ['Primary Jurisdiction', juris],
-      ['Governing Law Provision', govLaw],
-      ['Venue / Dispute Forum', venue],
-      ['Unfair Clauses', String(redFlags.length + l2flags.length)],
-      ['Missing Mandatory Clauses', String(missing.length)],
-    ].map(([lbl, val]) =>
-      `<div class="meta-item"><div class="meta-label">${esc(lbl)}</div><div class="meta-value">${esc(val)}</div></div>`
-    ).join('');
-
-    const clauseList = document.getElementById('clauseList');
-    clauseList.innerHTML = !clauses.length
-      ? '<li class="empty-state">No checklist parameters mapped for this document type.</li>'
-      : clauses.map(c => {
-          const present = !!c.present;
-          const icon = present
-            ? `<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;stroke-width:3.5px;fill:none;display:block;"><path d="M20 6L9 17l-5-5"/></svg>`
-            : `<svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:currentColor;stroke-width:3.5px;fill:none;display:block;"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
-          return `<li class="check-item ${present ? 'present' : 'missing'}">
-            <div class="check-indicator">${icon}</div>
-            <span class="check-name">${esc(c.title || c.clause_id || 'Unknown')}</span>
-            ${c.required ? '<span class="check-required-badge">REQUIRED</span>' : ''}
-          </li>`;
-        }).join('');
-
-    let dangerHTML = '';
-    for (const flag of redFlags) {
-      const sev = flag.severity || 'MEDIUM';
-      const rw = _REWRITES[flag.id] ? `<div class="danger-rewrite"><strong>Revision:</strong> ${esc(_REWRITES[flag.id])}</div>` : '';
-      dangerHTML += `<div class="danger-card severity-${esc(sev)}">
-        <div class="danger-card-header"><span class="danger-severity-badge">${esc(sev)}</span><span class="danger-title">${esc(flag.description || flag.type || 'Flagged clause')}</span></div>
-        ${flag.evidence ? `<div class="danger-evidence">"…${esc(flag.evidence)}…"</div>` : ''}${rw}</div>`;
+    function esc(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-    for (const fl of l2flags) {
-      const lbl = esc((fl.label || '').replace(/_/g,' '));
-      const sc  = fl.score !== undefined ? ` (${(fl.score*100).toFixed(0)}% confidence)` : '';
-      dangerHTML += `<div class="ai-finding-card">
-        <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2px;flex-shrink:0;">
-          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-        </svg>
-        <span>Classifier flagged <strong>${lbl}</strong>${esc(sc)}</span></div>`;
-    }
-    document.getElementById('dangerousClauses').innerHTML = dangerHTML || '<div class="empty-state">No dangerous or abusive clauses detected.</div>';
 
-    const recs = buildRecs(layer1, layer2, layer3, r.jurisdiction);
-    document.getElementById('recList').innerHTML = recs.map(rec =>
-      `<div class="rec-item"><span class="rec-bullet">
-        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#d4af37;stroke-width:2.5px;fill:none;display:block;">
-          <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/>
-        </svg></span><span>${esc(rec)}</span></div>`
-    ).join('') || '<div class="empty-state">No action items required.</div>';
+    function resultApp() {
+      return {
+        loading: true,
+        pdfLoading: false,
+        errorMsg: '',
+        isProcessing: false,
+        progressPct: 0,
+        progressText: 'Queuing…',
+        result: null,
 
-    const breakdown = layer3.breakdown || [];
-    document.getElementById('breakdownList').innerHTML = !breakdown.length
-      ? '<tr><td class="empty-state">No point modifications recorded.</td></tr>'
-      : breakdown.map(b => {
-          const reason = esc(typeof b === 'object' ? (b.reason || JSON.stringify(b)) : String(b));
-          const pts = typeof b === 'object' && b.points !== undefined ? b.points : null;
-          const ptsHtml = pts !== null
-            ? `<span class="breakdown-pts ${pts < 0 ? 'negative' : 'positive'}">${pts < 0 ? '' : '+'}${pts}</span>`
-            : '';
-          return `<tr><td>${reason}</td><td style="text-align:right;">${ptsHtml}</td></tr>`;
-        }).join('');
+        // Specs & Indicators
+        riskScore: 0,
+        riskLevel: 'LOW',
+        riskDescription: '',
+        confidencePercent: 75,
+        isCalibrated: true,
+        reviewStatus: 'Draft',
+        reviewerName: 'System Default / Auto-Assign',
 
-    const limitations = buildLimitations(r, layer1, layer2);
-    document.getElementById('limitationsList').innerHTML = limitations.map(lim =>
-      `<div class="rec-item"><span class="rec-bullet"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#9ca3af;stroke-width:2px;fill:none;display:block;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg></span><span>${esc(lim)}</span></div>`
-    ).join('');
+        // Data arrays
+        findings: [],
+        clauseChecklist: [],
+        scoringAudit: [],
+        limitations: [],
+        rawExtractedText: '',
+        highlightedText: '',
 
-    document.getElementById('extractedText').textContent = row.extracted_text || '(Text unavailable)';
-    document.getElementById('loadingState').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
-  }
+        // Modals & Action variables
+        showAssignModal: false,
+        showEditModal: false,
+        editingFinding: null,
+        editingRecommendationText: '',
+        assignedReviewer: 'auto',
+        reviewSubmitted: false,
 
-  function buildLimitations(r, layer1, layer2) {
-    const items = [];
-    const juris = r.jurisdiction || '';
-    if (!juris || juris === 'Unknown') items.push('Jurisdiction could not be determined with confidence. Select it manually before generating a professional report.');
-    if (r.language && r.language.toLowerCase() !== 'en') items.push('Document was translated from ' + r.language.toUpperCase() + ' to English for analysis. Translation may affect clause detection accuracy.');
-    if (!layer2.layer2_available) items.push('Semantic clause classifier (L2) was unavailable. Detection relied on rules and keywords only.');
-    const citations = (layer1.red_flags || []).concat(layer1.clause_presence || []).flatMap(f => f.citations || []);
-    const hasDraft = citations.some(c => c.status === 'draft');
-    if (hasDraft) items.push('Some legal source citations are pending lawyer verification and are not shown in this view.');
-    items.push('Automated screening does not replace qualified legal review. Results depend on the configured rules and available legal sources.');
-    return items;
-  }
+        // Filters (Section 10.F)
+        filters: {
+          search: '',
+          severity: 'all',
+          category: 'all',
+          status: 'all'
+        },
 
-  function buildRecs(layer1, layer2, layer3, juris) {
-    const recs = [];
-    const clauses  = layer1.clause_presence || [];
-    const missing  = clauses.filter(c => c.required && !c.present);
-    const redFlags = layer1.red_flags || [];
-    const label    = layer3.label || '';
+        init() {
+          const parts = window.location.pathname.split('/').filter(Boolean);
+          const id = parts[parts.length - 1];
+          if (!id || id === 'result') {
+            window.location.href = '/';
+            return;
+          }
+          this.fetchResult(id);
+        },
 
-    if (missing.length) recs.push(`Missing mandatory provisions: ${missing.map(c => c.title || c.clause_id).join(', ')}. Incorporate these to prevent regulatory exposure.`);
-    const highFlags = redFlags.filter(f => f.severity === 'HIGH');
-    if (highFlags.length) recs.push(`Contains ${highFlags.length} high-severity anomalies. Apply the suggested contract revisions before signing.`);
-    if (!layer1.governing_law) recs.push('Lacks explicit governing law. Introduce a standard choice-of-law clause.');
-    if (!layer1.venue) recs.push('Dispute forum is unspecified. Nominate a specific court system or arbitration panel.');
-    if (label === 'HIGH' || label === 'CRITICAL') recs.push('This agreement carries significant legal risk. Suspend standard signature procedures until reviewed by legal counsel.');
-    if (!recs.length) recs.push('Document structures conform well to standard profiles. Standard signature clearance recommended.');
-    return recs;
-  }
+        async fetchResult(id) {
+          try {
+            const resp = await fetch('/api/v1/result/' + id);
+            if (resp.status === 401) { window.location.href = '/login'; return; }
+            this.loading = false;
+            
+            if (resp.status === 403) {
+              this.errorMsg = 'Access denied — this document belongs to another organization.';
+              return;
+            }
+            if (resp.status === 404) {
+              this.errorMsg = 'Assessment not found.';
+              return;
+            }
 
-  async function downloadPDF(btn) {
-    if (!_result) return;
-    const orig = btn.innerHTML;
-    btn.disabled = true; btn.textContent = 'Generating…';
-    try {
-      const resp = await fetch('/api/v1/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(_result.result),
-      });
-      if (resp.status === 401) { window.location.href = '/login'; return; }
-      if (!resp.ok) { alert('Report generation failed.'); return; }
-      const blob = await resp.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = `${_result.original_filename || 'contract'}_risk_report.pdf`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch { alert('Network error during report download.'); }
-    finally { btn.disabled = false; btn.innerHTML = orig; }
-  }
+            const data = await resp.json();
+            if (data.error) {
+              this.errorMsg = data.error;
+              return;
+            }
 
-  (async () => {
-    const parts = window.location.pathname.split('/').filter(Boolean);
-    const id    = parts[parts.length - 1];
-    if (!id || id === 'result') {
-      window.location.href = '/';
-      return;
-    }
-    try {
-      const resp = await fetch('/api/v1/result/' + id);
-      if (resp.status === 401) { window.location.href = '/login'; return; }
-      document.getElementById('loadingState').style.display = 'none';
-      if (resp.status === 403) {
-        document.getElementById('errorState').style.display = 'block';
-        document.getElementById('errorText').textContent = 'Access denied — this document belongs to another organization.';
-        return;
+            const status = data.status;
+            if (status === 'queued' || status === 'running') {
+              this.isProcessing = true;
+              this.progressPct = data.progress_pct || 0;
+              this.progressText = data.progress_stage ? data.progress_stage.replace('_', ' ').toUpperCase() + '…' : 'PROCESSING…';
+              setTimeout(() => {
+                this.fetchResult(id);
+              }, 2000);
+              return;
+            }
+
+            this.isProcessing = false;
+            this.result = data;
+            this.loadSpecs();
+          } catch (e) {
+            this.loading = false;
+            this.errorMsg = 'Unable to reach the server. Verify your pipeline connection.';
+          }
+        },
+
+        loadSpecs() {
+          const r = this.result.result || {};
+          const layer1 = r.layer1 || {};
+          const layer2 = r.layer2 || {};
+          const layer3 = r.layer3 || {};
+
+          // Scoring calibration and status
+          this.riskScore = layer3.score !== undefined ? layer3.score : 0;
+          this.riskLevel = layer3.label || 'LOW';
+          this.riskDescription = _RISK_DESCS[this.riskLevel] || '';
+          this.confidencePercent = layer3.confidence !== undefined ? layer3.confidence : 70;
+          
+          const policyVersion = layer3.policy_version || 'default_v1';
+          this.isCalibrated = (policyVersion === 'default_v1');
+          
+          this.rawExtractedText = this.result.extracted_text || '(Text unavailable)';
+          this.highlightedText = esc(this.rawExtractedText);
+
+          this.clauseChecklist = layer1.clause_presence || [];
+          this.scoringAudit = layer3.breakdown || [];
+          this.limitations = this.buildLimitationsList(this.result, layer1, layer2);
+
+          // Build unified findings list
+          this.buildFindings(layer1, layer2);
+        },
+
+        buildFindings(layer1, layer2) {
+          const unified = [];
+
+          // 1. L1 Regex Red Flags
+          (layer1.red_flags || []).forEach(flag => {
+            unified.push({
+              id: flag.id,
+              type: 'abusive',
+              title: flag.description || flag.type || 'Flagged clause',
+              severity: flag.severity || 'MEDIUM',
+              evidence: flag.evidence || '',
+              category: 'Unfair Clause',
+              source: flag.source ? `Rules (${flag.source})` : 'Rules Engine (L1)',
+              status: flag.status || 'Unreviewed',
+              citations: flag.citations || [],
+              recommendation: _REWRITES[flag.id] || ''
+            });
+          });
+
+          // 2. L2 ML Flagged Clauses
+          (layer2.flagged_clauses || []).forEach(clause => {
+            unified.push({
+              id: clause.label,
+              type: 'ai_classifier',
+              title: `Classifier flagged: ${(clause.label || '').replace(/_/g, ' ')}`,
+              severity: 'MEDIUM',
+              evidence: clause.text || '',
+              category: 'AI Classifier Finding',
+              source: 'ML Classifier (L2)',
+              status: clause.status || 'Unreviewed',
+              citations: clause.citations || [],
+              recommendation: _REWRITES[clause.label] || ''
+            });
+          });
+
+          // 3. L1 Missing Required Clauses
+          (layer1.clause_presence || []).forEach(clause => {
+            if (clause.required && !clause.present) {
+              const severity = clause.impact_level || 'HIGH';
+              unified.push({
+                id: clause.clause_id,
+                type: 'missing_clause',
+                title: `Missing required clause: ${clause.title || clause.clause_id}`,
+                severity: severity,
+                evidence: '',
+                category: 'Missing Required Clause',
+                source: 'Rules Engine (L1)',
+                status: clause.status || 'Unreviewed',
+                citations: clause.citations || [],
+                recommendation: clause.recommendation || `Incorporate a standard ${clause.title || clause.clause_id} clause.`
+              });
+            }
+          });
+
+          this.findings = unified;
+        },
+
+        buildLimitationsList(r, layer1, layer2) {
+          const items = [];
+          const juris = r.jurisdiction || '';
+          if (!juris || juris === 'Unknown') {
+            items.push('Jurisdiction could not be determined with confidence. Select it manually before generating a professional report.');
+          }
+          if (r.language && r.language.toLowerCase() !== 'en') {
+            items.push('Document was translated from ' + r.language.toUpperCase() + ' to English for analysis. Translation may affect clause detection accuracy.');
+          }
+          if (!layer2.layer2_available) {
+            items.push('Semantic clause classifier (L2) was unavailable. Detection relied on rules and keywords only.');
+          }
+          const citations = (layer1.red_flags || []).concat(layer1.clause_presence || []).flatMap(f => f.citations || []);
+          const hasDraft = citations.some(c => c.status === 'draft');
+          if (hasDraft) {
+            items.push('Some legal source citations are pending lawyer verification and are not shown in this view.');
+          }
+          items.push('Automated screening does not replace qualified legal review. Results depend on the configured rules and available legal sources.');
+          return items;
+        },
+
+        // Helper meta builders
+        get docMetaString() {
+          if (!this.result) return '—';
+          const ext = (this.result.file_type || '').replace('.','').toUpperCase();
+          const size = this.formatSize(this.result.file_size);
+          const lang = this.result.language ? this.result.language.toUpperCase() : 'Unknown';
+          const date = this.result.analyzed_at ? new Date(this.result.analyzed_at + 'Z').toLocaleDateString() : '—';
+          return `${ext} · ${size} · ${lang} · ${date}`;
+        },
+
+        get orgMetaString() {
+          return ' PT SYDECO Sovereign ID';
+        },
+
+        get ownerMetaString() {
+          return 'Institutional Analyst';
+        },
+
+        formatSize(bytes) {
+          if (!bytes) return '—';
+          if (bytes < 1024) return bytes + ' B';
+          if (bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+          return (bytes/1048576).toFixed(1) + ' MB';
+        },
+
+        // Circle offset utility
+        get circleStyle() {
+          const maxCirc = 2 * Math.PI * 58;
+          const scoreVal = Math.max(0, Math.min(100, this.riskScore));
+          const offset = maxCirc - (scoreVal / 100) * maxCirc;
+          return `stroke-dasharray: ${maxCirc} ${maxCirc}; stroke-dashoffset: ${offset};`;
+        },
+
+        get confidenceColor() {
+          if (this.confidencePercent >= 85) return 'bg-teal-500';
+          if (this.confidencePercent >= 65) return 'bg-gray-400';
+          return 'bg-amber-500';
+        },
+
+        // Filtering list of findings (Section 10.F)
+        get filteredFindings() {
+          let list = this.findings;
+
+          // Search Filter
+          if (this.filters.search) {
+            const query = this.filters.search.toLowerCase();
+            list = list.filter(f => 
+              f.title.toLowerCase().includes(query) ||
+              f.evidence.toLowerCase().includes(query) ||
+              f.recommendation.toLowerCase().includes(query)
+            );
+          }
+
+          // Severity Filter
+          if (this.filters.severity !== 'all') {
+            list = list.filter(f => f.severity === this.filters.severity);
+          }
+
+          // Category Filter
+          if (this.filters.category !== 'all') {
+            list = list.filter(f => f.category === this.filters.category);
+          }
+
+          // Status Filter
+          if (this.filters.status !== 'all') {
+            list = list.filter(f => f.status === this.filters.status);
+          }
+
+          // Default Sort: Critical first, then High, Medium, Low
+          const severityWeight = { 'CRITICAL': 4, 'HIGH': 3, 'MEDIUM': 2, 'LOW': 1 };
+          return list.sort((a, b) => severityWeight[b.severity] - severityWeight[a.severity]);
+        },
+
+        // Actions
+        confirmFinding(finding) {
+          finding.status = 'Confirmed';
+          // Simulate audit trigger or backend confirmation update
+        },
+
+        rejectFinding(finding) {
+          const reason = prompt('Please enter the reason for rejecting this finding:');
+          if (reason !== null) {
+            finding.status = 'Rejected';
+            finding.rejectionReason = reason;
+          }
+        },
+
+        openEditRecommendation(finding) {
+          this.editingFinding = finding;
+          this.editingRecommendationText = finding.recommendation;
+          this.showEditModal = true;
+        },
+
+        saveEditRecommendation() {
+          if (this.editingFinding) {
+            this.editingFinding.recommendation = this.editingRecommendationText;
+          }
+          this.showEditModal = false;
+        },
+
+        saveReviewerAssignment() {
+          this.reviewerName = this.assignedReviewer === 'auto' ? 'System Default / Auto-Assign' : this.assignedReviewer;
+          this.showAssignModal = false;
+          this.reviewStatus = 'Under Review';
+        },
+
+        submitForReview() {
+          this.reviewSubmitted = true;
+          this.reviewStatus = 'Completed';
+        },
+
+        highlightText(evidenceText) {
+          const textPane = document.getElementById('extractedText');
+          if (!evidenceText) {
+            this.highlightedText = esc(this.rawExtractedText);
+            return;
+          }
+          const cleanText = this.rawExtractedText;
+          const search = evidenceText.trim();
+          
+          if (cleanText.includes(search)) {
+            const escapedOriginal = esc(cleanText);
+            const escapedSearch = esc(search);
+            const marked = escapedOriginal.replace(
+              escapedSearch,
+              `<mark class="bg-primary/30 text-on-background font-bold py-0.5 rounded px-1">${escapedSearch}</mark>`
+            );
+            this.highlightedText = marked;
+            
+            // Auto scroll evidence panel
+            setTimeout(() => {
+              const mark = textPane.querySelector('mark');
+              if (mark) {
+                mark.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }, 100);
+          } else {
+            this.highlightedText = esc(cleanText);
+          }
+        },
+
+        async downloadReport() {
+          if (!this.result) return;
+          this.pdfLoading = true;
+          try {
+            const resp = await fetch('/api/v1/report', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.result.result),
+            });
+            if (resp.status === 401) { window.location.href = '/login'; return; }
+            if (!resp.ok) { alert('Report generation failed.'); return; }
+            const blob = await resp.blob();
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            a.href = url; a.download = `${this.result.original_filename || 'contract'}_risk_report.pdf`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (e) {
+            alert('Network error during report download.');
+          } finally {
+            this.pdfLoading = false;
+          }
+        }
       }
-      if (resp.status === 404) {
-        document.getElementById('errorState').style.display = 'block';
-        return;
-      }
-      const data = await resp.json();
-      if (data.error) {
-        document.getElementById('errorState').style.display = 'block';
-        document.getElementById('errorText').textContent = data.error;
-        return;
-      }
-      render(data);
-    } catch {
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('errorState').style.display  = 'block';
-      document.getElementById('errorText').textContent = 'Unable to reach the server.';
     }
-  })();
   </script>
 </body>
 </html>

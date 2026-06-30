@@ -88,6 +88,7 @@ def bypass_rate_limits():
 
 # Init DB on first import
 database.init_db()
+database.cleanup_stuck_analyses()
 
 
 @app.before_request
@@ -198,7 +199,7 @@ def _validate_and_extract(file) -> tuple[bytes, str, str]:
     return data, ext, text
 
 
-def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | None = None) -> dict:
+def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | None = None, override_type: str | None = None) -> dict:
     """Run L1–L3 analysis and return result dict.
 
     For non-contract documents (invoice, receipt, purchase order) the pipeline
@@ -216,6 +217,22 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
             logger.warning("Translation failed, using original: %s", e)
 
     layer2 = layer2_analyze(analysis_text)
+
+    if override_type:
+        # Normalize frontend select values to match classifier labels
+        mapping = {
+            "service": "service agreement",
+            "nda": "non-disclosure agreement",
+            "employment": "employment contract",
+            "software": "software license",
+            "generic": "general contract"
+        }
+        mapped_label = mapping.get(override_type.lower(), override_type.lower())
+        layer2["document_type"] = {
+            "label": mapped_label,
+            "confidence": 1.0,
+            "candidates": [{"label": mapped_label, "confidence": 1.0}]
+        }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()
     if doc_type_label in _NON_CONTRACT_TYPES:
@@ -393,6 +410,15 @@ def logout():
     return jsonify({"ok": True})
 
 
+@app.route("/logout")
+def get_logout():
+    user = auth.current_user()
+    if user:
+        database.write_audit("logout", user_id=user["id"], org_id=user["org_id"], ip=_ip())
+    session.clear()
+    return redirect("/login")
+
+
 @app.route("/api/v1/mfa/status")
 def api_mfa_status():
     uid = session.get("uid") or session.get("mfa_enroll_pending_uid") or session.get("mfa_pending_uid")
@@ -567,6 +593,13 @@ def upload():
 
     want_explain = request.args.get("explain", "0") == "1"
     policy_name = request.args.get("policy", "default_v1")
+    override_jurisdiction = request.args.get("jurisdiction")
+    override_type = request.args.get("type")
+
+    if override_jurisdiction == "auto":
+        override_jurisdiction = None
+    if override_type == "auto":
+        override_type = None
 
     # Save queued analysis record
     analysis_id = database.save_analysis(
@@ -580,7 +613,17 @@ def upload():
     )
 
     # Submit background task
-    worker.submit_job(analysis_id, text, lang, want_explain, policy_name=policy_name)
+    import inspect
+    sig = inspect.signature(worker.submit_job)
+    kwargs = {}
+    if "policy_name" in sig.parameters:
+        kwargs["policy_name"] = policy_name
+    if "override_jurisdiction" in sig.parameters:
+        kwargs["override_jurisdiction"] = override_jurisdiction
+    if "override_type" in sig.parameters:
+        kwargs["override_type"] = override_type
+
+    worker.submit_job(analysis_id, text, lang, want_explain, **kwargs)
 
     database.write_audit(
         "upload", user_id=g.user["id"], org_id=g.user["org_id"],
