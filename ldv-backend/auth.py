@@ -34,7 +34,8 @@ def configure_secret_key(app) -> None:
         if not key:
             key = secrets.token_hex(32)
             try:
-                with open(secret_file, "w") as f:
+                fd = os.open(secret_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+                with os.fdopen(fd, "w") as f:
                     f.write(key)
             except Exception:
                 pass
@@ -125,9 +126,6 @@ def role_required(*roles: str):
 
 
 def is_mfa_mandatory(user: dict) -> bool:
-    # ponytail: explicit bypass for QA/test account user@example.com to skip MFA.
-    if user.get("email") == "user@example.com":
-        return False
     if os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
         return False
     if os.getenv("LDV_PRODUCTION") == "1":
