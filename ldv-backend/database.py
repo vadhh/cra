@@ -118,6 +118,19 @@ def set_org_retention(org_id: int, days: int) -> None:
         )
 
 
+def org_mfa_required(org_id: int | None) -> bool:
+    if org_id is None:
+        return False
+    try:
+        with _conn() as db:
+            row = db.execute(
+                "SELECT mfa_required FROM organizations WHERE id = ?", (org_id,)
+            ).fetchone()
+        return bool(row and row[0])
+    except Exception:
+        return False
+
+
 def init_db() -> None:
     with sqlite3.connect(get_db_path()) as conn:
         conn.executescript(_SCHEMA)
@@ -200,6 +213,8 @@ def init_db() -> None:
         org_cols = {row[1] for row in conn.execute("PRAGMA table_info(organizations)")}
         if "retention_days" not in org_cols:
             conn.execute("ALTER TABLE organizations ADD COLUMN retention_days INTEGER")
+        if "mfa_required" not in org_cols:
+            conn.execute("ALTER TABLE organizations ADD COLUMN mfa_required INTEGER DEFAULT 0")
 
         user_cols = {row[1] for row in conn.execute("PRAGMA table_info(users)")}
         if "mfa_secret" not in user_cols:

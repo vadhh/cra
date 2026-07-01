@@ -130,4 +130,7 @@ def is_mfa_mandatory(user: dict) -> bool:
         return False
     if os.getenv("LDV_PRODUCTION") == "1":
         return True
+    import database as _db  # local import to avoid circular at module load
+    if _db.org_mfa_required(user.get("org_id")):
+        return True
     return normalize_role(user["role"]) in {"admin", "reviewer", "manager"}

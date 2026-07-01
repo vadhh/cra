@@ -520,7 +520,8 @@ def api_mfa_skip():
     user = database.get_user_by_id(uid)
     if not user:
         return jsonify({"error": "User not found"}), 404
-    
+    if database.org_mfa_required(user["org_id"]) or auth.is_mfa_mandatory(user):
+        return jsonify({"error": "MFA is mandatory for this account"}), 403
     session.pop("mfa_enroll_pending_uid", None)
     session["uid"] = uid
     database.write_audit("login.success.mfa_skipped", user_id=uid, org_id=user["org_id"], ip=_ip())
