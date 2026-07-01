@@ -15,6 +15,8 @@ Qwen3-1.7B/
 # Runtime data — analyzed contracts & user uploads (confidential)
 ldv-backend/*.db
 ldv-backend/uploads/
+ldv-backend/.session_secret
+ldv-backend/audit_durable.log
 
 # Local tooling / agent artifacts
 .claude/

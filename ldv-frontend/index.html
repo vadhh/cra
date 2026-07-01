@@ -106,6 +106,7 @@
     }
   </script>
   <style>
+    [x-cloak] { display: none !important; }
     body {
       background-color: #0e131f;
       color: #dee2f4;
@@ -207,7 +208,7 @@
     </div>
 
     <!-- LOGGED IN STATE WRAPPER -->
-    <div x-show="loggedIn" class="w-full">
+    <div x-show="loggedIn" x-cloak style="display:none;" class="w-full">
       <!-- Stepper Navigation Header -->
       <section class="mb-12 border-b border-outline-variant/10 pb-6" x-show="currentStep < 5">
       <div class="flex items-center justify-between max-w-3xl mx-auto font-body text-sm font-semibold">
@@ -757,7 +758,7 @@
     </div> <!-- Close loggedIn wrapper -->
 
     <!-- LOGGED OUT LANDING STATE -->
-    <div x-show="!loggedIn" style="display:none;" class="w-full max-w-5xl mx-auto py-8 space-y-16 animate-fade-in">
+    <div x-show="!loggedIn" class="w-full max-w-5xl mx-auto py-8 space-y-16 animate-fade-in">
       
       <!-- Hero Header -->
       <div class="text-center space-y-6 max-w-3xl mx-auto">
