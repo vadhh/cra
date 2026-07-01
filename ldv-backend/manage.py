@@ -8,8 +8,11 @@
 from __future__ import annotations
 
 import argparse
+import datetime
 import os
 import secrets
+import shutil
+import subprocess
 import sys
 
 from cryptography.fernet import Fernet
@@ -93,6 +96,54 @@ def gen_key_cmd() -> None:
     print(Fernet.generate_key().decode())
 
 
+def backup_cmd(dry_run: bool) -> None:
+    backup_dir = os.getenv("LDV_BACKUP_DIR", "/var/backups/ldv")
+    remote = os.getenv("LDV_BACKUP_REMOTE", "")
+    keep_days = int(os.getenv("LDV_BACKUP_KEEP_DAYS", "30"))
+
+    stamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    dest = os.path.join(backup_dir, stamp)
+    db_src = database.get_db_path()
+    uploads_src = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+
+    if dry_run:
+        print(f"[dry-run] would create {dest}/")
+        print(f"[dry-run] would copy {db_src} → {dest}/sydeco.db")
+        print(f"[dry-run] would copy {uploads_src}/ → {dest}/uploads/")
+        if remote:
+            print(f"[dry-run] would rsync {dest}/ → {remote}")
+        return
+
+    os.makedirs(dest, exist_ok=True)
+    shutil.copy2(db_src, os.path.join(dest, "sydeco.db"))
+    if os.path.isdir(uploads_src):
+        shutil.copytree(uploads_src, os.path.join(dest, "uploads"))
+    print(f"Backup created: {dest}")
+
+    if remote:
+        cmd = ["rsync", "-az", "--delete", dest + "/", remote]
+        result = subprocess.run(cmd)
+        if result.returncode != 0:
+            sys.exit(f"rsync to {remote} failed (exit {result.returncode})")
+        print(f"Synced to {remote}")
+
+    # prune old backups
+    cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=keep_days)
+    pruned = 0
+    for entry in os.scandir(backup_dir):
+        if not entry.is_dir():
+            continue
+        try:
+            ts = datetime.datetime.strptime(entry.name, "%Y%m%dT%H%M%SZ")
+        except ValueError:
+            continue
+        if ts < cutoff:
+            shutil.rmtree(entry.path)
+            pruned += 1
+    if pruned:
+        print(f"Pruned {pruned} backup(s) older than {keep_days} days.")
+
+
 def set_retention_cmd(org_name: str, days: int) -> None:
     org = database.get_org_by_name(org_name)
     if org is None:
@@ -120,6 +171,8 @@ def main() -> None:
     pr = sub.add_parser("set-retention")
     pr.add_argument("org")
     pr.add_argument("days", type=int)
+    pb = sub.add_parser("backup", help="Back up DB + uploads to LDV_BACKUP_DIR")
+    pb.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     if args.cmd == "seed-admin":
@@ -136,6 +189,8 @@ def main() -> None:
         gen_key_cmd()
     elif args.cmd == "set-retention":
         set_retention_cmd(args.org, args.days)
+    elif args.cmd == "backup":
+        backup_cmd(args.dry_run)
 
 
 if __name__ == "__main__":

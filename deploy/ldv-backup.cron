@@ -1,0 +1,12 @@
+# LDV nightly backup — install with:
+#   sudo cp deploy/ldv-backup.cron /etc/cron.d/ldv-backup
+#   sudo chmod 644 /etc/cron.d/ldv-backup
+#
+# Env vars (set in /etc/environment or prefix the command):
+#   LDV_BACKUP_DIR      — destination dir  (default: /var/backups/ldv)
+#   LDV_BACKUP_REMOTE   — optional rsync target, e.g. user@backup-host:/backups/ldv
+#   LDV_BACKUP_KEEP_DAYS — days to retain  (default: 30)
+#   LDV_DB_PATH         — if DB is not at ldv-backend/sydeco.db
+
+# Run at 02:00 every night as the app user
+0 2 * * * www-data cd /opt/ldv/ldv-backend && python3 manage.py backup >> /var/log/ldv-backup.log 2>&1
