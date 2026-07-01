@@ -488,6 +488,7 @@
                         <select :value="usr.role" @change="changeUserRole(usr.id, $event.target.value)"
                                 class="bg-surface-container border border-outline-variant/20 rounded text-xs px-2 py-1 text-on-surface focus:outline-none">
                           <option value="analyst">Analyst</option>
+                          <option value="reviewer">Reviewer</option>
                           <option value="manager">Manager</option>
                           <option value="viewer">Viewer</option>
                           <option value="admin">Administrator</option>
@@ -869,6 +870,7 @@
               <label class="font-semibold text-on-surface-variant uppercase tracking-wider">Assign Role</label>
               <select x-model="createUserForm.role" class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-2.5 rounded text-sm focus:outline-none">
                 <option value="analyst">Analyst</option>
+                <option value="reviewer">Reviewer</option>
                 <option value="manager">Manager</option>
                 <option value="viewer">Viewer</option>
                 <option value="admin">Administrator</option>
