@@ -200,7 +200,7 @@
     <div x-show="showMfaWarning" x-cloak style="display:none;" class="mb-8 flex items-center justify-between bg-amber-900/20 border border-amber-500/30 rounded p-4 text-amber-200 text-sm font-body">
       <div class="flex items-center gap-3">
         <span class="material-symbols-outlined text-amber-500">warning</span>
-        <span><strong>Security Notice:</strong> Multi-Factor Authentication (MFA) is not enabled on your account. We strongly advise activating it in your security settings to secure institutional assets.</span>
+        <span><strong>Security Notice:</strong> Multi-Factor Authentication (MFA) is not enabled on your account. <a href="/account" class="underline hover:text-amber-50 transition-colors">Activate it in your security settings</a> to secure institutional assets.</span>
       </div>
       <button @click="dismissMfaWarning()" class="text-amber-400 hover:text-amber-200 transition-colors flex items-center">
         <span class="material-symbols-outlined text-[18px]">close</span>
