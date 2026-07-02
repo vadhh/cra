@@ -1,23 +1,51 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # ponytail: no persistence needed for rate-limit counters
+    command: redis-server --save ""
+
   app:
     build:
       context: ./ldv-backend
       dockerfile: Dockerfile
-    ports:
-      - "5000:5000"
     environment:
       - LDV_DB_PATH=/app/data/sydeco.db
       - LDV_SECRET_KEY=${LDV_SECRET_KEY}
       - LDV_ENCRYPTION_KEY=${LDV_ENCRYPTION_KEY}
       - LDV_RETENTION_DAYS=${LDV_RETENTION_DAYS}
+      - LDV_RATELIMIT_STORAGE_URL=redis://redis:6379
+      - LDV_DOWNLOAD_MODELS=${LDV_DOWNLOAD_MODELS:-0}
+      # local = offline Helsinki-NLP Marian MT (no Google); required for correct
+      # FR/NL/ID document-type classification — DistilBERT-MNLI is English-only
+      # and is either confidently wrong or returns null on untranslated text.
+      - LDV_REMOTE_TRANSLATION=${LDV_REMOTE_TRANSLATION:-local}
     volumes:
       - ./ldv-backend/data:/app/data
       - ./uploads:/app/uploads
       - ~/.cache/huggingface:/root/.cache/huggingface
+    depends_on:
+      - redis
+    # Not exposed directly — nginx is the only ingress
+    expose:
+      - "5000"
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deploy/certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+    restart: unless-stopped
