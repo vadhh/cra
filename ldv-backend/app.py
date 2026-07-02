@@ -949,6 +949,22 @@ def api_admin_org_retention(org_id: int):
     return jsonify({"ok": True})
 
 
+@app.route("/api/v1/admin/organizations/<int:org_id>/mfa-required", methods=["POST"])
+@auth.role_required("manager")
+def api_admin_org_mfa_required(org_id: int):
+    user = g.user
+    u_role = auth.normalize_role(user["role"])
+    data = request.json or {}
+    required = bool(data.get("mfa_required"))
+
+    if u_role != "admin" and org_id != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    database.set_org_mfa_required(org_id, required)
+    database.write_audit("org.mfa_required_change", user_id=user["id"], org_id=org_id, resource_id=str(org_id), ip=_ip(), detail=str(required))
+    return jsonify({"ok": True})
+
+
 # ── Admin API ──────────────────────────────────────────────────────────────────
 
 @app.route("/api/v1/stats")
