@@ -18,6 +18,9 @@ ldv-backend/uploads/
 ldv-backend/.session_secret
 ldv-backend/audit_durable.log
 
+# TLS private key/cert — regenerate with deploy/gen-cert.sh, never commit
+deploy/certs/
+
 # Local tooling / agent artifacts
 .claude/
 .playwright-mcp/
