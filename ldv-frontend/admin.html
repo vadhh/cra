@@ -553,6 +553,7 @@
                     <th>Org ID</th>
                     <th>Corporate Tenant Name</th>
                     <th>Data Retention Policy</th>
+                    <th>MFA Enforcement</th>
                     <th>Monthly Scan Limits</th>
                     <th>Status</th>
                     <th style="text-align:right;">Save Configurations</th>
@@ -571,6 +572,13 @@
                           <option value="30">30-Day Storage Lock</option>
                           <option value="90">90-Day Standard Log</option>
                         </select>
+                      </td>
+                      <td>
+                        <button type="button"
+                                class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border transition-colors"
+                                :class="org.mfa_required ? 'bg-teal-950/40 text-teal-400 border-teal-500/20' : 'bg-surface-container border-outline-variant/30 text-on-surface-variant hover:border-primary/40'"
+                                @click="toggleOrgMfaRequired(org)"
+                                x-text="org.mfa_required ? 'Enforced' : 'Optional'"></button>
                       </td>
                       <td>
                         <select class="bg-surface-container border border-outline-variant/20 rounded text-xs px-2 py-1 text-on-surface focus:outline-none">
@@ -1029,6 +1037,7 @@
             // Map temp retention values
             this.organizations.forEach(o => {
               this.tempRetention[o.id] = o.retention_days || 30;
+              o.mfa_required = !!o.mfa_required;
             });
 
             this.loading = false;
@@ -1217,6 +1226,28 @@
             } else {
               const data = await resp.json();
               this.errorMsg = data.error || 'Failed to save retention policy.';
+            }
+          } catch (e) {
+            this.errorMsg = 'Network error.';
+          }
+        },
+
+        async toggleOrgMfaRequired(org) {
+          this.errorMsg = '';
+          this.successMsg = '';
+          const next = !org.mfa_required;
+          try {
+            const resp = await fetch(`/api/v1/admin/organizations/${org.id}/mfa-required`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ mfa_required: next })
+            });
+            if (resp.ok) {
+              org.mfa_required = next;
+              this.successMsg = `MFA enforcement ${next ? 'enabled' : 'disabled'} for organization #${org.id}.`;
+            } else {
+              const data = await resp.json();
+              this.errorMsg = data.error || 'Failed to update MFA enforcement.';
             }
           } catch (e) {
             this.errorMsg = 'Network error.';
