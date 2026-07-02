@@ -1196,6 +1196,14 @@ def citation_review_page():
     return send_from_directory(FRONTEND_DIR, "citations.html")
 
 
+@app.route("/account")
+def account_page():
+    user = auth.current_user()
+    if user is None:
+        return redirect("/login")
+    return send_from_directory(FRONTEND_DIR, "account.html")
+
+
 @app.route("/swagger.json")
 def swagger_json():
     return send_from_directory(FRONTEND_DIR, "swagger.json")
