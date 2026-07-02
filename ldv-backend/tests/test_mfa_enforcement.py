@@ -55,8 +55,10 @@ def setup():
 
 def test_manager_can_set_own_org():
     org_a, _ = setup()
+    user = database.get_user_by_email("mgr-a@a.com")
     c = app_module.app.test_client()
-    c.post("/login", json={"email": "mgr-a@a.com", "password": "pw"})
+    with c.session_transaction() as sess:
+        sess["uid"] = user["id"]
     resp = c.post(f"/api/v1/admin/organizations/{org_a}/mfa-required", json={"mfa_required": True})
     assert resp.status_code == 200, resp.get_json()
     assert database.org_mfa_required(org_a) is True
@@ -65,8 +67,10 @@ def test_manager_can_set_own_org():
 
 def test_manager_forbidden_other_org():
     org_a, org_b = setup()
+    user = database.get_user_by_email("mgr-a@a.com")
     c = app_module.app.test_client()
-    c.post("/login", json={"email": "mgr-a@a.com", "password": "pw"})
+    with c.session_transaction() as sess:
+        sess["uid"] = user["id"]
     resp = c.post(f"/api/v1/admin/organizations/{org_b}/mfa-required", json={"mfa_required": True})
     assert resp.status_code == 403, resp.get_json()
     assert database.org_mfa_required(org_b) is False
@@ -74,8 +78,10 @@ def test_manager_forbidden_other_org():
 
 def test_admin_can_set_any_org():
     org_a, org_b = setup()
+    user = database.get_user_by_email("root@a.com")
     c = app_module.app.test_client()
-    c.post("/login", json={"email": "root@a.com", "password": "pw"})
+    with c.session_transaction() as sess:
+        sess["uid"] = user["id"]
     resp = c.post(f"/api/v1/admin/organizations/{org_b}/mfa-required", json={"mfa_required": True})
     assert resp.status_code == 200, resp.get_json()
     assert database.org_mfa_required(org_b) is True
