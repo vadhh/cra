@@ -80,8 +80,15 @@ def test_owner_and_cross_org_and_admin():
     assert c2.get("/api/v1/result/" + pub).status_code == 403
 
     # Admin — 200 for any org
+    # Bypass /login via session_transaction: role "admin" is unconditionally
+    # MFA-mandatory (auth.is_mfa_mandatory), so a plain /login POST here would
+    # only set mfa_enroll_pending_uid, not uid, when run outside pytest (no
+    # PYTEST_CURRENT_TEST escape hatch). This test is about tenant-isolation
+    # authorization, not the login/MFA flow, so bypassing is correct.
+    admin_user = database.get_user_by_email("admin@a.com")
     c3 = app_module.app.test_client()
-    c3.post("/login", json={"email": "admin@a.com", "password": "pw"})
+    with c3.session_transaction() as sess:
+        sess["uid"] = admin_user["id"]
     assert c3.get("/api/v1/result/" + pub).status_code == 200
 
     # API token auth works programmatically
