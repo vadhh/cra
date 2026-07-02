@@ -641,9 +641,17 @@ def count_active_admins() -> int:
 
 
 def cleanup_stuck_analyses() -> None:
-    """Reset any analysis records left in 'running' or 'queued' status on startup."""
+    """Fail analysis records abandoned by a crashed/killed process.
+
+    Runs on every process start, including each gunicorn worker boot — so it
+    must not touch jobs a sibling worker is still actively processing.
+    # ponytail: age-gated instead of per-worker-owned; a job older than this
+    # threshold is either done or truly stuck (L4 hard-caps at
+    # LDV_GENERATION_TIMEOUT+30s, default 330s). Add per-worker leases if a
+    # legitimate job ever needs to run longer than 30 min.
+    """
     with _conn() as db:
         db.execute(
             "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
-            "WHERE status IN ('running', 'queued')"
+            "WHERE status IN ('running', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
         )
