@@ -288,7 +288,7 @@
     <section class="glass-card p-6 space-y-6" x-show="view === 'enroll'" style="display:none;">
       <h2 class="font-editorial text-lg font-bold text-primary">Set Up MFA</h2>
       <div class="flex flex-col md:flex-row gap-6 items-center bg-surface-container-lowest/30 p-5 border border-outline-variant/10 rounded">
-        <div class="bg-white p-3 rounded shrink-0" x-html="mfaSetup.qrCodeSvg"></div>
+        <div class="bg-white p-3 rounded shrink-0 w-40 h-40 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full" x-html="mfaSetup.qrCodeSvg"></div>
         <div class="space-y-2 text-sm text-on-surface-variant">
           <p class="font-bold text-on-surface">1. Scan QR Code</p>
           <p>Scan with Google Authenticator, Duo, or any TOTP app.</p>

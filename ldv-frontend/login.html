@@ -291,7 +291,7 @@
         <div class="space-y-6 text-sm leading-relaxed text-on-surface-variant">
           <!-- Step 1: QR Code -->
           <div class="flex flex-col md:flex-row gap-6 items-center bg-surface-container-lowest/30 p-5 border border-outline-variant/10 rounded">
-            <div class="bg-white p-3 rounded shrink-0" x-html="mfaSetup.qrCodeSvg"></div>
+            <div class="bg-white p-3 rounded shrink-0 w-40 h-40 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full" x-html="mfaSetup.qrCodeSvg"></div>
             <div class="space-y-2">
               <p class="font-bold text-on-surface text-base">1. Scan QR Code</p>
               <p>Scan this QR code using Google Authenticator, Duo, or any TOTP application on your secure mobile device.</p>
