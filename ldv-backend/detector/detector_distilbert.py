@@ -16,7 +16,8 @@ Public API
 Returns
 -------
 dict:
-    document_type    : {"label": str, "confidence": float, "candidates": list}
+    document_type    : {"label": str, "confidence": float, "candidates": list, "source": str}
+                        source is "classifier" (ML) or "user_selected" (app.py override_type)
     flagged_clauses  : list[{"text": str, "label": str, "confidence": float}]
     layer2_available : bool  — False when model not loaded
 """
@@ -384,12 +385,15 @@ def classify_document_type(text: str) -> dict:
 
     Returns
     -------
-    {"label": str, "confidence": float, "candidates": list[dict]}
-    Null values when model unavailable.
+    {"label": str, "confidence": float, "candidates": list[dict], "source": str}
+    Null values when model unavailable. "source" is always "classifier" here;
+    app.py overrides it to "user_selected" when the user picks the document
+    type manually, so consumers can tell a real ML confidence from a
+    user override in the audit trail.
     """
     model, tokenizer = _load_model()
     if model is None:
-        return {"label": None, "confidence": None, "candidates": []}
+        return {"label": None, "confidence": None, "candidates": [], "source": "classifier"}
 
     premise = text[:800].strip()
     candidates = _classify_doc_type(model, tokenizer, premise)
@@ -416,6 +420,7 @@ def classify_document_type(text: str) -> dict:
         "label":      top["label"],
         "confidence": top["confidence"],
         "candidates": candidates[:4],
+        "source":     "classifier",
     }
 
 
@@ -530,7 +535,7 @@ def layer2_analyze(text: str) -> dict:
     if not available:
         logger.warning("Layer 2 unavailable: DistilBERT model not loaded.")
         return {
-            "document_type":    {"label": None, "confidence": None, "candidates": []},
+            "document_type":    {"label": None, "confidence": None, "candidates": [], "source": "classifier"},
             "flagged_clauses":  [],
             "layer2_available": False,
         }

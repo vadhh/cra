@@ -231,7 +231,8 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         layer2["document_type"] = {
             "label": mapped_label,
             "confidence": 1.0,
-            "candidates": [{"label": mapped_label, "confidence": 1.0}]
+            "candidates": [{"label": mapped_label, "confidence": 1.0}],
+            "source": "user_selected"
         }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()

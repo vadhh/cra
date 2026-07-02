@@ -162,7 +162,7 @@ def main() -> None:
     pu = sub.add_parser("create-user")
     pu.add_argument("email")
     pu.add_argument("org")
-    pu.add_argument("--role", default="user", choices=["user", "admin"])
+    pu.add_argument("--role", default="user", choices=["user", "admin", "analyst", "reviewer", "manager"])
     pp = sub.add_parser("purge")
     pp.add_argument("--dry-run", action="store_true")
     pd = sub.add_parser("purge-doc")
