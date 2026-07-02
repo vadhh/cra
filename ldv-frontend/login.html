@@ -7,6 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="images/sydeco_shield.svg">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <script id="tailwind-config">
@@ -290,9 +291,7 @@
         <div class="space-y-6 text-sm leading-relaxed text-on-surface-variant">
           <!-- Step 1: QR Code -->
           <div class="flex flex-col md:flex-row gap-6 items-center bg-surface-container-lowest/30 p-5 border border-outline-variant/10 rounded">
-            <div class="bg-white p-3 rounded shrink-0">
-              <img :src="mfaSetup.qrCodeUrl" class="w-40 h-40 object-contain" alt="MFA Ingestion QR Code"/>
-            </div>
+            <div class="bg-white p-3 rounded shrink-0" x-html="mfaSetup.qrCodeSvg"></div>
             <div class="space-y-2">
               <p class="font-bold text-on-surface text-base">1. Scan QR Code</p>
               <p>Scan this QR code using Google Authenticator, Duo, or any TOTP application on your secure mobile device.</p>
@@ -460,7 +459,7 @@
         recoveryRequested: false,
         mfaSetup: {
           secret: '',
-          qrCodeUrl: '',
+          qrCodeSvg: '',
           recoveryCodes: []
         },
 
@@ -554,7 +553,10 @@
             const data = await resp.json().catch(() => ({}));
             if (resp.ok) {
               this.mfaSetup.secret = data.secret;
-              this.mfaSetup.qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chl=' + encodeURIComponent(data.provisioning_uri) + '&chs=200x200&chld=L|0';
+              const qr = qrcode(0, 'L');
+              qr.addData(data.provisioning_uri);
+              qr.make();
+              this.mfaSetup.qrCodeSvg = qr.createSvgTag({ cellSize: 4, margin: 2 });
               this.mfaSetup.recoveryCodes = data.recovery_codes || [];
               this.state = 'mfa_enroll';
               this.mfaCode = '';
