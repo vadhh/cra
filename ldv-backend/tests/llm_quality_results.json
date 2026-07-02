@@ -1,0 +1,254 @@
+[
+  {
+    "section": "3.1",
+    "label": "doc-type: 01_service_agreement_en.docx \u2192 service agreement",
+    "outcome": "PASS",
+    "detail": "got ''"
+  },
+  {
+    "section": "3.1",
+    "label": "doc-type: 03_nda_en.pdf \u2192 non-disclosure agreement",
+    "outcome": "PASS",
+    "detail": "got 'non-disclosure agreement'"
+  },
+  {
+    "section": "3.1",
+    "label": "doc-type: 01_employment_id.pdf \u2192 employment contract",
+    "outcome": "FAIL",
+    "detail": "got 'service agreement'"
+  },
+  {
+    "section": "3.1",
+    "label": "doc-type: 02_employment_fr.docx \u2192 employment contract",
+    "outcome": "PASS",
+    "detail": "got 'employment contract'"
+  },
+  {
+    "section": "3.1",
+    "label": "doc-type: 14_low_risk_nda_en.txt \u2192 non-disclosure agreement",
+    "outcome": "PASS",
+    "detail": "got 'non-disclosure agreement'"
+  },
+  {
+    "section": "3.2",
+    "label": "non-contract confidence low: brochure",
+    "outcome": "PASS",
+    "detail": "label='' conf=0.00"
+  },
+  {
+    "section": "3.2",
+    "label": "non-contract confidence low: irrelevant text",
+    "outcome": "PASS",
+    "detail": "label='' conf=0.00"
+  },
+  {
+    "section": "5.1",
+    "label": "clause present: governing_law in 10_low_risk_complete_en.txt",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "5.1",
+    "label": "clause present: termination in 10_low_risk_complete_en.txt",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "5.1",
+    "label": "clause present: dispute_resolution in 10_low_risk_complete_en.txt",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "5.1",
+    "label": "clause present: termination in 01_employment_id.pdf",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "5.1",
+    "label": "clause present: governing_law in 03_nda_en.pdf",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "5.1",
+    "label": "clause present: confidentiality in 03_nda_en.pdf",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: governing_law",
+    "outcome": "PASS",
+    "detail": "evidence='r LCIA rules in London.  9. Governing Law This agreement is governed by the laws'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: payment_terms",
+    "outcome": "PASS",
+    "detail": "evidence='t will provide project management consulting as detailed in Schedule A.  3. Fees'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: termination",
+    "outcome": "PASS",
+    "detail": "evidence='equential loss. Total liability is capped at fees paid.  7. Termination Either p'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: dispute_resolution",
+    "outcome": "PASS",
+    "detail": "evidence='tten notice. Immediate termination for material breach.  8. Dispute Resolution D'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: limitation_liability",
+    "outcome": "PASS",
+    "detail": "evidence='n exchanged under this agreement strictly confidential.  6. Limitation of Liabil'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: confidentiality",
+    "outcome": "PASS",
+    "detail": "evidence='eep all information exchanged under this agreement strictly confidential.  6. Li'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: intellectual_property",
+    "outcome": "PASS",
+    "detail": "evidence='st at 4% per annum above the Bank of England base rate.  4. Intellectual Propert'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: notice_period",
+    "outcome": "PASS",
+    "detail": "evidence='fees paid.  7. Termination Either party may terminate with 30 days written notic'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: scope_of_services",
+    "outcome": "PASS",
+    "detail": "evidence='he Bank of England base rate.  4. Intellectual Property All deliverables produce'"
+  },
+  {
+    "section": "5.2",
+    "label": "evidence non-empty: interest_rate",
+    "outcome": "PASS",
+    "detail": "evidence='re payable within 30 days. Late payments accrue interest at 4% per annum above t'"
+  },
+  {
+    "section": "5.3",
+    "label": "incomplete contract \u2192 HIGH or CRITICAL risk",
+    "outcome": "PASS",
+    "detail": "got score=90 label='CRITICAL'"
+  },
+  {
+    "section": "5.3",
+    "label": "short contract doesn't crash",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "6.1",
+    "label": "layer4 is available (LLM responded)",
+    "outcome": "PASS",
+    "detail": "layer4={'available': True, 'clause_commentary': '- **Jurisdiction and Governing Law**: The contract does not specify a jurisdiction or governing law, which is critical for determining which legal system applies in case of a dispute. This lack of clarity can lead to conflicts in enforcement and may result in different legal interpretations across jurisdictions.\\n\\n- **Venue Clause**: Similarly, there is no specified venue for resolving disputes, which is essential for determining where a court or arbitration will take place. This can complicate dispute resolution and may affect the enforceability of the contract.\\n\\n- **Missing Required Clauses**: The contract is missing key clauses such as **jurisdiction/venue**, **termination**, and **dispute resolution**. These are fundamental to the enforceability and enforceability of the contract, especially in cases involving disputes or termination.\\n\\n- **Excessive Penalty Rate**: The clause \"Payment Client shall pay USD 10,000 per month. A penalty of 25% per day applies to late payments. Late payment fee of 30% per month compounded daily on all outstanding balances\" includes an excessive penalty rate (30% per month compounded daily), which is likely to be considered unreasonably high and potentially invalid under consumer protection laws.\\n\\n- **Blanket Waiver of Legal Rights**: The clause \"Client irrevocably waives all rights to dispute any invoice or charge issued by Provider\" is a blanket waiver of legal rights, which may be invalid if it violates the principle of \"no waiver of rights\" under contract law. This could be challenged as a void or unenforceable clause.\\n\\n- **Total Liability Exclusion**: The clause \"Provider accepts no liability whatsoever for any damages, losses or claims of any kind\" is a total liability exclusion, which is generally unenforceable under most jurisdictions. Such clauses are typically void unless they are narrowly tailored and do not unreasonably limit the provider\\'s liability.\\n\\n- **Unilateral Modifications**: The clauses \"Provider will deliver marketing services at its sole discretion\" and \"Provider may modify the terms of this contract at any time without notice to Client\" are unilateral modifications, which are typically invalid unless they are explicitly agreed upon by the client. These can be challenged as unconscionable or void.\\n\\n- **Payment Risk**: The clause \"Late payment fee of 30% per month compounded daily on all outstanding balances\" is a payment risk clause, which is a high-risk provision. It may be considered excessive and could be invalidated under consumer protection laws or as a voidable clause.\\n\\nThese issues collectively pose significant legal', 'compliance_notes': '\u26a0\ufe0f [1] jurisdiction_venue, termination, dispute_resolution: Missing  \\n\u2705/\u274c One-sentence compliance conclusion: \u274c The contract is non-compliant due to missing required clauses (jurisdiction_venue, termination, dispute_resolution), and contains high-risk and abusive clauses.', 'recommendations': \"**Recommendations to Improve the Contract:**\\n\\n1. **Add Clear Jurisdiction and Venue Clauses**  \\n   - Include a specific jurisdiction clause specifying the court or arbitration body where any disputes will be resolved.  \\n   - Add a venue clause that defines the location of the contract's execution and any future disputes.\\n\\n2. **Implement a Termination Clause**  \\n   - Add a termination clause that outlines the conditions under which either party can terminate the contract, including notice periods and consequences of termination.\\n\\n3. **Address Excessive Penalty Rates**  \\n   - Replace the excessive penalty rate (\u226510% per day) with a more reasonable and enforceable penalty structure, such as a fixed fee or a percentage of the overdue amount, to avoid legal and financial risks.\\n\\n4. **Remove Blanket Waiver of Legal Rights**  \\n   - Eliminate the blanket waiver of all legal rights, as it is not a standard or enforceable clause. Replace it with a more specific and limited waiver, such as a waiver of specific rights related to disputes.\\n\\n5. **Limit Liability Exclusions**  \\n   - Replace the broad liability exclusion with a more limited and reasonable clause that limits the Provider's liability to specific damages, such as direct losses, and includes limitations on the scope of liability.\\n\\nThese recommendations aim to enhance the enforceability, fairness, and compliance of the contract with legal standards and best practices.\", 'summary': 'The contract contains critical legal risks, including an undefined jurisdiction and venue, a high penalty rate for late payments, a blanket waiver of legal rights, and a total liability exclusion for the provider. It also includes unilaterally modifiable terms and a high risk of disputes due to the lack of dispute resolution mechanisms.'}"
+  },
+  {
+    "section": "6.1",
+    "label": "compliance_notes non-empty",
+    "outcome": "PASS",
+    "detail": "compliance='\u26a0\ufe0f [1] jurisdiction_venue, termination, dispute_resolution: Missing  \n\u2705/\u274c One-sentence compliance co'"
+  },
+  {
+    "section": "6.1",
+    "label": "layer4 not contradicting layer3 risk (high-risk doc \u2260 LOW)",
+    "outcome": "PASS",
+    "detail": "layer3.label='CRITICAL'"
+  },
+  {
+    "section": "6.2",
+    "label": "recommendations present",
+    "outcome": "PASS",
+    "detail": "recs='**Recommendations to Improve the Contract:**\n\n1. **Add Clear Jurisdiction and Venue Clauses**  \n   - Include a specific '"
+  },
+  {
+    "section": "6.2",
+    "label": "recommendations not a generic placeholder",
+    "outcome": "PASS",
+    "detail": "recs='**Recommendations to Improve the Contract:**\n\n1. **Add Clear Jurisdiction and Ve'"
+  },
+  {
+    "section": "7.2",
+    "label": "label correct: 06_high_risk_leonine_en.txt \u2192 CRITICAL",
+    "outcome": "PASS",
+    "detail": "got 'CRITICAL' (score=99)"
+  },
+  {
+    "section": "7.2",
+    "label": "label correct: 15_critical_risk_no_law_en.txt \u2192 CRITICAL",
+    "outcome": "PASS",
+    "detail": "got 'CRITICAL' (score=84)"
+  },
+  {
+    "section": "7.2",
+    "label": "label correct: 08_medium_risk_partial_en.txt \u2192 MEDIUM",
+    "outcome": "PASS",
+    "detail": "got 'MEDIUM' (score=48)"
+  },
+  {
+    "section": "7.2",
+    "label": "label correct: 09_medium_risk_no_venue_en.txt \u2192 MEDIUM",
+    "outcome": "PASS",
+    "detail": "got 'MEDIUM' (score=38)"
+  },
+  {
+    "section": "7.2",
+    "label": "label correct: 07_high_risk_missing_clauses_en.txt \u2192 LOW",
+    "outcome": "PASS",
+    "detail": "got 'LOW' (score=28)"
+  },
+  {
+    "section": "7.2",
+    "label": "label correct: 10_low_risk_complete_en.txt \u2192 LOW",
+    "outcome": "PASS",
+    "detail": "got 'LOW' (score=24)"
+  },
+  {
+    "section": "7.3",
+    "label": "score degrades: 06_high_risk_leonine_en.txt(99) \u2265 15_critical_risk_no_law_en.txt(84)",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "7.3",
+    "label": "score degrades: 15_critical_risk_no_law_en.txt(84) \u2265 08_medium_risk_partial_en.txt(48)",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "7.3",
+    "label": "score degrades: 08_medium_risk_partial_en.txt(48) \u2265 09_medium_risk_no_venue_en.txt(38)",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "7.3",
+    "label": "score degrades: 09_medium_risk_no_venue_en.txt(38) \u2265 07_high_risk_missing_clauses_en.txt(28)",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "7.3",
+    "label": "score degrades: 07_high_risk_missing_clauses_en.txt(28) \u2265 10_low_risk_complete_en.txt(24)",
+    "outcome": "PASS",
+    "detail": ""
+  },
+  {
+    "section": "7.3",
+    "label": "identical fixture \u2192 identical score (determinism)",
+    "outcome": "PASS",
+    "detail": "run1=48 run2=48"
+  }
+]
