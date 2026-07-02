@@ -118,6 +118,13 @@ def set_org_retention(org_id: int, days: int) -> None:
         )
 
 
+def set_org_mfa_required(org_id: int, required: bool) -> None:
+    with _conn() as db:
+        db.execute(
+            "UPDATE organizations SET mfa_required = ? WHERE id = ?", (1 if required else 0, org_id)
+        )
+
+
 def org_mfa_required(org_id: int | None) -> bool:
     if org_id is None:
         return False
@@ -551,8 +558,8 @@ def write_audit(
     """Append one row to audit_log. Fire-and-forget — never raises.
     Dual-writes high-impact events to a durable append-only log file."""
     high_impact_actions = {
-        "delete", "cite.verify", "user.role_change", 
-        "org.retention_change", "user.suspend", "user.unsuspend",
+        "delete", "cite.verify", "user.role_change",
+        "org.retention_change", "org.mfa_required_change", "user.suspend", "user.unsuspend",
         "mfa.disable", "user.mfa_reset", "user.download.disable"
     }
     
