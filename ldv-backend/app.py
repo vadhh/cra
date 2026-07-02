@@ -537,7 +537,10 @@ def api_mfa_disable():
     password = data.get("password") or ""
     if not auth.verify_login(user["email"], password):
         return jsonify({"error": "Re-authentication failed: invalid password"}), 401
-        
+
+    if database.org_mfa_required(user["org_id"]) or auth.is_mfa_mandatory(user):
+        return jsonify({"error": "MFA is mandatory for this account"}), 403
+
     database.update_user_mfa(user["id"], None, None)
     database.write_audit("mfa.disable", user_id=user["id"], org_id=user["org_id"], ip=_ip())
     return jsonify({"ok": True})
