@@ -211,9 +211,9 @@
     <div x-show="loggedIn" x-cloak style="display:none;" class="w-full">
       <!-- Stepper Navigation Header -->
       <section class="mb-12 border-b border-outline-variant/10 pb-6" x-show="currentStep < 5">
-      <div class="flex items-center justify-between max-w-3xl mx-auto font-body text-sm font-semibold">
+      <div class="flex items-center justify-between gap-2 max-w-3xl mx-auto font-body text-sm font-semibold overflow-x-auto">
         <!-- Step 1 Indicator -->
-        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all"
+        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all shrink-0 whitespace-nowrap"
                 :class="currentStep === 1 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 @click="goToStep(1)">
           <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
@@ -221,7 +221,7 @@
         </button>
         <span class="text-on-surface-variant/20">/</span>
         <!-- Step 2 Indicator -->
-        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all"
+        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all shrink-0 whitespace-nowrap"
                 :class="currentStep === 2 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 :disabled="!selectedFile" @click="goToStep(2)">
           <span class="material-symbols-outlined text-[20px]">badge</span>
@@ -229,7 +229,7 @@
         </button>
         <span class="text-on-surface-variant/20">/</span>
         <!-- Step 3 Indicator -->
-        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all"
+        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all shrink-0 whitespace-nowrap"
                 :class="currentStep === 3 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 :disabled="!selectedFile" @click="goToStep(3)">
           <span class="material-symbols-outlined text-[20px]">settings</span>
@@ -237,7 +237,7 @@
         </button>
         <span class="text-on-surface-variant/20">/</span>
         <!-- Step 4 Indicator -->
-        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all"
+        <button class="flex items-center gap-2 pb-2 border-b-2 transition-all shrink-0 whitespace-nowrap"
                 :class="currentStep === 4 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 :disabled="!selectedFile" @click="goToStep(4)">
           <span class="material-symbols-outlined text-[20px]">verified</span>
@@ -250,7 +250,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
       
       <!-- LEFT MAIN CANVAS (8 cols, expands to 12 when processing) -->
-      <div class="glass-panel rounded-lg p-10 relative overflow-hidden group"
+      <div class="glass-panel rounded-lg p-6 sm:p-10 relative overflow-hidden group"
            :class="currentStep === 5 ? 'lg:col-span-12' : 'lg:col-span-8'">
         <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl transition-all group-hover:bg-primary/10"></div>
         <div class="relative z-10">

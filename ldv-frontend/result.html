@@ -746,6 +746,9 @@
                     <span x-text="rec"></span>
                   </div>
                 </template>
+                <div x-show="recommendations.length === 0" style="display:none;" class="text-xs text-on-surface-variant/60 py-2">
+                  No priority actions — no actionable findings detected.
+                </div>
               </div>
             </div>
           </div>
@@ -1308,6 +1311,10 @@
         },
 
         // Filtering list of findings (Section 10.F)
+        get recommendations() {
+          return [...new Set(this.findings.map(f => f.recommendation).filter(Boolean))].slice(0, 6);
+        },
+
         get filteredFindings() {
           let list = this.findings;
 
