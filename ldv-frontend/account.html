@@ -129,6 +129,20 @@
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
       vertical-align: middle;
     }
+    .gold-button {
+      background: #d4af37;
+      color: #101828;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gold-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+      filter: brightness(1.1);
+    }
+    .gold-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
     .glass-card {
       background: rgba(14, 19, 31, 0.4);
       backdrop-filter: blur(20px);
