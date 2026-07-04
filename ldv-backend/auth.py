@@ -44,12 +44,12 @@ def configure_secret_key(app) -> None:
             "survive a restart. Set LDV_SECRET_KEY before any real deployment."
         )
     app.secret_key = key
-    # Session-cookie hardening. SameSite=Lax neutralizes the basic CSRF vector
-    # on state-changing POSTs (full CSRF tokens are a deferred follow-up).
-    # Secure is env-gated so localhost HTTP dev still works; enable in prod.
+    # Session-cookie hardening. SameSite=Lax neutralizes basic CSRF vector.
+    # We use SameSite=None and Secure=True in production / HF Spaces so the app works inside HF iframes.
     app.config["SESSION_COOKIE_HTTPONLY"] = True
-    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-    app.config["SESSION_COOKIE_SECURE"] = os.getenv("LDV_COOKIE_SECURE", "0") == "1"
+    is_prod = os.getenv("LDV_PRODUCTION") == "1" or "SPACE_ID" in os.environ
+    app.config["SESSION_COOKIE_SAMESITE"] = "None" if is_prod else "Lax"
+    app.config["SESSION_COOKIE_SECURE"] = True if is_prod else (os.getenv("LDV_COOKIE_SECURE", "0") == "1")
 
 
 def hash_password(password: str) -> str:
