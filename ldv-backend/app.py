@@ -39,7 +39,7 @@ MAX_UPLOAD_BYTES = int(os.getenv("LDV_MAX_UPLOAD_MB", "10")) * 1024 * 1024
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 
 # Document types that are not contracts — skip full clause/risk analysis for these
-_NON_CONTRACT_TYPES = {"invoice", "receipt", "purchase order"}
+_NON_CONTRACT_TYPES = {"invoice", "receipt", "purchase order", "non-contract"}
 
 _MIME_ALLOWLIST = {
     ".pdf":  {"application/pdf"},

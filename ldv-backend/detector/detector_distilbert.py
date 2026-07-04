@@ -102,6 +102,12 @@ _KEYWORD_DOC_TYPES: dict[str, list[str]] = {
         r"\bpesanan\s+pembelian\b", r"\bsurat\s+pesanan\b",
         r"\border\s+confirmation\b",
     ],
+    "non-contract": [
+        r"\bcurriculum\s+vitae\b", r"\bcv\b", r"\bresume\b",
+        r"\beducation\b", r"\bwork\s+experience\b", r"\bskills\b",
+        r"\bprofessional\s+summary\b", r"\bpersonal\s+details\b",
+        r"\bexperience\s+summary\b",
+    ],
 }
 
 # Minimum keyword hits to trust a keyword result over NLI
