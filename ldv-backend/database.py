@@ -139,150 +139,172 @@ def org_mfa_required(org_id: int | None) -> bool:
 
 
 def init_db() -> None:
-    with sqlite3.connect(get_db_path()) as conn:
-        conn.executescript(_SCHEMA)
-        # Migrate pre-public_id databases: results are addressed by unguessable
-        # UUIDs, never by the enumerable integer primary key.
-        cols = {row[1] for row in conn.execute("PRAGMA table_info(analyses)")}
-        if "public_id" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN public_id TEXT")
-        for (row_id,) in conn.execute(
-            "SELECT id FROM analyses WHERE public_id IS NULL"
-        ).fetchall():
+    # fcntl process/file locking to prevent race conditions during multi-worker startup
+    lock_path = get_db_path() + ".lock"
+    # Ensure lock directory exists
+    os.makedirs(os.path.dirname(lock_path), exist_ok=True)
+    
+    try:
+        import fcntl
+        lock_file = open(lock_path, "w")
+        fcntl.flock(lock_file, fcntl.LOCK_EX)
+    except (ImportError, OSError):
+        lock_file = None
+
+    try:
+        with sqlite3.connect(get_db_path()) as conn:
+            conn.executescript(_SCHEMA)
+            # Migrate pre-public_id databases: results are addressed by unguessable
+            # UUIDs, never by the enumerable integer primary key.
+            cols = {row[1] for row in conn.execute("PRAGMA table_info(analyses)")}
+            if "public_id" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN public_id TEXT")
+            for (row_id,) in conn.execute(
+                "SELECT id FROM analyses WHERE public_id IS NULL"
+            ).fetchall():
+                conn.execute(
+                    "UPDATE analyses SET public_id = ? WHERE id = ?",
+                    (uuid.uuid4().hex, row_id),
+                )
             conn.execute(
-                "UPDATE analyses SET public_id = ? WHERE id = ?",
-                (uuid.uuid4().hex, row_id),
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id "
+                "ON analyses(public_id)"
             )
-        conn.execute(
-            "CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id "
-            "ON analyses(public_id)"
-        )
-        if "status" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
-        if "error_message" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
-        if "progress_pct" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN progress_pct INTEGER DEFAULT 0")
-        if "progress_stage" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN progress_stage TEXT DEFAULT 'queued'")
+            if "status" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
+            if "error_message" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
+            if "progress_pct" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN progress_pct INTEGER DEFAULT 0")
+            if "progress_stage" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN progress_stage TEXT DEFAULT 'queued'")
 
-        # Check if result_json has an outdated NOT NULL constraint
-        info = conn.execute("PRAGMA table_info(analyses)").fetchall()
-        result_json_not_null = False
-        for row in info:
-            if row[1] == "result_json" and row[3] == 1:
-                result_json_not_null = True
-                break
+            # Check if result_json has an outdated NOT NULL constraint
+            info = conn.execute("PRAGMA table_info(analyses)").fetchall()
+            result_json_not_null = False
+            for row in info:
+                if row[1] == "result_json" and row[3] == 1:
+                    result_json_not_null = True
+                    break
 
-        if result_json_not_null:
-            conn.execute("PRAGMA foreign_keys=OFF")
-            conn.execute("ALTER TABLE analyses RENAME TO analyses_old")
-            conn.executescript("""
-            CREATE TABLE analyses (
-                id            INTEGER PRIMARY KEY AUTOINCREMENT,
-                public_id     TEXT UNIQUE,
-                document_id   INTEGER NOT NULL REFERENCES documents(id),
-                jurisdiction  TEXT,
-                document_type TEXT,
-                risk_score    INTEGER,
-                risk_label    TEXT,
-                result_json   TEXT,
-                status        TEXT NOT NULL DEFAULT 'completed',
-                error_message TEXT,
-                analyzed_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id ON analyses(public_id);
-            """)
-            conn.execute("""
-            INSERT INTO analyses (id, public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message, analyzed_at)
-            SELECT id, public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message, analyzed_at
-            FROM analyses_old
-            """)
-            conn.execute("DROP TABLE analyses_old")
-            conn.execute("PRAGMA foreign_keys=ON")
+            if result_json_not_null:
+                conn.execute("PRAGMA foreign_keys=OFF")
+                conn.execute("ALTER TABLE analyses RENAME TO analyses_old")
+                conn.executescript("""
+                CREATE TABLE analyses (
+                    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                    public_id     TEXT UNIQUE,
+                    document_id   INTEGER NOT NULL REFERENCES documents(id),
+                    jurisdiction  TEXT,
+                    document_type TEXT,
+                    risk_score    INTEGER,
+                    risk_label    TEXT,
+                    result_json   TEXT,
+                    status        TEXT NOT NULL DEFAULT 'completed',
+                    error_message TEXT,
+                    analyzed_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+                CREATE UNIQUE INDEX IF NOT EXISTS idx_analyses_public_id ON analyses(public_id);
+                """)
+                conn.execute("""
+                INSERT INTO analyses (id, public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message, analyzed_at)
+                SELECT id, public_id, document_id, jurisdiction, document_type, risk_score, risk_label, result_json, status, error_message, analyzed_at
+                FROM analyses_old
+                """)
+                conn.execute("DROP TABLE analyses_old")
+                conn.execute("PRAGMA foreign_keys=ON")
 
-        # Ownership columns for tenant isolation (CR-01). Added if missing so
-        # pre-auth databases keep working; existing rows stay NULL-org
-        # (admin-visible only) until backfilled by manage.py seed-admin.
-        doc_cols = {row[1] for row in conn.execute("PRAGMA table_info(documents)")}
-        if "org_id" not in doc_cols:
-            conn.execute("ALTER TABLE documents ADD COLUMN org_id INTEGER REFERENCES organizations(id)")
-        if "owner_id" not in doc_cols:
-            conn.execute("ALTER TABLE documents ADD COLUMN owner_id INTEGER REFERENCES users(id)")
-        if "expires_at" not in doc_cols:
-            conn.execute("ALTER TABLE documents ADD COLUMN expires_at TIMESTAMP")
-            # Backfill existing rows from their upload time + retention window.
-            conn.execute(
-                "UPDATE documents SET expires_at = datetime(uploaded_at, ?) "
-                "WHERE expires_at IS NULL",
-                (f"+{retention_days()} days",),
-            )
-        org_cols = {row[1] for row in conn.execute("PRAGMA table_info(organizations)")}
-        if "retention_days" not in org_cols:
-            conn.execute("ALTER TABLE organizations ADD COLUMN retention_days INTEGER")
-        if "mfa_required" not in org_cols:
-            conn.execute("ALTER TABLE organizations ADD COLUMN mfa_required INTEGER DEFAULT 0")
+            # Ownership columns for tenant isolation (CR-01). Added if missing so
+            # pre-auth databases keep working; existing rows stay NULL-org
+            # (admin-visible only) until backfilled by manage.py seed-admin.
+            doc_cols = {row[1] for row in conn.execute("PRAGMA table_info(documents)")}
+            if "org_id" not in doc_cols:
+                conn.execute("ALTER TABLE documents ADD COLUMN org_id INTEGER REFERENCES organizations(id)")
+            if "owner_id" not in doc_cols:
+                conn.execute("ALTER TABLE documents ADD COLUMN owner_id INTEGER REFERENCES users(id)")
+            if "expires_at" not in doc_cols:
+                conn.execute("ALTER TABLE documents ADD COLUMN expires_at TIMESTAMP")
+                # Backfill existing rows from their upload time + retention window.
+                conn.execute(
+                    "UPDATE documents SET expires_at = datetime(uploaded_at, ?) "
+                    "WHERE expires_at IS NULL",
+                    (f"+{retention_days()} days",),
+                )
+            org_cols = {row[1] for row in conn.execute("PRAGMA table_info(organizations)")}
+            if "retention_days" not in org_cols:
+                conn.execute("ALTER TABLE organizations ADD COLUMN retention_days INTEGER")
+            if "mfa_required" not in org_cols:
+                conn.execute("ALTER TABLE organizations ADD COLUMN mfa_required INTEGER DEFAULT 0")
 
-        user_cols = {row[1] for row in conn.execute("PRAGMA table_info(users)")}
-        if "mfa_secret" not in user_cols:
-            conn.execute("ALTER TABLE users ADD COLUMN mfa_secret TEXT")
-        if "mfa_recovery_codes" not in user_cols:
-            conn.execute("ALTER TABLE users ADD COLUMN mfa_recovery_codes TEXT")
-        if "download_disabled" not in user_cols:
-            conn.execute("ALTER TABLE users ADD COLUMN download_disabled INTEGER DEFAULT 0")
+            user_cols = {row[1] for row in conn.execute("PRAGMA table_info(users)")}
+            if "mfa_secret" not in user_cols:
+                conn.execute("ALTER TABLE users ADD COLUMN mfa_secret TEXT")
+            if "mfa_recovery_codes" not in user_cols:
+                conn.execute("ALTER TABLE users ADD COLUMN mfa_recovery_codes TEXT")
+            if "download_disabled" not in user_cols:
+                conn.execute("ALTER TABLE users ADD COLUMN download_disabled INTEGER DEFAULT 0")
 
-        # Sprint 4: Subscription usage tracking, case history, and professional review workflow
-        for col, default_val in [
-            ("contract_limit", 100),
-            ("page_limit", 500),
-            ("report_limit", 50),
-            ("contract_used", 0),
-            ("page_used", 0),
-            ("report_used", 0)
-        ]:
-            if col not in org_cols:
-                conn.execute(f"ALTER TABLE organizations ADD COLUMN {col} INTEGER DEFAULT {default_val}")
+            # Sprint 4: Subscription usage tracking, case history, and professional review workflow
+            for col, default_val in [
+                ("contract_limit", 100),
+                ("page_limit", 500),
+                ("report_limit", 50),
+                ("contract_used", 0),
+                ("page_used", 0),
+                ("report_used", 0)
+            ]:
+                if col not in org_cols:
+                    conn.execute(f"ALTER TABLE organizations ADD COLUMN {col} INTEGER DEFAULT {default_val}")
 
-        if "client" not in doc_cols:
-            conn.execute("ALTER TABLE documents ADD COLUMN client TEXT")
-        if "case_folder" not in doc_cols:
-            conn.execute("ALTER TABLE documents ADD COLUMN case_folder TEXT")
+            if "client" not in doc_cols:
+                conn.execute("ALTER TABLE documents ADD COLUMN client TEXT")
+            if "case_folder" not in doc_cols:
+                conn.execute("ALTER TABLE documents ADD COLUMN case_folder TEXT")
 
-        if "review_status" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN review_status TEXT NOT NULL DEFAULT 'unreviewed'")
-        if "reviewer_email" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN reviewer_email TEXT")
-        if "review_comment" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN review_comment TEXT")
-        if "reviewed_at" not in cols:
-            conn.execute("ALTER TABLE analyses ADD COLUMN reviewed_at TIMESTAMP")
+            if "review_status" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN review_status TEXT NOT NULL DEFAULT 'unreviewed'")
+            if "reviewer_email" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN reviewer_email TEXT")
+            if "review_comment" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN review_comment TEXT")
+            if "reviewed_at" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN reviewed_at TIMESTAMP")
 
-        # Auto-seed a default admin user if the users table is completely empty
-        # (useful for fresh Docker deployments like Hugging Face Spaces)
-        user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-        if user_count == 0:
-            admin_email = os.getenv("LDV_ADMIN_EMAIL", "admin@example.com").strip().lower()
-            admin_password = os.getenv("LDV_ADMIN_PASSWORD", "password")
-            
-            # Ensure default organization exists
-            org_row = conn.execute("SELECT id FROM organizations WHERE name = 'Sydeco'").fetchone()
-            if not org_row:
-                cur_org = conn.execute("INSERT INTO organizations (name) VALUES ('Sydeco')")
-                org_id = cur_org.lastrowid
-            else:
-                org_id = org_row[0]
-                
-            from werkzeug.security import generate_password_hash
-            import secrets
-            hashed = generate_password_hash(admin_password)
-            token = secrets.token_urlsafe(32)
-            
-            conn.execute(
-                """INSERT INTO users (org_id, email, password_hash, role, api_token)
-                   VALUES (?, ?, ?, ?, ?)""",
-                (org_id, admin_email, hashed, "admin", token)
-            )
-            print(f"Auto-seeded default admin user: {admin_email} (password: {admin_password})")
+            # Auto-seed a default admin user if the users table is completely empty
+            # (useful for fresh Docker deployments like Hugging Face Spaces)
+            user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+            if user_count == 0:
+                try:
+                    admin_email = os.getenv("LDV_ADMIN_EMAIL", "admin@example.com").strip().lower()
+                    admin_password = os.getenv("LDV_ADMIN_PASSWORD", "password")
+                    
+                    # Ensure default organization exists
+                    conn.execute("INSERT OR IGNORE INTO organizations (name) VALUES ('Sydeco')")
+                    org_row = conn.execute("SELECT id FROM organizations WHERE name = 'Sydeco'").fetchone()
+                    org_id = org_row[0]
+                        
+                    from werkzeug.security import generate_password_hash
+                    import secrets
+                    hashed = generate_password_hash(admin_password)
+                    token = secrets.token_urlsafe(32)
+                    
+                    conn.execute(
+                        """INSERT OR IGNORE INTO users (org_id, email, password_hash, role, api_token)
+                           VALUES (?, ?, ?, ?, ?)""",
+                        (org_id, admin_email, hashed, "admin", token)
+                    )
+                    print(f"Auto-seeded default admin user: {admin_email} (password: {admin_password})")
+                except sqlite3.Error as e:
+                    # Log and absorb any concurrency insert errors gracefully
+                    print(f"Seeding ignored: {e}")
+                    pass
+    finally:
+        if lock_file:
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_UN)
+                lock_file.close()
+            except Exception:
+                pass
 
 
 
