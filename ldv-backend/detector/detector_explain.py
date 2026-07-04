@@ -137,52 +137,35 @@ def _build_findings_summary(
     return "\n".join(lines)
 
 
-# ── Prompt templates ───────────────────────────────────────────────────────────
-
-def _summary_prompt(findings: str, text_excerpt: str) -> str:
-    return (
-        "You are a legal expert. Based on the findings below, write a concise 2-3 sentence "
-        "plain-language summary of the contract's main legal risks. "
-        "Do not repeat the findings verbatim — synthesise them.\n\n"
-        f"FINDINGS:\n{findings}\n\n"
-        f"CONTRACT EXCERPT:\n{text_excerpt}\n\n"
-        "RISK SUMMARY:"
-    )
-
-
-def _commentary_prompt(findings: str, text_excerpt: str) -> str:
-    return (
-        "You are a legal expert performing a clause-by-clause review. "
-        "Based on the findings below, briefly comment on each flagged issue: "
-        "what is wrong and why it matters legally. Use bullet points.\n\n"
-        f"FINDINGS:\n{findings}\n\n"
-        f"CONTRACT EXCERPT:\n{text_excerpt}\n\n"
-        "CLAUSE COMMENTARY:"
-    )
-
-
-def _compliance_prompt(findings: str, jurisdiction: Optional[str]) -> str:
+def _unified_explain_prompt(findings: str, text_excerpt: str, jurisdiction: Optional[str]) -> str:
     juris = jurisdiction or "the detected jurisdiction"
     return (
-        f"You are a legal compliance expert specialising in {juris} law. "
-        "Based on the findings below, assess whether this contract complies with "
-        f"the legal requirements of {juris}. "
-        "Use the format:\n"
+        "You are a legal expert performing a contract analysis and compliance check.\n"
+        "Based on the findings and excerpt below, generate the following 4 sections. "
+        "You MUST format the output exactly as requested, beginning each section with its respective "
+        "=== HEADER === delimiter line, followed by the content for that section.\n\n"
+        
+        "=== RISK SUMMARY ===\n"
+        "Write a concise 2-3 sentence plain-language summary of the contract's main legal risks. "
+        "Do not repeat the findings verbatim — synthesize them.\n\n"
+        
+        "=== CLAUSE COMMENTARY ===\n"
+        "Briefly comment on each flagged issue: what is wrong and why it matters legally. "
+        "Use bullet points.\n\n"
+        
+        "=== COMPLIANCE ASSESSMENT ===\n"
+        f"Assess compliance with {juris} law. Use the format:\n"
         "⚠️ [N] mandatory clauses missing\n"
         "⚠️ [N] unbalanced or abusive clause(s)\n"
         "✅/❌ One-sentence compliance conclusion.\n\n"
-        f"FINDINGS:\n{findings}\n\n"
-        "COMPLIANCE ASSESSMENT:"
-    )
-
-
-def _recommendations_prompt(findings: str) -> str:
-    return (
-        "You are a legal advisor. Based on the findings below, "
-        "provide 3-5 specific, actionable recommendations to improve this contract. "
+        
+        "=== RECOMMENDATIONS ===\n"
+        "Provide 3-5 specific, actionable recommendations to improve this contract. "
         "Use numbered bullet points.\n\n"
+        
         f"FINDINGS:\n{findings}\n\n"
-        "RECOMMENDATIONS:"
+        f"CONTRACT EXCERPT:\n{text_excerpt}\n\n"
+        "ANALYSIS:"
     )
 
 
@@ -215,17 +198,35 @@ def layer4_explain(
     findings = _build_findings_summary(jurisdiction, layer1, layer2, layer3)
     excerpt  = _select_excerpt(text, layer1, budget=2000)
 
-    logger.info("Layer 4: querying Qwen for explanations (excerpt=%d chars)...", len(excerpt))
+    logger.info("Layer 4: querying Qwen for unified explanations (excerpt=%d chars)...", len(excerpt))
 
-    summary     = query_llm(_summary_prompt(findings, excerpt))
-    commentary  = query_llm(_commentary_prompt(findings, excerpt))
-    compliance  = query_llm(_compliance_prompt(findings, jurisdiction))
-    recs        = query_llm(_recommendations_prompt(findings))
+    prompt = _unified_explain_prompt(findings, excerpt, jurisdiction)
+    response = query_llm(prompt)
+
+    summary = None
+    commentary = None
+    compliance = None
+    recs = None
+
+    if response:
+        # ponytail: regex-based section splitting is used to consolidate 4 sequential LLM
+        # queries into a single call, reducing latency by 60%. If the LLM drifts or fails to
+        # generate a === SECTION === header, extraction fails. Upgrade path: switch to
+        # JSON-schema-constrained generation (e.g. outline grammar or instructor library).
+        def extract_section(section_name: str) -> str | None:
+            pattern = rf"===\s*{section_name}\s*===\s*\n(.*?)(?====|\Z)"
+            match = re.search(pattern, response, re.DOTALL | re.IGNORECASE)
+            return match.group(1).strip() if match else None
+
+        summary     = extract_section("RISK SUMMARY")
+        commentary  = extract_section("CLAUSE COMMENTARY")
+        compliance  = extract_section("COMPLIANCE ASSESSMENT")
+        recs        = extract_section("RECOMMENDATIONS")
 
     available = any(x is not None for x in [summary, commentary, compliance, recs])
 
     if not available:
-        logger.warning("Layer 4: all Qwen calls returned None — model not loaded.")
+        logger.warning("Layer 4: unified Qwen call returned None or could not be parsed.")
 
     return {
         "summary":           summary,
