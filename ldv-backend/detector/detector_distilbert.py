@@ -186,6 +186,10 @@ _DOC_TYPE_SPECS: list[dict] = [
         "label":      "purchase order",
         "hypothesis": "This document is a purchase order requesting the supply of goods or services.",
     },
+    {
+        "label":      "non-contract",
+        "hypothesis": "This document is a resume, curriculum vitae (CV), article, advertisement, letter, or other non-contract text.",
+    },
 ]
 
 # ── Clause risk hypotheses for zero-shot classification ───────────────────────

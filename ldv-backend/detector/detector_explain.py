@@ -141,6 +141,7 @@ def _unified_explain_prompt(findings: str, text_excerpt: str, jurisdiction: Opti
     juris = jurisdiction or "the detected jurisdiction"
     return (
         "You are a legal expert performing a contract analysis and compliance check.\n"
+        "CRITICAL VALIDATION: If the document is clearly NOT a contract (e.g. it is a resume, CV, article, personal letter, or advertisement), you MUST write EXACTLY 'This document does not appear to be a contract.' under the '=== RISK SUMMARY ===' header, and leave all other sections entirely blank.\n\n"
         "Based on the findings and excerpt below, generate the following 4 sections. "
         "You MUST format the output exactly as requested, beginning each section with its respective "
         "=== HEADER === delimiter line, followed by the content for that section.\n\n"
