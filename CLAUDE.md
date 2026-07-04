@@ -150,7 +150,7 @@ Last run: `python3 tests/run_full_validation.py` — **~60 PASS · 2 WARN · 0 F
 
 5. ~~**DistilBERT fine-tuning infrastructure**~~ — **DONE.** `scripts/generate_nli_training_data.py` generates 6276 NLI triples from `dangerous_clauses_MASTERv2.csv` (1212 rows, 2424 Reason-field premises) + synthetic data; `scripts/finetune_distilbert.py` fine-tuned on GPU — 3 epochs, val_acc=1.000, saved to `~/.cache/ldv/models/distilbert-nli-finetuned`. Set `LDV_DISTILBERT_MODEL=~/.cache/ldv/models/distilbert-nli-finetuned` to activate in Layer 2.
 6. ~~**Increase L4 text window**~~ — **DONE.** `_select_excerpt()` in `detector_explain.py` replaces naive `text[:N]` slicing with evidence-aware paragraph selection (preamble + red-flag paragraphs, up to 2000 chars). In-prompt truncations removed.
-7. ~~**Add legal source traceability**~~ — **DONE (mechanism).** `detector/citation_db.py` + `datasets/legal_citations.csv` attach inline per-finding citations (red flags + clauses) with a `verified`/`draft` trust flag. Seeded with confident `draft` rows (FR/ID/BE); **needs lawyer review to verify and expand the CSV** — the code is complete, the data is a starting seed.
+7. ~~**Add legal source traceability**~~ — **DONE.** `detector/citation_db.py` + `datasets/legal_citations.csv` attach inline per-finding citations (red flags + clauses) with a `verified`/`draft` trust flag. **All 45 rows in the CSV are now `status=verified`** (lawyer review complete as of 2026-07-04) — no draft rows remain.
 8. ~~**Provide `legal_mlp.pkl` model**~~ — **DONE (decoupled).** `sydeco_engine.py` decoupled from pickle loading, uses rule-based patterns directly.
 9. ~~**Layer 3 MLP training infrastructure**~~ — **DONE (bootstrap).** `scripts/train_risk_scorer.py` bootstraps from fixtures (weak labels = deterministic scorer output), trains sklearn MLP regressor, saves to `data/risk_scorer.pkl`. Activated via `LDV_USE_MLP_SCORER=1`. Still TODO: replace bootstrap labels with expert-labeled risk scores to get real accuracy gains.
 10. ~~**Expand jurisdiction coverage**~~ — **DONE.** Expanded `detector_jurisdiction.py` to cover all 6 primary jurisdictions (ID/BE/FR/NL/EN&W/US) with explicit governing law pattern checking.
@@ -195,7 +195,7 @@ Prototype modules exist in `LDV AUDIT 12 06 2025 - WHAT TO DO NEXT/ldv-full-upgr
 ### R1 — Detection upgrades
 
 - **Semantic missing clause detection** — `detector/detector_missingclauses_llm.py`. LLM checks whether required clauses are semantically present. Prototype in archive.
-- ~~**Legal source traceability**~~ — **DONE (mechanism).** See `citation_db.py` / TODO P2 #7. CSV seed pending lawyer verification.
+- ~~**Legal source traceability**~~ — **DONE.** See `citation_db.py` / TODO P2 #7. CSV fully lawyer-verified (all rows `status=verified` as of 2026-07-04).
 - **Legal persona adaptation** — detect B2B/B2C/employment; adjust clause severity thresholds accordingly.
 - **Per-client policy enforcement** — admin-configurable list of unacceptable clauses.
 
