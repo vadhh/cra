@@ -257,6 +257,34 @@ def init_db() -> None:
         if "reviewed_at" not in cols:
             conn.execute("ALTER TABLE analyses ADD COLUMN reviewed_at TIMESTAMP")
 
+        # Auto-seed a default admin user if the users table is completely empty
+        # (useful for fresh Docker deployments like Hugging Face Spaces)
+        user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        if user_count == 0:
+            admin_email = os.getenv("LDV_ADMIN_EMAIL", "admin@example.com").strip().lower()
+            admin_password = os.getenv("LDV_ADMIN_PASSWORD", "password")
+            
+            # Ensure default organization exists
+            org_row = conn.execute("SELECT id FROM organizations WHERE name = 'Sydeco'").fetchone()
+            if not org_row:
+                cur_org = conn.execute("INSERT INTO organizations (name) VALUES ('Sydeco')")
+                org_id = cur_org.lastrowid
+            else:
+                org_id = org_row[0]
+                
+            from werkzeug.security import generate_password_hash
+            import secrets
+            hashed = generate_password_hash(admin_password)
+            token = secrets.token_urlsafe(32)
+            
+            conn.execute(
+                """INSERT INTO users (org_id, email, password_hash, role, api_token)
+                   VALUES (?, ?, ?, ?, ?)""",
+                (org_id, admin_email, hashed, "admin", token)
+            )
+            print(f"Auto-seeded default admin user: {admin_email} (password: {admin_password})")
+
+
 
 @contextmanager
 def _conn():
