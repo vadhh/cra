@@ -636,7 +636,13 @@
             <div class="flex flex-wrap items-center gap-3">
               <h2 class="font-editorial text-2xl font-bold text-on-surface" x-text="result ? result.original_filename : 'Agreement Document'"></h2>
               <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                    :class="{'bg-green-900/40 text-green-400 border border-green-500/30': reviewStatus === 'Completed', 'bg-amber-900/40 text-amber-300 border border-amber-500/30': reviewStatus === 'Under Review', 'bg-blue-900/40 text-blue-300 border border-blue-500/30': reviewStatus === 'Draft'}"
+                    :class="{
+                      'bg-teal-950/40 text-teal-400 border border-teal-500/20': reviewStatus === 'confirmed',
+                      'bg-sky-950/40 text-sky-300 border border-sky-500/20': reviewStatus === 'edited',
+                      'bg-rose-950/40 text-rose-300 border border-rose-500/20': reviewStatus === 'rejected',
+                      'bg-purple-950/40 text-purple-300 border border-purple-500/20': reviewStatus === 'escalated',
+                      'bg-surface-container-highest text-on-surface-variant border border-outline-variant/10': reviewStatus === 'unreviewed'
+                    }"
                     x-text="reviewStatus"></span>
             </div>
             <div class="font-body text-xs text-on-surface-variant flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -754,6 +760,64 @@
                   <option value="">No previous versions</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          <!-- Professional Legal Review Card (Sprint 4) -->
+          <div class="glass-card p-6 space-y-4">
+            <h3 class="font-editorial text-sm font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10 pb-2">Professional Review</h3>
+            
+            <!-- Current Review Outcome -->
+            <div class="space-y-3 font-body text-xs" x-show="reviewStatus !== 'unreviewed'">
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
+                  <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Status</span>
+                  <span class="font-bold text-teal-400 block mt-0.5 uppercase tracking-wider" x-text="reviewStatus"></span>
+                </div>
+                <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
+                  <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Reviewer</span>
+                  <span class="font-bold text-on-surface block mt-0.5 truncate" :title="result ? result.reviewer_email : ''" x-text="result ? result.reviewer_email : 'Anonymous'"></span>
+                </div>
+              </div>
+              <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
+                <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold block mb-0.5">Review Date</span>
+                <span class="text-on-surface-variant" x-text="result && result.reviewed_at ? new Date(result.reviewed_at.replace(' ', 'T')).toLocaleString() : '—'"></span>
+              </div>
+              <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
+                <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold block mb-0.5">Comments</span>
+                <p class="text-on-surface leading-relaxed text-xs italic" x-text="result && result.review_comment ? result.review_comment : 'No review comments provided.'"></p>
+              </div>
+            </div>
+
+            <!-- Reviewer Form Widget -->
+            <div class="space-y-3 font-body text-xs" x-show="role === 'admin' || role === 'reviewer'">
+              <span class="text-[10px] uppercase text-on-surface-variant/60 font-semibold block" x-text="reviewStatus === 'unreviewed' ? 'Submit Legal Review' : 'Update Legal Review'"></span>
+              <form @submit.prevent="submitReview()" class="space-y-3">
+                <div class="flex flex-col gap-1">
+                  <label class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Review Status</label>
+                  <select x-model="reviewForm.status" class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-xs">
+                    <option value="unreviewed">Unreviewed</option>
+                    <option value="confirmed">Confirmed (Verified Correct)</option>
+                    <option value="edited">Edited (Adjusted/Corrected)</option>
+                    <option value="rejected">Rejected (Flawed Analysis)</option>
+                    <option value="escalated">Escalated (Higher-level Review Needed)</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Review Comments</label>
+                  <textarea x-model="reviewForm.comment" rows="3" placeholder="Add legal assessment notes, overrides, or instructions..."
+                            class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-xs placeholder:text-on-surface/20"></textarea>
+                </div>
+                <button type="submit" class="w-full py-2.5 rounded gold-button text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
+                        :disabled="reviewSubmitting">
+                  <span class="material-symbols-outlined text-[16px] animate-spin" x-show="reviewSubmitting">sync</span>
+                  Submit Review
+                </button>
+              </form>
+            </div>
+
+            <div class="text-[10px] text-on-surface-variant/50 text-center italic font-body" x-show="reviewStatus === 'unreviewed' && role !== 'admin' && role !== 'reviewer'">
+              This assessment has not been reviewed by a qualified lawyer.
             </div>
           </div>
           
@@ -1241,6 +1305,9 @@
         progressPct: 0,
         progressText: 'Queuing…',
         result: null,
+        role: 'analyst',
+        reviewForm: { status: 'unreviewed', comment: '' },
+        reviewSubmitting: false,
 
         // Specs & Indicators
         riskScore: 0,
@@ -1248,7 +1315,7 @@
         riskDescription: '',
         confidencePercent: 75,
         isCalibrated: true,
-        reviewStatus: 'Draft',
+        reviewStatus: 'unreviewed',
         reviewerName: 'System Default / Auto-Assign',
 
         // Data arrays
@@ -1279,13 +1346,22 @@
           status: 'all'
         },
 
-        init() {
+        async init() {
           const parts = window.location.pathname.split('/').filter(Boolean);
           const id = parts[parts.length - 1];
           if (!id || id === 'result') {
             window.location.href = '/';
             return;
           }
+          
+          try {
+            const roleResp = await fetch('/api/v1/mfa/status');
+            if (roleResp.ok) {
+              const roleData = await roleResp.json();
+              this.role = roleData.role || 'analyst';
+            }
+          } catch(e) {}
+          
           this.fetchResult(id);
         },
 
@@ -1352,6 +1428,10 @@
           this.scoringAudit = layer3.breakdown || [];
           this.limitations = this.buildLimitationsList(this.result, layer1, layer2);
           this.layer4 = (r.layer4 && r.layer4.available) ? r.layer4 : null;
+
+          this.reviewStatus = this.result.review_status || 'unreviewed';
+          this.reviewForm.status = this.reviewStatus;
+          this.reviewForm.comment = this.result.review_comment || '';
 
           // Build unified findings list
           this.buildFindings(layer1, layer2);
@@ -1596,7 +1676,13 @@
             const resp = await fetch('/api/v1/report', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(this.result.result),
+              body: JSON.stringify({
+                ...this.result.result,
+                review_status: this.result.review_status,
+                reviewer_email: this.result.reviewer_email,
+                review_comment: this.result.review_comment,
+                reviewed_at: this.result.reviewed_at
+              }),
             });
             if (resp.status === 401) { window.location.href = '/login'; return; }
             if (!resp.ok) { alert('Report generation failed.'); return; }
@@ -1610,6 +1696,33 @@
             alert('Network error during report download.');
           } finally {
             this.pdfLoading = false;
+          }
+        },
+
+        async submitReview() {
+          this.reviewSubmitting = true;
+          try {
+            const resp = await fetch(`/api/v1/result/${this.result.id}/review`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                status: this.reviewForm.status,
+                comment: this.reviewForm.comment
+              })
+            });
+            if (resp.ok) {
+              const parts = window.location.pathname.split('/').filter(Boolean);
+              const id = parts[parts.length - 1];
+              await this.fetchResult(id);
+              alert('Review status updated successfully.');
+            } else {
+              const err = await resp.json().catch(() => ({}));
+              alert(err.error || 'Failed to submit review.');
+            }
+          } catch(e) {
+            alert('Error communicating with server.');
+          } finally {
+            this.reviewSubmitting = false;
           }
         }
       }

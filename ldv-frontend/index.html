@@ -379,11 +379,18 @@
                 </div>
               </div>
 
-              <!-- Client Reference -->
-              <div class="flex flex-col gap-2">
-                <label class="font-semibold text-on-surface" for="clientRef">Client Reference / Case ID <span class="text-xs text-on-surface-variant/40">(Optional)</span></label>
-                <input class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm placeholder:text-on-surface/20"
-                       id="clientRef" type="text" x-model="clientRef" placeholder="e.g. CLI-2026-8942"/>
+              <!-- Client & Case Folder References -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-on-surface" for="clientRef">Client Reference <span class="text-xs text-on-surface-variant/40">(Optional)</span></label>
+                  <input class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm placeholder:text-on-surface/20"
+                         id="clientRef" type="text" x-model="clientRef" placeholder="e.g. Acme Corp"/>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="font-semibold text-on-surface" for="caseFolder">Case Folder / Project <span class="text-xs text-on-surface-variant/40">(Optional)</span></label>
+                  <input class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm placeholder:text-on-surface/20"
+                         id="caseFolder" type="text" x-model="caseFolder" placeholder="e.g. Q3 NDAs"/>
+                </div>
               </div>
             </div>
 
@@ -888,6 +895,7 @@
         jurisdiction: 'auto',
         language: 'auto',
         clientRef: '',
+        caseFolder: '',
 
         // Step 3 Options Inputs
         analysisDepth: 'standard', // 'standard', 'comprehensive'
@@ -988,7 +996,7 @@
             
             // Build upload API URL with query params
             const isExplain = this.analysisDepth === 'comprehensive' ? '1' : '0';
-            const url = `/api/v1/upload?explain=${isExplain}&policy=${encodeURIComponent(this.policyName)}&jurisdiction=${encodeURIComponent(this.jurisdiction)}&type=${encodeURIComponent(this.contractType)}&client_ref=${encodeURIComponent(this.clientRef)}`;
+            const url = `/api/v1/upload?explain=${isExplain}&policy=${encodeURIComponent(this.policyName)}&jurisdiction=${encodeURIComponent(this.jurisdiction)}&type=${encodeURIComponent(this.contractType)}&client_ref=${encodeURIComponent(this.clientRef)}&case_folder=${encodeURIComponent(this.caseFolder)}`;
 
             const resp = await fetch(url, { method: 'POST', body: fd });
             if (resp.status === 401) { window.location.href = '/login'; return; }

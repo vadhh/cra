@@ -231,6 +231,32 @@ def init_db() -> None:
         if "download_disabled" not in user_cols:
             conn.execute("ALTER TABLE users ADD COLUMN download_disabled INTEGER DEFAULT 0")
 
+        # Sprint 4: Subscription usage tracking, case history, and professional review workflow
+        for col, default_val in [
+            ("contract_limit", 100),
+            ("page_limit", 500),
+            ("report_limit", 50),
+            ("contract_used", 0),
+            ("page_used", 0),
+            ("report_used", 0)
+        ]:
+            if col not in org_cols:
+                conn.execute(f"ALTER TABLE organizations ADD COLUMN {col} INTEGER DEFAULT {default_val}")
+
+        if "client" not in doc_cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN client TEXT")
+        if "case_folder" not in doc_cols:
+            conn.execute("ALTER TABLE documents ADD COLUMN case_folder TEXT")
+
+        if "review_status" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN review_status TEXT NOT NULL DEFAULT 'unreviewed'")
+        if "reviewer_email" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN reviewer_email TEXT")
+        if "review_comment" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN review_comment TEXT")
+        if "reviewed_at" not in cols:
+            conn.execute("ALTER TABLE analyses ADD COLUMN reviewed_at TIMESTAMP")
+
 
 @contextmanager
 def _conn():
@@ -257,6 +283,8 @@ def save_document(
     extracted_text: str | None = None,
     org_id: int | None = None,
     owner_id: int | None = None,
+    client: str | None = None,
+    case_folder: str | None = None,
 ) -> int:
     enc_text = crypto.enc_str(extracted_text) if extracted_text is not None else None
     expires_at = (datetime.utcnow() + timedelta(days=org_retention_days(org_id))).strftime(
@@ -266,10 +294,10 @@ def save_document(
         cur = db.execute(
             """INSERT INTO documents
                (original_filename, stored_filename, file_path, file_size,
-                file_type, language, extracted_text, org_id, owner_id, expires_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                file_type, language, extracted_text, org_id, owner_id, expires_at, client, case_folder)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (original_filename, stored_filename, file_path, file_size,
-             file_type, language, enc_text, org_id, owner_id, expires_at),
+             file_type, language, enc_text, org_id, owner_id, expires_at, client, case_folder),
         )
         return cur.lastrowid
 
@@ -346,9 +374,10 @@ def get_result(public_id: str) -> dict | None:
         row = db.execute(
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.jurisdiction,
                       a.document_type, a.result_json, a.analyzed_at, a.status, a.error_message,
-                      a.progress_pct, a.progress_stage,
+                      a.progress_pct, a.progress_stage, a.review_status, a.reviewer_email,
+                      a.review_comment, a.reviewed_at,
                       d.original_filename, d.file_size, d.file_type, d.language,
-                      d.extracted_text, d.uploaded_at, d.org_id
+                      d.extracted_text, d.uploaded_at, d.org_id, d.client, d.case_folder
                FROM analyses a
                JOIN documents d ON a.document_id = d.id
                WHERE a.public_id = ?""",
@@ -374,14 +403,32 @@ def check_connection() -> bool:
         return False
 
 
-def get_stats() -> dict:
+def get_stats(org_id: int | None = None) -> dict:
     with _conn() as db:
-        total_docs     = db.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
-        total_analyses = db.execute("SELECT COUNT(*) FROM analyses").fetchone()[0]
-        avg            = db.execute("SELECT AVG(risk_score) FROM analyses").fetchone()[0]
-        dist           = db.execute(
-            "SELECT COALESCE(risk_label, 'PENDING') AS label, COUNT(*) AS cnt FROM analyses GROUP BY risk_label"
-        ).fetchall()
+        if org_id is not None:
+            total_docs     = db.execute("SELECT COUNT(*) FROM documents WHERE org_id = ?", (org_id,)).fetchone()[0]
+            total_analyses = db.execute(
+                "SELECT COUNT(*) FROM analyses a JOIN documents d ON a.document_id = d.id WHERE d.org_id = ?",
+                (org_id,)
+            ).fetchone()[0]
+            avg            = db.execute(
+                "SELECT AVG(risk_score) FROM analyses a JOIN documents d ON a.document_id = d.id WHERE d.org_id = ?",
+                (org_id,)
+            ).fetchone()[0]
+            dist           = db.execute(
+                """SELECT COALESCE(risk_label, 'PENDING') AS label, COUNT(*) AS cnt 
+                   FROM analyses a JOIN documents d ON a.document_id = d.id 
+                   WHERE d.org_id = ? GROUP BY risk_label""",
+                (org_id,)
+            ).fetchall()
+        else:
+            total_docs     = db.execute("SELECT COUNT(*) FROM documents").fetchone()[0]
+            total_analyses = db.execute("SELECT COUNT(*) FROM analyses").fetchone()[0]
+            avg            = db.execute("SELECT AVG(risk_score) FROM analyses").fetchone()[0]
+            dist           = db.execute(
+                "SELECT COALESCE(risk_label, 'PENDING') AS label, COUNT(*) AS cnt FROM analyses GROUP BY risk_label"
+            ).fetchall()
+
         return {
             "total_documents":   total_docs,
             "total_analyses":    total_analyses,
@@ -390,17 +437,29 @@ def get_stats() -> dict:
         }
 
 
-def get_recent(limit: int = 10) -> list[dict]:
+def get_recent(limit: int = 10, org_id: int | None = None) -> list[dict]:
     with _conn() as db:
-        rows = db.execute(
-            """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.document_type,
-                      a.jurisdiction, a.analyzed_at, a.status, a.error_message,
-                      d.original_filename, d.file_type
-               FROM analyses a
-               JOIN documents d ON a.document_id = d.id
-               ORDER BY a.analyzed_at DESC LIMIT ?""",
-            (limit,),
-        ).fetchall()
+        if org_id is not None:
+            rows = db.execute(
+                """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.document_type,
+                          a.jurisdiction, a.analyzed_at, a.status, a.error_message,
+                          d.original_filename, d.file_type
+                   FROM analyses a
+                   JOIN documents d ON a.document_id = d.id
+                   WHERE d.org_id = ?
+                   ORDER BY a.analyzed_at DESC LIMIT ?""",
+                (org_id, limit),
+            ).fetchall()
+        else:
+            rows = db.execute(
+                """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.document_type,
+                          a.jurisdiction, a.analyzed_at, a.status, a.error_message,
+                          d.original_filename, d.file_type
+                   FROM analyses a
+                   JOIN documents d ON a.document_id = d.id
+                   ORDER BY a.analyzed_at DESC LIMIT ?""",
+                (limit,),
+            ).fetchall()
         return [dict(r) for r in rows]
 
 
@@ -662,3 +721,125 @@ def cleanup_stuck_analyses() -> None:
             "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
             "WHERE status IN ('running', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
         )
+
+
+def get_org_usage(org_id: int) -> dict:
+    with _conn() as db:
+        row = db.execute(
+            """SELECT contract_limit, page_limit, report_limit,
+                      contract_used, page_used, report_used
+               FROM organizations WHERE id = ?""",
+            (org_id,),
+        ).fetchone()
+        if not row:
+            return {}
+        return dict(row)
+
+
+def increment_org_usage(org_id: int, contracts: int = 0, pages: int = 0, reports: int = 0) -> None:
+    with _conn() as db:
+        db.execute(
+            """UPDATE organizations
+               SET contract_used = contract_used + ?,
+                   page_used = page_used + ?,
+                   report_used = report_used + ?
+               WHERE id = ?""",
+            (contracts, pages, reports, org_id)
+        )
+
+
+def update_analysis_review(public_id: str, status: str, comment: str | None, reviewer_email: str | None) -> bool:
+    with _conn() as db:
+        cur = db.execute(
+            """UPDATE analyses
+               SET review_status = ?,
+                   review_comment = ?,
+                   reviewer_email = ?,
+                   reviewed_at = CURRENT_TIMESTAMP
+               WHERE public_id = ?""",
+            (status, comment, reviewer_email, public_id)
+        )
+        return cur.rowcount > 0
+
+
+def search_history(org_id: int | None, params: dict) -> list[dict]:
+    query = """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.document_type,
+                      a.jurisdiction, a.analyzed_at, a.status, a.error_message,
+                      a.review_status, a.reviewer_email, a.review_comment, a.reviewed_at,
+                      d.original_filename, d.file_size, d.file_type, d.language,
+                      d.uploaded_at, d.client, d.case_folder
+               FROM analyses a
+               JOIN documents d ON a.document_id = d.id"""
+    
+    where_clauses = []
+    args = []
+    
+    if org_id is not None:
+        where_clauses.append("d.org_id = ?")
+        args.append(org_id)
+        
+    search = params.get("search")
+    if search:
+        where_clauses.append("(d.original_filename LIKE ? OR d.client LIKE ? OR d.case_folder LIKE ? OR a.error_message LIKE ?)")
+        s_arg = f"%{search}%"
+        args.extend([s_arg, s_arg, s_arg, s_arg])
+        
+    client = params.get("client")
+    if client:
+        where_clauses.append("d.client = ?")
+        args.append(client)
+        
+    case_folder = params.get("case_folder")
+    if case_folder:
+        where_clauses.append("d.case_folder = ?")
+        args.append(case_folder)
+        
+    doctype = params.get("type")
+    if doctype:
+        where_clauses.append("a.document_type = ?")
+        args.append(doctype)
+        
+    status = params.get("status")
+    if status:
+        where_clauses.append("a.status = ?")
+        args.append(status)
+        
+    min_score = params.get("min_score")
+    if min_score is not None:
+        try:
+            where_clauses.append("a.risk_score >= ?")
+            args.append(int(min_score))
+        except ValueError:
+            pass
+            
+    max_score = params.get("max_score")
+    if max_score is not None:
+        try:
+            where_clauses.append("a.risk_score <= ?")
+            args.append(int(max_score))
+        except ValueError:
+            pass
+            
+    if where_clauses:
+        query += " WHERE " + " AND ".join(where_clauses)
+        
+    query += " ORDER BY a.analyzed_at DESC"
+    
+    try:
+        limit = min(int(params.get("limit", 50)), 200)
+    except (ValueError, TypeError):
+        limit = 50
+    query += " LIMIT ?"
+    args.append(limit)
+    
+    try:
+        offset = int(params.get("offset", 0))
+        if offset > 0:
+            query += " OFFSET ?"
+            args.append(offset)
+    except (ValueError, TypeError):
+        pass
+        
+    with _conn() as db:
+        rows = db.execute(query, tuple(args)).fetchall()
+        return [dict(r) for r in rows]

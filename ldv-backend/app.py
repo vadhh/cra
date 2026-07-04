@@ -431,7 +431,8 @@ def api_mfa_status():
     return jsonify({
         "mfa_enabled": bool(user.get("mfa_secret")),
         "mfa_mandatory": auth.is_mfa_mandatory(user),
-        "email": user["email"]
+        "email": user["email"],
+        "role": auth.normalize_role(user["role"])
     })
 
 
@@ -571,6 +572,34 @@ def upload():
         logger.warning("Upload validation failed for %s: %s", file.filename, e)
         return jsonify({"error": str(e)}), 400
 
+    # Calculate pages
+    pages = 1
+    if ext == ".pdf":
+        try:
+            import fitz
+            doc = fitz.open(stream=data, filetype="pdf")
+            pages = doc.page_count
+        except Exception:
+            pages = 1
+    else:
+        pages = max(1, len(text) // 2000)
+
+    # Check subscription limits
+    usage = database.get_org_usage(g.user["org_id"])
+    if usage:
+        contract_limit = usage.get("contract_limit", 100)
+        contract_used = usage.get("contract_used", 0)
+        page_limit = usage.get("page_limit", 500)
+        page_used = usage.get("page_used", 0)
+
+        if contract_used + 1 > contract_limit:
+            return jsonify({"error": "Subscription limit exceeded: contract allowance exhausted."}), 403
+        if page_used + pages > page_limit:
+            return jsonify({"error": f"Subscription limit exceeded: page allowance exhausted (uploading {pages} pages would exceed limit of {page_limit})."}), 403
+
+    # Atomically increment usage
+    database.increment_org_usage(g.user["org_id"], contracts=1, pages=pages)
+
     # Save file to disk
     stored_name = f"{uuid.uuid4().hex}{ext}"
     file_path   = os.path.join(UPLOADS_DIR, stored_name)
@@ -583,6 +612,26 @@ def upload():
     except Exception:
         lang = "unknown"
 
+    # Get client/folder parameters
+    client = (
+        request.args.get("client") or 
+        request.form.get("client") or 
+        request.args.get("client_ref") or 
+        request.form.get("client_ref") or
+        request.args.get("clientRef") or 
+        request.form.get("clientRef")
+    )
+    case_folder = (
+        request.args.get("case_folder") or 
+        request.form.get("case_folder") or
+        request.args.get("caseFolder") or 
+        request.form.get("caseFolder")
+    )
+    if client:
+        client = client.strip()
+    if case_folder:
+        case_folder = case_folder.strip()
+
     # Save document record
     doc_id = database.save_document(
         original_filename=file.filename,
@@ -594,6 +643,8 @@ def upload():
         extracted_text=text,
         org_id=g.user["org_id"],
         owner_id=g.user["id"],
+        client=client,
+        case_folder=case_folder,
     )
 
     want_explain = request.args.get("explain", "0") == "1"
@@ -971,19 +1022,25 @@ def api_admin_org_mfa_required(org_id: int):
 # ── Admin API ──────────────────────────────────────────────────────────────────
 
 @app.route("/api/v1/stats")
-@auth.admin_required
+@auth.login_required
 def api_stats():
-    return jsonify(database.get_stats())
+    user = g.user
+    if auth.normalize_role(user["role"]) == "admin":
+        return jsonify(database.get_stats(org_id=None))
+    return jsonify(database.get_stats(org_id=user["org_id"]))
 
 
 @app.route("/api/v1/recent")
-@auth.admin_required
+@auth.login_required
 def api_recent():
     try:
         limit = min(int(request.args.get("limit", 10)), 50)
     except (TypeError, ValueError):
         limit = 10
-    return jsonify(database.get_recent(limit))
+    user = g.user
+    if auth.normalize_role(user["role"]) == "admin":
+        return jsonify(database.get_recent(limit, org_id=None))
+    return jsonify(database.get_recent(limit, org_id=user["org_id"]))
 
 
 @app.route("/api/v1/audit")
@@ -1043,11 +1100,86 @@ def api_verify_citation():
 
 
 
+# ── Tenant usage, history & professional review (Sprint 4) ─────────────────────
+
+@app.route("/api/v1/usage", methods=["GET"])
+@auth.role_required("manager")
+def api_usage():
+    usage = database.get_org_usage(g.user["org_id"])
+    return jsonify(usage)
+
+
+@app.route("/api/v1/history", methods=["GET"])
+@auth.login_required
+def api_history():
+    user = g.user
+    org_id = None if auth.normalize_role(user["role"]) == "admin" else user["org_id"]
+    
+    params = {
+        "search": request.args.get("search"),
+        "client": request.args.get("client"),
+        "case_folder": request.args.get("case_folder"),
+        "type": request.args.get("type"),
+        "status": request.args.get("status"),
+        "min_score": request.args.get("min_score"),
+        "max_score": request.args.get("max_score"),
+        "limit": request.args.get("limit"),
+        "offset": request.args.get("offset"),
+    }
+    
+    results = database.search_history(org_id, params)
+    return jsonify(results)
+
+
+@app.route("/api/v1/result/<analysis_id>/review", methods=["POST"])
+@auth.role_required("reviewer")
+def api_result_review(analysis_id: str):
+    row = database.get_result(analysis_id)
+    if row is None:
+        return jsonify({"error": "Not found"}), 404
+        
+    user = g.user
+    if auth.normalize_role(user["role"]) != "admin" and row.get("org_id") != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+        
+    data = request.json or {}
+    status = data.get("status")
+    comment = data.get("comment")
+    
+    valid_statuses = {"unreviewed", "confirmed", "edited", "rejected", "escalated"}
+    if not status or status not in valid_statuses:
+        return jsonify({"error": f"Invalid review status. Must be one of: {', '.join(valid_statuses)}"}), 400
+        
+    success = database.update_analysis_review(
+        public_id=analysis_id,
+        status=status,
+        comment=comment,
+        reviewer_email=user["email"]
+    )
+    if not success:
+        return jsonify({"error": "Failed to update review status"}), 500
+        
+    database.write_audit(
+        "analysis.review", user_id=user["id"], org_id=user["org_id"],
+        resource_id=analysis_id, ip=_ip(), detail=f"status={status}"
+    )
+    return jsonify({"ok": True})
+
+
+
 # ── PDF report ─────────────────────────────────────────────────────────────────
 
 @app.route("/api/v1/report", methods=["POST"])
 @auth.login_required
 def report():
+    # Check report subscription limit
+    usage = database.get_org_usage(g.user["org_id"])
+    if usage:
+        report_limit = usage.get("report_limit", 50)
+        report_used = usage.get("report_used", 0)
+        if report_used + 1 > report_limit:
+            return jsonify({"error": "Subscription limit exceeded: professional report allowance exhausted."}), 403
+
     from pdf_report import generate_pdf
     data = request.get_json(force=True, silent=True)
     if not data:
@@ -1057,6 +1189,11 @@ def report():
     except Exception as e:
         logger.exception("PDF generation failed")
         return jsonify({"error": f"PDF generation failed: {str(e)}"}), 500
+
+    # Increment report usage atomically only after successful PDF generation
+    if usage:
+        database.increment_org_usage(g.user["org_id"], reports=1)
+
     return Response(
         pdf_bytes,
         mimetype="application/pdf",
@@ -1183,7 +1320,7 @@ def result_page(analysis_id=None):
 @app.route("/admin")
 def admin_page():
     user = auth.current_user()
-    if user is None or user["role"] != "admin":
+    if user is None:
         return redirect("/login")
     return send_from_directory(FRONTEND_DIR, "admin.html")
 

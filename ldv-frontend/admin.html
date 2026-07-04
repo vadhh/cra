@@ -301,32 +301,42 @@
         <span class="material-symbols-outlined">analytics</span>
         <span class="text-sm font-semibold">Overview</span>
       </button>
+      <button class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all text-left"
+              :class="activeTab === 'history' ? 'nav-link-active' : ''" @click="activeTab = 'history'; window.location.hash = 'history'; fetchHistory()">
+        <span class="material-symbols-outlined">folder_open</span>
+        <span class="text-sm font-semibold">Case History</span>
+      </button>
 
       <!-- Management -->
-      <div class="px-6 mb-2 mt-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40">Management</div>
+      <div class="px-6 mb-2 mt-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40" x-show="role === 'admin' || role === 'manager'">Management</div>
       <button class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all text-left"
+              x-show="role === 'admin' || role === 'manager'"
               :class="activeTab === 'team' ? 'nav-link-active' : ''" @click="activeTab = 'team'; window.location.hash = 'team'">
         <span class="material-symbols-outlined">group</span>
         <span class="text-sm font-semibold">Team Management</span>
       </button>
       <button class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all text-left"
+              x-show="role === 'admin'"
               :class="activeTab === 'orgs' ? 'nav-link-active' : ''" @click="activeTab = 'orgs'; window.location.hash = 'orgs'">
         <span class="material-symbols-outlined">corporate_fare</span>
         <span class="text-sm font-semibold">Organizations</span>
       </button>
 
       <!-- Compliance & Health -->
-      <div class="px-6 mb-2 mt-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40">Compliance & Health</div>
-      <a class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all" href="/citations">
+      <div class="px-6 mb-2 mt-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/40" x-show="role === 'admin' || role === 'reviewer'">Compliance & Health</div>
+      <a class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all" href="/citations"
+         x-show="role === 'admin' || role === 'reviewer'">
         <span class="material-symbols-outlined">verified</span>
         <span class="text-sm font-semibold">Citation Library</span>
       </a>
       <button class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all text-left"
+              x-show="role === 'admin'"
               :class="activeTab === 'audits' ? 'nav-link-active' : ''" @click="activeTab = 'audits'; window.location.hash = 'audits'">
         <span class="material-symbols-outlined">receipt_long</span>
         <span class="text-sm font-semibold">Audit Logs</span>
       </button>
       <button class="flex items-center gap-3 px-4 py-3 mx-2 text-on-surface-variant hover:bg-surface-variant/30 hover:text-primary rounded-lg transition-all text-left"
+              x-show="role === 'admin'"
               :class="activeTab === 'status' ? 'nav-link-active' : ''" @click="activeTab = 'status'; window.location.hash = 'status'">
         <span class="material-symbols-outlined">dns</span>
         <span class="text-sm font-semibold">System Health</span>
@@ -472,6 +482,148 @@
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB: CASE HISTORY ==================== -->
+        <div x-show="activeTab === 'history'" class="space-y-6 animate-fade-in" style="display:none;">
+          <div>
+            <h1 class="font-editorial text-3xl mb-1 text-on-background">Case History</h1>
+            <p class="font-body text-on-surface-variant text-sm">Search, filter, and organize historical contract risk reports.</p>
+          </div>
+
+          <!-- Advanced Search Filters -->
+          <div class="glass-card p-6 space-y-4">
+            <h2 class="font-editorial font-bold text-base text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined">filter_alt</span>
+              Filter Documents
+            </h2>
+            <form @submit.prevent="historyFilters.offset = 0; fetchHistory()" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- General Search -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">General Search</label>
+                <input type="text" x-model="historyFilters.search" placeholder="Filename, error..."
+                       class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm"/>
+              </div>
+
+              <!-- Client -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Client Name</label>
+                <input type="text" x-model="historyFilters.client" placeholder="e.g. Acme Corp"
+                       class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm"/>
+              </div>
+
+              <!-- Case Folder -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Case / Folder</label>
+                <input type="text" x-model="historyFilters.case_folder" placeholder="e.g. Q3 NDA"
+                       class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm"/>
+              </div>
+
+              <!-- Document Type -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Document Type</label>
+                <select x-model="historyFilters.type"
+                        class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm">
+                  <option value="">All Types</option>
+                  <option value="nda">Non-Disclosure Agreement</option>
+                  <option value="employment">Employment Contract</option>
+                  <option value="service">Service Agreement</option>
+                  <option value="software">Software Licensing</option>
+                  <option value="generic">Generic/Other</option>
+                </select>
+              </div>
+
+              <!-- Status -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Job Status</label>
+                <select x-model="historyFilters.status"
+                        class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm">
+                  <option value="">All Statuses</option>
+                  <option value="completed">Completed</option>
+                  <option value="running">Running</option>
+                  <option value="queued">Queued</option>
+                  <option value="failed">Failed</option>
+                </select>
+              </div>
+
+              <!-- Score Ranges -->
+              <div class="grid grid-cols-2 gap-2">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Min Score</label>
+                  <input type="number" x-model="historyFilters.min_score" min="0" max="100" placeholder="0"
+                         class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm"/>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/70">Max Score</label>
+                  <input type="number" x-model="historyFilters.max_score" min="0" max="100" placeholder="100"
+                         class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm"/>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="md:col-span-3 flex justify-end gap-3 pt-2">
+                <button type="button" @click="historyFilters = { search: '', client: '', case_folder: '', type: '', status: '', min_score: '', max_score: '', limit: 25, offset: 0 }; fetchHistory()"
+                        class="px-4 py-2 border border-outline-variant/40 rounded text-xs font-semibold">Clear Filters</button>
+                <button type="submit" class="gold-button px-6 py-2 rounded text-xs font-bold uppercase tracking-wider">Search</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- History Table -->
+          <div class="glass-card p-6">
+            <div class="overflow-x-auto rounded-lg border border-outline-variant/10 bg-surface-container-lowest/30 custom-scrollbar">
+              <table class="reports-table">
+                <thead>
+                  <tr class="font-body text-xs text-on-surface-variant">
+                    <th>Ref ID</th>
+                    <th>Filename</th>
+                    <th>Client</th>
+                    <th>Folder/Case</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Reviewed</th>
+                    <th>Analyzed</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body text-xs">
+                  <template x-if="historyResults.length === 0">
+                    <tr><td colspan="8" style="text-align:center;color:#9ca3af;font-style:italic;padding:24px;">No historical analyses match your query.</td></tr>
+                  </template>
+                  <template x-for="row in historyResults">
+                    <tr class="row-clickable" @click="window.location='/result/' + row.id">
+                      <td style="font-family:monospace;color:#9ca3af;" x-text="row.id ? row.id.substring(0,8) : '—'"></td>
+                      <td style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dee2f4;" :title="row.original_filename" x-text="row.original_filename"></td>
+                      <td x-text="row.client || '—'"></td>
+                      <td x-text="row.case_folder || '—'"></td>
+                      <td class="score-cell" :class="'risk-' + (row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : 'PENDING'))"
+                          x-text="row.status === 'completed' ? (row.risk_score ?? '—') : '—'"></td>
+                      <td>
+                        <span class="tbl-pill flex items-center justify-center gap-1.5 w-max"
+                              :style="{ minWidth: '85px' }"
+                              :class="'tbl-pill-' + (row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : 'PENDING'))">
+                          <span x-text="row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : (row.status === 'running' ? 'RUNNING' : 'QUEUED'))"></span>
+                        </span>
+                      </td>
+                      <td>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border"
+                              :class="row.review_status !== 'unreviewed' ? 'bg-teal-950/40 text-teal-400 border-teal-500/20' : 'bg-surface-container-highest text-on-surface-variant border-outline-variant/10'"
+                              x-text="row.review_status !== 'unreviewed' ? row.review_status : 'no'"></span>
+                      </td>
+                      <td style="color:#9ca3af;" x-text="timeAgo(row.analyzed_at)"></td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination controls -->
+            <div class="flex justify-between items-center mt-5 text-xs text-on-surface-variant font-body">
+              <button type="button" :disabled="historyFilters.offset === 0" @click="historyFilters.offset = Math.max(0, historyFilters.offset - historyFilters.limit); fetchHistory()"
+                      class="px-4 py-2 border border-outline-variant/20 rounded disabled:opacity-40 disabled:cursor-not-allowed">Previous Page</button>
+              <button type="button" :disabled="historyResults.length < historyFilters.limit" @click="historyFilters.offset += historyFilters.limit; fetchHistory()"
+                      class="px-4 py-2 border border-outline-variant/20 rounded disabled:opacity-40 disabled:cursor-not-allowed">Next Page</button>
             </div>
           </div>
         </div>
@@ -992,6 +1144,8 @@
       return {
         loading: true,
         activeTab: 'overview', // 'overview', 'team', 'orgs', 'citations', 'audits', 'status'
+        role: 'analyst',
+        usage: null,
         stats: {},
         recent: [],
         users: [],
@@ -1000,6 +1154,8 @@
         audits: [],
         healthData: {},
         tempRetention: {},
+        historyResults: [],
+        historyFilters: { search: '', client: '', case_folder: '', type: '', status: '', min_score: '', max_score: '', limit: 25, offset: 0 },
 
         // Modals & form bindings
         showCreateUserModal: false,
@@ -1019,6 +1175,7 @@
         getTabTitle() {
           const titles = {
             overview: 'System Administration',
+            history: 'Case History',
             team: 'Team Management',
             orgs: 'Organizations',
             citations: 'Citation Library Verification',
@@ -1029,49 +1186,106 @@
         },
 
         async load() {
-          // Set initial activeTab from URL hash if valid
-          const hash = window.location.hash.substring(1);
-          const validTabs = ['overview', 'team', 'orgs', 'citations', 'audits', 'status'];
-          if (validTabs.includes(hash)) {
-            this.activeTab = hash;
-          }
           this.loading = true;
           this.errorMsg = '';
           this.successMsg = '';
           try {
-            const [statsResp, recentResp, usersResp, orgsResp, citationsResp, auditsResp, healthResp] = await Promise.all([
-              fetch('/api/v1/stats'),
-              fetch('/api/v1/recent?limit=20'),
-              fetch('/api/v1/admin/users'),
-              fetch('/api/v1/admin/organizations'),
-              fetch('/api/v1/citations'),
-              fetch('/api/v1/audit?limit=150'),
-              fetch('/health')
-            ]);
+            const roleResp = await fetch('/api/v1/mfa/status');
+            if (roleResp.status === 401) { window.location.href = '/login'; return; }
+            const roleData = await roleResp.json();
+            this.role = roleData.role || 'analyst';
 
-            if (statsResp.status === 401 || recentResp.status === 401) {
+            // Filter activeTab based on user role
+            const hash = window.location.hash.substring(1);
+            let validTabs = ['overview', 'history'];
+            if (this.role === 'admin') {
+              validTabs = ['overview', 'history', 'team', 'orgs', 'citations', 'audits', 'status'];
+            } else if (this.role === 'manager') {
+              validTabs = ['overview', 'history', 'team'];
+            }
+            
+            if (validTabs.includes(hash)) {
+              this.activeTab = hash;
+            } else {
+              this.activeTab = 'overview';
+              window.location.hash = 'overview';
+            }
+
+            const fetches = [
+              fetch('/api/v1/stats'),
+              fetch('/api/v1/recent?limit=20')
+            ];
+
+            if (this.role === 'admin') {
+              fetches.push(
+                fetch('/api/v1/admin/users'),
+                fetch('/api/v1/admin/organizations'),
+                fetch('/api/v1/citations'),
+                fetch('/api/v1/audit?limit=150'),
+                fetch('/health')
+              );
+            } else if (this.role === 'manager') {
+              fetches.push(
+                fetch('/api/v1/admin/users'),
+                fetch('/api/v1/usage')
+              );
+            }
+
+            const results = await Promise.all(fetches);
+
+            if (results[0].status === 401 || results[1].status === 401) {
               window.location.href = '/login'; return;
             }
 
-            this.stats = await statsResp.json();
-            this.recent = await recentResp.json();
-            this.users = await usersResp.json();
-            this.organizations = await orgsResp.json();
-            this.citations = await citationsResp.json();
-            this.audits = await auditsResp.json();
-            this.healthData = await healthResp.json();
-            
-            // Map temp retention values
-            this.organizations.forEach(o => {
-              this.tempRetention[o.id] = o.retention_days || 30;
-              o.mfa_required = !!o.mfa_required;
-            });
+            this.stats = await results[0].json();
+            this.recent = await results[1].json();
+
+            let idx = 2;
+            if (this.role === 'admin') {
+              this.users = await results[idx++].json();
+              this.organizations = await results[idx++].json();
+              this.citations = await results[idx++].json();
+              this.audits = await results[idx++].json();
+              this.healthData = await results[idx++].json();
+              
+              // Map temp retention values
+              this.organizations.forEach(o => {
+                this.tempRetention[o.id] = o.retention_days || 30;
+                o.mfa_required = !!o.mfa_required;
+              });
+            } else if (this.role === 'manager') {
+              this.users = await results[idx++].json();
+              this.usage = await results[idx++].json();
+            }
 
             this.loading = false;
           } catch (e) {
             console.error(e);
             this.loading = false;
             this.errorMsg = 'Error loading administration data from localized endpoints.';
+          }
+        },
+
+        async fetchHistory() {
+          this.loading = true;
+          this.errorMsg = '';
+          try {
+            const queryParams = new URLSearchParams();
+            for (const [k, v] of Object.entries(this.historyFilters)) {
+              if (v !== '' && v !== null && v !== undefined) {
+                queryParams.append(k, v);
+              }
+            }
+            const resp = await fetch(`/api/v1/history?${queryParams.toString()}`);
+            if (resp.ok) {
+              this.historyResults = await resp.json();
+            } else {
+              this.errorMsg = 'Failed to fetch case history.';
+            }
+          } catch (e) {
+            this.errorMsg = 'Error communicating with history API.';
+          } finally {
+            this.loading = false;
           }
         },
 

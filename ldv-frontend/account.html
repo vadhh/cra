@@ -286,6 +286,55 @@
               x-show="mfaEnabled" @click="view = 'disable_password'">Disable MFA</button>
     </section>
 
+    <section class="glass-card p-6 space-y-6 mt-6" x-show="view === 'status' && (role === 'admin' || role === 'manager')">
+      <div>
+        <h2 class="font-editorial text-lg font-bold text-primary">Corporate Subscription & Usage</h2>
+        <p class="text-xs text-on-surface-variant mt-1">Real-time resource utilization for your tenant organization.</p>
+      </div>
+
+      <div class="space-y-4" x-show="usage">
+        <!-- Contracts -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-medium">
+            <span class="text-on-surface">Contracts Processed</span>
+            <span class="text-primary font-bold" x-text="usage.contract_used + ' / ' + usage.contract_limit"></span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden border border-outline-variant/10">
+            <div class="bg-primary h-full rounded-full transition-all duration-500 ease-out"
+                 :style="'width: ' + Math.min(100, (usage.contract_used / usage.contract_limit) * 100) + '%'"></div>
+          </div>
+        </div>
+
+        <!-- Pages -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-medium">
+            <span class="text-on-surface">Total Pages Extracted</span>
+            <span class="text-primary font-bold" x-text="usage.page_used + ' / ' + usage.page_limit"></span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden border border-outline-variant/10">
+            <div class="bg-primary h-full rounded-full transition-all duration-500 ease-out"
+                 :style="'width: ' + Math.min(100, (usage.page_used / usage.page_limit) * 100) + '%'"></div>
+          </div>
+        </div>
+
+        <!-- Reports -->
+        <div class="space-y-1.5">
+          <div class="flex justify-between text-xs font-medium">
+            <span class="text-on-surface">Professional PDF Downloads</span>
+            <span class="text-primary font-bold" x-text="usage.report_used + ' / ' + usage.report_limit"></span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-2 overflow-hidden border border-outline-variant/10">
+            <div class="bg-primary h-full rounded-full transition-all duration-500 ease-out"
+                 :style="'width: ' + Math.min(100, (usage.report_used / usage.report_limit) * 100) + '%'"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-xs text-on-surface-variant/60" x-show="!usage">
+        Loading subscription usage details…
+      </div>
+    </section>
+
     <section class="glass-card p-6 space-y-4" x-show="view === 'enable_password'" style="display:none;">
       <h2 class="font-editorial text-lg font-bold text-primary">Confirm Password</h2>
       <p class="text-xs text-on-surface-variant">Re-enter your password to begin MFA setup.</p>
@@ -349,8 +398,10 @@
         successMsg: '',
         view: 'status',
         email: '',
+        role: 'analyst',
         mfaEnabled: false,
         mfaMandatory: false,
+        usage: null,
         password: '',
         mfaCode: '',
         mfaSetup: { secret: '', qrCodeSvg: '', recoveryCodes: [] },
@@ -361,8 +412,16 @@
             if (resp.status === 401) { window.location.href = '/login'; return; }
             const data = await resp.json();
             this.email = data.email || '';
+            this.role = data.role || 'analyst';
             this.mfaEnabled = !!data.mfa_enabled;
             this.mfaMandatory = !!data.mfa_mandatory;
+
+            if (this.role === 'admin' || this.role === 'manager') {
+              const usageResp = await fetch('/api/v1/usage');
+              if (usageResp.ok) {
+                this.usage = await usageResp.json();
+              }
+            }
           } catch (e) {
             this.errorMsg = 'Failed to load account status.';
           }

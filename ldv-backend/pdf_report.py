@@ -290,6 +290,48 @@ def generate_pdf(result: dict) -> bytes:
 
     story.append(Spacer(1, 0.5 * cm))
 
+    # ── Professional Legal Review ─────────────────────────────────────────────
+    review_status = result.get("review_status", "unreviewed")
+    if review_status and review_status != "unreviewed":
+        story.append(Paragraph("Professional Legal Review", h2))
+        reviewer = result.get("reviewer_email", "Anonymous Reviewer")
+        comment = result.get("review_comment") or "No comments provided."
+        reviewed_at = result.get("reviewed_at")
+        
+        date_str = ""
+        if reviewed_at:
+            try:
+                # Handle possible SQLite timestamp formats
+                ts_clean = reviewed_at.split(".")[0].replace("T", " ")
+                dt = datetime.strptime(ts_clean, "%Y-%m-%d %H:%M:%S")
+                date_str = dt.strftime("%d %B %Y, %H:%M")
+            except Exception:
+                date_str = reviewed_at
+        
+        review_rows = [
+            ["Status", review_status.upper()],
+            ["Reviewer", reviewer],
+        ]
+        if date_str:
+            review_rows.append(["Date", date_str])
+        review_rows.append(["Comments", comment])
+        
+        story.append(Table(
+            review_rows,
+            colWidths=[W * 0.25, W * 0.75],
+            style=TableStyle([
+                ("FONTSIZE",      (0, 0), (-1, -1), 9),
+                ("BACKGROUND",    (0, 0), (0, -1),  _LIGHT),
+                ("FONTNAME",      (0, 0), (0, -1),  "Helvetica-Bold"),
+                ("GRID",          (0, 0), (-1, -1), 0.5, colors.HexColor("#dee2e6")),
+                ("TOPPADDING",    (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+                ("LEFTPADDING",   (0, 0), (-1, -1), 8),
+                ("VALIGN",        (0, 0), (-1, -1), "TOP"),
+            ]),
+        ))
+        story.append(Spacer(1, 0.5 * cm))
+
     # ── Footer ────────────────────────────────────────────────────────────────
     story.append(HRFlowable(width=W, thickness=0.5, color=_GREY))
     story.append(Paragraph(

@@ -99,8 +99,8 @@ def test_owner_and_cross_org_and_admin():
 
 def test_admin_endpoints_gated():
     # user token -> 403, admin token -> 200
-    assert client.get("/api/v1/stats", headers={"Authorization": "Bearer tok-a@a.com"}).status_code == 403
-    assert client.get("/api/v1/stats", headers={"Authorization": "Bearer tok-admin@a.com"}).status_code == 200
+    assert client.get("/api/v1/audit", headers={"Authorization": "Bearer tok-a@a.com"}).status_code == 403
+    assert client.get("/api/v1/audit", headers={"Authorization": "Bearer tok-admin@a.com"}).status_code == 200
 
 
 def test_get_logout():
