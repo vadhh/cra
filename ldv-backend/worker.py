@@ -45,7 +45,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
 
         # Run L4 optional LLM explanation
         if explain:
-            database.update_analysis(public_id, status="running", progress_pct=90, progress_stage="preparing")
+            database.update_analysis(public_id, status="running", progress_pct=85, progress_stage="reasoning")
             layer1 = result.get("layer1")
             layer2 = result.get("layer2")
             layer3 = result.get("layer3")
@@ -59,6 +59,8 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
                 analysis_text, jurisdiction=jurisdiction,
                 layer1=layer1, layer2=layer2, layer3=layer3,
             )
+
+        database.update_analysis(public_id, status="running", progress_pct=95, progress_stage="preparing")
 
         elapsed = round(time.monotonic() - t_start, 2)
         layer3_data = result.get("layer3", {})

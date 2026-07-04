@@ -657,6 +657,18 @@
         </div>
       </div>
 
+      <!-- Jump Nav: quick-scroll chips for the long right-hand column -->
+      <div class="sticky z-40 -mx-6 px-6 py-2 flex items-center gap-2 overflow-x-auto"
+           style="top:4rem;background:rgba(14,19,31,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);"
+           x-data="jumpNav()" x-init="init()">
+        <template x-for="s in sections" :key="s.id">
+          <a :href="'#' + s.id" @click.prevent="jumpTo(s.id)"
+             class="text-xs font-body font-semibold whitespace-nowrap px-3 py-1.5 rounded-full border transition-colors"
+             :class="active === s.id ? 'border-primary text-primary bg-primary/10' : 'border-outline-variant/20 text-on-surface-variant hover:text-primary'"
+             x-text="s.label"></a>
+        </template>
+      </div>
+
       <!-- Bento Grid Layout -->
       <div class="result-grid">
         
@@ -777,7 +789,7 @@
         <div class="grid-main lg:col-span-8 flex flex-col gap-6">
           
           <!-- Findings View & Filters (Priority 3 & 4) -->
-          <div class="section-card">
+          <div class="section-card" id="jump-findings">
             <div class="section-header" style="cursor:default;">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -938,8 +950,39 @@
             </div>
           </div>
 
+          <!-- AI Explanation (Layer 4 / Qwen, opt-in via Comprehensive analysis depth) -->
+          <div class="section-card" id="jump-ai-explanation" x-show="layer4" style="display:none;" x-data="{open:true}">
+            <div class="section-header" @click="open=!open">
+              <div class="section-title-wrapper font-editorial">
+                <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 4v6l4 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span>AI Explanation</span>
+              </div>
+              <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
+                <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </div>
+            <div class="section-body font-body space-y-4" x-show="open" x-transition>
+              <div x-show="layer4 && layer4.summary">
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">SUMMARY</p>
+                <div class="text-sm" x-html="layer4 && mdLite(layer4.summary)"></div>
+              </div>
+              <div x-show="layer4 && layer4.clause_commentary">
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">CLAUSE COMMENTARY</p>
+                <div class="text-sm" x-html="layer4 && mdLite(layer4.clause_commentary)"></div>
+              </div>
+              <div x-show="layer4 && layer4.compliance_notes">
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">COMPLIANCE NOTES</p>
+                <div class="text-sm" x-html="layer4 && mdLite(layer4.compliance_notes)"></div>
+              </div>
+              <div x-show="layer4 && layer4.recommendations">
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">RECOMMENDATIONS</p>
+                <div class="text-sm" x-html="layer4 && mdLite(layer4.recommendations)"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Extracted Agreement Text & Interactive Excerpt Viewer -->
-          <div class="section-card" x-data="{open:true}">
+          <div class="section-card" id="jump-evidence" x-data="{open:true}">
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -956,7 +999,7 @@
           </div>
 
           <!-- Scoring Penalty Audit -->
-          <div class="section-card" x-data="{open:false}">
+          <div class="section-card" id="jump-scoring" x-data="{open:false}">
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -984,7 +1027,7 @@
           </div>
 
           <!-- Analysis Limitations (Priority 6) -->
-          <div class="section-card" x-data="{open:false}">
+          <div class="section-card" id="jump-limitations" x-data="{open:false}">
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>
@@ -1115,6 +1158,80 @@
       return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    // Minimal markdown-lite renderer for LLM (layer4) text — bold + bullet
+    // lists only, no external library. Input is escaped first, so the only
+    // HTML tags in the output are the ones this function adds itself.
+    function mdLite(s) {
+      if (!s) return '';
+      const lines = esc(s).split('\n');
+      let html = '';
+      let inList = false;
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (line.startsWith('- ')) {
+          if (!inList) { html += '<ul class="list-disc pl-5 space-y-1 mb-2">'; inList = true; }
+          html += '<li>' + line.slice(2) + '</li>';
+        } else {
+          if (inList) { html += '</ul>'; inList = false; }
+          if (line) html += '<p class="mb-2">' + line + '</p>';
+        }
+      }
+      if (inList) html += '</ul>';
+      return html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    }
+
+    function jumpNav() {
+      const allSections = [
+        { id: 'jump-findings', label: 'Findings' },
+        { id: 'jump-evidence', label: 'Evidence' },
+        { id: 'jump-scoring', label: 'Scoring' },
+        { id: 'jump-limitations', label: 'Limitations' },
+        { id: 'jump-ai-explanation', label: 'AI Explanation' },
+      ];
+      return {
+        sections: [],
+        active: '',
+        observer: null,
+        suppressUntil: 0,
+
+        refresh() {
+          this.sections = allSections.filter(s => {
+            const el = document.getElementById(s.id);
+            return el && el.offsetParent !== null;
+          });
+          if (this.observer) this.observer.disconnect();
+          this.observer = new IntersectionObserver((entries) => {
+            // Ignore transient hits on sections scrolled *past* while a click-jump
+            // is still animating — otherwise whichever section the scroll passes
+            // through last wins, not the one that was actually clicked.
+            if (Date.now() < this.suppressUntil) return;
+            entries.forEach(e => { if (e.isIntersecting) this.active = e.target.id; });
+          }, { rootMargin: '-100px 0px -70% 0px', threshold: 0 });
+          this.sections.forEach(s => {
+            const el = document.getElementById(s.id);
+            if (el) this.observer.observe(el);
+          });
+        },
+
+        jumpTo(id) {
+          const el = document.getElementById(id);
+          if (!el) return;
+          // Force the target section-card open if it's currently collapsed —
+          // otherwise the scroll lands on an empty header and looks like a no-op.
+          const data = window.Alpine ? window.Alpine.$data(el) : null;
+          if (data && typeof data.open !== 'undefined') data.open = true;
+          this.active = id;
+          this.suppressUntil = Date.now() + 700;
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+
+        init() {
+          this.refresh();
+          window.addEventListener('cra:result-loaded', () => this.refresh());
+        },
+      };
+    }
+
     function resultApp() {
       return {
         loading: true,
@@ -1139,6 +1256,7 @@
         clauseChecklist: [],
         scoringAudit: [],
         limitations: [],
+        layer4: null,
         rawExtractedText: '',
         highlightedText: '',
 
@@ -1233,9 +1351,13 @@
           this.clauseChecklist = layer1.clause_presence || [];
           this.scoringAudit = layer3.breakdown || [];
           this.limitations = this.buildLimitationsList(this.result, layer1, layer2);
+          this.layer4 = (r.layer4 && r.layer4.available) ? r.layer4 : null;
 
           // Build unified findings list
           this.buildFindings(layer1, layer2);
+
+          // Let the jump-nav bar know section visibility may have changed
+          this.$nextTick(() => window.dispatchEvent(new CustomEvent('cra:result-loaded')));
         },
 
         buildFindings(layer1, layer2) {

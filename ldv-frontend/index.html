@@ -660,6 +660,18 @@
                 <span x-text="isStageDone('scoring') ? 'Scored' : (activeStage === 'scoring' ? 'Calculating…' : 'Queued')"></span>
               </div>
 
+              <!-- Reasoning (Qwen L4, only when Comprehensive analysis depth is selected) -->
+              <div class="flex items-center justify-between" x-show="analysisDepth === 'comprehensive'"
+                   :class="activeStage === 'reasoning' ? 'text-primary font-bold' : (isStageDone('reasoning') ? 'text-on-surface-variant/50' : 'opacity-30')">
+                <span class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('reasoning')">check_circle</span>
+                  <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'reasoning'">sync</span>
+                  <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('reasoning')">pending</span>
+                  <span>6. AI Reasoning &amp; Explanation (LLM)</span>
+                </span>
+                <span x-text="isStageDone('reasoning') ? 'Explained' : (activeStage === 'reasoning' ? 'Reasoning…' : 'Queued')"></span>
+              </div>
+
               <!-- Preparing -->
               <div class="flex items-center justify-between"
                    :class="activeStage === 'preparing' ? 'text-primary font-bold' : (isStageDone('preparing') ? 'text-on-surface-variant/50' : 'opacity-30')">
@@ -667,7 +679,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('preparing')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'preparing'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('preparing')">pending</span>
-                  <span>6. Structured Report Preparation</span>
+                  <span x-text="(analysisDepth === 'comprehensive' ? '7' : '6') + '. Structured Report Preparation'"></span>
                 </span>
                 <span x-text="isStageDone('preparing') ? 'Assembled' : (activeStage === 'preparing' ? 'Building…' : 'Queued')"></span>
               </div>
@@ -930,15 +942,22 @@
           this.currentStep = step;
         },
 
+        pipelineStages() {
+          const base = ['uploading', 'extracting', 'classifying', 'analyzing', 'scoring'];
+          if (this.analysisDepth === 'comprehensive') base.push('reasoning');
+          base.push('preparing');
+          return base;
+        },
+
         isStageDone(stage) {
-          const stages = ['uploading', 'extracting', 'classifying', 'analyzing', 'scoring', 'preparing'];
+          const stages = this.pipelineStages();
           const activeIdx = stages.indexOf(this.activeStage);
           const stageIdx = stages.indexOf(stage);
           return stageIdx < activeIdx;
         },
 
         isStagePending(stage) {
-          const stages = ['uploading', 'extracting', 'classifying', 'analyzing', 'scoring', 'preparing'];
+          const stages = this.pipelineStages();
           const activeIdx = stages.indexOf(this.activeStage);
           const stageIdx = stages.indexOf(stage);
           return stageIdx > activeIdx;
