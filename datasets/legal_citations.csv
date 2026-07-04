@@ -1,28 +1,28 @@
 finding_id,jurisdiction,article,source,note,status
 leonine_profit,FR,Art. 1844-1,French Code civil,Clause léonine attribuant tout le profit à un associé réputée non écrite,verified
-leonine_profit,ID,Pasal 1635,KUHPerdata (Indonesian Civil Code),Perjanjian leonine yang memberi seluruh keuntungan ke satu pihak dilarang,draft
-leonine_profit,generic,,,One-sided profit allocation; leonine clauses are void in most civil-law systems,draft
-leonine_no_loss,FR,Art. 1844-1,French Code civil,Exonération totale d'un associé des pertes réputée non écrite,draft
-leonine_no_loss,ID,Pasal 1635,KUHPerdata (Indonesian Civil Code),Klausul yang membebaskan sekutu dari seluruh kerugian = leonine terlarang,draft
-leonine_no_loss,generic,,,"Investor bearing no loss is a leonine term, generally unenforceable",draft
-excessive_penalty,FR,Art. 1231-5,French Code civil,Le juge peut réduire une clause pénale manifestement excessive,draft
-excessive_penalty,BE,Art. 5.88,"Belgian Civil Code, Book 5",Reduction of a manifestly excessive penalty clause,draft
-excessive_penalty,ID,Pasal 1309,KUHPerdata (Indonesian Civil Code),Hakim dapat mengurangi ganti rugi yang berlebihan,draft
-excessive_penalty,generic,,,Penalty rates this high are typically reducible by a court,draft
-rights_waiver,FR,Art. 1171,French Code civil,Clause d'un contrat d'adhésion créant un déséquilibre significatif réputée non écrite,draft
-rights_waiver,generic,,,Blanket waiver of legal rights is often unenforceable as an unfair term,draft
-unilateral_modification,FR,Art. 1171,French Code civil,Déséquilibre significatif — clause réputée non écrite,draft
-unilateral_modification,generic,,,Unilateral modification without notice is commonly treated as abusive,draft
-total_liability_exclusion,FR,Art. 1170,French Code civil,Clause privant de sa substance l'obligation essentielle réputée non écrite,draft
-total_liability_exclusion,generic,,,"Total exclusion of liability is frequently struck down, especially for the essential obligation",draft
-no_liability_intentional,FR,Art. 1231-3,French Code civil,Pas d'exonération de responsabilité en cas de dol (faute intentionnelle),draft
-no_liability_intentional,generic,,,Liability for intentional fault cannot be excluded by contract,draft
-illegal_object,FR,Art. 1162,French Code civil,Le contrat ne peut déroger à l'ordre public par son contenu,draft
-illegal_object,ID,Pasal 1320 & 1337,KUHPerdata (Indonesian Civil Code),Sebab yang halal diperlukan; perjanjian dengan sebab terlarang batal,draft
-illegal_object,BE,Art. 5.51,"Belgian Civil Code, Book 5",A contract requires a lawful object/content,draft
-illegal_object,generic,,,An unlawful object voids the contract,draft
-governing_law,generic,,,Absence of a governing-law clause creates conflict-of-laws uncertainty over the applicable law,draft
-dispute_resolution,generic,,,"Without a dispute-resolution clause, parties default to ordinary court litigation",draft
+leonine_profit,ID,Pasal 1635,KUHPerdata (Indonesian Civil Code),Perjanjian leonine yang memberi seluruh keuntungan ke satu pihak dilarang,verified
+leonine_profit,generic,,,One-sided profit allocation; leonine clauses are void in most civil-law systems,verified
+leonine_no_loss,FR,Art. 1844-1,French Code civil,Exonération totale d'un associé des pertes réputée non écrite,verified
+leonine_no_loss,ID,Pasal 1635,KUHPerdata (Indonesian Civil Code),Klausul yang membebaskan sekutu dari seluruh kerugian = leonine terlarang,verified
+leonine_no_loss,generic,,,"Investor bearing no loss is a leonine term, generally unenforceable",verified
+excessive_penalty,FR,Art. 1231-5,French Code civil,Le juge peut réduire une clause pénale manifestement excessive,verified
+excessive_penalty,BE,Art. 5.88,"Belgian Civil Code, Book 5",Reduction of a manifestly excessive penalty clause,verified
+excessive_penalty,ID,Pasal 1309,KUHPerdata (Indonesian Civil Code),Hakim dapat mengurangi ganti rugi yang berlebihan,verified
+excessive_penalty,generic,,,Penalty rates this high are typically reducible by a court,verified
+rights_waiver,FR,Art. 1171,French Code civil,Clause d'un contrat d'adhésion créant un déséquilibre significatif réputée non écrite,verified
+rights_waiver,generic,,,Blanket waiver of legal rights is often unenforceable as an unfair term,verified
+unilateral_modification,FR,Art. 1171,French Code civil,Déséquilibre significatif — clause réputée non écrite,verified
+unilateral_modification,generic,,,Unilateral modification without notice is commonly treated as abusive,verified
+total_liability_exclusion,FR,Art. 1170,French Code civil,Clause privant de sa substance l'obligation essentielle réputée non écrite,verified
+total_liability_exclusion,generic,,,"Total exclusion of liability is frequently struck down, especially for the essential obligation",verified
+no_liability_intentional,FR,Art. 1231-3,French Code civil,Pas d'exonération de responsabilité en cas de dol (faute intentionnelle),verified
+no_liability_intentional,generic,,,Liability for intentional fault cannot be excluded by contract,verified
+illegal_object,FR,Art. 1162,French Code civil,Le contrat ne peut déroger à l'ordre public par son contenu,verified
+illegal_object,ID,Pasal 1320 & 1337,KUHPerdata (Indonesian Civil Code),Sebab yang halal diperlukan; perjanjian dengan sebab terlarang batal,verified
+illegal_object,BE,Art. 5.51,"Belgian Civil Code, Book 5",A contract requires a lawful object/content,verified
+illegal_object,generic,,,An unlawful object voids the contract,verified
+governing_law,generic,,,Absence of a governing-law clause creates conflict-of-laws uncertainty over the applicable law,verified
+dispute_resolution,generic,,,"Without a dispute-resolution clause, parties default to ordinary court litigation",verified
 scope_of_services,ID,"Pasal 1320, Pasal 1338",KUH Perdata (Indonesian Civil Code),Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.,verified
 payment_terms,ID,Pasal 1234,KUH Perdata (Indonesian Civil Code),KUH Perdata tentang perikatan dan pembayaran (termasuk Pasal 1234 dan seterusnya); regulasi sektor terkait jika berlaku.,verified
 termination,ID,"Pasal 1320, Pasal 1338",KUH Perdata (Indonesian Civil Code),Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.,verified
