@@ -173,6 +173,9 @@ def main() -> None:
     pr.add_argument("days", type=int)
     pb = sub.add_parser("backup", help="Back up DB + uploads to LDV_BACKUP_DIR")
     pb.add_argument("--dry-run", action="store_true")
+    pdm = sub.add_parser("download-model", help="Download a model repository from Hugging Face Hub")
+    pdm.add_argument("repo_id")
+    pdm.add_argument("--token", help="Optional Hugging Face access token")
     args = parser.parse_args()
 
     if args.cmd == "seed-admin":
@@ -191,6 +194,9 @@ def main() -> None:
         set_retention_cmd(args.org, args.days)
     elif args.cmd == "backup":
         backup_cmd(args.dry_run)
+    elif args.cmd == "download-model":
+        from hf_hub_connector import download_repo_model
+        download_repo_model(args.repo_id, token=args.token)
 
 
 if __name__ == "__main__":

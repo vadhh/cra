@@ -28,9 +28,8 @@ def _load_model():
         
         # ponytail: prevent blocking background threads with massive model downloads unless explicitly allowed
         download_allowed = os.getenv("LDV_DOWNLOAD_MODELS", "0") == "1"
-        hf_cache_dir = os.getenv("HF_HOME") or os.path.expanduser("~/.cache/huggingface")
-        model_slug = MODEL_ID.replace("/", "--")
-        qwen_cached = os.path.exists(os.path.join(hf_cache_dir, "hub", f"models--{model_slug}"))
+        import hf_hub_connector
+        qwen_cached = hf_hub_connector.is_model_cached(MODEL_ID)
         
         local_files_only = not download_allowed and not qwen_cached
         if local_files_only:

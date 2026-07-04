@@ -1271,9 +1271,9 @@ def health():
     datasets_ok = all(os.path.exists(os.path.join(datasets_dir, f)) for f in required_csvs)
     
     # Check model caches
-    hf_cache_dir = os.getenv("HF_HOME") or os.path.expanduser("~/.cache/huggingface")
-    qwen_cached = os.path.exists(os.path.join(hf_cache_dir, "hub", "models--Qwen--Qwen3-1.7B"))
-    distilbert_cached = os.path.exists(os.path.join(hf_cache_dir, "hub", "models--typeform--distilbert-base-uncased-mnli"))
+    import hf_hub_connector
+    qwen_cached = hf_hub_connector.is_model_cached("Qwen/Qwen3-1.7B")
+    distilbert_cached = hf_hub_connector.is_model_cached("typeform/distilbert-base-uncased-mnli")
     
     try:
         from send_prompt import _model as qwen_model
