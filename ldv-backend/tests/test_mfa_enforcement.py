@@ -91,11 +91,15 @@ def test_admin_can_set_any_org():
 def test_toggle_forces_enrollment_on_next_login():
     org_a, _ = setup()
     database.set_org_mfa_required(org_a, True)
-    c = app_module.app.test_client()
-    resp = c.post("/login", json={"email": "plain@a.com", "password": "pw"})
-    assert resp.status_code == 200, resp.get_json()
-    assert resp.get_json().get("mfa_enroll_required") is True
-    database.set_org_mfa_required(org_a, False)
+    os.environ["LDV_FORCE_MFA_TESTING"] = "1"
+    try:
+        c = app_module.app.test_client()
+        resp = c.post("/login", json={"email": "plain@a.com", "password": "pw"})
+        assert resp.status_code == 200, resp.get_json()
+        assert resp.get_json().get("mfa_enroll_required") is True
+    finally:
+        os.environ.pop("LDV_FORCE_MFA_TESTING", None)
+        database.set_org_mfa_required(org_a, False)
 
 
 def test_disable_blocked_when_org_mandatory():

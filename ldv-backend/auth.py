@@ -126,7 +126,9 @@ def role_required(*roles: str):
 
 
 def is_mfa_mandatory(user: dict) -> bool:
-    if os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
+    if os.environ.get("LDV_FORCE_MFA_TESTING") == "1":
+        pass
+    elif os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
         return False
     if os.getenv("LDV_PRODUCTION") == "1":
         return True
