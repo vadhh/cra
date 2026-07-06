@@ -119,93 +119,110 @@ def run_suite() -> dict:
     fixture_results = []
     by_language = {}
 
-    for case in OFFLINE_SUITE:
-        file_path = FIXTURES_DIR / case["path"]
-        expected = case["expected"]
-        entry = {"path": case["path"]}
+    try:
+        for case in OFFLINE_SUITE:
+            file_path = FIXTURES_DIR / case["path"]
+            expected = case["expected"]
+            entry = {"path": case["path"]}
 
-        if expected.get("extraction_error"):
+            if expected.get("extraction_error"):
+                try:
+                    _extract_text(file_path, _extract_pdf, _extract_docx, _extract_txt)
+                    entry["status"] = "FAIL"
+                    entry["error"] = "expected extraction to raise, it did not"
+                except Exception as e:
+                    entry["status"] = "PASS"
+                    entry["error"] = str(e)
+                fixture_results.append(entry)
+                continue
+
+            if expected.get("scan_required"):
+                text = _extract_text(file_path, _extract_pdf, _extract_docx, _extract_txt)
+                scan_required_detected = not text.strip()
+                entry["status"] = "PASS" if scan_required_detected else "FAIL"
+                entry["scan_required_detected"] = scan_required_detected
+                entry["error"] = None
+                fixture_results.append(entry)
+                continue
+
+            # Normal-analysis path (real ML pipeline: extraction, language/
+            # jurisdiction detection, _run_analysis, clause-metrics). Isolated
+            # per-fixture so one bad fixture can't blow away every completed
+            # result and lose the JSON evidence file entirely.
             try:
-                _extract_text(file_path, _extract_pdf, _extract_docx, _extract_txt)
-                entry["status"] = "FAIL"
-                entry["error"] = "expected extraction to raise, it did not"
+                text = _extract_text(file_path, _extract_pdf, _extract_docx, _extract_txt)
+                try:
+                    lang = detect(text)
+                except Exception:
+                    lang = "unknown"
+                jurisdiction = detect_jurisdiction(text)
+
+                t0 = time.perf_counter()
+                analysis = _run_analysis(text, jurisdiction, lang)
+                latency_ms = (time.perf_counter() - t0) * 1000
+
+                lang_match = lang.lower() == expected["language"].lower()
+                l2 = analysis.get("layer2") or {}
+                doc_type_detected = (l2.get("document_type") or {}).get("label")
+                is_contract_detected = doc_type_detected is not None and analysis.get("layer3", {}).get("skipped") is not True
+                is_contract_match = is_contract_detected == expected["is_contract"]
+
+                clause_metrics = {"tp": 0, "fp": 0, "tn": 0, "fn": 0, "details": []}
+                if expected["is_contract"] and "present_clauses" in expected:
+                    presence_list = analysis.get("layer1", {}).get("clause_presence", [])
+                    presence_map = {c["clause_id"]: c["present"] for c in presence_list}
+                    clause_metrics = compute_clause_metrics(
+                        presence_map, expected.get("present_clauses", []), expected.get("missing_clauses", [])
+                    )
+
+                status = "PASS" if (
+                    lang_match and is_contract_match
+                    and clause_metrics["fp"] == 0 and clause_metrics["fn"] == 0
+                ) else "FAIL"
+
+                entry.update({
+                    "language_expected": expected["language"],
+                    "language_detected": lang,
+                    "language_match": lang_match,
+                    "is_contract_expected": expected["is_contract"],
+                    "is_contract_detected": is_contract_detected,
+                    "is_contract_match": is_contract_match,
+                    "document_type_detected": doc_type_detected,
+                    "clause_tp": clause_metrics["tp"],
+                    "clause_fp": clause_metrics["fp"],
+                    "clause_tn": clause_metrics["tn"],
+                    "clause_fn": clause_metrics["fn"],
+                    "latency_ms": round(latency_ms, 1),
+                    "status": status,
+                    "error": None,
+                })
+
+                lang_key = expected["language"]
+                bucket = by_language.setdefault(lang_key, {
+                    "latencies": [], "total": 0, "passed": 0, "type_correct": 0,
+                    "clause_tp": 0, "clause_fp": 0, "clause_fn": 0,
+                })
+                bucket["latencies"].append(latency_ms)
+                bucket["total"] += 1
+                bucket["passed"] += 1 if status == "PASS" else 0
+                bucket["type_correct"] += 1 if is_contract_match else 0
+                bucket["clause_tp"] += clause_metrics["tp"]
+                bucket["clause_fp"] += clause_metrics["fp"]
+                bucket["clause_fn"] += clause_metrics["fn"]
+
+                # Appended last: if anything above raises, this fixture's
+                # entry was never added, so the except branch below appends
+                # exactly one ERROR entry for it (no duplicates) and this
+                # fixture's (nonexistent) latency/language data never reaches
+                # by_language.
+                fixture_results.append(entry)
             except Exception as e:
-                entry["status"] = "PASS"
-                entry["error"] = str(e)
-            fixture_results.append(entry)
-            continue
-
-        if expected.get("scan_required"):
-            text = _extract_text(file_path, _extract_pdf, _extract_docx, _extract_txt)
-            scan_required_detected = not text.strip()
-            entry["status"] = "PASS" if scan_required_detected else "FAIL"
-            entry["scan_required_detected"] = scan_required_detected
-            entry["error"] = None
-            fixture_results.append(entry)
-            continue
-
-        text = _extract_text(file_path, _extract_pdf, _extract_docx, _extract_txt)
-        try:
-            lang = detect(text)
-        except Exception:
-            lang = "unknown"
-        jurisdiction = detect_jurisdiction(text)
-
-        t0 = time.perf_counter()
-        analysis = _run_analysis(text, jurisdiction, lang)
-        latency_ms = (time.perf_counter() - t0) * 1000
-
-        lang_match = lang.lower() == expected["language"].lower()
-        l2 = analysis.get("layer2") or {}
-        doc_type_detected = (l2.get("document_type") or {}).get("label")
-        is_contract_detected = doc_type_detected is not None and analysis.get("layer3", {}).get("skipped") is not True
-        is_contract_match = is_contract_detected == expected["is_contract"]
-
-        clause_metrics = {"tp": 0, "fp": 0, "tn": 0, "fn": 0, "details": []}
-        if expected["is_contract"] and "present_clauses" in expected:
-            presence_list = analysis.get("layer1", {}).get("clause_presence", [])
-            presence_map = {c["clause_id"]: c["present"] for c in presence_list}
-            clause_metrics = compute_clause_metrics(
-                presence_map, expected.get("present_clauses", []), expected.get("missing_clauses", [])
-            )
-
-        status = "PASS" if (
-            lang_match and is_contract_match
-            and clause_metrics["fp"] == 0 and clause_metrics["fn"] == 0
-        ) else "FAIL"
-
-        entry.update({
-            "language_expected": expected["language"],
-            "language_detected": lang,
-            "language_match": lang_match,
-            "is_contract_expected": expected["is_contract"],
-            "is_contract_detected": is_contract_detected,
-            "is_contract_match": is_contract_match,
-            "document_type_detected": doc_type_detected,
-            "clause_tp": clause_metrics["tp"],
-            "clause_fp": clause_metrics["fp"],
-            "clause_tn": clause_metrics["tn"],
-            "clause_fn": clause_metrics["fn"],
-            "latency_ms": round(latency_ms, 1),
-            "status": status,
-            "error": None,
-        })
-        fixture_results.append(entry)
-
-        lang_key = expected["language"]
-        bucket = by_language.setdefault(lang_key, {
-            "latencies": [], "total": 0, "passed": 0, "type_correct": 0,
-            "clause_tp": 0, "clause_fp": 0, "clause_fn": 0,
-        })
-        bucket["latencies"].append(latency_ms)
-        bucket["total"] += 1
-        bucket["passed"] += 1 if status == "PASS" else 0
-        bucket["type_correct"] += 1 if is_contract_match else 0
-        bucket["clause_tp"] += clause_metrics["tp"]
-        bucket["clause_fp"] += clause_metrics["fp"]
-        bucket["clause_fn"] += clause_metrics["fn"]
-
-    logging.getLogger("translator").removeHandler(capture)
+                fixture_results.append({"path": case["path"], "status": "ERROR", "error": str(e)})
+                continue
+    finally:
+        # Guaranteed handler cleanup even if a fixture raises somewhere the
+        # try/except above doesn't cover (e.g. before the loop starts).
+        logging.getLogger("translator").removeHandler(capture)
 
     by_language_summary = {}
     for lang_key, bucket in by_language.items():
