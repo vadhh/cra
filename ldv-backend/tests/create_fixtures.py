@@ -165,6 +165,13 @@ Visit www.cloudsuite.example.com or call +1-800-CLOUD-26.
 This brochure is for informational purposes only and does not constitute a contract.""",
 )
 
+# ponytail: blank page, no insert_text call — simulates a scanned image with
+# no OCR text layer, exercising app.py's existing "Scan/OCR required" path.
+_scan_doc = fitz.open()
+_scan_doc.new_page()
+_scan_doc.save(str(FIXTURES / "pdf" / "06_scanned_blank_en.pdf"))
+_scan_doc.close()
+
 
 # ── DOCX fixtures ─────────────────────────────────────────────────────────────
 
@@ -246,6 +253,39 @@ make_docx(
         "4. Intellectual Property\nAll deliverables remain the property of OmniServices Ltd until full payment is received.",
         "5. Limitation of Liability\nOmniServices Ltd's total liability shall not exceed the fees paid in the preceding 3 months.",
         "6. Governing Law\nThese terms are governed by English law.",
+    ],
+)
+
+make_docx(
+    FIXTURES / "docx" / "06_memo_fr.docx",
+    "NOTE JURIDIQUE INTERNE",
+    [
+        "À : Conseil d'Administration, Société Lumière SAS",
+        "De : Département Juridique",
+        "Objet : Conformité au Règlement Général sur la Protection des Données (RGPD)",
+        "Date : 1 avril 2026",
+        "Cette note résume les obligations de Société Lumière SAS en vertu du RGPD et "
+        "recommande des mesures correctives immédiates.",
+        "1. Situation actuelle\nLa société ne dispose actuellement d'aucune politique formelle "
+        "de conservation des données et n'a pas désigné de délégué à la protection des données.",
+        "2. Actions recommandées\n(a) Désigner un DPO dans les 30 jours.\n"
+        "(b) Rédiger et publier une politique de conservation des données.\n"
+        "(c) Mener un audit complet des activités de traitement des données.",
+        "Cette note est confidentielle et protégée par le secret professionnel.",
+    ],
+)
+
+make_docx(
+    FIXTURES / "docx" / "07_brochure_nl.docx",
+    "PRODUCTBROCHURE – CloudSuite 2026",
+    [
+        "Ontdek de toekomst van productiviteit voor bedrijven met CloudSuite 2026.",
+        "Belangrijkste functies:\n- Realtime samenwerking in meer dan 50 apps\n"
+        "- AI-gestuurde workflow-automatisering\n- 99,99% uptime garantie\n"
+        "- ISO 27001 gecertificeerde beveiliging",
+        "Prijsplannen:\nStarter: EUR 29/maand per gebruiker\nProfessional: EUR 79/maand per gebruiker\n"
+        "Enterprise: Neem contact op met onze verkoopafdeling",
+        "CloudSuite wordt gebruikt door meer dan 10.000 bedrijven wereldwijd.",
     ],
 )
 
@@ -710,6 +750,27 @@ No liability whatsoever shall be incurred by the service provider under any circ
 6. Governing Law
 [Governing law: TBD — to be confirmed by both parties at a later stage.]
 [Jurisdiction: to be discussed and confirmed at a later date.]
+""",
+)
+
+make_txt(
+    FIXTURES / "txt" / "16_notice_id.txt",
+    """PENGUMUMAN RESMI
+
+Dengan ini diumumkan bahwa PT Sumber Makmur akan mengadakan Rapat Umum Pemegang Saham
+Tahunan pada tanggal 15 Mei 2026 di Jakarta.
+
+Agenda rapat meliputi:
+- Laporan tahunan direksi
+- Persetujuan laporan keuangan tahun 2025
+- Pembagian dividen
+- Penunjukan auditor independen
+
+Para pemegang saham yang berhalangan hadir dapat memberikan kuasa kepada pihak lain
+sesuai dengan ketentuan yang berlaku.
+
+Jakarta, 1 April 2026
+Direksi PT Sumber Makmur
 """,
 )
 
