@@ -54,6 +54,26 @@ def test_local_translate_preserves_line_boundaries():
     assert result == "ARTICLE 1 - BAIL\nARTICLE 2 - LOYER\nARTICLE 3 - DUREE"
 
 
+def test_local_translate_does_not_drop_long_line_tail():
+    """A single line with no newlines (e.g. a PDF paragraph the extractor
+    didn't break up) that exceeds Marian's 512-token limit must not have its
+    tail silently truncated away — every word must survive via sub-chunking."""
+    model_path = translator._OPUS_MT["fr"]
+    translator._local_model_cache[model_path] = (_FakeModel(), _FakeTokenizer())
+
+    words = [f"mot{i}" for i in range(700)]
+    text = " ".join(words)
+    result = translator._local_translate(text, "fr")
+
+    assert "MOT0" in result and "MOT699" in result, (
+        f"expected first and last word to survive translation, got tail: {result[-60:]!r}"
+    )
+    assert len(result.split()) == len(words), (
+        f"expected {len(words)} words preserved, got {len(result.split())}"
+    )
+
+
 if __name__ == "__main__":
     test_local_translate_preserves_line_boundaries()
+    test_local_translate_does_not_drop_long_line_tail()
     print("PASS")

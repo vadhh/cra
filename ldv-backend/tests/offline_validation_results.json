@@ -4,8 +4,8 @@
     "LDV_REMOTE_TRANSLATION": "local",
     "HF_HUB_OFFLINE": "1",
     "TRANSFORMERS_OFFLINE": "1",
-    "started_at": "2026-07-07T07:37:24.720338+00:00",
-    "finished_at": "2026-07-07T07:38:03.063066+00:00"
+    "started_at": "2026-07-07T09:25:26.811500+00:00",
+    "finished_at": "2026-07-07T09:26:06.476519+00:00"
   },
   "model_provenance": [
     {
@@ -26,7 +26,7 @@
     }
   ],
   "translation_failures": [],
-  "peak_rss_mb": 2141.1,
+  "peak_rss_mb": 2140.5,
   "fixtures": [
     {
       "path": "pdf/01_employment_id.pdf",
@@ -41,7 +41,7 @@
       "clause_fp": 0,
       "clause_tn": 3,
       "clause_fn": 0,
-      "latency_ms": 8499.1,
+      "latency_ms": 8269.5,
       "status": "PASS",
       "error": null
     },
@@ -58,7 +58,7 @@
       "clause_fp": 0,
       "clause_tn": 3,
       "clause_fn": 0,
-      "latency_ms": 5650.7,
+      "latency_ms": 5888.4,
       "status": "PASS",
       "error": null
     },
@@ -75,7 +75,7 @@
       "clause_fp": 0,
       "clause_tn": 3,
       "clause_fn": 0,
-      "latency_ms": 639.5,
+      "latency_ms": 1375.6,
       "status": "PASS",
       "error": null
     },
@@ -92,7 +92,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2964.7,
+      "latency_ms": 3701.0,
       "status": "PASS",
       "error": null
     },
@@ -109,7 +109,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 5647.4,
+      "latency_ms": 5364.2,
       "status": "PASS",
       "error": null
     },
@@ -126,7 +126,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2846.6,
+      "latency_ms": 3162.4,
       "status": "PASS",
       "error": null
     },
@@ -143,7 +143,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2965.9,
+      "latency_ms": 3020.8,
       "status": "PASS",
       "error": null
     },
@@ -160,7 +160,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 546.4,
+      "latency_ms": 550.5,
       "status": "PASS",
       "error": null
     },
@@ -177,7 +177,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2905.2,
+      "latency_ms": 2408.1,
       "status": "PASS",
       "error": null
     },
@@ -194,7 +194,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1466.1,
+      "latency_ms": 1879.7,
       "status": "PASS",
       "error": null
     },
@@ -211,7 +211,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2548.6,
+      "latency_ms": 2209.5,
       "status": "PASS",
       "error": null
     },
@@ -239,9 +239,9 @@
       "failed": 0,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 100.0,
-      "latency_mean_ms": 4631.4,
-      "latency_median_ms": 2846.6,
-      "latency_p95_ms": 8499.1
+      "latency_mean_ms": 4547.1,
+      "latency_median_ms": 3162.4,
+      "latency_p95_ms": 8269.5
     },
     "fr": {
       "total": 3,
@@ -249,9 +249,9 @@
       "failed": 0,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 100.0,
-      "latency_mean_ms": 3840.2,
-      "latency_median_ms": 2964.7,
-      "latency_p95_ms": 5650.7
+      "latency_mean_ms": 3999.2,
+      "latency_median_ms": 3701.0,
+      "latency_p95_ms": 5888.4
     },
     "en": {
       "total": 2,
@@ -259,9 +259,9 @@
       "failed": 0,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 100.0,
-      "latency_mean_ms": 593.0,
-      "latency_median_ms": 593.0,
-      "latency_p95_ms": 639.5
+      "latency_mean_ms": 963.1,
+      "latency_median_ms": 963.1,
+      "latency_p95_ms": 1375.6
     },
     "nl": {
       "total": 3,
@@ -269,9 +269,9 @@
       "failed": 0,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": null,
-      "latency_mean_ms": 3359.8,
-      "latency_median_ms": 2965.9,
-      "latency_p95_ms": 5647.4
+      "latency_mean_ms": 3421.6,
+      "latency_median_ms": 3020.8,
+      "latency_p95_ms": 5364.2
     }
   },
   "overall": {

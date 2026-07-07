@@ -61,15 +61,30 @@ def _local_translate(text: str, src_lang: str) -> str:
     # windows silently merge multiple clauses into one paragraph, which then
     # causes every clause hypothesis to be scored against the same blob.
     device = next(mdl.parameters()).device
+
+    def _translate_chunk(chunk: str) -> str:
+        inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
+        translated = mdl.generate(**inputs)
+        return tok.decode(translated[0], skip_special_tokens=True)
+
     out = []
     for line in text.split("\n"):
         if not line.strip():
             out.append(line)
             continue
         try:
-            inputs = tok(line, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
-            translated = mdl.generate(**inputs)
-            out.append(tok.decode(translated[0], skip_special_tokens=True))
+            words = line.split(" ")
+            # ponytail: a line without newlines (e.g. a PDF paragraph the
+            # extractor didn't break up) can exceed Marian's 512-token limit;
+            # tok(..., truncation=True) would then silently drop the tail
+            # instead of translating it. 300-word sub-chunks stay safely
+            # under that limit for these languages without a second
+            # tokenizer pass just to count tokens.
+            if len(words) > 300:
+                sub_chunks = [" ".join(words[i:i + 300]) for i in range(0, len(words), 300)]
+                out.append(" ".join(_translate_chunk(c) for c in sub_chunks))
+            else:
+                out.append(_translate_chunk(line))
         except Exception as e:
             logger.warning("Local translation line failed: %s", e)
             out.append(line)
