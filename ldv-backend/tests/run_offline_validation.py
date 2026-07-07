@@ -107,7 +107,7 @@ def _model_provenance() -> list:
     return provenance
 
 
-def run_suite() -> dict:
+def run_suite(self_check_passed: bool) -> dict:
     from app import _run_analysis, _extract_pdf, _extract_docx, _extract_txt
     from detector.detector_jurisdiction import detect_jurisdiction
     from langdetect import detect
@@ -246,10 +246,11 @@ def run_suite() -> dict:
     passed = sum(1 for r in fixture_results if r["status"] == "PASS")
 
     return {
-        "self_check_passed": True,
+        "self_check_passed": self_check_passed,
         "config": {
             "LDV_REMOTE_TRANSLATION": os.environ.get("LDV_REMOTE_TRANSLATION"),
             "HF_HUB_OFFLINE": os.environ.get("HF_HUB_OFFLINE"),
+            "TRANSFORMERS_OFFLINE": os.environ.get("TRANSFORMERS_OFFLINE"),
             "started_at": started_at,
             "finished_at": finished_at,
         },
@@ -272,7 +273,7 @@ def main():
     print("Network trap self-check: PASS (outbound connect correctly blocked)")
 
     try:
-        results = run_suite()
+        results = run_suite(ok)
     finally:
         disable_network_trap()
 

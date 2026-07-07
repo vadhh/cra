@@ -6,6 +6,8 @@ def test_generates_valid_pdf_from_synthetic_results(tmp_path):
         "self_check_passed": True,
         "config": {
             "LDV_REMOTE_TRANSLATION": "local",
+            "HF_HUB_OFFLINE": "1",
+            "TRANSFORMERS_OFFLINE": "1",
             "started_at": "2026-07-06T00:00:00",
             "finished_at": "2026-07-06T00:10:00",
         },

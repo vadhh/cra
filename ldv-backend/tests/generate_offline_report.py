@@ -56,6 +56,8 @@ def generate_report(results: dict, out_path: Path) -> None:
     cfg = results.get("config", {})
     story.append(Paragraph(
         f"Config: LDV_REMOTE_TRANSLATION={cfg.get('LDV_REMOTE_TRANSLATION')} | "
+        f"HF_HUB_OFFLINE={cfg.get('HF_HUB_OFFLINE')} | "
+        f"TRANSFORMERS_OFFLINE={cfg.get('TRANSFORMERS_OFFLINE')} | "
         f"Run window: {cfg.get('started_at')} → {cfg.get('finished_at')}", small,
     ))
     story.append(HRFlowable(width=W, thickness=1, color=_NAVY))
@@ -88,7 +90,7 @@ def generate_report(results: dict, out_path: Path) -> None:
 
     # ── Per-language breakdown ───────────────────────────────────────────
     story.append(Paragraph("Per-Language Metrics", h2))
-    lang_rows = [["Language", "Total", "Passed", "Doc-type acc.", "Clause recall", "Mean ms", "Median ms", "P95 ms"]]
+    lang_rows = [["Language", "Total", "Passed", "Contract detection acc.", "Clause recall", "Mean ms", "Median ms", "P95 ms"]]
     for lang, m in sorted(results.get("by_language", {}).items()):
         lang_rows.append([
             lang.upper(), str(m["total"]), str(m["passed"]),
@@ -106,6 +108,23 @@ def generate_report(results: dict, out_path: Path) -> None:
         detail = f.get("error") or f.get("document_type_detected") or ""
         fix_rows.append([f["path"], f["status"], str(detail)[:60]])
     story.append(Table(fix_rows, colWidths=[W * 0.4, W * 0.15, W * 0.45], style=TableStyle(_TABLE_HEADER_STYLE)))
+    story.append(Spacer(1, 0.4 * cm))
+
+    # ── Known Limitations / Current Accuracy Gaps ────────────────────────
+    story.append(Paragraph("Known Limitations / Current Accuracy Gaps", h2))
+    non_pass = [f for f in results.get("fixtures", []) if f.get("status") != "PASS"]
+    if non_pass:
+        story.append(Paragraph(
+            f"This run recorded {len(non_pass)} fixture(s) that did not pass. These are "
+            "genuine, unfixed model-quality gaps — not harness bugs — and are called out "
+            "here explicitly so they are not mistaken for full accuracy when reading the "
+            "summary tables above.", body,
+        ))
+        for f in non_pass:
+            detail = f.get("error") or "accuracy mismatch (expected result did not match detected result)"
+            story.append(Paragraph(f"• {f['path']} ({f.get('status')}): {detail}", body))
+    else:
+        story.append(Paragraph("No fixtures failed in this run.", body))
     story.append(Spacer(1, 0.4 * cm))
 
     # ── Model Provenance ─────────────────────────────────────────────────
@@ -154,6 +173,8 @@ def generate_report(results: dict, out_path: Path) -> None:
         "Confirm the current fixture set (EN/ID/FR/NL contracts + non-contracts, one scanned "
         "PDF, two malformed files) is sufficient acceptance coverage, or specify additional "
         "cases to add.",
+        f"Review the Known Limitations section for {len(non_pass)} fixture(s) that did not "
+        "pass this run and decide whether they block pilot acceptance.",
     ]
     for i, d in enumerate(decisions, 1):
         story.append(Paragraph(f"{i}. {d}", body))
