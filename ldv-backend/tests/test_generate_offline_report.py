@@ -15,6 +15,8 @@ def test_generates_valid_pdf_from_synthetic_results(tmp_path):
         "fixtures": [
             {"path": "pdf/01_employment_id.pdf", "status": "PASS", "error": None,
              "document_type_detected": "employment contract"},
+            {"path": "negative/some_malformed.pdf", "status": "ERROR",
+             "error": "extraction failed: invalid PDF structure"},
         ],
         "by_language": {
             "id": {"total": 1, "passed": 1, "failed": 0, "doc_type_accuracy_pct": 100.0,
