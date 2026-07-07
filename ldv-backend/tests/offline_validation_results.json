@@ -1,0 +1,283 @@
+{
+  "self_check_passed": true,
+  "config": {
+    "LDV_REMOTE_TRANSLATION": "local",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "started_at": "2026-07-07T09:25:26.811500+00:00",
+    "finished_at": "2026-07-07T09:26:06.476519+00:00"
+  },
+  "model_provenance": [
+    {
+      "name": "Helsinki-NLP/opus-mt-id-en",
+      "revision": "9a7f1b0d0dfe0a92ba691030b01d6f23f966e7ec"
+    },
+    {
+      "name": "Helsinki-NLP/opus-mt-fr-en",
+      "revision": "c4aed37b318c763fd177aa449b44e3b783cc6c02"
+    },
+    {
+      "name": "Helsinki-NLP/opus-mt-nl-en",
+      "revision": "48af999f2c59b10c05ca6e008dcedc07677a9b15"
+    },
+    {
+      "name": "typeform/distilbert-base-uncased-mnli",
+      "revision": "cfa538a0fddbbd978fefe8966c1aeff7ad409c90"
+    }
+  ],
+  "translation_failures": [],
+  "peak_rss_mb": 2140.5,
+  "fixtures": [
+    {
+      "path": "pdf/01_employment_id.pdf",
+      "language_expected": "id",
+      "language_detected": "id",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "employment contract",
+      "clause_tp": 4,
+      "clause_fp": 0,
+      "clause_tn": 3,
+      "clause_fn": 0,
+      "latency_ms": 8269.5,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "pdf/02_lease_be.pdf",
+      "language_expected": "fr",
+      "language_detected": "fr",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "lease agreement",
+      "clause_tp": 5,
+      "clause_fp": 0,
+      "clause_tn": 3,
+      "clause_fn": 0,
+      "latency_ms": 5888.4,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "pdf/03_nda_en.pdf",
+      "language_expected": "en",
+      "language_detected": "en",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "non-disclosure agreement",
+      "clause_tp": 3,
+      "clause_fp": 0,
+      "clause_tn": 3,
+      "clause_fn": 0,
+      "latency_ms": 1375.6,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "docx/02_employment_fr.docx",
+      "language_expected": "fr",
+      "language_detected": "fr",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "employment contract",
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 3701.0,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "docx/03_nda_nl.docx",
+      "language_expected": "nl",
+      "language_detected": "nl",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "non-disclosure agreement",
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 5364.2,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "txt/12_high_risk_unilateral_id.txt",
+      "language_expected": "id",
+      "language_detected": "id",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "service agreement",
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 3162.4,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "txt/13_medium_risk_lease_nl.txt",
+      "language_expected": "nl",
+      "language_detected": "nl",
+      "language_match": true,
+      "is_contract_expected": true,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "lease agreement",
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 3020.8,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "pdf/05_brochure_en.pdf",
+      "language_expected": "en",
+      "language_detected": "en",
+      "language_match": true,
+      "is_contract_expected": false,
+      "is_contract_detected": false,
+      "is_contract_match": true,
+      "document_type_detected": null,
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 550.5,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "docx/06_memo_fr.docx",
+      "language_expected": "fr",
+      "language_detected": "fr",
+      "language_match": true,
+      "is_contract_expected": false,
+      "is_contract_detected": false,
+      "is_contract_match": true,
+      "document_type_detected": null,
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 2408.1,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "docx/07_brochure_nl.docx",
+      "language_expected": "nl",
+      "language_detected": "nl",
+      "language_match": true,
+      "is_contract_expected": false,
+      "is_contract_detected": false,
+      "is_contract_match": true,
+      "document_type_detected": null,
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 1879.7,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "txt/16_notice_id.txt",
+      "language_expected": "id",
+      "language_detected": "id",
+      "language_match": true,
+      "is_contract_expected": false,
+      "is_contract_detected": false,
+      "is_contract_match": true,
+      "document_type_detected": null,
+      "clause_tp": 0,
+      "clause_fp": 0,
+      "clause_tn": 0,
+      "clause_fn": 0,
+      "latency_ms": 2209.5,
+      "status": "PASS",
+      "error": null
+    },
+    {
+      "path": "pdf/06_scanned_blank_en.pdf",
+      "status": "PASS",
+      "scan_required_detected": true,
+      "error": null
+    },
+    {
+      "path": "negative/empty.pdf",
+      "status": "PASS",
+      "error": "Cannot open empty stream."
+    },
+    {
+      "path": "negative/fake.pdf",
+      "status": "PASS",
+      "error": "Failed to open stream"
+    }
+  ],
+  "by_language": {
+    "id": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "doc_type_accuracy_pct": 100.0,
+      "clause_recall_pct": 100.0,
+      "latency_mean_ms": 4547.1,
+      "latency_median_ms": 3162.4,
+      "latency_p95_ms": 8269.5
+    },
+    "fr": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "doc_type_accuracy_pct": 100.0,
+      "clause_recall_pct": 100.0,
+      "latency_mean_ms": 3999.2,
+      "latency_median_ms": 3701.0,
+      "latency_p95_ms": 5888.4
+    },
+    "en": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "doc_type_accuracy_pct": 100.0,
+      "clause_recall_pct": 100.0,
+      "latency_mean_ms": 963.1,
+      "latency_median_ms": 963.1,
+      "latency_p95_ms": 1375.6
+    },
+    "nl": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "doc_type_accuracy_pct": 100.0,
+      "clause_recall_pct": null,
+      "latency_mean_ms": 3421.6,
+      "latency_median_ms": 3020.8,
+      "latency_p95_ms": 5364.2
+    }
+  },
+  "overall": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "blocked": 0
+  }
+}

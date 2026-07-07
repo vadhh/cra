@@ -53,18 +53,41 @@ def _local_translate(text: str, src_lang: str) -> str:
 
     mdl, tok = _local_model_cache[model_path]
 
-    # Marian has a 512-token limit; chunk on sentences for safety
-    chunks = [text[i : i + 1500] for i in range(0, len(text), 1500)]
-    out = []
+    # Translate line-by-line, not by raw character windows. Contracts put one
+    # clause per line, and detector_distilbert._split_paragraphs (which the
+    # semantic clause-presence check relies on) splits on that structure.
+    # Marian's generate/decode normalizes whitespace, so newlines embedded
+    # inside a multi-line chunk don't survive translation — blind 1500-char
+    # windows silently merge multiple clauses into one paragraph, which then
+    # causes every clause hypothesis to be scored against the same blob.
     device = next(mdl.parameters()).device
-    for chunk in chunks:
+
+    def _translate_chunk(chunk: str) -> str:
+        inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
+        translated = mdl.generate(**inputs)
+        return tok.decode(translated[0], skip_special_tokens=True)
+
+    out = []
+    for line in text.split("\n"):
+        if not line.strip():
+            out.append(line)
+            continue
         try:
-            inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
-            translated = mdl.generate(**inputs)
-            out.append(tok.decode(translated[0], skip_special_tokens=True))
+            words = line.split(" ")
+            # ponytail: a line without newlines (e.g. a PDF paragraph the
+            # extractor didn't break up) can exceed Marian's 512-token limit;
+            # tok(..., truncation=True) would then silently drop the tail
+            # instead of translating it. 300-word sub-chunks stay safely
+            # under that limit for these languages without a second
+            # tokenizer pass just to count tokens.
+            if len(words) > 300:
+                sub_chunks = [" ".join(words[i:i + 300]) for i in range(0, len(words), 300)]
+                out.append(" ".join(_translate_chunk(c) for c in sub_chunks))
+            else:
+                out.append(_translate_chunk(line))
         except Exception as e:
-            logger.warning("Local translation chunk failed: %s", e)
-            out.append(chunk)
+            logger.warning("Local translation line failed: %s", e)
+            out.append(line)
     return "\n".join(out)
 
 

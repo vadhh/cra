@@ -117,11 +117,19 @@ _NLI_OVERRIDE_THRESHOLD = 0.40
 
 
 def _keyword_doc_type(text: str) -> tuple[str | None, int]:
-    """Return (best_label, hit_count) from keyword matching on text[:1200]."""
+    """Return (best_label, hit_count) from keyword matching on text[:1200].
+
+    hit_count sums occurrences across all of a label's patterns, not just how
+    many distinct patterns matched at least once. Categories with few
+    surface-form synonyms (e.g. "non-disclosure agreement" has 6 patterns
+    spanning 4 languages, vs. 17 for "lease agreement") would otherwise be
+    structurally capped near _KEYWORD_MIN_HITS even when one strong,
+    repeated term is the only signal to survive translation.
+    """
     snippet = text[:1200]
     scores: dict[str, int] = {}
     for label, patterns in _KEYWORD_DOC_TYPES.items():
-        count = sum(1 for p in patterns if re.search(p, snippet, re.I))
+        count = sum(len(re.findall(p, snippet, re.I)) for p in patterns)
         if count > 0:
             scores[label] = count
     if not scores:
@@ -245,9 +253,20 @@ _CLAUSE_CONFIDENCE_THRESHOLD = 0.70
 # anything else falls back to a humanized template built from the clause title.
 # Phrasings follow the same concrete-language calibration as _CLAUSE_SPECS.
 
-_CLAUSE_PRESENCE_HYPOTHESES: dict[str, str] = {
+_CLAUSE_PRESENCE_HYPOTHESES: dict[str, str | list[str]] = {
     "governing_law":           "The agreement is governed by the laws of a particular place.",
-    "jurisdiction_venue":      "Disputes will be handled by a specific court or location.",
+    # Two hypotheses (OR-logic, same pattern as _DOC_TYPE_SPECS/clause
+    # classification below): DistilBERT-MNLI is brittle across paraphrases of
+    # this concept, and the single old phrasing ("Disputes will be handled by
+    # a specific court or location.") both missed real venue clauses *and*
+    # scored 0.97+ on unrelated short sentences (e.g. a bare "Between X and Y"
+    # parties line, or a mistranslated property-inspection clause). These two
+    # together cover real venue-clause phrasings while scoring <0.01 on both
+    # false-positive premises found in the FR lease fixture.
+    "jurisdiction_venue": [
+        "This agreement specifies which court will hear any legal dispute.",
+        "Legal proceedings between the parties will be exclusively conducted in a named court.",
+    ],
     "payment_terms":           "Payment must be made in a certain amount and time.",
     "termination":             "Either party can end the agreement.",
     "dispute_resolution":      "Disputes between the parties will be resolved in a defined way.",
@@ -258,7 +277,11 @@ _CLAUSE_PRESENCE_HYPOTHESES: dict[str, str] = {
     "lease_term":              "The lease lasts for a set period.",
     "rent_amount":             "A rent amount must be paid.",
     "security_deposit":        "A security deposit must be paid.",
-    "maintenance_responsibility": "One party is responsible for maintenance and repairs.",
+    # Reworded from "One party is responsible for maintenance and repairs." —
+    # the old phrasing scored 0.99 against a mistranslated property-inspection
+    # sentence ("an adversarial record will be drawn up"); this phrasing keeps
+    # the same true-positive score (0.996) but drops that false positive to 0.01.
+    "maintenance_responsibility": "The landlord or tenant must pay for or arrange repairs and upkeep of the property.",
     "license_grant":           "A license to use the software is granted.",
     "ip_ownership":            "Intellectual property ownership is assigned to a party.",
     "warranty_disclaimer":     "Warranties are disclaimed and the product is provided as is.",
@@ -477,12 +500,12 @@ def classify_clauses(text: str) -> list[dict]:
     return flagged
 
 
-def _presence_hypothesis(clause_id: str, title: str) -> str:
-    """Tuned hypothesis for a clause, or a humanized fallback from its title."""
+def _presence_hypotheses(clause_id: str, title: str) -> list[str]:
+    """Tuned hypothesis/hypotheses for a clause, or a humanized fallback."""
     h = _CLAUSE_PRESENCE_HYPOTHESES.get(clause_id)
-    if h:
-        return h
-    return f"This document contains provisions about {title.lower()}."
+    if not h:
+        return [f"This document contains provisions about {title.lower()}."]
+    return h if isinstance(h, list) else [h]
 
 
 def semantic_clause_presence(
@@ -511,12 +534,13 @@ def semantic_clause_presence(
 
     found: dict[str, float] = {}
     for clause_id, title in clauses:
-        hyp = _presence_hypothesis(clause_id, title)
+        hyps = _presence_hypotheses(clause_id, title)
         best = 0.0
         for para in paragraphs:
-            score = _entailment_score(model, tokenizer, para, hyp)
-            if score > best:
-                best = score
+            for hyp in hyps:
+                score = _entailment_score(model, tokenizer, para, hyp)
+                if score > best:
+                    best = score
             if best >= _SEM_PRESENCE_THRESHOLD:
                 break  # early exit — one entailing paragraph is enough
         if best >= _SEM_PRESENCE_THRESHOLD:
