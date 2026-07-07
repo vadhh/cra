@@ -22,12 +22,14 @@ services:
       # FR/NL/ID document-type classification — DistilBERT-MNLI is English-only
       # and is either confidently wrong or returns null on untranslated text.
       - LDV_REMOTE_TRANSLATION=${LDV_REMOTE_TRANSLATION:-local}
+      - LIGHTML_TRANSLATOR_URL=http://lightml-translator:8000/api/v1/translate
     volumes:
       - ./ldv-backend/data:/app/data
       - ./uploads:/app/uploads
       - ~/.cache/huggingface:/root/.cache/huggingface
     depends_on:
       - redis
+      - lightml-translator
     # Not exposed directly — nginx is the only ingress
     expose:
       - "5000"
@@ -37,6 +39,21 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  lightml-translator:
+    build:
+      context: ./lightml-translator
+      dockerfile: Dockerfile
+    environment:
+      - ENV=production
+      - LIGHTML_MODELS_DIR=/app/models
+    volumes:
+      - ./lightml-translator/models:/app/models
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
 
   nginx:
     image: nginx:alpine

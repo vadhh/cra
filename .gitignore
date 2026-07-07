@@ -32,3 +32,14 @@ desktop.ini
 # Duplicate marketing screenshots
 * - Copy*.png
 .superpowers/
+
+# BIANG KEROK 10.000 FILE
+.venv/
+lightml-translator/
+
+# Data besar & upload pengguna
+uploads/
+
+# Log file sementara
+*.log
+.DS_Store
