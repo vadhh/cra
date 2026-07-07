@@ -122,7 +122,10 @@ the stated purpose without written consent.
 4. Duration
 This agreement is effective for 2 years from the date of signing.
 
-5. Governing Law
+5. Termination
+Either party may terminate this agreement with 30 days' written notice.
+
+6. Governing Law
 This agreement shall be governed by the laws of England and Wales.
 
 Signed on 1 April 2026.

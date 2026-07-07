@@ -4,8 +4,8 @@
     "LDV_REMOTE_TRANSLATION": "local",
     "HF_HUB_OFFLINE": "1",
     "TRANSFORMERS_OFFLINE": "1",
-    "started_at": "2026-07-07T02:42:34.462270+00:00",
-    "finished_at": "2026-07-07T02:43:02.962809+00:00"
+    "started_at": "2026-07-07T07:37:24.720338+00:00",
+    "finished_at": "2026-07-07T07:38:03.063066+00:00"
   },
   "model_provenance": [
     {
@@ -26,7 +26,7 @@
     }
   ],
   "translation_failures": [],
-  "peak_rss_mb": 2125.7,
+  "peak_rss_mb": 2141.1,
   "fixtures": [
     {
       "path": "pdf/01_employment_id.pdf",
@@ -37,12 +37,12 @@
       "is_contract_detected": true,
       "is_contract_match": true,
       "document_type_detected": "employment contract",
-      "clause_tp": 3,
+      "clause_tp": 4,
       "clause_fp": 0,
       "clause_tn": 3,
-      "clause_fn": 1,
-      "latency_ms": 8671.0,
-      "status": "FAIL",
+      "clause_fn": 0,
+      "latency_ms": 8499.1,
+      "status": "PASS",
       "error": null
     },
     {
@@ -54,12 +54,12 @@
       "is_contract_detected": true,
       "is_contract_match": true,
       "document_type_detected": "lease agreement",
-      "clause_tp": 4,
-      "clause_fp": 3,
-      "clause_tn": 1,
+      "clause_tp": 5,
+      "clause_fp": 0,
+      "clause_tn": 3,
       "clause_fn": 0,
-      "latency_ms": 5078.3,
-      "status": "FAIL",
+      "latency_ms": 5650.7,
+      "status": "PASS",
       "error": null
     },
     {
@@ -71,12 +71,12 @@
       "is_contract_detected": true,
       "is_contract_match": true,
       "document_type_detected": "non-disclosure agreement",
-      "clause_tp": 2,
+      "clause_tp": 3,
       "clause_fp": 0,
       "clause_tn": 3,
-      "clause_fn": 1,
-      "latency_ms": 800.5,
-      "status": "FAIL",
+      "clause_fn": 0,
+      "latency_ms": 639.5,
+      "status": "PASS",
       "error": null
     },
     {
@@ -92,7 +92,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2067.3,
+      "latency_ms": 2964.7,
       "status": "PASS",
       "error": null
     },
@@ -102,15 +102,15 @@
       "language_detected": "nl",
       "language_match": true,
       "is_contract_expected": true,
-      "is_contract_detected": false,
-      "is_contract_match": false,
-      "document_type_detected": null,
+      "is_contract_detected": true,
+      "is_contract_match": true,
+      "document_type_detected": "non-disclosure agreement",
       "clause_tp": 0,
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 3769.5,
-      "status": "FAIL",
+      "latency_ms": 5647.4,
+      "status": "PASS",
       "error": null
     },
     {
@@ -126,7 +126,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1289.3,
+      "latency_ms": 2846.6,
       "status": "PASS",
       "error": null
     },
@@ -138,12 +138,12 @@
       "is_contract_expected": true,
       "is_contract_detected": true,
       "is_contract_match": true,
-      "document_type_detected": "general contract",
+      "document_type_detected": "lease agreement",
       "clause_tp": 0,
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1521.4,
+      "latency_ms": 2965.9,
       "status": "PASS",
       "error": null
     },
@@ -160,7 +160,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 406.7,
+      "latency_ms": 546.4,
       "status": "PASS",
       "error": null
     },
@@ -177,7 +177,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1738.5,
+      "latency_ms": 2905.2,
       "status": "PASS",
       "error": null
     },
@@ -194,7 +194,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1517.5,
+      "latency_ms": 1466.1,
       "status": "PASS",
       "error": null
     },
@@ -211,7 +211,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1086.9,
+      "latency_ms": 2548.6,
       "status": "PASS",
       "error": null
     },
@@ -235,49 +235,49 @@
   "by_language": {
     "id": {
       "total": 3,
-      "passed": 2,
-      "failed": 1,
+      "passed": 3,
+      "failed": 0,
       "doc_type_accuracy_pct": 100.0,
-      "clause_recall_pct": 75.0,
-      "latency_mean_ms": 3682.4,
-      "latency_median_ms": 1289.3,
-      "latency_p95_ms": 8671.0
+      "clause_recall_pct": 100.0,
+      "latency_mean_ms": 4631.4,
+      "latency_median_ms": 2846.6,
+      "latency_p95_ms": 8499.1
     },
     "fr": {
       "total": 3,
-      "passed": 2,
-      "failed": 1,
+      "passed": 3,
+      "failed": 0,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 100.0,
-      "latency_mean_ms": 2961.4,
-      "latency_median_ms": 2067.3,
-      "latency_p95_ms": 5078.3
+      "latency_mean_ms": 3840.2,
+      "latency_median_ms": 2964.7,
+      "latency_p95_ms": 5650.7
     },
     "en": {
       "total": 2,
-      "passed": 1,
-      "failed": 1,
+      "passed": 2,
+      "failed": 0,
       "doc_type_accuracy_pct": 100.0,
-      "clause_recall_pct": 66.7,
-      "latency_mean_ms": 603.6,
-      "latency_median_ms": 603.6,
-      "latency_p95_ms": 800.5
+      "clause_recall_pct": 100.0,
+      "latency_mean_ms": 593.0,
+      "latency_median_ms": 593.0,
+      "latency_p95_ms": 639.5
     },
     "nl": {
       "total": 3,
-      "passed": 2,
-      "failed": 1,
-      "doc_type_accuracy_pct": 66.7,
+      "passed": 3,
+      "failed": 0,
+      "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": null,
-      "latency_mean_ms": 2269.5,
-      "latency_median_ms": 1521.4,
-      "latency_p95_ms": 3769.5
+      "latency_mean_ms": 3359.8,
+      "latency_median_ms": 2965.9,
+      "latency_p95_ms": 5647.4
     }
   },
   "overall": {
     "total": 14,
-    "passed": 10,
-    "failed": 4,
+    "passed": 14,
+    "failed": 0,
     "blocked": 0
   }
 }

@@ -53,18 +53,26 @@ def _local_translate(text: str, src_lang: str) -> str:
 
     mdl, tok = _local_model_cache[model_path]
 
-    # Marian has a 512-token limit; chunk on sentences for safety
-    chunks = [text[i : i + 1500] for i in range(0, len(text), 1500)]
-    out = []
+    # Translate line-by-line, not by raw character windows. Contracts put one
+    # clause per line, and detector_distilbert._split_paragraphs (which the
+    # semantic clause-presence check relies on) splits on that structure.
+    # Marian's generate/decode normalizes whitespace, so newlines embedded
+    # inside a multi-line chunk don't survive translation — blind 1500-char
+    # windows silently merge multiple clauses into one paragraph, which then
+    # causes every clause hypothesis to be scored against the same blob.
     device = next(mdl.parameters()).device
-    for chunk in chunks:
+    out = []
+    for line in text.split("\n"):
+        if not line.strip():
+            out.append(line)
+            continue
         try:
-            inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
+            inputs = tok(line, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
             translated = mdl.generate(**inputs)
             out.append(tok.decode(translated[0], skip_special_tokens=True))
         except Exception as e:
-            logger.warning("Local translation chunk failed: %s", e)
-            out.append(chunk)
+            logger.warning("Local translation line failed: %s", e)
+            out.append(line)
     return "\n".join(out)
 
 

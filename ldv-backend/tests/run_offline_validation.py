@@ -51,8 +51,10 @@ OFFLINE_SUITE = [
     }},
     {"path": "pdf/02_lease_be.pdf", "expected": {
         "language": "fr", "is_contract": True,
-        "present_clauses": ["governing_law", "termination", "rent_amount", "security_deposit"],
-        "missing_clauses": ["jurisdiction_venue", "lease_term", "maintenance_responsibility", "dispute_resolution"],
+        # lease_term is present, not missing: Article 3 ("Durée du Bail... pour
+        # une durée de 3 ans") states a 3-year lease term on its face.
+        "present_clauses": ["governing_law", "termination", "rent_amount", "security_deposit", "lease_term"],
+        "missing_clauses": ["jurisdiction_venue", "maintenance_responsibility", "dispute_resolution"],
     }},
     {"path": "pdf/03_nda_en.pdf", "expected": {
         "language": "en", "is_contract": True,
