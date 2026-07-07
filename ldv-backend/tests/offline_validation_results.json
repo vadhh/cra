@@ -3,8 +3,8 @@
   "config": {
     "LDV_REMOTE_TRANSLATION": "local",
     "HF_HUB_OFFLINE": "1",
-    "started_at": "2026-07-06T08:49:47.258852+00:00",
-    "finished_at": "2026-07-06T08:50:17.797908+00:00"
+    "started_at": "2026-07-07T02:29:14.527546+00:00",
+    "finished_at": "2026-07-07T02:29:45.858679+00:00"
   },
   "model_provenance": [
     {
@@ -25,7 +25,7 @@
     }
   ],
   "translation_failures": [],
-  "peak_rss_mb": 2125.3,
+  "peak_rss_mb": 2125.8,
   "fixtures": [
     {
       "path": "pdf/01_employment_id.pdf",
@@ -40,7 +40,7 @@
       "clause_fp": 0,
       "clause_tn": 3,
       "clause_fn": 1,
-      "latency_ms": 7489.7,
+      "latency_ms": 8926.6,
       "status": "FAIL",
       "error": null
     },
@@ -57,7 +57,7 @@
       "clause_fp": 3,
       "clause_tn": 1,
       "clause_fn": 0,
-      "latency_ms": 5975.8,
+      "latency_ms": 5763.9,
       "status": "FAIL",
       "error": null
     },
@@ -74,7 +74,7 @@
       "clause_fp": 0,
       "clause_tn": 3,
       "clause_fn": 1,
-      "latency_ms": 692.5,
+      "latency_ms": 891.6,
       "status": "FAIL",
       "error": null
     },
@@ -91,7 +91,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2404.9,
+      "latency_ms": 1400.3,
       "status": "PASS",
       "error": null
     },
@@ -108,7 +108,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 4330.5,
+      "latency_ms": 6051.5,
       "status": "FAIL",
       "error": null
     },
@@ -125,7 +125,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1334.4,
+      "latency_ms": 1448.9,
       "status": "PASS",
       "error": null
     },
@@ -142,7 +142,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1666.2,
+      "latency_ms": 1661.9,
       "status": "PASS",
       "error": null
     },
@@ -159,7 +159,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 410.5,
+      "latency_ms": 415.1,
       "status": "PASS",
       "error": null
     },
@@ -176,7 +176,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 2342.3,
+      "latency_ms": 1391.7,
       "status": "PASS",
       "error": null
     },
@@ -193,7 +193,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1708.0,
+      "latency_ms": 1100.3,
       "status": "PASS",
       "error": null
     },
@@ -210,7 +210,7 @@
       "clause_fp": 0,
       "clause_tn": 0,
       "clause_fn": 0,
-      "latency_ms": 1614.7,
+      "latency_ms": 980.1,
       "status": "PASS",
       "error": null
     },
@@ -238,9 +238,9 @@
       "failed": 1,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 75.0,
-      "latency_mean_ms": 3479.6,
-      "latency_median_ms": 1614.7,
-      "latency_p95_ms": 7489.7
+      "latency_mean_ms": 3785.2,
+      "latency_median_ms": 1448.9,
+      "latency_p95_ms": 8926.6
     },
     "fr": {
       "total": 3,
@@ -248,9 +248,9 @@
       "failed": 1,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 100.0,
-      "latency_mean_ms": 3574.3,
-      "latency_median_ms": 2404.9,
-      "latency_p95_ms": 5975.8
+      "latency_mean_ms": 2851.9,
+      "latency_median_ms": 1400.3,
+      "latency_p95_ms": 5763.9
     },
     "en": {
       "total": 2,
@@ -258,9 +258,9 @@
       "failed": 1,
       "doc_type_accuracy_pct": 100.0,
       "clause_recall_pct": 66.7,
-      "latency_mean_ms": 551.5,
-      "latency_median_ms": 551.5,
-      "latency_p95_ms": 692.5
+      "latency_mean_ms": 653.3,
+      "latency_median_ms": 653.3,
+      "latency_p95_ms": 891.6
     },
     "nl": {
       "total": 3,
@@ -268,9 +268,9 @@
       "failed": 1,
       "doc_type_accuracy_pct": 66.7,
       "clause_recall_pct": null,
-      "latency_mean_ms": 2568.2,
-      "latency_median_ms": 1708.0,
-      "latency_p95_ms": 4330.5
+      "latency_mean_ms": 2937.9,
+      "latency_median_ms": 1661.9,
+      "latency_p95_ms": 6051.5
     }
   },
   "overall": {
