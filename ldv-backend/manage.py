@@ -152,6 +152,15 @@ def set_retention_cmd(org_name: str, days: int) -> None:
     print(f"Retention for '{org_name}' set to {days} days.")
 
 
+def set_mfa_exempt_cmd(email: str, exempt: bool) -> None:
+    user = database.get_user_by_email(email)
+    if user is None:
+        sys.exit(f"No user with email '{email}'.")
+    database.update_user_mfa_exempt(user["id"], int(exempt))
+    database.write_audit("user.mfa_exempt_change", user_id=user["id"], org_id=user["org_id"], resource_id=str(user["id"]), detail=str(exempt))
+    print(f"MFA exemption for {email} set to {exempt}.")
+
+
 def main() -> None:
     database.init_db()
     parser = argparse.ArgumentParser(description="LDV auth provisioning")
@@ -171,6 +180,9 @@ def main() -> None:
     pr = sub.add_parser("set-retention")
     pr.add_argument("org")
     pr.add_argument("days", type=int)
+    pm = sub.add_parser("set-mfa-exempt", help="Exempt (or un-exempt) one user from mandatory MFA")
+    pm.add_argument("email")
+    pm.add_argument("--off", action="store_true", help="Remove the exemption instead of granting it")
     pb = sub.add_parser("backup", help="Back up DB + uploads to LDV_BACKUP_DIR")
     pb.add_argument("--dry-run", action="store_true")
     pdm = sub.add_parser("download-model", help="Download a model repository from Hugging Face Hub")
@@ -192,6 +204,8 @@ def main() -> None:
         gen_key_cmd()
     elif args.cmd == "set-retention":
         set_retention_cmd(args.org, args.days)
+    elif args.cmd == "set-mfa-exempt":
+        set_mfa_exempt_cmd(args.email, not args.off)
     elif args.cmd == "backup":
         backup_cmd(args.dry_run)
     elif args.cmd == "download-model":

@@ -243,6 +243,8 @@ def init_db() -> None:
                 conn.execute("ALTER TABLE users ADD COLUMN mfa_recovery_codes TEXT")
             if "download_disabled" not in user_cols:
                 conn.execute("ALTER TABLE users ADD COLUMN download_disabled INTEGER DEFAULT 0")
+            if "mfa_exempt" not in user_cols:
+                conn.execute("ALTER TABLE users ADD COLUMN mfa_exempt INTEGER DEFAULT 0")
 
             # Sprint 4: Subscription usage tracking, case history, and professional review workflow
             for col, default_val in [
@@ -669,7 +671,7 @@ def write_audit(
     high_impact_actions = {
         "delete", "cite.verify", "user.role_change",
         "org.retention_change", "org.mfa_required_change", "user.suspend", "user.unsuspend",
-        "mfa.disable", "user.mfa_reset", "user.download.disable"
+        "mfa.disable", "user.mfa_reset", "user.download.disable", "user.mfa_exempt_change"
     }
     
     if action in high_impact_actions:
@@ -748,6 +750,11 @@ def update_user_role(user_id: int, role: str) -> None:
 def update_user_download_access(user_id: int, download_disabled: int) -> None:
     with _conn() as db:
         db.execute("UPDATE users SET download_disabled = ? WHERE id = ?", (download_disabled, user_id))
+
+
+def update_user_mfa_exempt(user_id: int, exempt: int) -> None:
+    with _conn() as db:
+        db.execute("UPDATE users SET mfa_exempt = ? WHERE id = ?", (exempt, user_id))
 
 
 def count_active_admins() -> int:

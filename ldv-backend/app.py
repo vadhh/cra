@@ -944,6 +944,22 @@ def api_admin_user_download_access(target_id: int):
     return jsonify({"ok": True})
 
 
+@app.route("/api/v1/admin/users/<int:target_id>/mfa-exempt", methods=["POST"])
+@auth.role_required("admin")
+def api_admin_user_mfa_exempt(target_id: int):
+    user = g.user
+    data = request.json or {}
+    exempt = int(bool(data.get("mfa_exempt", 0)))
+
+    target = database.get_user_by_id(target_id)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+
+    database.update_user_mfa_exempt(target_id, exempt)
+    database.write_audit("user.mfa_exempt_change", user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip(), detail=str(bool(exempt)))
+    return jsonify({"ok": True})
+
+
 @app.route("/api/v1/admin/users/<int:target_id>/mfa-reset", methods=["POST"])
 @auth.role_required("manager")
 def api_admin_user_mfa_reset(target_id: int):
