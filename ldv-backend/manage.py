@@ -152,6 +152,28 @@ def set_retention_cmd(org_name: str, days: int) -> None:
     print(f"Retention for '{org_name}' set to {days} days.")
 
 
+def ensure_pilot_admin_cmd() -> None:
+    """Idempotently (re)create the pilot-admin account and exempt it from MFA.
+    Intended to run on every container boot — this Space has no persistent
+    storage, so the DB (and this account) is wiped on every restart."""
+    email = os.getenv("LDV_PILOT_ADMIN_EMAIL", "pilot-admin@ldv.local").strip().lower()
+    password = os.getenv("LDV_PILOT_ADMIN_PASSWORD")
+    if not password:
+        print("LDV_PILOT_ADMIN_PASSWORD not set; skipping pilot-admin provisioning.")
+        return
+    org = database.get_org_by_name("Sydeco")
+    org_id = org["id"] if org else database.create_org("Sydeco")
+    user = database.get_user_by_email(email)
+    if user is None:
+        database.create_user(org_id, email, auth.hash_password(password), "admin", _gen_token())
+        user = database.get_user_by_email(email)
+        print(f"Created pilot-admin {email}.")
+    else:
+        print(f"pilot-admin {email} already exists.")
+    database.update_user_mfa_exempt(user["id"], 1)
+    print(f"MFA exemption ensured for {email}.")
+
+
 def set_mfa_exempt_cmd(email: str, exempt: bool) -> None:
     user = database.get_user_by_email(email)
     if user is None:
@@ -183,6 +205,7 @@ def main() -> None:
     pm = sub.add_parser("set-mfa-exempt", help="Exempt (or un-exempt) one user from mandatory MFA")
     pm.add_argument("email")
     pm.add_argument("--off", action="store_true", help="Remove the exemption instead of granting it")
+    sub.add_parser("ensure-pilot-admin", help="Idempotently (re)create the pilot-admin account + MFA exemption on boot")
     pb = sub.add_parser("backup", help="Back up DB + uploads to LDV_BACKUP_DIR")
     pb.add_argument("--dry-run", action="store_true")
     pdm = sub.add_parser("download-model", help="Download a model repository from Hugging Face Hub")
@@ -206,6 +229,8 @@ def main() -> None:
         set_retention_cmd(args.org, args.days)
     elif args.cmd == "set-mfa-exempt":
         set_mfa_exempt_cmd(args.email, not args.off)
+    elif args.cmd == "ensure-pilot-admin":
+        ensure_pilot_admin_cmd()
     elif args.cmd == "backup":
         backup_cmd(args.dry_run)
     elif args.cmd == "download-model":
