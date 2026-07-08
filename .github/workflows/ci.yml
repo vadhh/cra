@@ -32,7 +32,7 @@ jobs:
           key: hf-models-v1
 
       - name: Install dependencies
-        run: pip install -r ldv-backend/requirements.txt
+        run: pip install -r ldv-backend/requirements.txt pytest
 
       - name: Run test suite
         working-directory: ldv-backend
