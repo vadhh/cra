@@ -18,6 +18,7 @@ ldv-backend/*.db.lock
 ldv-backend/uploads/
 ldv-backend/.session_secret
 ldv-backend/audit_durable.log
+ldv-backend/data/
 
 # TLS private key/cert — regenerate with deploy/gen-cert.sh, never commit
 deploy/certs/

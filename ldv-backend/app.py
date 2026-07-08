@@ -1,4 +1,10 @@
 import os
+
+# Enforce offline mode if downloads not allowed
+if os.getenv("LDV_DOWNLOAD_MODELS", "0") != "1":
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 import logging
 import json
 import time
@@ -1255,6 +1261,7 @@ def analyze():
 # ── Health ─────────────────────────────────────────────────────────────────────
 
 @app.route("/health")
+@limiter.exempt
 def health():
     from detector.detector_distilbert import is_available as l2_available
     from sydeco_engine import is_available as mlp_available

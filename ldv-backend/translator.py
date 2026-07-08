@@ -1,5 +1,6 @@
 import logging
 import os
+# pyrefly: ignore [missing-import]
 from deep_translator import GoogleTranslator
 
 logger = logging.getLogger(__name__)
