@@ -135,6 +135,32 @@ def test_disable_allowed_when_not_mandatory():
     assert database.get_user_by_id(user["id"])["mfa_secret"] is None
 
 
+def test_mfa_exempt_overrides_org_mandatory():
+    org_a, _ = setup()
+    database.set_org_mfa_required(org_a, True)
+    os.environ["LDV_FORCE_MFA_TESTING"] = "1"
+    try:
+        admin = database.get_user_by_email("root@a.com")
+        target = database.get_user_by_email("plain@a.com")
+        assert auth.is_mfa_mandatory(database.get_user_by_id(target["id"])) is True
+
+        c = app_module.app.test_client()
+        with c.session_transaction() as sess:
+            sess["uid"] = admin["id"]
+        resp = c.post(f"/api/v1/admin/users/{target['id']}/mfa-exempt", json={"mfa_exempt": True})
+        assert resp.status_code == 200, resp.get_json()
+
+        assert auth.is_mfa_mandatory(database.get_user_by_id(target["id"])) is False
+
+        resp2 = c.post(f"/api/v1/admin/users/{target['id']}/mfa-exempt", json={"mfa_exempt": False})
+        assert resp2.status_code == 200, resp2.get_json()
+        assert auth.is_mfa_mandatory(database.get_user_by_id(target["id"])) is True
+    finally:
+        os.environ.pop("LDV_FORCE_MFA_TESTING", None)
+        database.set_org_mfa_required(org_a, False)
+        database.update_user_mfa_exempt(database.get_user_by_email("plain@a.com")["id"], 0)
+
+
 def test_account_page_requires_login():
     c = app_module.app.test_client()
     resp = c.get("/account", follow_redirects=False)
@@ -154,5 +180,6 @@ if __name__ == "__main__":
     test_toggle_forces_enrollment_on_next_login()
     test_disable_blocked_when_org_mandatory()
     test_disable_allowed_when_not_mandatory()
+    test_mfa_exempt_overrides_org_mandatory()
     test_account_page_requires_login()
     print("OK")
