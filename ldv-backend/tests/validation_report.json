@@ -172,7 +172,7 @@
       "outcome": "PASS",
       "status": 200,
       "detail": "",
-      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Indonesia\", \"language\": \"id\", \"layer1\": {\"c"
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"document_type_note\": \"This document appears to be a non-con"
     },
     {
       "file": "txt/02_lease_be.txt",
@@ -186,7 +186,7 @@
       "outcome": "PASS",
       "status": 200,
       "detail": "",
-      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"document_type_note\": \"This document appears to be an invoic"
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Belgium\", \"language\": \"fr\", \"layer1\": {\"cla"
     },
     {
       "file": "txt/03_short_contract_en.txt",

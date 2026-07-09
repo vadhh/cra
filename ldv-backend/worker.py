@@ -52,7 +52,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
             analysis_text = text
             if lang not in ("en", "unknown"):
                 try:
-                    analysis_text = translate_text(text, "en")
+                    analysis_text = translate_text(text, "en", src_lang=lang)
                 except Exception:
                     pass
             result["layer4"] = layer4_explain(

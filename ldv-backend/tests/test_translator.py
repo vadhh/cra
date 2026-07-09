@@ -27,6 +27,9 @@ class _FakeTokenizer:
     def decode(self, ids, skip_special_tokens=True):
         return ids
 
+    def batch_decode(self, sequences, skip_special_tokens=True):
+        return sequences
+
 
 class _FakeModel:
     class _Param:
@@ -38,7 +41,10 @@ class _FakeModel:
     def generate(self, **inputs):
         # Real MarianMT generation normalizes whitespace — embedded newlines
         # inside a translated chunk do not survive tokenize/generate/decode.
-        return [inputs["text"].replace("\n", " ").upper()]
+        text = inputs["text"]
+        if isinstance(text, list):
+            return [t.replace("\n", " ").upper() for t in text]
+        return [text.replace("\n", " ").upper()]
 
 
 def test_local_translate_preserves_line_boundaries():

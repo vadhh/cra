@@ -347,34 +347,83 @@ def is_available() -> bool:
 
 # ── NLI inference helpers ──────────────────────────────────────────────────────
 
-def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
-    """Return the entailment probability for (premise, hypothesis) pair."""
+def _batch_entailment_scores(model, tokenizer, pairs: list[tuple[str, str]], batch_size: int = 16) -> list[float]:
+    """Compute entailment probabilities for a list of (premise, hypothesis) pairs in batches."""
+    if not pairs:
+        return []
+
     device = next(model.parameters()).device
-    inputs = tokenizer(
-        premise,
-        hypothesis,
-        return_tensors="pt",
-        truncation=True,
-        max_length=512,
-        padding=True,
-    ).to(device)
-    with torch.no_grad():
-        logits = model(**inputs).logits
-
-    probs = torch.softmax(logits, dim=-1)[0]
-
     # Normalise label2id keys to uppercase to handle model variations
     label2id = {k.upper(): v for k, v in (model.config.label2id or {}).items()}
     entail_idx = label2id.get("ENTAILMENT", 2)
 
-    return float(probs[entail_idx])
+    # ponytail: batch size is set to 16 by default to balance CPU/GPU memory footprint and parallel speedups.
+    # Ceiling: large batch sizes (>64) on CPU or low-VRAM GPUs can cause memory congestion.
+    # Upgrade: dynamically adjust batch size based on execution environment.
+    env_batch = _os.getenv("LDV_NLI_BATCH_SIZE")
+    if env_batch:
+        try:
+            batch_size = int(env_batch)
+        except ValueError:
+            pass
+
+    scores = []
+    for i in range(0, len(pairs), batch_size):
+        batch = pairs[i:i + batch_size]
+        premises = [p for p, _ in batch]
+        hypotheses = [h for _, h in batch]
+
+        try:
+            inputs = tokenizer(
+                premises,
+                hypotheses,
+                return_tensors="pt",
+                truncation=True,
+                max_length=512,
+                padding=True,
+            ).to(device)
+            with torch.no_grad():
+                logits = model(**inputs).logits
+
+            probs = torch.softmax(logits, dim=-1)
+            for j in range(len(batch)):
+                scores.append(float(probs[j][entail_idx]))
+        except Exception as e:
+            logger.warning("Batch entailment score failed for range %d-%d: %s — falling back to sequential", i, i + len(batch), e)
+            # Fail-soft: sequential fallback for the failed batch
+            for premise, hypothesis in batch:
+                try:
+                    inputs = tokenizer(
+                        premise,
+                        hypothesis,
+                        return_tensors="pt",
+                        truncation=True,
+                        max_length=512,
+                        padding=True,
+                    ).to(device)
+                    with torch.no_grad():
+                        lgt = model(**inputs).logits
+                    prb = torch.softmax(lgt, dim=-1)[0]
+                    scores.append(float(prb[entail_idx]))
+                except Exception as ex:
+                    logger.warning("Sequential fallback entailment score failed: %s", ex)
+                    scores.append(0.0)
+
+    return scores
+
+
+def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
+    """Return the entailment probability for (premise, hypothesis) pair."""
+    return _batch_entailment_scores(model, tokenizer, [(premise, hypothesis)])[0]
 
 
 def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
     """Score text against each doc-type spec; return sorted by confidence desc."""
+    pairs = [(text, spec["hypothesis"]) for spec in _DOC_TYPE_SPECS]
+    scores = _batch_entailment_scores(model, tokenizer, pairs)
+
     results = []
-    for spec in _DOC_TYPE_SPECS:
-        score = _entailment_score(model, tokenizer, text, spec["hypothesis"])
+    for spec, score in zip(_DOC_TYPE_SPECS, scores):
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
 
@@ -477,19 +526,30 @@ def classify_clauses(text: str) -> list[dict]:
     paragraphs = _split_paragraphs(text)
     paragraphs = paragraphs[:40]  # cap for CPU inference time
 
-    flagged = []
-    for para in paragraphs:
-        best_label = None
-        best_score = 0.0
+    pairs = []
+    task_mapping = []  # tracks (para_idx, spec_label) for each pair
 
+    for para_idx, para in enumerate(paragraphs):
         for spec in _CLAUSE_SPECS:
             # OR-logic: take the highest score across all hypotheses for this label
             for hyp in spec["hypotheses"]:
-                score = _entailment_score(model, tokenizer, para, hyp)
-                if score > best_score:
-                    best_score = score
-                    best_label = spec["label"]
+                pairs.append((para, hyp))
+                task_mapping.append((para_idx, spec["label"]))
 
+    if not pairs:
+        return []
+
+    scores = _batch_entailment_scores(model, tokenizer, pairs)
+
+    # Resolve the highest score per paragraph
+    para_best = {i: (None, 0.0) for i in range(len(paragraphs))}
+    for (para_idx, label), score in zip(task_mapping, scores):
+        if score > para_best[para_idx][1]:
+            para_best[para_idx] = (label, score)
+
+    flagged = []
+    for para_idx, para in enumerate(paragraphs):
+        best_label, best_score = para_best[para_idx]
         if best_score >= _CLAUSE_CONFIDENCE_THRESHOLD:
             flagged.append({
                 "text":       para[:300],
@@ -532,19 +592,32 @@ def semantic_clause_presence(
     if not paragraphs:
         return {}
 
-    found: dict[str, float] = {}
+    pairs = []
+    task_mapping = []  # tracks (clause_id, para_idx) for each pair
+
     for clause_id, title in clauses:
         hyps = _presence_hypotheses(clause_id, title)
-        best = 0.0
-        for para in paragraphs:
+        for para_idx, para in enumerate(paragraphs):
             for hyp in hyps:
-                score = _entailment_score(model, tokenizer, para, hyp)
-                if score > best:
-                    best = score
-            if best >= _SEM_PRESENCE_THRESHOLD:
-                break  # early exit — one entailing paragraph is enough
-        if best >= _SEM_PRESENCE_THRESHOLD:
-            found[clause_id] = round(best, 4)
+                pairs.append((para, hyp))
+                task_mapping.append((clause_id, para_idx))
+
+    if not pairs:
+        return {}
+
+    scores = _batch_entailment_scores(model, tokenizer, pairs)
+
+    # Resolve the highest score per clause
+    clause_best = {clause_id: 0.0 for clause_id, _ in clauses}
+    for (clause_id, _), score in zip(task_mapping, scores):
+        if score > clause_best[clause_id]:
+            clause_best[clause_id] = score
+
+    found: dict[str, float] = {}
+    for clause_id, _ in clauses:
+        best_score = clause_best[clause_id]
+        if best_score >= _SEM_PRESENCE_THRESHOLD:
+            found[clause_id] = round(best_score, 4)
 
     if found:
         logger.info("L2 semantic presence recovered %d clause(s): %s",
