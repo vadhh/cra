@@ -23,28 +23,12 @@ _local_model_cache: dict = {}  # model_id → (model, tokenizer)
 
 def _local_translate(text: str, src_lang: str) -> str:
     """Translate using the local lightml-translator microservice."""
-    import requests
-
-    url = os.getenv("LIGHTML_TRANSLATOR_URL", "http://lightml-translator:8000/api/v1/translate")
+    from translator_client import SydecoTranslatorClient
     try:
-        resp = requests.post(
-            url,
-            json={
-                "text": text,
-                "source_lang": src_lang,
-                "target_lang": "en",
-                "preserve_formatting": True,
-                "sector": "Legal"
-            },
-            timeout=120
-        )
-        if resp.status_code == 200:
-            return resp.json()["translated_text"]
-        else:
-            logger.warning("Local microservice translation failed (status %s) — returning original text", resp.status_code)
-            return text
+        client = SydecoTranslatorClient()
+        return client.translate(text=text, source_lang=src_lang, target_lang="en")
     except Exception as e:
-        logger.warning("Local microservice translation request failed: %s — returning original text", e)
+        logger.warning("Local microservice translation failed via Python client: %s — returning original text", e)
         return text
 
 
