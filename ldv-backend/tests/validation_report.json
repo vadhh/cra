@@ -130,7 +130,7 @@
       "outcome": "PASS",
       "status": 200,
       "detail": "",
-      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Netherlands\", \"language\": \"nl\", \"layer1\": {"
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"document_type_note\": \"This document appears to be a non-con"
     },
     {
       "file": "docx/04_legal_memo_en.docx",
@@ -186,7 +186,7 @@
       "outcome": "PASS",
       "status": 200,
       "detail": "",
-      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"jurisdiction\": \"Belgium\", \"language\": \"fr\", \"layer1\": {\"cla"
+      "body_snippet": "{\"_meta\": {\"encryption_enabled\": false}, \"clause_tags\": [], \"document_type_note\": \"This document appears to be an invoic"
     },
     {
       "file": "txt/03_short_contract_en.txt",
