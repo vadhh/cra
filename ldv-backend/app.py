@@ -752,6 +752,31 @@ def api_delete_result(analysis_id: str):
     return jsonify({"deleted": True, "id": analysis_id})
 
 
+@app.route("/api/v1/result/<analysis_id>/retry", methods=["POST"])
+@auth.login_required
+def api_retry_result(analysis_id: str):
+    row = database.get_result(analysis_id)
+    if row is None:
+        return jsonify({"error": "Not found"}), 404
+    user = g.user
+    if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    new_status = database.retry_analysis(analysis_id)
+    if new_status is None:
+        return jsonify({"error": "Analysis is not retryable (wrong status or retry limit exhausted)"}), 409
+
+    text = row.get("extracted_text")
+    lang = row.get("language") or "unknown"
+    worker.submit_job(analysis_id, text, lang, False)
+
+    database.write_audit(
+        "analysis.retry", user_id=user["id"], org_id=row.get("org_id"),
+        resource_id=analysis_id, ip=_ip(),
+    )
+    return jsonify({"id": analysis_id, "status": "queued"}), 202
+
+
 @app.route("/api/v1/result/<analysis_id>/download-link", methods=["POST"])
 @auth.login_required
 def api_download_link(analysis_id: str):

@@ -275,6 +275,8 @@ def init_db() -> None:
                 conn.execute("ALTER TABLE analyses ADD COLUMN review_comment TEXT")
             if "reviewed_at" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN reviewed_at TIMESTAMP")
+            if "retry_count" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0")
 
             # Auto-seed a default admin user if the users table is completely empty
             # (useful for fresh Docker deployments like Hugging Face Spaces)
@@ -431,7 +433,7 @@ def get_result(public_id: str) -> dict | None:
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.jurisdiction,
                       a.document_type, a.result_json, a.analyzed_at, a.status, a.error_message,
                       a.progress_pct, a.progress_stage, a.review_status, a.reviewer_email,
-                      a.review_comment, a.reviewed_at,
+                      a.review_comment, a.reviewed_at, a.retry_count,
                       d.original_filename, d.file_size, d.file_type, d.language,
                       d.extracted_text, d.uploaded_at, d.org_id, d.client, d.case_folder
                FROM analyses a
@@ -782,6 +784,33 @@ def cleanup_stuck_analyses() -> None:
             "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
             "WHERE status IN ('processing', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
         )
+
+
+_MAX_RETRIES = 3
+
+
+def retry_analysis(public_id: str) -> str | None:
+    """Move a failed/retryable analysis back to 'queued' for re-execution.
+
+    Returns "queued" on success, or None if the analysis isn't in a
+    retryable state or has exhausted its retry budget (_MAX_RETRIES).
+    Caller is responsible for re-submitting the job to the worker.
+    """
+    with _conn() as db:
+        row = db.execute(
+            "SELECT status, retry_count FROM analyses WHERE public_id = ?",
+            (public_id,),
+        ).fetchone()
+        if row is None or row["status"] not in ("failed", "retryable"):
+            return None
+        if row["retry_count"] >= _MAX_RETRIES:
+            return None
+        db.execute(
+            "UPDATE analyses SET status = 'queued', retry_count = retry_count + 1, "
+            "error_message = NULL WHERE public_id = ?",
+            (public_id,),
+        )
+        return "queued"
 
 
 def get_org_usage(org_id: int) -> dict:
