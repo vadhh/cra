@@ -172,6 +172,10 @@ def init_db() -> None:
             )
             if "status" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
+            # "running" was renamed to "processing" (2026-07-10, job-recovery durability
+            # work) to match the standard queued/processing/completed/failed/retryable
+            # vocabulary. Idempotent -- a no-op once no row holds the old value.
+            conn.execute("UPDATE analyses SET status = 'processing' WHERE status = 'running'")
             if "error_message" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
             if "progress_pct" not in cols:
@@ -776,7 +780,7 @@ def cleanup_stuck_analyses() -> None:
     with _conn() as db:
         db.execute(
             "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
-            "WHERE status IN ('running', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
+            "WHERE status IN ('processing', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
         )
 
 

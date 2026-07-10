@@ -19,7 +19,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
     import inspect
 
     try:
-        database.update_analysis(public_id, status="running", progress_pct=20, progress_stage="extracting")
+        database.update_analysis(public_id, status="processing", progress_pct=20, progress_stage="extracting")
         t_start = time.monotonic()
 
         # Run core L1-L3 analysis
@@ -29,7 +29,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
             from detector.detector_jurisdiction import detect_jurisdiction
             jurisdiction = detect_jurisdiction(text)
         
-        database.update_analysis(public_id, status="running", progress_pct=40, progress_stage="classifying")
+        database.update_analysis(public_id, status="processing", progress_pct=40, progress_stage="classifying")
         
         # Check signature to support 3-arg mocks in tests
         sig = inspect.signature(_run_analysis)
@@ -39,13 +39,13 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         if "override_type" in sig.parameters:
             kwargs["override_type"] = override_type
 
-        database.update_analysis(public_id, status="running", progress_pct=60, progress_stage="analyzing")
+        database.update_analysis(public_id, status="processing", progress_pct=60, progress_stage="analyzing")
         result = _run_analysis(text, jurisdiction, lang, **kwargs)
-        database.update_analysis(public_id, status="running", progress_pct=80, progress_stage="scoring")
+        database.update_analysis(public_id, status="processing", progress_pct=80, progress_stage="scoring")
 
         # Run L4 optional LLM explanation
         if explain:
-            database.update_analysis(public_id, status="running", progress_pct=85, progress_stage="reasoning")
+            database.update_analysis(public_id, status="processing", progress_pct=85, progress_stage="reasoning")
             layer1 = result.get("layer1")
             layer2 = result.get("layer2")
             layer3 = result.get("layer3")
@@ -60,7 +60,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
                 layer1=layer1, layer2=layer2, layer3=layer3,
             )
 
-        database.update_analysis(public_id, status="running", progress_pct=95, progress_stage="preparing")
+        database.update_analysis(public_id, status="processing", progress_pct=95, progress_stage="preparing")
 
         elapsed = round(time.monotonic() - t_start, 2)
         layer3_data = result.get("layer3", {})

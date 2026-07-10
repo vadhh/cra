@@ -42,6 +42,11 @@ SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 # Document types that are not contracts — skip full clause/risk analysis for these
 _NON_CONTRACT_TYPES = {"invoice", "receipt", "purchase order", "non-contract"}
 
+# Statuses where result_json isn't ready to serve: the job is still in flight
+# (queued/processing) or needs a retry before it will ever produce a result
+# (failed/retryable).
+_HIDDEN_RESULT_STATUSES = {"queued", "processing", "failed", "retryable"}
+
 _MIME_ALLOWLIST = {
     ".pdf":  {"application/pdf"},
     ".docx": {
@@ -714,7 +719,7 @@ def api_result(analysis_id: str):
         row["raw_text"] = extracted_text
 
     status = row.get("status", "completed")
-    if status in ("queued", "running", "failed"):
+    if status in _HIDDEN_RESULT_STATUSES:
         row["result"] = None
         row.pop("result_json", None)
         return jsonify(row)

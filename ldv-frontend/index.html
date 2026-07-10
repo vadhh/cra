@@ -1026,13 +1026,13 @@
               if (resp.status === 401) { window.location.href = '/login'; return; }
               if (resp.ok) {
                 const data = await resp.json();
-                const status = data.status; // queued, running, completed, failed
+                const status = data.status; // queued, processing, completed, failed, retryable
                 this.progressPct = data.progress_pct !== undefined ? data.progress_pct : this.progressPct;
 
                 if (status === 'queued') {
                   this.activeStage = 'uploading';
                   this.progressText = 'Queuing file…';
-                } else if (status === 'running') {
+                } else if (status === 'processing') {
                   this.activeStage = data.progress_stage || this.activeStage;
                   this.progressText = data.progress_stage ? data.progress_stage.replace('_', ' ').toUpperCase() + '…' : 'PROCESSING…';
                 } else if (status === 'completed') {
