@@ -797,20 +797,15 @@ def retry_analysis(public_id: str) -> str | None:
     Caller is responsible for re-submitting the job to the worker.
     """
     with _conn() as db:
-        row = db.execute(
-            "SELECT status, retry_count FROM analyses WHERE public_id = ?",
-            (public_id,),
-        ).fetchone()
-        if row is None or row["status"] not in ("failed", "retryable"):
-            return None
-        if row["retry_count"] >= _MAX_RETRIES:
-            return None
-        db.execute(
+        cur = db.execute(
             "UPDATE analyses SET status = 'queued', retry_count = retry_count + 1, "
-            "error_message = NULL WHERE public_id = ?",
-            (public_id,),
+            "error_message = NULL "
+            "WHERE public_id = ? AND status IN ('failed', 'retryable') AND retry_count < ?",
+            (public_id, _MAX_RETRIES),
         )
-        return "queued"
+        if cur.rowcount == 1:
+            return "queued"
+        return None
 
 
 def get_org_usage(org_id: int) -> dict:

@@ -52,6 +52,16 @@ def test_retry_flow():
         assert res["status"] == "queued"
         assert res["retry_count"] == 1
 
+        # Race simulation: a second retry_analysis() call on the same public_id
+        # while it's already 'queued' (e.g. a double-clicked Retry button, or two
+        # concurrent callers that both passed a stale pre-update read) must be
+        # refused by the UPDATE's WHERE guard alone -- no separate SELECT check
+        # is involved, so this also proves the WHERE clause does the gating.
+        assert database.retry_analysis(pid) is None
+        res = database.get_result(pid)
+        assert res["status"] == "queued"
+        assert res["retry_count"] == 1  # unchanged -- not double-incremented
+
         # Exhaust the retry budget (default _MAX_RETRIES=3): fail it again each time
         for _ in range(2):
             database.update_analysis(pid, status="failed")
