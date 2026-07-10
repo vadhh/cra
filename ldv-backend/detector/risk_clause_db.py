@@ -82,7 +82,8 @@ def _load() -> dict[str, dict]:
                         continue  # header row or malformed
                     category, clause_name = row[1].strip(), row[2].strip()
                     phrases = [k.strip().lower() for k in row[4].split(",") if k.strip()]
-                    risk, impact, recommend = _to_int(row[5]), row[6].strip(), row[8].strip()
+                    risk, impact = _to_int(row[5]), row[6].strip()
+                    reason, recommend = row[7].strip(), row[8].strip()
                     if not clause_name or not phrases:
                         continue
                     e = db.get(clause_name)
@@ -90,7 +91,8 @@ def _load() -> dict[str, dict]:
                         db[clause_name] = {
                             "id": _slug(clause_name), "clause_name": clause_name,
                             "category": category, "risk_score": risk,
-                            "impact_level": impact, "recommendation": recommend,
+                            "impact_level": impact, "reason": reason,
+                            "recommendation": recommend,
                             "phrases": list(dict.fromkeys(phrases)),
                         }
                     else:
@@ -98,7 +100,7 @@ def _load() -> dict[str, dict]:
                             if p not in e["phrases"]:
                                 e["phrases"].append(p)
                         if risk > e["risk_score"]:
-                            e.update(risk_score=risk, impact_level=impact,
+                            e.update(risk_score=risk, impact_level=impact, reason=reason,
                                      recommendation=recommend, category=category)
         except Exception as ex:  # malformed CSV must not break analysis
             logger.warning("Failed to load %s (%s) — skipped.", fname, ex)
@@ -164,6 +166,7 @@ def detect_keyword_flags(text: str, exclude_ids: Iterable[str] = ()) -> list[dic
             "evidence":     text[start:end].strip().replace("\n", " "),
             "evidence_span": [match_start, match_end],
             "impact_level": entry["impact_level"],
+            "reason":       entry["reason"],
             "recommendation": entry["recommendation"],
             "source":       "keyword_db",
         })
@@ -180,6 +183,7 @@ if __name__ == "__main__":  # python3 detector/risk_clause_db.py — load + matc
     assert any(f["type"] == "dangerous" for f in sample), "expected an Unlimited Liability hit"
     f = next(x for x in sample if "liability" in x["description"].lower())
     assert "evidence_span" in f, "evidence_span missing in finding"
+    assert f.get("reason"), "reason missing in finding (CSV col 7 parsed but not surfaced)"
     span = f["evidence_span"]
     assert text[span[0]:span[1]].lower() == "unlimited liability", f"span mismatch: {text[span[0]:span[1]]}"
     print(f"    sample hit -> {f['description']} [{f['severity']}] span={span} src={f['source']}")
