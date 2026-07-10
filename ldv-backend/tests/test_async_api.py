@@ -68,11 +68,11 @@ def test_async_api_flow():
         assert resp.json["status"] == "queued"
         assert resp.json["result"] is None
 
-        # 2. Running state
-        database.update_analysis(analysis_id, status="running")
+        # 2. Processing state
+        database.update_analysis(analysis_id, status="processing")
         resp = client.get(f"/api/v1/result/{analysis_id}", headers=headers)
         assert resp.status_code == 200, resp.status_code
-        assert resp.json["status"] == "running"
+        assert resp.json["status"] == "processing"
         assert resp.json["result"] is None
 
         # 3. Completed state
