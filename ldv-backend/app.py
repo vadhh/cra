@@ -19,6 +19,7 @@ from langdetect import detect
 from detector.detector_jurisdiction import detect_jurisdiction
 from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title
 from detector.citation_db import annotate_layer1
+from detector.risk_explainer import explain_findings
 from detector.detector_distilbert import layer2_analyze, semantic_clause_presence
 from detector.detector_scorer import layer3_score
 from detector.detector_explain import layer4_explain
@@ -255,6 +256,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         }
 
     _semantic_backfill(layer1, doc_type_label, analysis_text)
+    explain_findings(layer1, jurisdiction, doc_type_label)
 
     layer3 = layer3_score(layer1, layer2, lang=lang, policy_name=policy_name)
     clause_tags = _sydeco_classify(analysis_text)
