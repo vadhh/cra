@@ -6,6 +6,7 @@ __pycache__/
 
 # Models / large binaries — re-downloaded from HuggingFace, not source
 ldv-backend/models/
+lightml-translator/models/
 Qwen3-1.7B/
 *.exe
 *.safetensors
@@ -36,7 +37,6 @@ desktop.ini
 
 # BIANG KEROK 10.000 FILE
 .venv/
-lightml-translator/
 
 # Data besar & upload pengguna
 uploads/

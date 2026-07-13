@@ -1,0 +1,92 @@
+{
+    "short_document": {
+        "document_name": "Short Document",
+        "word_count": 30,
+        "iterations": 1,
+        "latency_ms": {
+            "average": 1686.25,
+            "minimum": 1686.25,
+            "maximum": 1686.25,
+            "p50": 1686.25,
+            "p95": 1686.25
+        },
+        "cpu_time_ms": {
+            "average": 3329.81,
+            "values": [
+                3329.81
+            ]
+        },
+        "throughput_words_per_sec": {
+            "average": 17.79,
+            "values": [
+                17.79
+            ]
+        },
+        "memory_usage_mb": {
+            "rss_before": 187.75,
+            "rss_after": 187.75,
+            "rss_increase": 0.0,
+            "peak_rss": 187.75
+        }
+    },
+    "medium_document": {
+        "document_name": "Medium Document",
+        "word_count": 95,
+        "iterations": 1,
+        "latency_ms": {
+            "average": 3593.46,
+            "minimum": 3593.46,
+            "maximum": 3593.46,
+            "p50": 3593.46,
+            "p95": 3593.46
+        },
+        "cpu_time_ms": {
+            "average": 7197.38,
+            "values": [
+                7197.38
+            ]
+        },
+        "throughput_words_per_sec": {
+            "average": 26.44,
+            "values": [
+                26.44
+            ]
+        },
+        "memory_usage_mb": {
+            "rss_before": 234.97,
+            "rss_after": 240.06,
+            "rss_increase": 5.09,
+            "peak_rss": 240.06
+        }
+    },
+    "large_document": {
+        "document_name": "Large Document",
+        "word_count": 354,
+        "iterations": 1,
+        "latency_ms": {
+            "average": 7168.96,
+            "minimum": 7168.96,
+            "maximum": 7168.96,
+            "p50": 7168.96,
+            "p95": 7168.96
+        },
+        "cpu_time_ms": {
+            "average": 14281.51,
+            "values": [
+                14281.51
+            ]
+        },
+        "throughput_words_per_sec": {
+            "average": 49.38,
+            "values": [
+                49.38
+            ]
+        },
+        "memory_usage_mb": {
+            "rss_before": 374.14,
+            "rss_after": 379.16,
+            "rss_increase": 5.02,
+            "peak_rss": 379.16
+        }
+    }
+}
