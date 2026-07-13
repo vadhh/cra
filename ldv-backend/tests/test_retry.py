@@ -78,8 +78,35 @@ def test_retry_flow():
         os.remove(db_path)
 
 
+def test_stuck_job_becomes_retryable():
+    database, db_path = _fresh_db()
+    try:
+        doc_id = database.save_document("t.txt", "s.txt", "/tmp/s.txt", 10, ".txt", "EN", "text")
+        pid = database.save_analysis(doc_id, None, None, None, None, None, status="processing")
+
+        # Backdate analyzed_at to simulate a job abandoned 31 minutes ago
+        # (a worker crash mid-job, or a process kill before pickup)
+        with database._conn() as db:
+            db.execute(
+                "UPDATE analyses SET analyzed_at = datetime('now', '-31 minutes') WHERE public_id = ?",
+                (pid,),
+            )
+
+        database.cleanup_stuck_analyses()
+
+        res = database.get_result(pid)
+        assert res["status"] == "retryable"
+        assert "restart" in res["error_message"].lower()
+
+        # It must now be retryable via the normal retry path (not a dead end)
+        assert database.retry_analysis(pid) == "queued"
+    finally:
+        os.remove(db_path)
+
+
 if __name__ == "__main__":
     test_legacy_running_status_migrates_to_processing()
     test_hidden_result_statuses_constant()
     test_retry_flow()
-    print("test_retry OK (tasks 1-2)")
+    test_stuck_job_becomes_retryable()
+    print("test_retry OK (tasks 1-3)")

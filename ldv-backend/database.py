@@ -770,7 +770,7 @@ def count_active_admins() -> int:
 
 
 def cleanup_stuck_analyses() -> None:
-    """Fail analysis records abandoned by a crashed/killed process.
+    """Mark analysis records abandoned by a crashed/killed process as retryable.
 
     Runs on every process start, including each gunicorn worker boot — so it
     must not touch jobs a sibling worker is still actively processing.
@@ -781,7 +781,8 @@ def cleanup_stuck_analyses() -> None:
     """
     with _conn() as db:
         db.execute(
-            "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
+            "UPDATE analyses SET status = 'retryable', "
+            "error_message = 'Interrupted by a server restart -- click Retry to resume.' "
             "WHERE status IN ('processing', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
         )
 
