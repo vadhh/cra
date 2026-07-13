@@ -17,7 +17,7 @@ import fitz
 from langdetect import detect
 
 from detector.detector_jurisdiction import detect_jurisdiction
-from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title
+from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title, reconcile_required_flags
 from detector.citation_db import annotate_layer1
 from detector.risk_explainer import explain_findings
 from detector.detector_distilbert import layer2_analyze, semantic_clause_presence
@@ -146,7 +146,32 @@ def handle_exception(e):
 
 def _extract_pdf(data: bytes) -> str:
     doc = fitz.open(stream=data, filetype="pdf")
-    return "\n".join(page.get_text() for page in doc)
+    text = "\n".join(page.get_text() for page in doc)
+    if not text.strip():
+        text = _ocr_pdf(doc)
+    return text
+
+
+def _ocr_pdf(doc) -> str:
+    """OCR fallback for scanned/image-only PDFs with no text layer.
+
+    Slow (~1-3s/page on CPU); only invoked when normal text extraction finds
+    nothing. Needs the tesseract-ocr system binary + language packs
+    (tesseract-ocr-eng/fra/ind/nld) -- degrades to empty text (surfacing the
+    existing "Scan/OCR required" error) if unavailable.
+    """
+    import pytesseract
+    from PIL import Image
+    from io import BytesIO
+    try:
+        parts = []
+        for page in doc:
+            img = Image.open(BytesIO(page.get_pixmap(dpi=300).tobytes("png")))
+            parts.append(pytesseract.image_to_string(img, lang="eng+fra+ind+nld"))
+        return "\n".join(parts)
+    except Exception as e:
+        logger.warning("OCR fallback failed: %s", e)
+        return ""
 
 
 def _extract_docx(data: bytes) -> str:
@@ -242,6 +267,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()
+    reconcile_required_flags(layer1.get("clause_presence") or [], doc_type_label)
     if doc_type_label in _NON_CONTRACT_TYPES:
         logger.info("Document type '%s' — skipping clause analysis", doc_type_label)
         return {

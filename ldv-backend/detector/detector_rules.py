@@ -618,6 +618,21 @@ def clause_title(clause_id: str) -> str:
     return _CLAUSE_TITLES.get(clause_id, clause_id)
 
 
+def reconcile_required_flags(clause_presence: list[dict], doc_type: Optional[str]) -> None:
+    """Overwrite each entry's `required` flag with the contract-type-aware set, in place.
+
+    check_clause_presence() runs before Layer 2 has classified the document, so it
+    stamps `required` from the static _BASELINE_REQUIRED set. Once doc_type is known,
+    the mandatory set can differ (a lease needs lease_term/rent_amount, not
+    payment_terms/limitation_liability) -- callers (frontend checklist/findings,
+    risk_explainer) all read this flag, so it must match required_clauses_for(doc_type),
+    which is what L3 scoring and Explain Mode already use.
+    """
+    required_ids = set(required_clauses_for(doc_type))
+    for entry in clause_presence:
+        entry["required"] = entry["clause_id"] in required_ids
+
+
 def evaluate_contract_type_requirements(
     clause_presence: list[dict],
     doc_type: Optional[str],
