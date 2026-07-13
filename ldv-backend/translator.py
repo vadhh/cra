@@ -23,13 +23,8 @@ _local_model_cache: dict = {}  # model_id → (model, tokenizer)
 
 def _local_translate(text: str, src_lang: str) -> str:
     """Translate using the local lightml-translator microservice."""
-    from translator_client import SydecoTranslatorClient
-    try:
-        client = SydecoTranslatorClient()
-        return client.translate(text=text, source_lang=src_lang, target_lang="en")
-    except Exception as e:
-        logger.warning("Local microservice translation failed via Python client: %s — returning original text", e)
-        return text
+    from translator_client import translate_via_microservice
+    return translate_via_microservice(text, src_lang)
 
 
 def translate_text(text, target_lang, src_lang: str = "auto"):
