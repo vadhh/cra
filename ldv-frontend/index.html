@@ -707,6 +707,10 @@
                       class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold font-body transition-all">
                 Cancel Analysis
               </button>
+              <button type="button" @click="retryAnalysis()" x-show="showRetry"
+                      class="gold-button px-6 py-3 rounded-md text-xs font-bold font-body uppercase tracking-wider">
+                Retry Analysis
+              </button>
               <button type="button" @click="runInBackground()" x-show="!errorMsg"
                       class="gold-button px-6 py-3 rounded-md text-xs font-bold font-body uppercase tracking-wider">
                 Run in Background
@@ -914,6 +918,7 @@
         elapsedSeconds: 0,
         activeStage: 'uploading', // 'uploading', 'extracting', 'classifying', 'analyzing', 'scoring', 'preparing'
         errorMsg: '',
+        showRetry: false,
         timerInterval: null,
         pollingInterval: null,
 
@@ -1043,6 +1048,12 @@
                   setTimeout(() => {
                     window.location.href = '/result/' + this.analysisId;
                   }, 1000);
+                } else if (status === 'retryable') {
+                  this.progressPct = 100;
+                  this.progressText = 'INTERRUPTED';
+                  this.errorMsg = (data.error_message || 'Analysis was interrupted.') + ' Click Retry to resume.';
+                  this.showRetry = true;
+                  this.stopTimers();
                 } else if (status === 'failed') {
                   this.progressPct = 100;
                   this.progressText = 'FAILED';
@@ -1054,6 +1065,20 @@
               // Ignore transient network errors during poll
             }
           }, 2000);
+        },
+
+        async retryAnalysis() {
+          this.showRetry = false;
+          this.errorMsg = '';
+          this.progressPct = 0;
+          this.progressText = 'Retrying…';
+          const resp = await fetch(`/api/v1/result/${this.analysisId}/retry`, { method: 'POST' });
+          if (resp.ok) {
+            this.pollStatus();
+          } else {
+            const err = await resp.json().catch(() => ({}));
+            this.errorMsg = err.error || 'Retry failed.';
+          }
         },
 
         cancelPipeline() {
