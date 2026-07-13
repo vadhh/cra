@@ -81,6 +81,32 @@ def _risk_color(label: str) -> colors.Color:
     )
 
 
+# ── Explain Mode / citation formatting ───────────────────────────────────────
+# Lawyers read words better than decimals (reviewer feedback, 2026-07-13):
+# render risk_explainer.py's 0-1 confidence score as a High/Medium/Low band
+# with the percentage kept alongside, not as a bare float.
+
+def _confidence_line(score) -> str:
+    try:
+        s = float(score)
+    except (TypeError, ValueError):
+        return ""
+    band = "High" if s >= 0.85 else "Medium" if s >= 0.65 else "Low"
+    return f"{band} confidence ({round(s * 100)}%)"
+
+
+def _citation_line(citations: list[dict] | None) -> str:
+    """First verified citation as 'Source: <source>, <article>' (or its note)."""
+    if not citations:
+        return ""
+    c = citations[0]
+    bits = [b for b in (c.get("source"), c.get("article")) if b]
+    if bits:
+        return "Source: " + ", ".join(bits)
+    note = c.get("note")
+    return f"Source: {note}" if note else ""
+
+
 # ── PDF builder ───────────────────────────────────────────────────────────────
 
 def generate_pdf(result: dict) -> bytes:
@@ -206,20 +232,31 @@ def generate_pdf(result: dict) -> bytes:
         story.append(Paragraph("No dangerous clauses detected.", body))
     else:
         for flag in red_flags:
-            sev       = flag.get("severity", "")
-            sev_hex   = "#dc3545" if sev == "HIGH" else "#fd7e14"
-            flag_id   = flag.get("id", "")
-            desc      = flag.get("description", flag.get("type", ""))
-            evidence  = flag.get("evidence", "")
+            sev         = flag.get("severity", "")
+            sev_hex     = "#dc3545" if sev == "HIGH" else "#fd7e14"
+            flag_id     = flag.get("id", "")
+            desc        = flag.get("description", flag.get("type", ""))
+            evidence    = flag.get("evidence", "")
+            explanation = flag.get("explanation") or {}
             story.append(Paragraph(
                 f'<font color="{sev_hex}"><b>[{sev}]</b></font> {desc}',
                 _style("df", fontSize=9, leading=13, textColor=_RED),
             ))
+            reason = explanation.get("reason")
+            if reason:
+                story.append(Paragraph(reason, body))
             if evidence:
                 story.append(Paragraph(f'Evidence: "…{evidence}…"', small))
-            rw = _REWRITES.get(flag_id)
-            if rw:
-                story.append(Paragraph(rw, rewrite))
+            correction = explanation.get("suggested_correction") or _REWRITES.get(flag_id)
+            if correction:
+                label = "Suggested clause: " if explanation.get("suggested_correction") else ""
+                story.append(Paragraph(f"{label}{correction}", rewrite))
+            footer_bits = [b for b in (
+                _confidence_line(explanation.get("confidence")),
+                _citation_line(flag.get("citations")),
+            ) if b]
+            if footer_bits:
+                story.append(Paragraph("  |  ".join(footer_bits), small))
 
         for fl in l2_flagged:
             lbl = fl.get("label", "").replace("_", " ").title()
@@ -251,6 +288,30 @@ def generate_pdf(result: dict) -> bytes:
             col = _GREEN if row[0].startswith("✓") else _RED
             ts.append(("TEXTCOLOR", (0, i), (0, i), col))
         story.append(Table(rows, colWidths=[W * 0.22, W * 0.78], style=TableStyle(ts)))
+
+        explained_missing = [c for c in missing if c.get("explanation")]
+        if explained_missing:
+            story.append(Spacer(1, 0.25 * cm))
+            story.append(Paragraph("Why This Matters", _style(
+                "h3", fontSize=10.5, textColor=_NAVY, fontName="Helvetica-Bold",
+                spaceBefore=2, spaceAfter=4,
+            )))
+            for c in explained_missing:
+                explanation = c["explanation"]
+                title = c.get("title", c.get("clause_id", ""))
+                story.append(Paragraph(f"<b>{title}</b>", body))
+                reason = explanation.get("reason")
+                if reason:
+                    story.append(Paragraph(reason, body))
+                correction = explanation.get("suggested_correction")
+                if correction:
+                    story.append(Paragraph(f"Suggested clause: {correction}", rewrite))
+                footer_bits = [b for b in (
+                    _confidence_line(explanation.get("confidence")),
+                    _citation_line(c.get("citations")),
+                ) if b]
+                if footer_bits:
+                    story.append(Paragraph("  |  ".join(footer_bits), small))
 
     story.append(Spacer(1, 0.3 * cm))
 
