@@ -24,6 +24,9 @@ for field in ("clause", "reason", "severity", "suggested_correction", "confidenc
     assert field in exp, f"missing field: {field}"
 assert isinstance(exp["confidence"], float) and 0 <= exp["confidence"] <= 1
 assert exp["source_reference"]["span"] is not None
+# confidence_label is a lawyer-facing High/Medium/Low band alongside the raw
+# decimal (reviewer feedback 2026-07-13: words, not decimals).
+assert exp["confidence_label"] in ("High", "Medium", "Low")
 
 # --- Missing required clause also gets an explanation ---
 missing = [c for c in layer1["clause_presence"] if c.get("required") and not c.get("present")]
@@ -32,6 +35,7 @@ assert "explanation" in missing[0], "missing required clause should carry an exp
 miss_exp = missing[0]["explanation"]
 assert miss_exp["severity"] in ("CRITICAL", "HIGH", "MEDIUM", "LOW")
 assert miss_exp["source_reference"] == {"text": None, "span": None}
+assert miss_exp["confidence_label"] in ("High", "Medium", "Low")
 
 # --- Present clauses are NOT annotated (only risks get explanations) ---
 present = [c for c in layer1["clause_presence"] if c.get("present")]

@@ -81,6 +81,23 @@ def _risk_color(label: str) -> colors.Color:
     )
 
 
+# ReportLab's default Helvetica uses WinAnsiEncoding, which has no glyph for
+# "smart" Unicode punctuation (non-breaking hyphen, en/em dash, curly quotes,
+# ellipsis) -- those render as a black box instead of raising an error.
+# Lawyer-authored CSV guidance text (clause_db, risk_clause_db) uses these
+# characters, so anything sourced from those tables needs normalizing before
+# it reaches a Paragraph().
+_ASCII_MAP = str.maketrans({
+    "‐": "-", "‑": "-", "‒": "-", "–": "-", "—": "--",
+    "‘": "'", "’": "'", "“": '"', "”": '"',
+    "…": "...", " ": " ",
+})
+
+
+def _clean(text) -> str:
+    return text.translate(_ASCII_MAP) if text else text
+
+
 # ── Explain Mode / citation formatting ───────────────────────────────────────
 # Lawyers read words better than decimals (reviewer feedback, 2026-07-13):
 # render risk_explainer.py's 0-1 confidence score as a High/Medium/Low band
@@ -100,10 +117,10 @@ def _citation_line(citations: list[dict] | None) -> str:
     if not citations:
         return ""
     c = citations[0]
-    bits = [b for b in (c.get("source"), c.get("article")) if b]
+    bits = [_clean(b) for b in (c.get("source"), c.get("article")) if b]
     if bits:
         return "Source: " + ", ".join(bits)
-    note = c.get("note")
+    note = _clean(c.get("note"))
     return f"Source: {note}" if note else ""
 
 
@@ -235,19 +252,19 @@ def generate_pdf(result: dict) -> bytes:
             sev         = flag.get("severity", "")
             sev_hex     = "#dc3545" if sev == "HIGH" else "#fd7e14"
             flag_id     = flag.get("id", "")
-            desc        = flag.get("description", flag.get("type", ""))
-            evidence    = flag.get("evidence", "")
+            desc        = _clean(flag.get("description", flag.get("type", "")))
+            evidence    = _clean(flag.get("evidence", ""))
             explanation = flag.get("explanation") or {}
             story.append(Paragraph(
                 f'<font color="{sev_hex}"><b>[{sev}]</b></font> {desc}',
                 _style("df", fontSize=9, leading=13, textColor=_RED),
             ))
-            reason = explanation.get("reason")
+            reason = _clean(explanation.get("reason"))
             if reason:
                 story.append(Paragraph(reason, body))
             if evidence:
                 story.append(Paragraph(f'Evidence: "…{evidence}…"', small))
-            correction = explanation.get("suggested_correction") or _REWRITES.get(flag_id)
+            correction = _clean(explanation.get("suggested_correction")) or _REWRITES.get(flag_id)
             if correction:
                 label = "Suggested clause: " if explanation.get("suggested_correction") else ""
                 story.append(Paragraph(f"{label}{correction}", rewrite))
@@ -298,12 +315,12 @@ def generate_pdf(result: dict) -> bytes:
             )))
             for c in explained_missing:
                 explanation = c["explanation"]
-                title = c.get("title", c.get("clause_id", ""))
+                title = _clean(c.get("title", c.get("clause_id", "")))
                 story.append(Paragraph(f"<b>{title}</b>", body))
-                reason = explanation.get("reason")
+                reason = _clean(explanation.get("reason"))
                 if reason:
                     story.append(Paragraph(reason, body))
-                correction = explanation.get("suggested_correction")
+                correction = _clean(explanation.get("suggested_correction"))
                 if correction:
                     story.append(Paragraph(f"Suggested clause: {correction}", rewrite))
                 footer_bits = [b for b in (
