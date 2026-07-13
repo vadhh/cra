@@ -1,0 +1,37 @@
+{
+  "startup_import_time_ms": 58962.91,
+  "models": {
+    "id": {
+      "load_time_ms": 1450.49,
+      "memory_usage_mb": 92.03,
+      "avg_translation_latency_ms": 59.86,
+      "ct2_size_mb": 70.82,
+      "marian_size_mb": 277.66,
+      "compression_ratio": 3.92
+    },
+    "fr": {
+      "load_time_ms": 1138.16,
+      "memory_usage_mb": 88.14,
+      "avg_translation_latency_ms": 102.14,
+      "ct2_size_mb": 73.16,
+      "marian_size_mb": 286.89,
+      "compression_ratio": 3.92
+    },
+    "nl": {
+      "load_time_ms": 1403.63,
+      "memory_usage_mb": 91.14,
+      "avg_translation_latency_ms": 427.56,
+      "ct2_size_mb": 76.89,
+      "marian_size_mb": 301.6,
+      "compression_ratio": 3.92
+    },
+    "mul": {
+      "load_time_ms": 1110.93,
+      "memory_usage_mb": 90.07,
+      "avg_translation_latency_ms": 507.43,
+      "ct2_size_mb": 75.47,
+      "marian_size_mb": 296.01,
+      "compression_ratio": 3.92
+    }
+  }
+}
