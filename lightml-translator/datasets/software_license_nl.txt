@@ -1,0 +1,15 @@
+SOFTWARE-LICENTIEOVEREENKOMST
+
+Artikel 1: Licentieverlening
+PT Sydeco Global (hierna te noemen "Licentiegever") verleent aan de Cliënt (hierna te noemen "Licentienemer") een niet-exclusieve, niet-overdraagbare licentie voor het gebruik van de Sydeco CRA software.
+Deze licentie is verleend onder de voorwaarden van deze "Overeenkomst".
+
+Artikel 2: Intellectueel Eigendom en Broncode
+1. Alle rechten van intellectuele eigendom met betrekking tot de software blijven bij Licentiegever.
+2. Het is Licentienemer niet toegestaan om de broncode (source code) te decompileren of te kopiëren.
+
+Artikel 3: Licentievergoeding
+De licentievergoeding bedraagt USD 12.000 per jaar, bij vooruitbetaling te voldoen.
+De overeenkomst treedt in werking op 12-07-2026.
+Bij overtreding geldt een direct opeisbare boeteclausule van EUR 25.000.
+Voor technische ondersteuning kunt u mailen naar support@sydeco.com.

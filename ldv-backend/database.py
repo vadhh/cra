@@ -321,6 +321,9 @@ def _conn():
     c = sqlite3.connect(get_db_path(), timeout=30.0)
     c.row_factory = sqlite3.Row
     c.execute("PRAGMA journal_mode=WAL")
+    c.execute("PRAGMA synchronous=NORMAL")
+    c.execute("PRAGMA cache_size=-10000")
+    c.execute("PRAGMA foreign_keys=ON")
     try:
         yield c
         c.commit()
