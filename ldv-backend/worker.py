@@ -63,21 +63,57 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         database.update_analysis(public_id, status="processing", progress_pct=95, progress_stage="preparing")
 
         elapsed = round(time.monotonic() - t_start, 2)
-        layer3_data = result.get("layer3", {})
+        layer3_data = result.get("layer3", {})\
+            if not result.get("layer3", {}).get("skipped") else {}
         layer2_data = result.get("layer2", {}) or {}
         dt = layer2_data.get("document_type")
         doc_type_str = dt.get("label") if isinstance(dt, dict) else dt
+
+        # Phase 2 (P6): extract profile provenance from layer2 detector output
+        detection_confidence = dt.get("confidence") if isinstance(dt, dict) else None
+        detection_source = "baseline"
+        if override_type:
+            detection_source = "user_override"
+        elif isinstance(dt, dict) and dt.get("source") not in (None, ""):
+            detection_source = "classifier"
+
+        # Resolve profile_id and profile_version from registry
+        _pid = None
+        _pver = None
+        try:
+            from detector.profile_registry import detect_profile
+            p = detect_profile(doc_type_str or "")
+            if p:
+                _pid = p["id"]
+                _pver = p["version"]
+                detection_source = detection_source  # keep user_override if set
+        except Exception:
+            pass
+
+        # Phase 3 (S2): persist score breakdown and policy_version
+        _breakdown = layer3_data.get("breakdown") if layer3_data else None
+        _policy_ver = layer3_data.get("policy_version") if layer3_data else None
+
+        # layer3_data can be {} when non-contract path used
+        _score = layer3_data.get("score") if layer3_data else None
+        _label = layer3_data.get("label") if layer3_data else None
 
         database.update_analysis(
             public_id=public_id,
             status="completed",
             jurisdiction=jurisdiction,
             document_type=doc_type_str,
-            risk_score=layer3_data.get("score"),
-            risk_label=layer3_data.get("label"),
+            risk_score=_score,
+            risk_label=_label,
             result=result,
             progress_pct=100,
-            progress_stage="preparing"
+            progress_stage="preparing",
+            profile_id=_pid,
+            profile_version=_pver,
+            detection_source=detection_source,
+            detection_confidence=detection_confidence,
+            score_breakdown=_breakdown,
+            policy_version=_policy_ver,
         )
 
         app_logger.info(

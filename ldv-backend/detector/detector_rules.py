@@ -30,6 +30,19 @@ from detector.risk_clause_db import detect_keyword_flags
 
 logger = logging.getLogger(__name__)
 
+# ponytail: lazy import to avoid circular during test bootstrap
+_profile_registry = None
+
+def _get_registry():
+    global _profile_registry
+    if _profile_registry is None:
+        try:
+            import detector.profile_registry as _pr
+            _profile_registry = _pr
+        except Exception as exc:  # pragma: no cover
+            logger.warning("profile_registry unavailable: %s", exc)
+    return _profile_registry
+
 
 # ── Governing Law ──────────────────────────────────────────────────────────────
 
@@ -607,9 +620,16 @@ def normalize_doc_type(label: Optional[str]) -> str:
 def required_clauses_for(doc_type: Optional[str]) -> list[str]:
     """Return the mandatory clause IDs for *doc_type*.
 
-    Falls back to the generic baseline for unknown or missing types, so the
-    analyzer always has an explicit required-clause set to score against.
+    Primary source: profile_registry (file-driven, ~56 types).
+    Compat fallback: _CONTRACT_TYPE_PROFILES (kept until parity tests pass).
+    Final fallback: _BASELINE_REQUIRED.
+    ponytail: compat layer — remove _CONTRACT_TYPE_PROFILES after parity confirmed.
     """
+    reg = _get_registry()
+    if reg is not None:
+        clauses, _ = reg.required_clauses_for(doc_type or "")
+        return list(clauses)
+    # compat shim
     return list(_CONTRACT_TYPE_PROFILES.get(normalize_doc_type(doc_type), _BASELINE_REQUIRED))
 
 
@@ -654,7 +674,15 @@ def evaluate_contract_type_requirements(
         missing         : list[clause_id] mandatory but absent
     """
     norm = normalize_doc_type(doc_type)
-    required_ids = required_clauses_for(norm)
+    reg = _get_registry()
+    if reg is not None:
+        required_ids, matched_pid = reg.required_clauses_for(norm)
+        matched_profile = matched_pid is not None
+    else:
+        required_ids = required_clauses_for(norm)
+        matched_pid = norm if norm in _CONTRACT_TYPE_PROFILES else None
+        matched_profile = norm in _CONTRACT_TYPE_PROFILES
+
     present_ids = {c["clause_id"] for c in clause_presence if c.get("present")}
 
     mandatory = [
@@ -665,7 +693,8 @@ def evaluate_contract_type_requirements(
 
     return {
         "contract_type":   norm or "unknown",
-        "matched_profile": norm in _CONTRACT_TYPE_PROFILES,
+        "matched_profile": matched_profile,
+        "profile_id":      matched_pid,
         "mandatory":       mandatory,
         "present":         [cid for cid in required_ids if cid in present_ids],
         "missing":         missing,

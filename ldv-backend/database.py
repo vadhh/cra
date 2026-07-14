@@ -278,6 +278,23 @@ def init_db() -> None:
             if "retry_count" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0")
 
+            # Phase 2 (P6): profile provenance columns
+            if "profile_id" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN profile_id TEXT")
+            if "profile_version" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN profile_version TEXT")
+            if "detection_source" not in cols:
+                # Values: 'classifier', 'user_override', 'baseline'
+                conn.execute("ALTER TABLE analyses ADD COLUMN detection_source TEXT")
+            if "detection_confidence" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN detection_confidence REAL")
+
+            # Phase 3 (S2): score audit columns
+            if "score_breakdown" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN score_breakdown TEXT")  # JSON list
+            if "policy_version" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN policy_version TEXT")
+
             # Auto-seed a default admin user if the users table is completely empty
             # (useful for fresh Docker deployments like Hugging Face Spaces)
             user_count = conn.execute("SELECT COUNT(*) FROM users").fetchone()[0]
@@ -397,6 +414,14 @@ def update_analysis(
     error_message: str | None = None,
     progress_pct: int | None = None,
     progress_stage: str | None = None,
+    # Phase 2 (P6): profile provenance
+    profile_id: str | None = None,
+    profile_version: str | None = None,
+    detection_source: str | None = None,
+    detection_confidence: float | None = None,
+    # Phase 3 (S2): score audit
+    score_breakdown: list | None = None,
+    policy_version: str | None = None,
 ) -> None:
     updates = ["status = ?"]
     params = [status]
@@ -424,6 +449,24 @@ def update_analysis(
     if progress_stage is not None:
         updates.append("progress_stage = ?")
         params.append(progress_stage)
+    if profile_id is not None:
+        updates.append("profile_id = ?")
+        params.append(profile_id)
+    if profile_version is not None:
+        updates.append("profile_version = ?")
+        params.append(profile_version)
+    if detection_source is not None:
+        updates.append("detection_source = ?")
+        params.append(detection_source)
+    if detection_confidence is not None:
+        updates.append("detection_confidence = ?")
+        params.append(detection_confidence)
+    if score_breakdown is not None:
+        updates.append("score_breakdown = ?")
+        params.append(json.dumps(score_breakdown))
+    if policy_version is not None:
+        updates.append("policy_version = ?")
+        params.append(policy_version)
     params.append(public_id)
     query = f"UPDATE analyses SET {', '.join(updates)} WHERE public_id = ?"
     with _conn() as db:
@@ -437,6 +480,8 @@ def get_result(public_id: str) -> dict | None:
                       a.document_type, a.result_json, a.analyzed_at, a.status, a.error_message,
                       a.progress_pct, a.progress_stage, a.review_status, a.reviewer_email,
                       a.review_comment, a.reviewed_at, a.retry_count,
+                      a.profile_id, a.profile_version, a.detection_source, a.detection_confidence,
+                      a.score_breakdown, a.policy_version,
                       d.original_filename, d.file_size, d.file_type, d.language,
                       d.extracted_text, d.uploaded_at, d.org_id, d.client, d.case_folder
                FROM analyses a

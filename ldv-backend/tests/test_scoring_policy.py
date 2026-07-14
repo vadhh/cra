@@ -63,10 +63,11 @@ def test_scoring_policy_flow():
             "clause_presence": [
                 {"clause_id": "governing_law", "title": "Governing Law", "present": False, "required": True},
                 {"clause_id": "jurisdiction_venue", "title": "Jurisdiction", "present": False, "required": True},
-                {"clause_id": "payment_terms", "title": "Payment Terms", "present": True, "required": True},
+                # NDA registry profile also requires these — mark present so the test focuses on policy weights
+                {"clause_id": "confidentiality", "title": "Confidentiality", "present": True, "required": True},
                 {"clause_id": "termination", "title": "Termination", "present": True, "required": True},
+                {"clause_id": "return_of_materials", "title": "Return of Materials", "present": True, "required": True},
                 {"clause_id": "dispute_resolution", "title": "Dispute Resolution", "present": True, "required": True},
-                {"clause_id": "limitation_liability", "title": "Limitation of Liability", "present": True, "required": True}
             ]
         }
         layer2_mock = {
@@ -98,6 +99,7 @@ def test_scoring_policy_flow():
         assert res_default["policy_version"] == "default_v1"
         assert res_default["calibration_status"] == "provisional_uncalibrated"
         assert res_default["confidence"] == 95.0
+
 
     finally:
         if os.path.exists(custom_policy_path):

@@ -744,11 +744,18 @@ def api_result(analysis_id: str):
     if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
         return jsonify({"error": "Forbidden"}), 403
     row.pop("org_id", None)  # internal field, not part of the API response
-    
+
     # ponytail: Expose raw_text via ?debug=1 only (P3 item 15)
     extracted_text = row.pop("extracted_text", None)
     if request.args.get("debug") == "1":
         row["raw_text"] = extracted_text
+
+    # Phase 3 (S2): deserialize score_breakdown from JSON string
+    if row.get("score_breakdown") and isinstance(row["score_breakdown"], str):
+        try:
+            row["score_breakdown"] = json.loads(row["score_breakdown"])
+        except (ValueError, TypeError):
+            pass
 
     status = row.get("status", "completed")
     if status in _HIDDEN_RESULT_STATUSES:
@@ -759,6 +766,7 @@ def api_result(analysis_id: str):
     row["result"] = json.loads(row["result_json"]) if row.get("result_json") else None
     row.pop("result_json", None)
     return jsonify(row)
+
 
 
 @app.route("/api/v1/result/<analysis_id>", methods=["DELETE"])
