@@ -1,4 +1,10 @@
 import os
+
+# Enforce offline mode if downloads not allowed
+if os.getenv("LDV_DOWNLOAD_MODELS", "0") != "1":
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 import logging
 import time
 import concurrent.futures
@@ -31,10 +37,11 @@ def _load_model():
         import hf_hub_connector
         qwen_cached = hf_hub_connector.is_model_cached(MODEL_ID)
         
-        local_files_only = not download_allowed and not qwen_cached
-        if local_files_only:
+        if not download_allowed and not qwen_cached:
             logger.warning("Model %s is not cached locally and LDV_DOWNLOAD_MODELS is not 1. Skipping download.", MODEL_ID)
             raise RuntimeError("Model not cached locally and downloads are disabled.")
+            
+        local_files_only = not download_allowed
 
         _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, local_files_only=local_files_only)
         m = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=dtype, local_files_only=local_files_only).to(device)

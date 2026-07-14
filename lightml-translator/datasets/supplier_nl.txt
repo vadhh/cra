@@ -1,0 +1,16 @@
+LEVERANCIERSOVEREENKOMST
+
+Artikel 1: Leveringsvoorwaarden
+Deze leveranciersovereenkomst is aangegaan tussen PT Acme Corp (hierna te noemen "Leverancier") en PT Sydeco Global (hierna te noemen "Afnemer").
+Leverancier zal goederen leveren zoals gespecificeerd in Bijlage A.
+
+Artikel 2: Prijzen en Betalingen
+1. Afnemer zal betalingen verrichten binnen 30 dagen na factuurdatum.
+2. Alle facturen worden voldaan in EUR of USD.
+3. Bij te late betaling is een wettelijke rente van 8% per jaar verschuldigd.
+
+Artikel 3: Kwaliteitsborging
+Alle geleverde producten moeten voldoen aan de ISO 9001-kwaliteitsnormen.
+De kwaliteitsmanager is bereikbaar via quality@acmecorp.com of telefoonnummer +31-20-555-0199.
+De fabriek is gevestigd aan de 45 Main Street, Boston.
+De overeenkomst is getekend op 12-07-2026.

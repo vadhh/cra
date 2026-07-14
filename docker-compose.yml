@@ -6,6 +6,12 @@ services:
     restart: unless-stopped
     # ponytail: no persistence needed for rate-limit counters
     command: redis-server --save ""
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
 
   app:
     build:
@@ -22,21 +28,54 @@ services:
       # FR/NL/ID document-type classification — DistilBERT-MNLI is English-only
       # and is either confidently wrong or returns null on untranslated text.
       - LDV_REMOTE_TRANSLATION=${LDV_REMOTE_TRANSLATION:-local}
+      - LIGHTML_TRANSLATOR_URL=http://lightml-translator:8000/api/v1/translate
     volumes:
       - ./ldv-backend/data:/app/data
       - ./uploads:/app/uploads
       - ~/.cache/huggingface:/root/.cache/huggingface
+      - ./datasets:/datasets
+      - ./ldv-frontend:/ldv-frontend
     depends_on:
       - redis
+      - lightml-translator
     # Not exposed directly — nginx is the only ingress
     expose:
       - "5000"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
-      interval: 30s
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/health"]
+      interval: 15s
       timeout: 10s
-      retries: 3
+      retries: 5
+      start_period: 60s
+    command: gunicorn -w 1 --threads 4 --worker-class gthread -b 0.0.0.0:5000 --timeout 120 --graceful-timeout 100 app:app
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1500M
+
+
+  lightml-translator:
+    build:
+      context: ./lightml-translator
+      dockerfile: Dockerfile
+    environment:
+      - ENV=production
+      - LIGHTML_MODELS_DIR=/app/models
+    volumes:
+      - ./lightml-translator/models:/app/models
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1000M
+
+
 
   nginx:
     image: nginx:alpine
@@ -47,5 +86,6 @@ services:
       - ./deploy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./deploy/certs:/etc/nginx/certs:ro
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     restart: unless-stopped

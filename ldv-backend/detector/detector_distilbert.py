@@ -33,6 +33,12 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 logger = logging.getLogger(__name__)
 
 import os as _os
+
+# Enforce offline mode if downloads not allowed
+if _os.getenv("LDV_DOWNLOAD_MODELS", "0") != "1":
+    _os.environ["HF_HUB_OFFLINE"] = "1"
+    _os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 _ENV_MODEL   = _os.getenv("LDV_DISTILBERT_MODEL", "")
 _LOCAL_MODEL = _os.path.join(_os.path.dirname(__file__), "..", "models", "distilbert-base-uncased-mnli")
 MODEL_ID = (
@@ -325,8 +331,10 @@ def _load_model():
 
     try:
         logger.info("Loading DistilBERT NLI model: %s", MODEL_ID)
-        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-        m = AutoModelForSequenceClassification.from_pretrained(MODEL_ID)
+        download_allowed = _os.getenv("LDV_DOWNLOAD_MODELS", "0") == "1"
+        local_files_only = not download_allowed
+        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, local_files_only=local_files_only)
+        m = AutoModelForSequenceClassification.from_pretrained(MODEL_ID, local_files_only=local_files_only)
         device = "cuda" if torch.cuda.is_available() else "cpu"
         m = m.to(device)
         m.training = False  # inference mode without using eval()
