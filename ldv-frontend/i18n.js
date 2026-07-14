@@ -169,6 +169,124 @@
       "index.footer.privacy": "Privacy",
       "index.footer.terms": "Terms",
       "index.footer.compliance": "Compliance",
+
+      // result.html — Loading / Error / Processing states
+      "result.loading.message": "Decrypting and loading assessment data…",
+      "result.error.title": "Assessment Error",
+      "result.error.retry_link": "← Run New Analysis",
+      "result.processing.title": "Sovereign Pipeline Processing…",
+      "result.processing.description": "Your document is executing inside the secure partition. This report will automatically load upon completion.",
+      "result.processing.overall_progress": "Overall Progress",
+
+      // result.html — Case header
+      "result.case_header.new_scan_button": "+ New Scan",
+
+      // result.html — Risk score hero panel
+      "result.risk.score_label": "Risk Score",
+      "result.risk.confidence_label": "Pipeline Confidence:",
+      "result.risk.confidence_footnote": "Calibrated against doc type NLI classifier telemetry.",
+      "result.risk.disclaimer": "Decision support only — not legal advice. Does not guarantee validity or enforceability.",
+
+      // result.html — Next Actions card
+      "result.next_actions.title": "Next Actions",
+      "result.next_actions.current_assignee_label": "Current Assignee",
+      "result.next_actions.assign_reviewer_button": "Assign Reviewer",
+      "result.next_actions.compare_versions_label": "Compare Versions",
+      "result.next_actions.no_previous_versions": "No previous versions",
+
+      // result.html — Professional Review card
+      "result.professional_review.title": "Professional Review",
+      "result.professional_review.status_label": "Status",
+      "result.professional_review.reviewer_label": "Reviewer",
+      "result.professional_review.review_date_label": "Review Date",
+      "result.professional_review.comments_label": "Comments",
+      "result.professional_review.review_status_select_label": "Review Status",
+      "result.professional_review.status_unreviewed": "Unreviewed",
+      "result.professional_review.status_confirmed": "Confirmed (Verified Correct)",
+      "result.professional_review.status_edited": "Edited (Adjusted/Corrected)",
+      "result.professional_review.status_rejected": "Rejected (Flawed Analysis)",
+      "result.professional_review.status_escalated": "Escalated (Higher-level Review Needed)",
+      "result.professional_review.review_comments_label": "Review Comments",
+      "result.professional_review.comment_placeholder": "Add legal assessment notes, overrides, or instructions...",
+      "result.professional_review.submit_button": "Submit Review",
+      "result.professional_review.not_reviewed_notice": "This assessment has not been reviewed by a qualified lawyer.",
+
+      // result.html — Priority Actions section
+      "result.priority_actions.title": "Priority Actions",
+      "result.priority_actions.empty": "No priority actions — no actionable findings detected.",
+
+      // result.html — Detected Findings & Anomalies section
+      "result.findings.title": "Detected Findings & Anomalies",
+      "result.findings.search_placeholder": "Search evidence or categories…",
+      "result.findings.severity_all": "All Severities",
+      "result.findings.severity_critical": "Critical Severity",
+      "result.findings.severity_high": "High Severity",
+      "result.findings.severity_medium": "Medium Severity",
+      "result.findings.severity_low": "Low Severity",
+      "result.findings.category_all": "All Categories",
+      "result.findings.category_unfair": "Unfair Clauses",
+      "result.findings.category_ai_classifier": "AI Classifier Findings",
+      "result.findings.category_missing_clause": "Missing Required Clauses",
+      "result.findings.status_all": "All Statuses",
+      "result.findings.status_unreviewed": "Unreviewed",
+      "result.findings.status_confirmed": "Confirmed",
+      "result.findings.status_rejected": "Rejected",
+      "result.findings.why_matters_label": "Why This Matters:",
+      "result.findings.suggested_replacement_label": "Suggested Replacement Clause:",
+      "result.findings.verified_citations_label": "Verified Citations:",
+      "result.findings.view_excerpt_button": "View Excerpt",
+      "result.findings.confirm_button": "Confirm",
+      "result.findings.reject_button": "Reject",
+      "result.findings.edit_spec_button": "Edit Spec",
+      "result.findings.empty_title": "No findings match the current filter matrix",
+      "result.findings.empty_note": "Note: Automated screening is a decision support tool and may not detect all compliance violations. Obtain professional legal review before final signature.",
+
+      // result.html — Mandatory Clause Checklist section
+      "result.checklist.title": "Mandatory Clause Checklist",
+      "result.checklist.required_badge": "REQUIRED",
+
+      // result.html — AI Explanation section (Layer 4)
+      "result.ai_explanation.title": "AI Explanation",
+      "result.ai_explanation.summary_label": "SUMMARY",
+      "result.ai_explanation.clause_commentary_label": "CLAUSE COMMENTARY",
+      "result.ai_explanation.compliance_notes_label": "COMPLIANCE NOTES",
+      "result.ai_explanation.recommendations_label": "RECOMMENDATIONS",
+
+      // result.html — Extracted Agreement Text & Evidence Viewer section
+      "result.evidence.title": "Extracted Agreement Text & Evidence Viewer",
+      "result.evidence.note": "matched evidence phrases are highlighted in the document scroll panel below.",
+
+      // result.html — Scoring Penalty Audit section
+      "result.scoring.title": "Scoring Penalty Audit",
+
+      // result.html — Analysis Limitations section
+      "result.limitations.title": "Analysis Limitations",
+
+      // result.html — Shared modal chrome
+      "result.modal.cancel_button": "Cancel",
+
+      // result.html — Edit Recommendation modal
+      "result.edit_modal.title": "Edit Finding specification",
+      "result.edit_modal.label": "Revision Recommendation Wording",
+      "result.edit_modal.save_button": "Save Changes",
+
+      // result.html — Reject Finding modal
+      "result.reject_modal.title": "Reject Finding",
+      "result.reject_modal.reason_label": "Reason for Rejection",
+      "result.reject_modal.reason_placeholder": "e.g. False positive — clause is present in section 4.2",
+      "result.reject_modal.confirm_button": "Reject Finding",
+
+      // result.html — Assign Reviewer modal
+      "result.assign_modal.title": "Assign Case Reviewer",
+      "result.assign_modal.description": "Select an active reviewer to delegate legal verification.",
+      "result.assign_modal.select_label": "Select Reviewer",
+      "result.assign_modal.option_auto": "System Default / Auto-Assign",
+      "result.assign_modal.option_lead": "Lead Analyst Team",
+      "result.assign_modal.option_senior": "Senior Corporate Reviewer",
+      "result.assign_modal.assign_button": "Assign Case",
+
+      // result.html — Footer
+      "result.footer.copyright": "© 2026 PT SYDECO — Contract Risk Analyzer",
     },
     id: {
       "nav.new_analysis": "Analisis Baru",
@@ -333,6 +451,124 @@
       "index.footer.privacy": "Privasi",
       "index.footer.terms": "Ketentuan",
       "index.footer.compliance": "Kepatuhan",
+
+      // result.html — Loading / Error / Processing states
+      "result.loading.message": "Mendekripsi dan memuat data penilaian…",
+      "result.error.title": "Kesalahan Penilaian",
+      "result.error.retry_link": "← Jalankan Analisis Baru",
+      "result.processing.title": "Pipeline Berdaulat Sedang Diproses…",
+      "result.processing.description": "Dokumen Anda sedang diproses di dalam partisi aman. Laporan ini akan otomatis dimuat setelah selesai.",
+      "result.processing.overall_progress": "Progres Keseluruhan",
+
+      // result.html — Case header
+      "result.case_header.new_scan_button": "+ Pemindaian Baru",
+
+      // result.html — Risk score hero panel
+      "result.risk.score_label": "Skor Risiko",
+      "result.risk.confidence_label": "Keyakinan Pipeline:",
+      "result.risk.confidence_footnote": "Dikalibrasi terhadap telemetri pengklasifikasi NLI jenis dokumen.",
+      "result.risk.disclaimer": "Dukungan keputusan semata — bukan nasihat hukum. Tidak menjamin keabsahan atau keberlakuan.",
+
+      // result.html — Next Actions card
+      "result.next_actions.title": "Tindakan Selanjutnya",
+      "result.next_actions.current_assignee_label": "Penerima Tugas Saat Ini",
+      "result.next_actions.assign_reviewer_button": "Tetapkan Peninjau",
+      "result.next_actions.compare_versions_label": "Bandingkan Versi",
+      "result.next_actions.no_previous_versions": "Tidak ada versi sebelumnya",
+
+      // result.html — Professional Review card
+      "result.professional_review.title": "Tinjauan Profesional",
+      "result.professional_review.status_label": "Status",
+      "result.professional_review.reviewer_label": "Peninjau",
+      "result.professional_review.review_date_label": "Tanggal Tinjauan",
+      "result.professional_review.comments_label": "Komentar",
+      "result.professional_review.review_status_select_label": "Status Tinjauan",
+      "result.professional_review.status_unreviewed": "Belum Ditinjau",
+      "result.professional_review.status_confirmed": "Dikonfirmasi (Terverifikasi Benar)",
+      "result.professional_review.status_edited": "Diedit (Disesuaikan/Dikoreksi)",
+      "result.professional_review.status_rejected": "Ditolak (Analisis Keliru)",
+      "result.professional_review.status_escalated": "Dieskalasi (Perlu Tinjauan Tingkat Lebih Tinggi)",
+      "result.professional_review.review_comments_label": "Komentar Tinjauan",
+      "result.professional_review.comment_placeholder": "Tambahkan catatan penilaian hukum, koreksi, atau instruksi...",
+      "result.professional_review.submit_button": "Kirim Tinjauan",
+      "result.professional_review.not_reviewed_notice": "Penilaian ini belum ditinjau oleh pengacara yang berkualifikasi.",
+
+      // result.html — Priority Actions section
+      "result.priority_actions.title": "Tindakan Prioritas",
+      "result.priority_actions.empty": "Tidak ada tindakan prioritas — tidak ada temuan yang dapat ditindaklanjuti terdeteksi.",
+
+      // result.html — Detected Findings & Anomalies section
+      "result.findings.title": "Temuan & Anomali Terdeteksi",
+      "result.findings.search_placeholder": "Cari bukti atau kategori…",
+      "result.findings.severity_all": "Semua Tingkat Keparahan",
+      "result.findings.severity_critical": "Tingkat Keparahan Kritis",
+      "result.findings.severity_high": "Tingkat Keparahan Tinggi",
+      "result.findings.severity_medium": "Tingkat Keparahan Sedang",
+      "result.findings.severity_low": "Tingkat Keparahan Rendah",
+      "result.findings.category_all": "Semua Kategori",
+      "result.findings.category_unfair": "Klausul Tidak Adil",
+      "result.findings.category_ai_classifier": "Temuan Pengklasifikasi AI",
+      "result.findings.category_missing_clause": "Klausul Wajib yang Hilang",
+      "result.findings.status_all": "Semua Status",
+      "result.findings.status_unreviewed": "Belum Ditinjau",
+      "result.findings.status_confirmed": "Dikonfirmasi",
+      "result.findings.status_rejected": "Ditolak",
+      "result.findings.why_matters_label": "Mengapa Ini Penting:",
+      "result.findings.suggested_replacement_label": "Klausul Pengganti yang Disarankan:",
+      "result.findings.verified_citations_label": "Sitasi Terverifikasi:",
+      "result.findings.view_excerpt_button": "Lihat Kutipan",
+      "result.findings.confirm_button": "Konfirmasi",
+      "result.findings.reject_button": "Tolak",
+      "result.findings.edit_spec_button": "Edit Spesifikasi",
+      "result.findings.empty_title": "Tidak ada temuan yang cocok dengan filter saat ini",
+      "result.findings.empty_note": "Catatan: Pemeriksaan otomatis adalah alat dukungan keputusan dan mungkin tidak mendeteksi semua pelanggaran kepatuhan. Dapatkan tinjauan hukum profesional sebelum penandatanganan akhir.",
+
+      // result.html — Mandatory Clause Checklist section
+      "result.checklist.title": "Daftar Periksa Klausul Wajib",
+      "result.checklist.required_badge": "WAJIB",
+
+      // result.html — AI Explanation section (Layer 4)
+      "result.ai_explanation.title": "Penjelasan AI",
+      "result.ai_explanation.summary_label": "RINGKASAN",
+      "result.ai_explanation.clause_commentary_label": "KOMENTAR KLAUSUL",
+      "result.ai_explanation.compliance_notes_label": "CATATAN KEPATUHAN",
+      "result.ai_explanation.recommendations_label": "REKOMENDASI",
+
+      // result.html — Extracted Agreement Text & Evidence Viewer section
+      "result.evidence.title": "Teks Perjanjian Terekstrak & Penampil Bukti",
+      "result.evidence.note": "frasa bukti yang cocok disorot pada panel gulir dokumen di bawah ini.",
+
+      // result.html — Scoring Penalty Audit section
+      "result.scoring.title": "Audit Penalti Penilaian",
+
+      // result.html — Analysis Limitations section
+      "result.limitations.title": "Keterbatasan Analisis",
+
+      // result.html — Shared modal chrome
+      "result.modal.cancel_button": "Batal",
+
+      // result.html — Edit Recommendation modal
+      "result.edit_modal.title": "Edit Spesifikasi Temuan",
+      "result.edit_modal.label": "Redaksi Revisi Rekomendasi",
+      "result.edit_modal.save_button": "Simpan Perubahan",
+
+      // result.html — Reject Finding modal
+      "result.reject_modal.title": "Tolak Temuan",
+      "result.reject_modal.reason_label": "Alasan Penolakan",
+      "result.reject_modal.reason_placeholder": "cth. Positif palsu — klausul ada di bagian 4.2",
+      "result.reject_modal.confirm_button": "Tolak Temuan",
+
+      // result.html — Assign Reviewer modal
+      "result.assign_modal.title": "Tetapkan Peninjau Kasus",
+      "result.assign_modal.description": "Pilih peninjau aktif untuk mendelegasikan verifikasi hukum.",
+      "result.assign_modal.select_label": "Pilih Peninjau",
+      "result.assign_modal.option_auto": "Default Sistem / Penetapan Otomatis",
+      "result.assign_modal.option_lead": "Tim Analis Utama",
+      "result.assign_modal.option_senior": "Peninjau Korporat Senior",
+      "result.assign_modal.assign_button": "Tetapkan Kasus",
+
+      // result.html — Footer
+      "result.footer.copyright": "© 2026 PT SYDECO — Penganalisis Risiko Kontrak",
     },
   };
 
