@@ -5,21 +5,6 @@ from deep_translator import GoogleTranslator
 
 logger = logging.getLogger(__name__)
 
-# Helsinki-NLP/opus-mt model ids per langdetect source code
-# ponytail: mul-en covers anything not listed; models download lazily on first use
-_OPUS_MT = {
-    "id": "Helsinki-NLP/opus-mt-id-en",
-    "fr": "Helsinki-NLP/opus-mt-fr-en",
-    "nl": "Helsinki-NLP/opus-mt-nl-en",
-    "de": "Helsinki-NLP/opus-mt-de-en",
-    "es": "Helsinki-NLP/opus-mt-es-en",
-    "it": "Helsinki-NLP/opus-mt-it-en",
-    "pt": "Helsinki-NLP/opus-mt-pt-en",
-}
-_OPUS_MT_FALLBACK = "Helsinki-NLP/opus-mt-mul-en"
-
-_local_model_cache: dict = {}  # model_id → (model, tokenizer)
-
 
 def _local_translate(text: str, src_lang: str) -> str:
     """Translate using the local lightml-translator microservice."""

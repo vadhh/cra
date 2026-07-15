@@ -30,6 +30,19 @@ from detector.risk_clause_db import detect_keyword_flags
 
 logger = logging.getLogger(__name__)
 
+# ponytail: lazy import to avoid circular during test bootstrap
+_profile_registry = None
+
+def _get_registry():
+    global _profile_registry
+    if _profile_registry is None:
+        try:
+            import detector.profile_registry as _pr
+            _profile_registry = _pr
+        except Exception as exc:  # pragma: no cover
+            logger.warning("profile_registry unavailable: %s", exc)
+    return _profile_registry
+
 
 # ── Governing Law ──────────────────────────────────────────────────────────────
 
@@ -610,22 +623,27 @@ def required_clauses_for(doc_type: Optional[str]) -> list[str]:
     Falls back to the generic baseline for unknown or missing types, so the
     analyzer always has an explicit required-clause set to score against.
     """
-    if doc_type:
-        try:
-            from detector.detector_profiles import ProfileManager
-            manager = ProfileManager()
-            p = manager.resolve_profile_by_name(doc_type)
-            if p:
-                return [c["clause_id"] for c in p.get("required_clauses", [])]
-        except Exception as e:
-            logger.warning("Dynamic required clauses resolution failed: %s", e)
-
     return list(_CONTRACT_TYPE_PROFILES.get(normalize_doc_type(doc_type), _BASELINE_REQUIRED))
 
 
 def clause_title(clause_id: str) -> str:
     """Human-readable title for a clause ID (falls back to the ID itself)."""
     return _CLAUSE_TITLES.get(clause_id, clause_id)
+
+
+def reconcile_required_flags(clause_presence: list[dict], doc_type: Optional[str]) -> None:
+    """Overwrite each entry's `required` flag with the contract-type-aware set, in place.
+
+    check_clause_presence() runs before Layer 2 has classified the document, so it
+    stamps `required` from the static _BASELINE_REQUIRED set. Once doc_type is known,
+    the mandatory set can differ (a lease needs lease_term/rent_amount, not
+    payment_terms/limitation_liability) -- callers (frontend checklist/findings,
+    risk_explainer) all read this flag, so it must match required_clauses_for(doc_type),
+    which is what L3 scoring and Explain Mode already use.
+    """
+    required_ids = set(required_clauses_for(doc_type))
+    for entry in clause_presence:
+        entry["required"] = entry["clause_id"] in required_ids
 
 
 def evaluate_contract_type_requirements(
@@ -649,7 +667,15 @@ def evaluate_contract_type_requirements(
         missing         : list[clause_id] mandatory but absent
     """
     norm = normalize_doc_type(doc_type)
-    required_ids = required_clauses_for(norm)
+    reg = _get_registry()
+    if reg is not None:
+        required_ids, matched_pid = reg.required_clauses_for(norm)
+        matched_profile = matched_pid is not None
+    else:
+        required_ids = required_clauses_for(norm)
+        matched_pid = norm if norm in _CONTRACT_TYPE_PROFILES else None
+        matched_profile = norm in _CONTRACT_TYPE_PROFILES
+
     present_ids = {c["clause_id"] for c in clause_presence if c.get("present")}
 
     mandatory = [
@@ -669,7 +695,7 @@ def evaluate_contract_type_requirements(
 
     return {
         "contract_type":   norm or "unknown",
-        "matched_profile": has_profile or (norm in _CONTRACT_TYPE_PROFILES),
+        "matched_profile": norm in _CONTRACT_TYPE_PROFILES,
         "mandatory":       mandatory,
         "present":         [cid for cid in required_ids if cid in present_ids],
         "missing":         missing,

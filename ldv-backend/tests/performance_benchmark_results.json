@@ -1,0 +1,249 @@
+{
+  "repeats_per_case": 5,
+  "cold_start": {
+    "en": {
+      "path": "pdf/03_nda_en.pdf",
+      "latency_ms": 6855.4
+    },
+    "id": {
+      "path": "pdf/01_employment_id.pdf",
+      "latency_ms": 11506.6
+    },
+    "fr": {
+      "path": "pdf/02_lease_be.pdf",
+      "latency_ms": 10275.1
+    },
+    "nl": {
+      "path": "docx/03_nda_nl.docx",
+      "latency_ms": 10243.0
+    }
+  },
+  "warm_by_case": [
+    {
+      "lang": "en",
+      "file_type": "pdf",
+      "size": "small",
+      "path": "pdf/03_nda_en.pdf",
+      "n": 5,
+      "mean_ms": 364.5,
+      "median_ms": 357.3,
+      "p95_ms": 406.9,
+      "max_ms": 406.9,
+      "min_ms": 304.5
+    },
+    {
+      "lang": "en",
+      "file_type": "pdf",
+      "size": "small",
+      "path": "pdf/05_brochure_en.pdf",
+      "n": 5,
+      "mean_ms": 316.0,
+      "median_ms": 335.8,
+      "p95_ms": 342.8,
+      "max_ms": 342.8,
+      "min_ms": 282.4
+    },
+    {
+      "lang": "id",
+      "file_type": "pdf",
+      "size": "small",
+      "path": "pdf/01_employment_id.pdf",
+      "n": 5,
+      "mean_ms": 1011.0,
+      "median_ms": 1048.1,
+      "p95_ms": 1279.6,
+      "max_ms": 1279.6,
+      "min_ms": 818.9
+    },
+    {
+      "lang": "id",
+      "file_type": "txt",
+      "size": "small",
+      "path": "txt/12_high_risk_unilateral_id.txt",
+      "n": 5,
+      "mean_ms": 614.0,
+      "median_ms": 599.7,
+      "p95_ms": 716.6,
+      "max_ms": 716.6,
+      "min_ms": 557.0
+    },
+    {
+      "lang": "fr",
+      "file_type": "pdf",
+      "size": "small",
+      "path": "pdf/02_lease_be.pdf",
+      "n": 5,
+      "mean_ms": 1038.3,
+      "median_ms": 1038.2,
+      "p95_ms": 1083.7,
+      "max_ms": 1083.7,
+      "min_ms": 984.2
+    },
+    {
+      "lang": "fr",
+      "file_type": "docx",
+      "size": "small",
+      "path": "docx/02_employment_fr.docx",
+      "n": 5,
+      "mean_ms": 877.8,
+      "median_ms": 922.1,
+      "p95_ms": 1021.0,
+      "max_ms": 1021.0,
+      "min_ms": 706.8
+    },
+    {
+      "lang": "nl",
+      "file_type": "docx",
+      "size": "small",
+      "path": "docx/03_nda_nl.docx",
+      "n": 5,
+      "mean_ms": 799.3,
+      "median_ms": 806.5,
+      "p95_ms": 900.7,
+      "max_ms": 900.7,
+      "min_ms": 673.6
+    },
+    {
+      "lang": "nl",
+      "file_type": "txt",
+      "size": "small",
+      "path": "txt/13_medium_risk_lease_nl.txt",
+      "n": 5,
+      "mean_ms": 782.0,
+      "median_ms": 827.1,
+      "p95_ms": 876.5,
+      "max_ms": 876.5,
+      "min_ms": 658.0
+    },
+    {
+      "lang": "en",
+      "file_type": "pdf",
+      "size": "large",
+      "path": "synthetic:6x:pdf/03_nda_en.pdf",
+      "chars": 5213,
+      "n": 5,
+      "mean_ms": 997.9,
+      "median_ms": 1034.9,
+      "p95_ms": 1164.9,
+      "max_ms": 1164.9,
+      "min_ms": 840.6
+    },
+    {
+      "lang": "id",
+      "file_type": "pdf",
+      "size": "large",
+      "path": "synthetic:6x:pdf/01_employment_id.pdf",
+      "chars": 5567,
+      "n": 5,
+      "mean_ms": 4458.4,
+      "median_ms": 4342.7,
+      "p95_ms": 5033.6,
+      "max_ms": 5033.6,
+      "min_ms": 3969.2
+    },
+    {
+      "lang": "fr",
+      "file_type": "pdf",
+      "size": "large",
+      "path": "synthetic:6x:pdf/02_lease_be.pdf",
+      "chars": 6137,
+      "n": 5,
+      "mean_ms": 4250.0,
+      "median_ms": 4395.2,
+      "p95_ms": 4636.6,
+      "max_ms": 4636.6,
+      "min_ms": 3243.6
+    },
+    {
+      "lang": "nl",
+      "file_type": "docx",
+      "size": "large",
+      "path": "synthetic:6x:docx/03_nda_nl.docx",
+      "chars": 5633,
+      "n": 5,
+      "mean_ms": 3916.6,
+      "median_ms": 3891.9,
+      "p95_ms": 4489.9,
+      "max_ms": 4489.9,
+      "min_ms": 3514.8
+    }
+  ],
+  "warm_by_language": {
+    "en": {
+      "n": 15,
+      "mean_ms": 559.5,
+      "median_ms": 357.3,
+      "p95_ms": 1047.1,
+      "max_ms": 1164.9,
+      "min_ms": 282.4
+    },
+    "id": {
+      "n": 15,
+      "mean_ms": 2027.8,
+      "median_ms": 1048.1,
+      "p95_ms": 4963.4,
+      "max_ms": 5033.6,
+      "min_ms": 557.0
+    },
+    "fr": {
+      "n": 15,
+      "mean_ms": 2055.4,
+      "median_ms": 1038.2,
+      "p95_ms": 4611.0,
+      "max_ms": 4636.6,
+      "min_ms": 706.8
+    },
+    "nl": {
+      "n": 15,
+      "mean_ms": 1832.6,
+      "median_ms": 843.8,
+      "p95_ms": 3969.6,
+      "max_ms": 4489.9,
+      "min_ms": 658.0
+    }
+  },
+  "warm_by_file_type": {
+    "pdf": {
+      "n": 35,
+      "mean_ms": 1776.6,
+      "median_ms": 1038.2,
+      "p95_ms": 4636.6,
+      "max_ms": 5033.6,
+      "min_ms": 282.4
+    },
+    "txt": {
+      "n": 10,
+      "mean_ms": 698.0,
+      "median_ms": 681.2,
+      "p95_ms": 876.5,
+      "max_ms": 876.5,
+      "min_ms": 557.0
+    },
+    "docx": {
+      "n": 15,
+      "mean_ms": 1864.6,
+      "median_ms": 922.1,
+      "p95_ms": 3969.6,
+      "max_ms": 4489.9,
+      "min_ms": 673.6
+    }
+  },
+  "warm_by_size": {
+    "small": {
+      "n": 40,
+      "mean_ms": 725.4,
+      "median_ms": 768.8,
+      "p95_ms": 1072.4,
+      "max_ms": 1279.6,
+      "min_ms": 282.4
+    },
+    "large": {
+      "n": 20,
+      "mean_ms": 3405.7,
+      "median_ms": 3969.4,
+      "p95_ms": 4963.4,
+      "max_ms": 5033.6,
+      "min_ms": 840.6
+    }
+  }
+}

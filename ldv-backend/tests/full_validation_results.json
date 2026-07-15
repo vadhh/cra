@@ -153,7 +153,7 @@
     "section": "2.1",
     "label": "PDF text extracted: 03_nda_en.pdf",
     "outcome": "PASS",
-    "detail": "770 chars"
+    "detail": "857 chars"
   },
   {
     "section": "2.1",
@@ -166,6 +166,12 @@
     "label": "PDF text extracted: 05_brochure_en.pdf",
     "outcome": "PASS",
     "detail": "569 chars"
+  },
+  {
+    "section": "2.1",
+    "label": "PDF text extracted: 06_scanned_blank_en.pdf",
+    "outcome": "PASS",
+    "detail": "is blank as expected"
   },
   {
     "section": "2.2",
@@ -196,6 +202,18 @@
     "label": "DOCX text extracted: 05_general_terms_en.docx",
     "outcome": "PASS",
     "detail": "679 chars"
+  },
+  {
+    "section": "2.2",
+    "label": "DOCX text extracted: 06_memo_fr.docx",
+    "outcome": "PASS",
+    "detail": "760 chars"
+  },
+  {
+    "section": "2.2",
+    "label": "DOCX text extracted: 07_brochure_nl.docx",
+    "outcome": "PASS",
+    "detail": "492 chars"
   },
   {
     "section": "2.3",
@@ -288,6 +306,12 @@
     "detail": "838 chars"
   },
   {
+    "section": "2.3",
+    "label": "TXT text extracted: 16_notice_id.txt",
+    "outcome": "PASS",
+    "detail": "463 chars"
+  },
+  {
     "section": "4.1",
     "label": "Indonesian employment (PDF) \u2192 Indonesia",
     "outcome": "PASS",
@@ -369,7 +393,7 @@
     "section": "8.1",
     "label": "layer3.score is int 0-100 and layer3.label is LOW/MEDIUM/HIGH/CRITICAL",
     "outcome": "PASS",
-    "detail": "{'breakdown': [{'points': -20, 'reason': 'Missing mandatory clause for service agreement \u2014 Scope of Services / Deliverables [CRITICAL]'}, {'points': -20, 'reason': 'Missing mandatory clause for service agreement \u2014 Payment Terms [CRITICAL]'}, {'points': -20, 'reason': 'Missing mandatory clause for service agreement \u2014 Limitation of Liability [CRITICAL]'}, {'points': -15, 'reason': 'Missing mandatory clause for service agreement \u2014 Dispute Resolution [HIGH]'}, {'points': -12, 'reason': 'Governing law clause absent'}, {'points': -8, 'reason': 'Jurisdiction / venue clause absent'}], 'calibration_status': 'provisional_uncalibrated', 'confidence': 98.4, 'contract_type': 'service agreement', 'features': {'contract_type': 'service agreement', 'has_governing_law': False, 'has_venue': False, 'high_flags': 0, 'l2_available': True, 'mandatory_clauses': [{'clause_id': 'governing_law', 'present': False, 'title': 'Governing Law'}, {'clause_id': 'jurisdiction_venue', 'present': False, 'title': 'Jurisdiction / Venue'}, {'clause_id': 'scope_of_services', 'present': False, 'title': 'Scope of Services / Deliverables'}, {'clause_id': 'payment_terms', 'present': False, 'title': 'Payment Terms'}, {'clause_id': 'termination', 'present': True, 'title': 'Termination'}, {'clause_id': 'limitation_liability', 'present': False, 'title': 'Limitation of Liability'}, {'clause_id': 'dispute_resolution', 'present': False, 'title': 'Dispute Resolution'}], 'matched_profile': True, 'medium_flags': 0, 'missing_mandatory_ids': ['scope_of_services', 'payment_terms', 'limitation_liability', 'dispute_resolution'], 'missing_required': 4, 'unique_l2': 0}, 'label': 'CRITICAL', 'limitation_notice': 'This risk score is based on a provisional, uncalibrated scoring policy. The weights are uncalibrated and should not be used as authoritative legal advice.', 'policy_version': 'default_v1', 'required_clauses': [{'business_impact': 'Tanpa hukum yang mengatur, sengketa dapat diputuskan di bawah sistem hukum yang tidak terduga atau merugikan.', 'clause_id': 'governing_law', 'impact_level': 'Critical', 'present': False, 'reason': 'Menentukan hukum negara mana yang menafsirkan kontrak memberikan kepastian dan prediktabilitas hukum.', 'recommendation': \"Nyatakan hukum yang mengatur secara eksplisit (misal 'hukum Swiss' atau 'hukum Prancis'). Hindari referensi samar.\", 'source': 'kb_required_clauses', 'title': 'Governing Law'}, {'clause_id': 'jurisdiction_venue', 'present': False, 'title': 'Jurisdiction / Venue'}, {'business_impact': 'Objek yang kabur menyebabkan sengketa tentang kinerja dan dapat membatalkan kontrak.', 'clause_id': 'scope_of_services', 'impact_level': 'Critical', 'present': False, 'reason': 'Kontrak harus mendefinisikan dengan jelas apa yang disediakan, dijual, dipinjamkan, atau dilakukan untuk menghindari kesalahpahaman.', 'recommendation': 'Jelaskan subjek secara rinci termasuk jumlah, kualitas, spesifikasi, dan karakteristik relevan lainnya.', 'source': 'kb_required_clauses', 'title': 'Scope of Services / Deliverables'}, {'business_impact': 'Ketentuan pembayaran yang tidak jelas menyebabkan keterlambatan pembayaran dan ketidakpastian finansial.', 'clause_id': 'payment_terms', 'impact_level': 'Critical', 'present': False, 'reason': 'Ketentuan pembayaran menentukan kapan dan bagaimana uang berpindah, mencegah sengketa arus kas.', 'recommendation': 'Tentukan jadwal pembayaran, tanggal jatuh tempo, metode yang diterima (tunai, transfer bank), dan konsekuensi keterlambatan.', 'source': 'kb_required_clauses', 'title': 'Payment Terms'}, {'business_impact': 'Tanpa hak pengakhiran, pihak dapat terjebak dalam perjanjian yang tidak menguntungkan atau tidak berkinerja.', 'clause_id': 'termination', 'impact_level': 'High', 'present': True, 'reason': 'Klausul pengakhiran memungkinkan pihak keluar dari kontrak secara legal, mencegah kewajiban abadi.', 'recommendation': 'Sertakan hak untuk mengakhiri dengan pemberitahuan tertulis (misal 30 hari) dan ketentuan pemutusan karena pelanggaran.', 'source': 'kb_required_clauses', 'title': 'Termination'}, {'business_impact': 'Tanggung jawab tanpa batas dapat membangkrutkan satu pihak karena satu kesalahan atau pelanggaran.', 'clause_id': 'limitation_liability', 'impact_level': 'Critical', 'present': False, 'reason': 'Klausul tanggung jawab mengalokasikan risiko finansial antar pihak dan biasanya mencakup batasan untuk membatasi eksposur.', 'recommendation': 'Sertakan batasan tanggung jawab timbal balik (misal maksimal nilai kontrak) dan kecualikan kerugian tidak langsung.', 'source': 'kb_required_clauses', 'title': 'Limitation of Liability'}, {'business_impact': 'Tanpa ini, para pihak dapat menghadapi litigasi mahal dan tidak terduga di forum yang tidak nyaman.', 'clause_id': 'dispute_resolution', 'impact_level': 'High', 'present': False, 'reason': 'Mekanisme penyelesaian sengketa yang jelas menghindari perang pengadilan yang mahal dan panjang.', 'recommendation': 'Tentukan metode (mediasi, arbitrase, atau pengadilan), tempat, dan langkah pra\u2011litigasi (misal mediasi).', 'source': 'kb_required_clauses', 'title': 'Dispute Resolution'}], 'score': 95}"
+    "detail": "{'breakdown': [{'points': -10, 'reason': 'Missing mandatory clause for employment contract \u2014 Notice Period'}, {'points': -15, 'reason': 'Missing mandatory clause for employment contract \u2014 Dispute Resolution [HIGH]'}, {'points': -8, 'reason': 'Jurisdiction / venue clause absent'}], 'calibration_status': 'provisional_uncalibrated', 'confidence': 20.0, 'contract_type': 'employment contract', 'features': {'contract_type': 'employment contract', 'has_governing_law': True, 'has_venue': False, 'high_flags': 0, 'l2_available': True, 'mandatory_clauses': [{'clause_id': 'governing_law', 'present': True, 'title': 'Governing Law'}, {'clause_id': 'jurisdiction_venue', 'present': False, 'title': 'Jurisdiction / Venue'}, {'clause_id': 'termination', 'present': True, 'title': 'Termination'}, {'clause_id': 'notice_period', 'present': False, 'title': 'Notice Period'}, {'clause_id': 'compensation', 'present': True, 'title': 'Compensation / Salary'}, {'clause_id': 'working_hours', 'present': True, 'title': 'Working Hours'}, {'clause_id': 'dispute_resolution', 'present': False, 'title': 'Dispute Resolution'}], 'matched_profile': True, 'medium_flags': 0, 'missing_mandatory_ids': ['notice_period', 'dispute_resolution'], 'missing_required': 2, 'unique_l2': 0}, 'label': 'MEDIUM', 'limitation_notice': 'This risk score is based on a provisional, uncalibrated scoring policy. The weights are uncalibrated and should not be used as authoritative legal advice.', 'policy_version': 'default_v1', 'required_clauses': [{'business_impact': 'Tanpa hukum yang mengatur, sengketa dapat diputuskan di bawah sistem hukum yang tidak terduga atau merugikan.', 'clause_id': 'governing_law', 'impact_level': 'Critical', 'present': True, 'reason': 'Menentukan hukum negara mana yang menafsirkan kontrak memberikan kepastian dan prediktabilitas hukum.', 'recommendation': \"Nyatakan hukum yang mengatur secara eksplisit (misal 'hukum Swiss' atau 'hukum Prancis'). Hindari referensi samar.\", 'source': 'kb_required_clauses', 'title': 'Governing Law'}, {'clause_id': 'jurisdiction_venue', 'present': False, 'title': 'Jurisdiction / Venue'}, {'business_impact': 'Tanpa hak pengakhiran, pihak dapat terjebak dalam perjanjian yang tidak menguntungkan atau tidak berkinerja.', 'clause_id': 'termination', 'impact_level': 'High', 'present': True, 'reason': 'Klausul pengakhiran memungkinkan pihak keluar dari kontrak secara legal, mencegah kewajiban abadi.', 'recommendation': 'Sertakan hak untuk mengakhiri dengan pemberitahuan tertulis (misal 30 hari) dan ketentuan pemutusan karena pelanggaran.', 'source': 'kb_required_clauses', 'title': 'Termination'}, {'clause_id': 'notice_period', 'present': False, 'title': 'Notice Period'}, {'business_impact': 'Tanpa klausul gaji, karyawan mungkin tidak dibayar atau dibayar lebih rendah.', 'clause_id': 'compensation', 'impact_level': 'Critical', 'present': True, 'reason': 'Klausul gaji mendefinisikan kompensasi dan frekuensi pembayaran untuk menghindari sengketa upah.', 'recommendation': 'Tentukan gaji bulanan bruto, bulan tambahan (misal ke-13), dan tanggal pembayaran.', 'source': 'kb_required_clauses', 'title': 'Compensation / Salary'}, {'business_impact': 'Jam yang hilang dapat menyebabkan sengketa upah dan pelanggaran hukum ketenagakerjaan.', 'clause_id': 'working_hours', 'impact_level': 'Critical', 'present': True, 'reason': 'Jam kerja menentukan upah lembur dan kepatuhan terhadap undang-undang ketenagakerjaan.', 'recommendation': 'Sebutkan jam kerja mingguan atau bulanan, dan jika ada, pembagian antar hari.', 'source': 'kb_required_clauses', 'title': 'Working Hours'}, {'business_impact': 'Tanpa ini, para pihak dapat menghadapi litigasi mahal dan tidak terduga di forum yang tidak nyaman.', 'clause_id': 'dispute_resolution', 'impact_level': 'High', 'present': False, 'reason': 'Mekanisme penyelesaian sengketa yang jelas menghindari perang pengadilan yang mahal dan panjang.', 'recommendation': 'Tentukan metode (mediasi, arbitrase, atau pengadilan), tempat, dan langkah pra\u2011litigasi (misal mediasi).', 'source': 'kb_required_clauses', 'title': 'Dispute Resolution'}], 'score': 33}"
   },
   {
     "section": "8.2",

@@ -38,8 +38,24 @@ def test_create_org_and_user():
     assert u is not None and u["api_token"]
 
 
+def test_ensure_pilot_admin_is_idempotent_and_exempt():
+    os.environ.pop("LDV_PILOT_ADMIN_PASSWORD", None)
+    manage.ensure_pilot_admin_cmd()
+    assert database.get_user_by_email("pilot-admin@ldv.local") is None  # no-op without password
+
+    os.environ["LDV_PILOT_ADMIN_PASSWORD"] = "pilotpw"
+    manage.ensure_pilot_admin_cmd()
+    u = database.get_user_by_email("pilot-admin@ldv.local")
+    assert u is not None and u["role"] == "admin" and u["mfa_exempt"] == 1
+
+    manage.ensure_pilot_admin_cmd()  # second call must not raise / duplicate
+    assert database.get_user_by_email("pilot-admin@ldv.local")["id"] == u["id"]
+    os.environ.pop("LDV_PILOT_ADMIN_PASSWORD", None)
+
+
 if __name__ == "__main__":
     setup_module(None)
     test_seed_admin_is_idempotent()
     test_create_org_and_user()
+    test_ensure_pilot_admin_is_idempotent_and_exempt()
     print("OK")
