@@ -7,6 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="images/sydeco_shield.svg">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
+  <script defer src="i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" integrity="sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -133,6 +134,10 @@
 </head>
 <body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-y-auto"
       x-data="loginApp()" x-init="initApp()">
+  <button type="button" data-lang-toggle onclick="i18n.toggleLang()"
+          class="fixed top-3 right-3 z-[60] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-primary/40 bg-surface-container/90 text-primary hover:bg-primary hover:text-on-primary transition-colors backdrop-blur-sm"
+          aria-label="Toggle language / Ganti bahasa">ID</button>
+
   <!-- Subtle Ambient Background -->
   <div class="fixed inset-0 pointer-events-none z-0">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
@@ -149,16 +154,16 @@
         <path d="M70 80L130 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
         <path d="M80 120L120 120" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
       </svg>
-      <h1 class="font-display text-5xl text-primary tracking-tight">Access Gate</h1>
-      <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-[0.3em] mt-3 font-semibold">Sovereign Intelligence Protocol</p>
+      <h1 class="font-display text-5xl text-primary tracking-tight" data-i18n="login.brand.title">Access Gate</h1>
+      <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-[0.3em] mt-3 font-semibold" data-i18n="login.brand.subtitle">Sovereign Intelligence Protocol</p>
     </div>
 
     <!-- State 1: Login Form (Email & Password) -->
     <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'login'" x-transition>
       <div class="space-y-8 relative z-10">
         <header>
-          <h2 class="font-display text-2xl text-on-surface">Secure Identity Verification</h2>
-          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Authorized personnel only.</p>
+          <h2 class="font-display text-2xl text-on-surface" data-i18n="login.form.title">Secure Identity Verification</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm" data-i18n="login.form.subtitle">Authorized personnel only.</p>
         </header>
 
         <form class="space-y-6" @submit.prevent="submitLogin()">
@@ -166,10 +171,10 @@
           <div class="space-y-2">
             <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="email">
               <span class="material-symbols-outlined text-[18px]">mail</span>
-              Institutional Email
+              <span data-i18n="login.form.email_label">Institutional Email</span>
             </label>
             <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
-                   id="email" type="email" x-model="email" placeholder="name@sydeco.legal" required autocomplete="email"/>
+                   id="email" type="email" x-model="email" placeholder="name@sydeco.legal" required autocomplete="email" data-i18n-placeholder="login.form.email_placeholder"/>
           </div>
 
           <!-- Password Input -->
@@ -177,9 +182,9 @@
             <div class="flex justify-between items-center">
               <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="password">
                 <span class="material-symbols-outlined text-[18px]">lock</span>
-                Access Key
+                <span data-i18n="login.form.password_label">Access Key</span>
               </label>
-              <button type="button" @click="state = 'forgot_password'; errorMsg = ''" class="text-xs text-primary/80 hover:text-primary transition-colors">Forgot Password?</button>
+              <button type="button" @click="state = 'forgot_password'; errorMsg = ''" class="text-xs text-primary/80 hover:text-primary transition-colors" data-i18n="login.form.forgot_password_link">Forgot Password?</button>
             </div>
             <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
                    id="password" type="password" x-model="password" placeholder="••••••••" required autocomplete="current-password"/>
@@ -189,16 +194,16 @@
           <div class="space-y-2">
             <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="orgCode">
               <span class="material-symbols-outlined text-[18px]">corporate_fare</span>
-              Organization Context <span class="text-xs text-on-surface-variant/40">(Optional)</span>
+              <span data-i18n="login.form.org_label">Organization Context</span> <span class="text-xs text-on-surface-variant/40" data-i18n="login.form.optional_suffix">(Optional)</span>
             </label>
             <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
-                   id="orgCode" type="text" x-model="orgCode" placeholder="Default Organization"/>
+                   id="orgCode" type="text" x-model="orgCode" placeholder="Default Organization" data-i18n-placeholder="login.form.org_placeholder"/>
           </div>
 
           <!-- Security Options -->
           <div class="flex items-center gap-3">
             <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer" id="remember" type="checkbox" x-model="rememberSession"/>
-            <label class="text-xs text-on-surface-variant cursor-pointer" for="remember">Grant persistent session (24h)</label>
+            <label class="text-xs text-on-surface-variant cursor-pointer" for="remember" data-i18n="login.form.remember_label">Grant persistent session (24h)</label>
           </div>
 
           <!-- Error Alert -->
@@ -218,8 +223,8 @@
 
         <footer class="pt-6 border-t border-outline-variant/10 text-center">
           <p class="text-xs text-on-surface-variant/60 leading-relaxed">
-            Connection secured via AES-256 Sovereign Protocol. 
-            <br/>Need assistance? <button @click="state = 'forgot_password'; errorMsg = ''" class="text-primary/80 hover:text-primary transition-colors underline font-medium">Contact System Admin</button>
+            <span data-i18n="login.form.footer_security">Connection secured via AES-256 Sovereign Protocol.</span>
+            <br/><span data-i18n="login.form.footer_help">Need assistance?</span> <button @click="state = 'forgot_password'; errorMsg = ''" class="text-primary/80 hover:text-primary transition-colors underline font-medium" data-i18n="login.form.footer_contact_admin">Contact System Admin</button>
           </p>
         </footer>
       </div>
@@ -252,10 +257,10 @@
           <div class="p-4 bg-surface-container-low/50 border border-outline-variant/10 rounded space-y-3 font-body">
             <div class="flex items-center gap-3">
               <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer" id="trustDevice" type="checkbox" x-model="trustDevice"/>
-              <label class="text-xs font-semibold text-on-surface cursor-pointer" for="trustDevice">Trust this device for 30 days</label>
+              <label class="text-xs font-semibold text-on-surface cursor-pointer" for="trustDevice" data-i18n="login.mfa_challenge.trust_label">Trust this device for 30 days</label>
             </div>
             <p class="text-[11px] text-on-surface-variant/60 leading-relaxed">
-              <strong>Trusted Device Policy:</strong> Do not select this option on shared or public terminals. Selecting this will bypass multi-factor enrollment checks on this browser session for the next 30 days.
+              <strong data-i18n="login.mfa_challenge.policy_title">Trusted Device Policy:</strong> <span data-i18n="login.mfa_challenge.policy_body">Do not select this option on shared or public terminals. Selecting this will bypass multi-factor enrollment checks on this browser session for the next 30 days.</span>
             </p>
           </div>
 
@@ -264,7 +269,7 @@
                x-show="errorMsg" x-transition x-text="errorMsg" style="display:none;"></div>
 
           <div class="flex gap-4">
-            <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+            <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant" data-i18n="login.common.cancel_button">
               Cancel
             </button>
             <button class="gold-prestige-btn flex-[2] py-3 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center gap-2"
@@ -284,8 +289,8 @@
     <section class="obsidian-panel shadow-3 w-full max-w-lg p-8 rounded-lg relative overflow-hidden" x-show="state === 'mfa_enroll'" x-transition style="display:none;">
       <div class="space-y-6 relative z-10">
         <header>
-          <h2 class="font-display text-2xl text-on-surface">MFA Enrollment Required</h2>
-          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Multi-Factor Authentication is mandatory for your corporate account security.</p>
+          <h2 class="font-display text-2xl text-on-surface" data-i18n="login.mfa_enroll.title">MFA Enrollment Required</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm" data-i18n="login.mfa_enroll.subtitle">Multi-Factor Authentication is mandatory for your corporate account security.</p>
         </header>
 
         <div class="space-y-6 text-sm leading-relaxed text-on-surface-variant">
@@ -293,16 +298,16 @@
           <div class="flex flex-col md:flex-row gap-6 items-center bg-surface-container-lowest/30 p-5 border border-outline-variant/10 rounded">
             <div class="bg-white p-3 rounded shrink-0 w-40 h-40 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full" x-html="mfaSetup.qrCodeSvg"></div>
             <div class="space-y-2">
-              <p class="font-bold text-on-surface text-base">1. Scan QR Code</p>
-              <p>Scan this QR code using Google Authenticator, Duo, or any TOTP application on your secure mobile device.</p>
-              <p class="text-xs mt-2">Manual entry key: <code class="bg-surface-container px-2 py-1 rounded text-primary font-bold tracking-wider" x-text="mfaSetup.secret"></code></p>
+              <p class="font-bold text-on-surface text-base" data-i18n="login.mfa_enroll.step1_title">1. Scan QR Code</p>
+              <p data-i18n="login.mfa_enroll.step1_desc">Scan this QR code using Google Authenticator, Duo, or any TOTP application on your secure mobile device.</p>
+              <p class="text-xs mt-2"><span data-i18n="login.mfa_enroll.manual_key_label">Manual entry key:</span> <code class="bg-surface-container px-2 py-1 rounded text-primary font-bold tracking-wider" x-text="mfaSetup.secret"></code></p>
             </div>
           </div>
 
           <!-- Step 2: Recovery Codes -->
           <div class="p-5 border border-outline-variant/15 rounded bg-surface-container-low/50">
-            <p class="font-bold text-on-surface text-base mb-2">2. Secure Recovery Codes</p>
-            <p class="mb-4">These recovery keys allow access if you lose your authentication device. Store them in a secure physical vault.</p>
+            <p class="font-bold text-on-surface text-base mb-2" data-i18n="login.mfa_enroll.step2_title">2. Secure Recovery Codes</p>
+            <p class="mb-4" data-i18n="login.mfa_enroll.step2_desc">These recovery keys allow access if you lose your authentication device. Store them in a secure physical vault.</p>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-2 font-mono text-xs text-primary font-bold text-center bg-background/50 p-3 rounded border border-outline-variant/10">
               <template x-for="code in mfaSetup.recoveryCodes">
                 <span x-text="code"></span>
@@ -313,10 +318,10 @@
           <!-- Step 3: Verification Code -->
           <form class="space-y-4 pt-2 border-t border-outline-variant/10" @submit.prevent="verifyMfaEnroll()">
             <div class="space-y-2">
-              <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="enrollCode">
+              <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="enrollCode" data-i18n="login.mfa_enroll.step3_title">
                 3. Verify TOTP Code
               </label>
-              <p class="text-xs">Enter the generated 6-digit code from your authenticator app to enable MFA and sign in.</p>
+              <p class="text-xs" data-i18n="login.mfa_enroll.step3_desc">Enter the generated 6-digit code from your authenticator app to enable MFA and sign in.</p>
               <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface text-center tracking-[0.5em] px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-xl font-bold placeholder:text-on-surface/20"
                      id="enrollCode" type="text" x-model="mfaCode" placeholder="000000" maxlength="6" required autocomplete="off"/>
             </div>
@@ -326,10 +331,10 @@
                  x-show="errorMsg" x-transition x-text="errorMsg" style="display:none;"></div>
 
             <div class="flex flex-col sm:flex-row gap-4">
-              <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+              <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant" data-i18n="login.common.cancel_button">
                 Cancel
               </button>
-              <button type="button" @click="skipMfaEnroll()" class="flex-1 py-3 border border-primary/30 hover:bg-primary/5 transition-colors rounded text-sm font-semibold text-primary" :disabled="loading">
+              <button type="button" @click="skipMfaEnroll()" class="flex-1 py-3 border border-primary/30 hover:bg-primary/5 transition-colors rounded text-sm font-semibold text-primary" :disabled="loading" data-i18n="login.mfa_enroll.skip_button">
                 Skip for now
               </button>
               <button class="gold-prestige-btn flex-[2] py-3 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center gap-2"
@@ -350,8 +355,8 @@
     <section class="obsidian-panel shadow-3 w-full max-w-md p-10 rounded-lg relative overflow-hidden" x-show="state === 'forgot_password'" x-transition style="display:none;">
       <div class="space-y-8 relative z-10">
         <header>
-          <h2 class="font-display text-2xl text-on-surface">Recover Access coordinates</h2>
-          <p class="text-on-surface-variant mt-1 opacity-80 text-sm">Submit your institutional email to request a security key reset.</p>
+          <h2 class="font-display text-2xl text-on-surface" data-i18n="login.forgot.title">Recover Access coordinates</h2>
+          <p class="text-on-surface-variant mt-1 opacity-80 text-sm" data-i18n="login.forgot.subtitle">Submit your institutional email to request a security key reset.</p>
         </header>
 
         <!-- Form Block -->
@@ -360,18 +365,18 @@
             <div class="space-y-2">
               <label class="font-label-md text-label-sm text-on-surface-variant flex items-center gap-2 uppercase tracking-widest" for="recoveryEmail">
                 <span class="material-symbols-outlined text-[18px]">mail</span>
-                Institutional Email
+                <span data-i18n="login.forgot.email_label">Institutional Email</span>
               </label>
               <input class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all text-sm placeholder:text-on-surface/20"
-                     id="recoveryEmail" type="email" x-model="recoveryEmail" placeholder="name@sydeco.legal" required autocomplete="email"/>
+                     id="recoveryEmail" type="email" x-model="recoveryEmail" placeholder="name@sydeco.legal" required autocomplete="email" data-i18n-placeholder="login.forgot.email_placeholder"/>
             </div>
 
             <p class="text-xs text-on-surface-variant/70 leading-relaxed font-body">
-              <strong>Sovereign Policy Note:</strong> In compliance with secure corporate identity directives, password credentials cannot be self-reset. Submitting this form issues an audit event and alerts your organization's security administrator to release a temporary access token.
+              <strong data-i18n="login.forgot.policy_title">Sovereign Policy Note:</strong> <span data-i18n="login.forgot.policy_body">In compliance with secure corporate identity directives, password credentials cannot be self-reset. Submitting this form issues an audit event and alerts your organization's security administrator to release a temporary access token.</span>
             </p>
 
             <div class="flex gap-4">
-              <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+              <button type="button" @click="resetToLogin()" class="flex-1 py-3 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant" data-i18n="login.common.cancel_button">
                 Cancel
               </button>
               <button class="gold-prestige-btn flex-[2] py-3 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest flex items-center justify-center"
@@ -387,14 +392,14 @@
           <div class="flex gap-3 bg-primary/10 border border-primary/30 p-4 rounded text-primary-fixed">
             <span class="material-symbols-outlined text-primary text-[24px] shrink-0">check_circle</span>
             <div>
-              <p class="font-bold text-sm">Access Request Initiated</p>
-              <p class="text-xs text-on-surface-variant/90 mt-1">Coordination alert dispatched to your system security officers.</p>
+              <p class="font-bold text-sm" data-i18n="login.forgot.success_title">Access Request Initiated</p>
+              <p class="text-xs text-on-surface-variant/90 mt-1" data-i18n="login.forgot.success_desc">Coordination alert dispatched to your system security officers.</p>
             </div>
           </div>
           <p class="text-on-surface-variant leading-relaxed">
-            Please contact your organization's designated administrator or internal IT Help Desk to authorize the credential release for <strong class="text-on-surface font-semibold" x-text="recoveryEmail"></strong>.
+            <span data-i18n="login.forgot.success_contact">Please contact your organization's designated administrator or internal IT Help Desk to authorize the credential release for</span> <strong class="text-on-surface font-semibold" x-text="recoveryEmail"></strong>.
           </p>
-          <button type="button" @click="resetToLogin(); recoveryRequested = false;" class="w-full py-3.5 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant">
+          <button type="button" @click="resetToLogin(); recoveryRequested = false;" class="w-full py-3.5 border border-outline-variant/40 hover:bg-surface-container-low transition-colors rounded text-sm font-semibold text-on-surface-variant" data-i18n="login.forgot.return_button">
             Return to Sign In
           </button>
         </div>
@@ -409,20 +414,20 @@
         </div>
 
         <header class="space-y-2">
-          <h2 class="font-display text-2xl text-on-surface">Security Session Expired</h2>
-          <p class="text-red-300 font-semibold text-xs tracking-wider uppercase">Inactivity Limit Reached</p>
+          <h2 class="font-display text-2xl text-on-surface" data-i18n="login.session_expired.title">Security Session Expired</h2>
+          <p class="text-red-300 font-semibold text-xs tracking-wider uppercase" data-i18n="login.session_expired.subtitle">Inactivity Limit Reached</p>
         </header>
 
-        <p class="text-on-surface-variant text-sm leading-relaxed font-body">
+        <p class="text-on-surface-variant text-sm leading-relaxed font-body" data-i18n="login.session_expired.description">
           To protect proprietary legal assets and institutional configurations, your sovereign access session has been terminated. Any unsaved contract analysis progress has been safely wiped from the browser viewport.
         </p>
 
         <div class="w-full pt-4 space-y-4">
           <button type="button" @click="resetToLogin()"
-                  class="gold-prestige-btn w-full py-4 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest">
+                  class="gold-prestige-btn w-full py-4 rounded font-label-md text-label-md text-on-primary uppercase tracking-widest" data-i18n="login.session_expired.reauth_button">
             Re-Authenticate Portal
           </button>
-          <p class="text-[10px] text-on-surface-variant/50">
+          <p class="text-[10px] text-on-surface-variant/50" data-i18n="login.session_expired.footer_note">
             Secure Endpoint: PT SYDECO LightML Contract Risk Analyzer v1.0
           </p>
         </div>
@@ -431,13 +436,13 @@
 
     <!-- Footer -->
     <footer class="mt-auto py-8 w-full flex flex-col md:flex-row justify-between items-center opacity-40 text-xs z-10">
-      <div class="tracking-wide">
+      <div class="tracking-wide" data-i18n="login.footer.copyright">
         © 2026 PT SYDECO. Contract Risk Analyzer.
       </div>
       <div class="flex gap-8 mt-4 md:mt-0">
-        <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
-        <a class="hover:text-primary transition-colors" href="#">Terms of Use</a>
-        <a class="hover:text-primary transition-colors" href="#">Compliance</a>
+        <a class="hover:text-primary transition-colors" href="#" data-i18n="login.footer.privacy">Privacy Policy</a>
+        <a class="hover:text-primary transition-colors" href="#" data-i18n="login.footer.terms">Terms of Use</a>
+        <a class="hover:text-primary transition-colors" href="#" data-i18n="login.footer.compliance">Compliance</a>
       </div>
     </footer>
   </main>

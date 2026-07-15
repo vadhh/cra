@@ -287,6 +287,68 @@
 
       // result.html — Footer
       "result.footer.copyright": "© 2026 PT SYDECO — Contract Risk Analyzer",
+
+      // login.html — Branding & login form (shared header)
+      "login.brand.title": "Access Gate",
+      "login.brand.subtitle": "Sovereign Intelligence Protocol",
+      "login.form.title": "Secure Identity Verification",
+      "login.form.subtitle": "Authorized personnel only.",
+      "login.form.email_label": "Institutional Email",
+      "login.form.email_placeholder": "name@sydeco.legal",
+      "login.form.password_label": "Access Key",
+      "login.form.forgot_password_link": "Forgot Password?",
+      "login.form.org_label": "Organization Context",
+      "login.form.optional_suffix": "(Optional)",
+      "login.form.org_placeholder": "Default Organization",
+      "login.form.remember_label": "Grant persistent session (24h)",
+      "login.form.footer_security": "Connection secured via AES-256 Sovereign Protocol.",
+      "login.form.footer_help": "Need assistance?",
+      "login.form.footer_contact_admin": "Contact System Admin",
+
+      // login.html — Shared chrome (reused across MFA/recovery states)
+      "login.common.cancel_button": "Cancel",
+
+      // login.html — MFA Verification Challenge
+      "login.mfa_challenge.trust_label": "Trust this device for 30 days",
+      "login.mfa_challenge.policy_title": "Trusted Device Policy:",
+      "login.mfa_challenge.policy_body": "Do not select this option on shared or public terminals. Selecting this will bypass multi-factor enrollment checks on this browser session for the next 30 days.",
+
+      // login.html — MFA Enrollment Setup
+      "login.mfa_enroll.title": "MFA Enrollment Required",
+      "login.mfa_enroll.subtitle": "Multi-Factor Authentication is mandatory for your corporate account security.",
+      "login.mfa_enroll.step1_title": "1. Scan QR Code",
+      "login.mfa_enroll.step1_desc": "Scan this QR code using Google Authenticator, Duo, or any TOTP application on your secure mobile device.",
+      "login.mfa_enroll.manual_key_label": "Manual entry key:",
+      "login.mfa_enroll.step2_title": "2. Secure Recovery Codes",
+      "login.mfa_enroll.step2_desc": "These recovery keys allow access if you lose your authentication device. Store them in a secure physical vault.",
+      "login.mfa_enroll.step3_title": "3. Verify TOTP Code",
+      "login.mfa_enroll.step3_desc": "Enter the generated 6-digit code from your authenticator app to enable MFA and sign in.",
+      "login.mfa_enroll.skip_button": "Skip for now",
+
+      // login.html — Recover Access (Forgot Password)
+      "login.forgot.title": "Recover Access coordinates",
+      "login.forgot.subtitle": "Submit your institutional email to request a security key reset.",
+      "login.forgot.email_label": "Institutional Email",
+      "login.forgot.email_placeholder": "name@sydeco.legal",
+      "login.forgot.policy_title": "Sovereign Policy Note:",
+      "login.forgot.policy_body": "In compliance with secure corporate identity directives, password credentials cannot be self-reset. Submitting this form issues an audit event and alerts your organization's security administrator to release a temporary access token.",
+      "login.forgot.success_title": "Access Request Initiated",
+      "login.forgot.success_desc": "Coordination alert dispatched to your system security officers.",
+      "login.forgot.success_contact": "Please contact your organization's designated administrator or internal IT Help Desk to authorize the credential release for",
+      "login.forgot.return_button": "Return to Sign In",
+
+      // login.html — Session Expired
+      "login.session_expired.title": "Security Session Expired",
+      "login.session_expired.subtitle": "Inactivity Limit Reached",
+      "login.session_expired.description": "To protect proprietary legal assets and institutional configurations, your sovereign access session has been terminated. Any unsaved contract analysis progress has been safely wiped from the browser viewport.",
+      "login.session_expired.reauth_button": "Re-Authenticate Portal",
+      "login.session_expired.footer_note": "Secure Endpoint: PT SYDECO LightML Contract Risk Analyzer v1.0",
+
+      // login.html — Footer
+      "login.footer.copyright": "© 2026 PT SYDECO. Contract Risk Analyzer.",
+      "login.footer.privacy": "Privacy Policy",
+      "login.footer.terms": "Terms of Use",
+      "login.footer.compliance": "Compliance",
     },
     id: {
       "nav.new_analysis": "Analisis Baru",
@@ -569,6 +631,68 @@
 
       // result.html — Footer
       "result.footer.copyright": "© 2026 PT SYDECO — Penganalisis Risiko Kontrak",
+
+      // login.html — Branding & login form (shared header)
+      "login.brand.title": "Gerbang Akses",
+      "login.brand.subtitle": "Protokol Intelijen Berdaulat",
+      "login.form.title": "Verifikasi Identitas Aman",
+      "login.form.subtitle": "Khusus personel yang berwenang.",
+      "login.form.email_label": "Email Institusi",
+      "login.form.email_placeholder": "nama@sydeco.legal",
+      "login.form.password_label": "Kunci Akses",
+      "login.form.forgot_password_link": "Lupa Kata Sandi?",
+      "login.form.org_label": "Konteks Organisasi",
+      "login.form.optional_suffix": "(Opsional)",
+      "login.form.org_placeholder": "Organisasi Default",
+      "login.form.remember_label": "Berikan sesi persisten (24 jam)",
+      "login.form.footer_security": "Koneksi diamankan melalui Protokol Sovereign AES-256.",
+      "login.form.footer_help": "Butuh bantuan?",
+      "login.form.footer_contact_admin": "Hubungi Admin Sistem",
+
+      // login.html — Shared chrome (reused across MFA/recovery states)
+      "login.common.cancel_button": "Batal",
+
+      // login.html — MFA Verification Challenge
+      "login.mfa_challenge.trust_label": "Percayai perangkat ini selama 30 hari",
+      "login.mfa_challenge.policy_title": "Kebijakan Perangkat Tepercaya:",
+      "login.mfa_challenge.policy_body": "Jangan pilih opsi ini pada terminal bersama atau publik. Memilih ini akan melewati pemeriksaan pendaftaran multi-faktor pada sesi peramban ini selama 30 hari ke depan.",
+
+      // login.html — MFA Enrollment Setup
+      "login.mfa_enroll.title": "Pendaftaran MFA Diperlukan",
+      "login.mfa_enroll.subtitle": "Autentikasi Multi-Faktor wajib untuk keamanan akun korporat Anda.",
+      "login.mfa_enroll.step1_title": "1. Pindai Kode QR",
+      "login.mfa_enroll.step1_desc": "Pindai kode QR ini menggunakan Google Authenticator, Duo, atau aplikasi TOTP apa pun di perangkat seluler aman Anda.",
+      "login.mfa_enroll.manual_key_label": "Kunci entri manual:",
+      "login.mfa_enroll.step2_title": "2. Kode Pemulihan Aman",
+      "login.mfa_enroll.step2_desc": "Kunci pemulihan ini memungkinkan akses jika Anda kehilangan perangkat autentikasi. Simpan di brankas fisik yang aman.",
+      "login.mfa_enroll.step3_title": "3. Verifikasi Kode TOTP",
+      "login.mfa_enroll.step3_desc": "Masukkan kode 6 digit yang dihasilkan dari aplikasi autentikator Anda untuk mengaktifkan MFA dan masuk.",
+      "login.mfa_enroll.skip_button": "Lewati untuk saat ini",
+
+      // login.html — Recover Access (Forgot Password)
+      "login.forgot.title": "Pulihkan koordinat akses",
+      "login.forgot.subtitle": "Kirimkan email institusi Anda untuk meminta pengaturan ulang kunci keamanan.",
+      "login.forgot.email_label": "Email Institusi",
+      "login.forgot.email_placeholder": "nama@sydeco.legal",
+      "login.forgot.policy_title": "Catatan Kebijakan Sovereign:",
+      "login.forgot.policy_body": "Sesuai dengan arahan identitas korporat yang aman, kredensial kata sandi tidak dapat direset sendiri. Mengirimkan formulir ini akan menghasilkan peristiwa audit dan memberi tahu administrator keamanan organisasi Anda untuk merilis token akses sementara.",
+      "login.forgot.success_title": "Permintaan Akses Dimulai",
+      "login.forgot.success_desc": "Peringatan koordinasi telah dikirim ke petugas keamanan sistem Anda.",
+      "login.forgot.success_contact": "Silakan hubungi administrator yang ditunjuk oleh organisasi Anda atau Help Desk IT internal untuk mengotorisasi pelepasan kredensial untuk",
+      "login.forgot.return_button": "Kembali ke Halaman Masuk",
+
+      // login.html — Session Expired
+      "login.session_expired.title": "Sesi Keamanan Berakhir",
+      "login.session_expired.subtitle": "Batas Tidak Aktif Tercapai",
+      "login.session_expired.description": "Untuk melindungi aset hukum eksklusif dan konfigurasi institusional, sesi akses sovereign Anda telah diakhiri. Progres analisis kontrak yang belum disimpan telah dihapus dengan aman dari tampilan peramban.",
+      "login.session_expired.reauth_button": "Autentikasi Ulang Portal",
+      "login.session_expired.footer_note": "Endpoint Aman: PT SYDECO LightML Contract Risk Analyzer v1.0",
+
+      // login.html — Footer
+      "login.footer.copyright": "© 2026 PT SYDECO. Contract Risk Analyzer.",
+      "login.footer.privacy": "Kebijakan Privasi",
+      "login.footer.terms": "Ketentuan Penggunaan",
+      "login.footer.compliance": "Kepatuhan",
     },
   };
 
