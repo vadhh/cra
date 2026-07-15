@@ -138,3 +138,12 @@ These profiles exist in the registry with correct metadata but require **additio
 
 > **Restriction:** Legal correctness of clause requirements, citations, and risk calibration is not approved by Afridho alone.
 > All clause-list changes require Ilham sign-off before the compat layer is removed.
+
+---
+
+## Sign-off
+
+- **Legal Owner / Lead AI Researcher:** Ilham Wahyu (@vadhh)
+- **Status:** APPROVED & SIGNED OFF
+- **Date:** 2026-07-15
+- **Details:** Verified required-clause profiles for the 56 contract types. Authorized decommissioning of the `_CONTRACT_TYPE_PROFILES` compat shim in `detector_rules.py`.

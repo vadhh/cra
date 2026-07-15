@@ -558,55 +558,7 @@ _BASELINE_REQUIRED: list[str] = [
     "termination", "dispute_resolution", "limitation_liability",
 ]
 
-_CONTRACT_TYPE_PROFILES: dict[str, list[str]] = {
-    "employment contract": [
-        "governing_law", "jurisdiction_venue", "termination",
-        "notice_period", "compensation", "working_hours", "dispute_resolution",
-    ],
-    "lease agreement": [
-        "governing_law", "jurisdiction_venue", "lease_term", "rent_amount",
-        "security_deposit", "maintenance_responsibility", "termination",
-        "dispute_resolution",
-    ],
-    "software license": [
-        "governing_law", "jurisdiction_venue", "license_grant", "ip_ownership",
-        "limitation_liability", "warranty_disclaimer", "termination",
-        "dispute_resolution",
-    ],
-    "service agreement": [
-        "governing_law", "jurisdiction_venue", "scope_of_services",
-        "payment_terms", "termination", "limitation_liability",
-        "dispute_resolution",
-    ],
-    "consulting agreement": [
-        "governing_law", "jurisdiction_venue", "scope_of_services",
-        "payment_terms", "confidentiality", "termination", "dispute_resolution",
-    ],
-    "commercial agreement": [
-        "governing_law", "jurisdiction_venue", "payment_terms", "termination",
-        "limitation_liability", "dispute_resolution",
-    ],
-    "non-disclosure agreement": [
-        "governing_law", "jurisdiction_venue", "confidentiality", "termination",
-        "return_of_materials", "dispute_resolution",
-    ],
-    "loan agreement": [
-        "governing_law", "jurisdiction_venue", "principal_amount",
-        "interest_rate", "repayment_schedule", "default_provisions",
-        "termination", "dispute_resolution",
-    ],
-    "partnership agreement": [
-        "governing_law", "jurisdiction_venue", "capital_contribution",
-        "profit_sharing", "management_rights", "termination",
-        "dispute_resolution",
-    ],
-    "purchase agreement": [
-        "governing_law", "jurisdiction_venue", "goods_description",
-        "payment_terms", "delivery_terms", "warranty", "title_transfer",
-        "dispute_resolution",
-    ],
-    "general contract": list(_BASELINE_REQUIRED),
-}
+# Legacy compat dict decommissioned after P7 sign-off
 
 # Title lookup so callers can render human-readable mandatory-clause lists.
 _CLAUSE_TITLES: dict[str, str] = {r["id"]: r["title"] for r in _CLAUSE_RULES}
@@ -623,7 +575,12 @@ def required_clauses_for(doc_type: Optional[str]) -> list[str]:
     Falls back to the generic baseline for unknown or missing types, so the
     analyzer always has an explicit required-clause set to score against.
     """
-    return list(_CONTRACT_TYPE_PROFILES.get(normalize_doc_type(doc_type), _BASELINE_REQUIRED))
+    norm = normalize_doc_type(doc_type)
+    reg = _get_registry()
+    if reg is not None:
+        required_ids, _ = reg.required_clauses_for(norm)
+        return list(required_ids)
+    return list(_BASELINE_REQUIRED)
 
 
 def clause_title(clause_id: str) -> str:
@@ -672,9 +629,8 @@ def evaluate_contract_type_requirements(
         required_ids, matched_pid = reg.required_clauses_for(norm)
         matched_profile = matched_pid is not None
     else:
-        required_ids = required_clauses_for(norm)
-        matched_pid = norm if norm in _CONTRACT_TYPE_PROFILES else None
-        matched_profile = norm in _CONTRACT_TYPE_PROFILES
+        required_ids = list(_BASELINE_REQUIRED)
+        matched_profile = False
 
     present_ids = {c["clause_id"] for c in clause_presence if c.get("present")}
 
@@ -684,18 +640,9 @@ def evaluate_contract_type_requirements(
     ]
     missing = [cid for cid in required_ids if cid not in present_ids]
 
-    has_profile = False
-    if doc_type:
-        try:
-            from detector.detector_profiles import ProfileManager
-            manager = ProfileManager()
-            has_profile = (manager.resolve_profile_by_name(doc_type) is not None)
-        except Exception:
-            pass
-
     return {
         "contract_type":   norm or "unknown",
-        "matched_profile": norm in _CONTRACT_TYPE_PROFILES,
+        "matched_profile": matched_profile,
         "mandatory":       mandatory,
         "present":         [cid for cid in required_ids if cid in present_ids],
         "missing":         missing,
