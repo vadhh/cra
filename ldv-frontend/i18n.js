@@ -349,6 +349,65 @@
       "login.footer.privacy": "Privacy Policy",
       "login.footer.terms": "Terms of Use",
       "login.footer.compliance": "Compliance",
+
+      // account.html — Header
+      "account.header.back_link": "Back to Sydeco CRA",
+      "account.header.title": "Account & Security",
+
+      // account.html — MFA status section
+      "account.mfa.title": "Multi-Factor Authentication",
+      "account.mfa.mandatory_note": "Mandatory for your organization or role.",
+      "account.mfa.optional_note": "Optional — recommended for institutional accounts.",
+      "account.mfa.enabled": "Enabled",
+      "account.mfa.disabled": "Disabled",
+      "account.mfa.enable_button": "Enable MFA",
+      "account.mfa.disable_button": "Disable MFA",
+
+      // account.html — Corporate Subscription & Usage section
+      "account.usage.title": "Corporate Subscription & Usage",
+      "account.usage.subtitle": "Real-time resource utilization for your tenant organization.",
+      "account.usage.contracts_label": "Contracts Processed",
+      "account.usage.pages_label": "Total Pages Extracted",
+      "account.usage.reports_label": "Professional PDF Downloads",
+      "account.usage.loading": "Loading subscription usage details…",
+
+      // account.html — Shared chrome (reused across password/enroll states)
+      "account.common.password_placeholder": "Password",
+      "account.common.cancel_button": "Cancel",
+
+      // account.html — Confirm Password (enable MFA) section
+      "account.enable_password.title": "Confirm Password",
+      "account.enable_password.subtitle": "Re-enter your password to begin MFA setup.",
+      "account.enable_password.verifying": "Verifying…",
+      "account.enable_password.continue_button": "Continue",
+
+      // account.html — MFA Enrollment section
+      "account.enroll.title": "Set Up MFA",
+      "account.enroll.step1_title": "1. Scan QR Code",
+      "account.enroll.step1_desc": "Scan with Google Authenticator, Duo, or any TOTP app.",
+      "account.enroll.manual_key_label": "Manual entry key:",
+      "account.enroll.step2_title": "2. Save Recovery Codes",
+      "account.enroll.step2_desc": "Store these somewhere safe — they won't be shown again.",
+      "account.enroll.step3_title": "3. Verify TOTP Code",
+      "account.enroll.enabling": "Enabling…",
+
+      // account.html — Disable MFA section
+      "account.disable_password.title": "Disable MFA",
+      "account.disable_password.subtitle": "Re-enter your password to confirm. This removes your authenticator enrollment and recovery codes.",
+      "account.disable_password.disabling": "Disabling…",
+      "account.disable_password.confirm_button": "Confirm Disable",
+
+      // account.html — Error / success banners (hardcoded client-side copy only;
+      // server-provided data.error text is displayed verbatim, untranslated)
+      "account.errors.load_failed": "Failed to load account status.",
+      "account.errors.mfa_setup_failed": "MFA setup failed.",
+      "account.errors.mfa_setup_server_error": "Server error during MFA setup.",
+      "account.errors.mfa_verify_failed": "Verification code failed.",
+      "account.errors.mfa_verify_server_error": "Server error during MFA verification.",
+      "account.errors.mfa_disable_failed": "Failed to disable MFA.",
+      "account.errors.mfa_disable_server_error": "Server error while disabling MFA.",
+      "account.success.mfa_enabled": "MFA enabled successfully.",
+      "account.success.mfa_disabled": "MFA disabled.",
     },
     id: {
       "nav.new_analysis": "Analisis Baru",
@@ -693,6 +752,65 @@
       "login.footer.privacy": "Kebijakan Privasi",
       "login.footer.terms": "Ketentuan Penggunaan",
       "login.footer.compliance": "Kepatuhan",
+
+      // account.html — Header
+      "account.header.back_link": "Kembali ke Sydeco CRA",
+      "account.header.title": "Akun & Keamanan",
+
+      // account.html — MFA status section
+      "account.mfa.title": "Autentikasi Multi-Faktor",
+      "account.mfa.mandatory_note": "Wajib untuk organisasi atau peran Anda.",
+      "account.mfa.optional_note": "Opsional — direkomendasikan untuk akun institusi.",
+      "account.mfa.enabled": "Aktif",
+      "account.mfa.disabled": "Nonaktif",
+      "account.mfa.enable_button": "Aktifkan MFA",
+      "account.mfa.disable_button": "Nonaktifkan MFA",
+
+      // account.html — Corporate Subscription & Usage section
+      "account.usage.title": "Langganan & Penggunaan Korporat",
+      "account.usage.subtitle": "Penggunaan sumber daya real-time untuk organisasi tenant Anda.",
+      "account.usage.contracts_label": "Kontrak Diproses",
+      "account.usage.pages_label": "Total Halaman Diekstrak",
+      "account.usage.reports_label": "Unduhan PDF Profesional",
+      "account.usage.loading": "Memuat detail penggunaan langganan…",
+
+      // account.html — Shared chrome (reused across password/enroll states)
+      "account.common.password_placeholder": "Kata Sandi",
+      "account.common.cancel_button": "Batal",
+
+      // account.html — Confirm Password (enable MFA) section
+      "account.enable_password.title": "Konfirmasi Kata Sandi",
+      "account.enable_password.subtitle": "Masukkan kembali kata sandi Anda untuk memulai pengaturan MFA.",
+      "account.enable_password.verifying": "Memverifikasi…",
+      "account.enable_password.continue_button": "Lanjutkan",
+
+      // account.html — MFA Enrollment section
+      "account.enroll.title": "Siapkan MFA",
+      "account.enroll.step1_title": "1. Pindai Kode QR",
+      "account.enroll.step1_desc": "Pindai dengan Google Authenticator, Duo, atau aplikasi TOTP apa pun.",
+      "account.enroll.manual_key_label": "Kunci entri manual:",
+      "account.enroll.step2_title": "2. Simpan Kode Pemulihan",
+      "account.enroll.step2_desc": "Simpan ini di tempat yang aman — kode ini tidak akan ditampilkan lagi.",
+      "account.enroll.step3_title": "3. Verifikasi Kode TOTP",
+      "account.enroll.enabling": "Mengaktifkan…",
+
+      // account.html — Disable MFA section
+      "account.disable_password.title": "Nonaktifkan MFA",
+      "account.disable_password.subtitle": "Masukkan kembali kata sandi Anda untuk konfirmasi. Ini akan menghapus pendaftaran autentikator dan kode pemulihan Anda.",
+      "account.disable_password.disabling": "Menonaktifkan…",
+      "account.disable_password.confirm_button": "Konfirmasi Nonaktifkan",
+
+      // account.html — Error / success banners (hardcoded client-side copy only;
+      // server-provided data.error text is displayed verbatim, untranslated)
+      "account.errors.load_failed": "Gagal memuat status akun.",
+      "account.errors.mfa_setup_failed": "Pengaturan MFA gagal.",
+      "account.errors.mfa_setup_server_error": "Kesalahan server saat pengaturan MFA.",
+      "account.errors.mfa_verify_failed": "Kode verifikasi gagal.",
+      "account.errors.mfa_verify_server_error": "Kesalahan server saat verifikasi MFA.",
+      "account.errors.mfa_disable_failed": "Gagal menonaktifkan MFA.",
+      "account.errors.mfa_disable_server_error": "Kesalahan server saat menonaktifkan MFA.",
+      "account.success.mfa_enabled": "MFA berhasil diaktifkan.",
+      "account.success.mfa_disabled": "MFA dinonaktifkan.",
     },
   };
 
