@@ -640,6 +640,57 @@
       "admin.modals.citation_history.status_draft": "Status: draft",
       "admin.modals.citation_history.draft_note": "Draft provision parsed via machine extraction.",
       "admin.modals.citation_history.close_button": "Close History",
+
+      // citations.html — Page header
+      "citations.header.title_prefix": "Legal Authority",
+      "citations.header.title_suffix": "Verification",
+      "citations.header.subtitle": "A secure protocol for reviewing, verifying, and versioning legal citations within the sovereign intelligence architecture.",
+
+      // citations.html — Tabs
+      "citations.tabs.queue": "Queue & Verification",
+      "citations.tabs.history": "History & Versioning",
+
+      // citations.html — Stats grid
+      "citations.stats.total_verified": "Total Verified",
+      "citations.stats.awaiting_review": "Awaiting Review",
+      "citations.stats.superseded": "Superseded",
+      "citations.stats.integrity_score": "Integrity Score",
+
+      // citations.html — Filters
+      "citations.filters.search_label": "Search Findings",
+      "citations.filters.search_placeholder": "Search by ID, article or source…",
+      "citations.filters.jurisdiction_label": "Jurisdiction",
+      "citations.filters.jurisdiction_all": "All Jurisdictions",
+      "citations.filters.jurisdiction_id": "Indonesia (ID)",
+      "citations.filters.jurisdiction_be": "Belgium (BE)",
+      "citations.filters.jurisdiction_fr": "France (FR)",
+      "citations.filters.jurisdiction_nl": "Netherlands (NL)",
+      "citations.filters.jurisdiction_enw": "England & Wales (EN&W)",
+      "citations.filters.jurisdiction_us": "United States (US)",
+      "citations.filters.jurisdiction_generic": "Generic (Cross-Border)",
+      "citations.filters.status_label": "Status",
+      "citations.filters.status_all": "All Statuses",
+      "citations.filters.status_draft_only": "Drafts Only",
+      "citations.filters.status_verified_only": "Verified Only",
+
+      // citations.html — Main queue table
+      "citations.table.col_finding_id": "Finding ID",
+      "citations.table.col_jurisdiction": "Jurisdiction",
+      "citations.table.col_proposed_article": "Proposed Article",
+      "citations.table.col_legal_source": "Legal Source",
+      "citations.table.col_notes": "Notes",
+      "citations.table.col_status": "Status",
+      "citations.table.col_action": "Action",
+      "citations.table.empty": "No matching citations found.",
+      "citations.table.verify_button": "Verify",
+      "citations.table.ready_label": "Ready",
+
+      // citations.html — History & Versioning tab
+      "citations.history.timeline_title": "Authority Versioning Timeline",
+      "citations.history.verified_by_label": "Verified By",
+
+      // citations.html — Loading state
+      "citations.loading.message": "Loading citation database…",
     },
     id: {
       "nav.new_analysis": "Analisis Baru",
@@ -1275,6 +1326,57 @@
       "admin.modals.citation_history.status_draft": "Status: draf",
       "admin.modals.citation_history.draft_note": "Ketentuan draf diuraikan melalui ekstraksi mesin.",
       "admin.modals.citation_history.close_button": "Tutup Riwayat",
+
+      // citations.html — Page header
+      "citations.header.title_prefix": "Otoritas Hukum",
+      "citations.header.title_suffix": "Verifikasi",
+      "citations.header.subtitle": "Protokol aman untuk meninjau, memverifikasi, dan mengelola versi sitasi hukum dalam arsitektur intelijen berdaulat.",
+
+      // citations.html — Tabs
+      "citations.tabs.queue": "Antrean & Verifikasi",
+      "citations.tabs.history": "Riwayat & Versi",
+
+      // citations.html — Stats grid
+      "citations.stats.total_verified": "Total Terverifikasi",
+      "citations.stats.awaiting_review": "Menunggu Tinjauan",
+      "citations.stats.superseded": "Digantikan",
+      "citations.stats.integrity_score": "Skor Integritas",
+
+      // citations.html — Filters
+      "citations.filters.search_label": "Cari Temuan",
+      "citations.filters.search_placeholder": "Cari berdasarkan ID, pasal, atau sumber…",
+      "citations.filters.jurisdiction_label": "Yurisdiksi",
+      "citations.filters.jurisdiction_all": "Semua Yurisdiksi",
+      "citations.filters.jurisdiction_id": "Indonesia (ID)",
+      "citations.filters.jurisdiction_be": "Belgia (BE)",
+      "citations.filters.jurisdiction_fr": "Prancis (FR)",
+      "citations.filters.jurisdiction_nl": "Belanda (NL)",
+      "citations.filters.jurisdiction_enw": "Inggris & Wales (EN&W)",
+      "citations.filters.jurisdiction_us": "Amerika Serikat (US)",
+      "citations.filters.jurisdiction_generic": "Umum (Lintas Batas)",
+      "citations.filters.status_label": "Status",
+      "citations.filters.status_all": "Semua Status",
+      "citations.filters.status_draft_only": "Hanya Draf",
+      "citations.filters.status_verified_only": "Hanya Terverifikasi",
+
+      // citations.html — Main queue table
+      "citations.table.col_finding_id": "ID Temuan",
+      "citations.table.col_jurisdiction": "Yurisdiksi",
+      "citations.table.col_proposed_article": "Pasal yang Diusulkan",
+      "citations.table.col_legal_source": "Sumber Hukum",
+      "citations.table.col_notes": "Catatan",
+      "citations.table.col_status": "Status",
+      "citations.table.col_action": "Tindakan",
+      "citations.table.empty": "Tidak ada sitasi yang cocok ditemukan.",
+      "citations.table.verify_button": "Verifikasi",
+      "citations.table.ready_label": "Siap",
+
+      // citations.html — History & Versioning tab
+      "citations.history.timeline_title": "Linimasa Versi Otoritas",
+      "citations.history.verified_by_label": "Diverifikasi Oleh",
+
+      // citations.html — Loading state
+      "citations.loading.message": "Memuat basis data sitasi…",
     },
   };
 
