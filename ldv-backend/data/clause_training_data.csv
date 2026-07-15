@@ -1433,3 +1433,1270 @@ Waiver of Right to Safe Housing: renonciation au droit à un logement sûr,abusi
 "Open-Ended Compliance Audit: kapan saja, tanpa pemberitahuan, akses penuh, setiap catatan",abusive_clause
 "Open-Ended Compliance Audit: à tout moment, sans préavis, accès complet, tout dossier",abusive_clause
 "Broad Non-Solicitation of Clients: non-sollicitation de clients, prospects, territoire",abusive_clause
+"Unilateral Feature Removal: remove feature, discontinue functionality, unilateral change, sunset feature",abusive_clause
+"Unilateral Feature Removal: suppression unilatérale fonctionnalité, retrait fonction, abandon fonctionnalité",abusive_clause
+"Unilateral Feature Removal: penghapusan fitur sepihak, penghentian fungsi, perubahan sepihak",abusive_clause
+"Telemetry Without Consent: telemetry, usage tracking, data collection, no consent, analytics",abusive_clause
+"Telemetry Without Consent: télémétrie, suivi d'utilisation, collecte de données, sans consentement",abusive_clause
+"Telemetry Without Consent: telemetri, pelacakan penggunaan, pengumpulan data, tanpa persetujuan",abusive_clause
+"AI Training on Customer Data: AI training, model training, customer data, machine learning, data reuse",abusive_clause
+"AI Training on Customer Data: entraînement IA, apprentissage modèle, données client, réutilisation données",abusive_clause
+"AI Training on Customer Data: pelatihan AI, pelatihan model, data pelanggan, pembelajaran mesin, penggunaan ulang data",abusive_clause
+"Mandatory Cloud Migration: forced migration, mandatory cloud, platform move, infrastructure change",abusive_clause
+"Mandatory Cloud Migration: migration forcée, cloud obligatoire, changement de plateforme",abusive_clause
+"Mandatory Cloud Migration: migrasi paksa, cloud wajib, perpindahan platform, perubahan infrastruktur",abusive_clause
+"Data Hostage on Dispute: data hostage, withhold data, suspend access, dispute, ransom data",abusive_clause
+"Data Hostage on Dispute: données otages, rétention de données, suspension d'accès, litige",abusive_clause
+"Data Hostage on Dispute: data disandera, menahan data, menangguhkan akses, sengketa",abusive_clause
+"Silent Auto-Update Mandate: silent update, forced update, auto-update, no rollback, mandatory upgrade",abusive_clause
+"Silent Auto-Update Mandate: mise à jour silencieuse, mise à jour forcée, sans retour arrière",abusive_clause
+"Silent Auto-Update Mandate: pembaruan diam-diam, pembaruan paksa, tanpa rollback, peningkatan wajib",abusive_clause
+"Usage Overage Without Cap: overage, usage billing, no cap, consumption charges, runaway costs",abusive_clause
+"Usage Overage Without Cap: dépassement, facturation à l'usage, sans plafond, coûts incontrôlés",abusive_clause
+"Usage Overage Without Cap: kelebihan penggunaan, tagihan pemakaian, tanpa batas, biaya membengkak",abusive_clause
+"Unilateral Encryption Key Custody: encryption key, key custody, vendor-held keys, no BYOK, key control",abusive_clause
+"Unilateral Encryption Key Custody: clé de chiffrement, garde des clés, clés détenues par le fournisseur",abusive_clause
+"Unilateral Encryption Key Custody: kunci enkripsi, penyimpanan kunci, kunci dipegang vendor, kontrol kunci",abusive_clause
+"No Data Portability: no data portability, no export, proprietary format, lock-in, vendor format",abusive_clause
+"No Data Portability: absence de portabilité, pas d'export, format propriétaire, verrouillage",abusive_clause
+"No Data Portability: tanpa portabilitas data, tanpa ekspor, format kepemilikan, terkunci vendor",abusive_clause
+"Unilateral Privacy Policy Change: privacy policy change, unilateral amendment, data use change, posting amendment",abusive_clause
+"Unilateral Privacy Policy Change: modification politique de confidentialité, amendement unilatéral, usage des données",abusive_clause
+"Unilateral Privacy Policy Change: perubahan kebijakan privasi, amandemen sepihak, perubahan penggunaan data",abusive_clause
+"Breach Notification Delay Allowance: breach notification delay, late notice, data breach, slow disclosure",abusive_clause
+"Breach Notification Delay Allowance: délai de notification de violation, notification tardive, divulgation lente",abusive_clause
+"Breach Notification Delay Allowance: penundaan pemberitahuan pelanggaran, pemberitahuan terlambat, kebocoran data",abusive_clause
+"Forced Multi-Tenancy: multi-tenancy, shared infrastructure, no isolation, forced tenancy",abusive_clause
+"Forced Multi-Tenancy: multi-locataire, infrastructure partagée, sans isolation",abusive_clause
+"Forced Multi-Tenancy: multi-tenant, infrastruktur bersama, tanpa isolasi, tenant paksa",abusive_clause
+"Backup Responsibility Disclaimer: no backup, backup disclaimer, data loss, customer responsibility, no recovery",abusive_clause
+"Backup Responsibility Disclaimer: exclusion de sauvegarde, perte de données, responsabilité du client",abusive_clause
+"Backup Responsibility Disclaimer: tanpa cadangan, penyangkalan backup, kehilangan data, tanggung jawab pelanggan",abusive_clause
+"Mandatory Data Sharing with Affiliates: data sharing affiliates, group sharing, broad disclosure, affiliate access",abusive_clause
+"Mandatory Data Sharing with Affiliates: partage de données avec filiales, divulgation large, accès des filiales",abusive_clause
+"Mandatory Data Sharing with Affiliates: berbagi data dengan afiliasi, pengungkapan luas, akses afiliasi",abusive_clause
+"Customer-Funded Security Audits: customer-funded audit, security audit cost, audit fees, pass-through audit",abusive_clause
+"Customer-Funded Security Audits: audit financé par le client, coût d'audit de sécurité, refacturation d'audit",abusive_clause
+"Customer-Funded Security Audits: audit dibiayai pelanggan, biaya audit keamanan, audit dibebankan",abusive_clause
+"API Throttling at Will: API throttling, rate limit, unilateral throttle, degrade service, slow API",abusive_clause
+"API Throttling at Will: limitation d'API, débit limité, dégradation de service",abusive_clause
+"API Throttling at Will: pembatasan API, batas laju, throttle sepihak, layanan menurun",abusive_clause
+"Shadow IT Liability Shift: shadow IT, liability shift, unauthorized use, broad customer liability",abusive_clause
+"Shadow IT Liability Shift: informatique fantôme, transfert de responsabilité, usage non autorisé",abusive_clause
+"Shadow IT Liability Shift: shadow IT, pengalihan tanggung jawab, penggunaan tak sah, tanggung jawab luas",abusive_clause
+"Forced Beta Participation: mandatory beta, forced beta, unstable release, no opt-out beta",abusive_clause
+"Forced Beta Participation: bêta obligatoire, version instable, sans désinscription",abusive_clause
+"Forced Beta Participation: beta wajib, beta paksa, rilis tidak stabil, tanpa opsi keluar",abusive_clause
+"Deprecation Without Migration Path: deprecation, no migration path, end of life, sunset, abrupt removal",abusive_clause
+"Deprecation Without Migration Path: obsolescence sans voie de migration, fin de vie, retrait abrupt",abusive_clause
+"Deprecation Without Migration Path: deprekasi, tanpa jalur migrasi, akhir masa pakai, penghapusan mendadak",abusive_clause
+"Unilateral Data Center Relocation: data center relocation, region change, data residency, move data, jurisdiction shift",abusive_clause
+"Unilateral Data Center Relocation: déménagement de centre de données, changement de région, résidence des données",abusive_clause
+"Unilateral Data Center Relocation: relokasi pusat data, perubahan wilayah, residensi data, perpindahan yurisdiksi",abusive_clause
+"Clawback of Signing Bonus: signing bonus clawback, bonus repayment, recoup bonus, repay on exit",abusive_clause
+"Clawback of Signing Bonus: récupération prime d'embauche, remboursement de prime, restitution au départ",abusive_clause
+"Clawback of Signing Bonus: klawback bonus penandatanganan, pengembalian bonus, tagih kembali bonus",abusive_clause
+"Unilateral Commission Change: commission change, unilateral comp change, plan change, retroactive commission",abusive_clause
+"Unilateral Commission Change: modification unilatérale des commissions, changement de plan, rétroactif",abusive_clause
+"Unilateral Commission Change: perubahan komisi sepihak, ubah skema komisi, komisi retroaktif",abusive_clause
+"Garden Leave Without Pay: garden leave, unpaid leave, restricted period, no pay notice period",abusive_clause
+"Garden Leave Without Pay: congé de jardinage non payé, période restreinte, préavis sans solde",abusive_clause
+"Garden Leave Without Pay: cuti taman tanpa bayar, periode terbatas, masa pemberitahuan tanpa gaji",abusive_clause
+"Mandatory Personal Vehicle Use: personal vehicle, own car required, no reimbursement, mileage, vehicle mandate",abusive_clause
+"Mandatory Personal Vehicle Use: usage du véhicule personnel, voiture exigée, sans remboursement",abusive_clause
+"Mandatory Personal Vehicle Use: wajib pakai kendaraan pribadi, mobil sendiri, tanpa penggantian, tunjangan jarak",abusive_clause
+"Biometric Data Collection Mandate: biometric data, fingerprint, facial scan, mandatory biometrics, no consent",abusive_clause
+"Biometric Data Collection Mandate: données biométriques, empreinte, scan facial, biométrie obligatoire",abusive_clause
+"Biometric Data Collection Mandate: data biometrik, sidik jari, pindai wajah, biometrik wajib, tanpa persetujuan",abusive_clause
+"Forfeiture of Unused Leave: leave forfeiture, lose vacation, use it or lose it, no payout, accrued leave",abusive_clause
+"Forfeiture of Unused Leave: perte des congés acquis, congés non payés au départ",abusive_clause
+"Forfeiture of Unused Leave: hangus cuti, kehilangan cuti, cuti tak dibayar saat keluar, cuti terkumpul",abusive_clause
+"Recruitment Fee Repayment: recruitment fee, repay hiring cost, agency fee clawback, training repayment",abusive_clause
+"Recruitment Fee Repayment: remboursement des frais de recrutement, restitution coût d'embauche",abusive_clause
+"Recruitment Fee Repayment: pengembalian biaya rekrutmen, bayar kembali biaya agen, klawback pelatihan",abusive_clause
+"Unilateral Demotion Rights: unilateral demotion, reduce role, downgrade, demote without cause",abusive_clause
+"Unilateral Demotion Rights: rétrogradation unilatérale, déclassement sans motif",abusive_clause
+"Unilateral Demotion Rights: hak penurunan jabatan sepihak, turunkan peran, demosi tanpa alasan",abusive_clause
+"Mandatory Overtime No Premium: mandatory overtime, no premium pay, forced overtime, unpaid extra hours",abusive_clause
+"Mandatory Overtime No Premium: heures supplémentaires obligatoires sans majoration, heures forcées",abusive_clause
+"Mandatory Overtime No Premium: lembur wajib tanpa premi, lembur paksa, jam tambahan tanpa bayar",abusive_clause
+"Whistleblower Penalty: whistleblower penalty, retaliation, punish reporting, gag, discourage disclosure",abusive_clause
+"Whistleblower Penalty: pénalité lanceur d'alerte, représailles, sanction du signalement, bâillon",abusive_clause
+"Whistleblower Penalty: penalti pelapor, pembalasan, hukum pelaporan, membungkam pengungkapan",abusive_clause
+"Mandatory Social Media Surrender: social media access, account surrender, monitor personal accounts, password handover",abusive_clause
+"Mandatory Social Media Surrender: remise des réseaux sociaux, surveillance des comptes personnels, mots de passe",abusive_clause
+"Mandatory Social Media Surrender: penyerahan media sosial, akses akun pribadi, pantau akun pribadi, serahkan kata sandi",abusive_clause
+"Forced Arbitration of Wage Claims: wage claim arbitration, forced arbitration, no court, employee waiver",abusive_clause
+"Forced Arbitration of Wage Claims: arbitrage forcé des salaires, renonciation au tribunal, litige salarial",abusive_clause
+"Forced Arbitration of Wage Claims: arbitrase paksa klaim upah, tanpa pengadilan, pelepasan hak karyawan",abusive_clause
+"Equipment Loss Full Liability: equipment liability, full liability, lost laptop, damage charge, deduct from pay",abusive_clause
+"Equipment Loss Full Liability: responsabilité totale du matériel, perte d'ordinateur, retenue sur salaire",abusive_clause
+"Equipment Loss Full Liability: tanggung jawab penuh peralatan, laptop hilang, biaya kerusakan, potong gaji",abusive_clause
+"Unilateral Benefit Termination: benefit termination, cut benefits, unilateral removal, no notice benefits",abusive_clause
+"Unilateral Benefit Termination: suppression unilatérale des avantages, annulation sans préavis",abusive_clause
+"Unilateral Benefit Termination: penghentian tunjangan sepihak, pangkas tunjangan, tanpa pemberitahuan",abusive_clause
+"Non-Disparagement Beyond Employment: non-disparagement, post-employment, silence former staff, perpetual gag",abusive_clause
+"Non-Disparagement Beyond Employment: non-dénigrement après l'emploi, silence permanent des anciens salariés",abusive_clause
+"Non-Disparagement Beyond Employment: larangan menjelekkan pasca-kerja, membungkam mantan staf, larangan permanen",abusive_clause
+"Unilateral Shift Scheduling: shift scheduling, unilateral roster, no notice schedule, on-call mandate",abusive_clause
+"Unilateral Shift Scheduling: planification unilatérale des horaires, roulement sans préavis",abusive_clause
+"Unilateral Shift Scheduling: penjadwalan shift sepihak, rosters tanpa pemberitahuan, wajib siaga",abusive_clause
+"Mandatory Drug Test Cost: drug test cost, employee pays testing, mandatory screening fee",abusive_clause
+"Mandatory Drug Test Cost: coût du test de dépistage, dépistage à la charge du salarié",abusive_clause
+"Mandatory Drug Test Cost: biaya tes narkoba, karyawan bayar tes, biaya skrining wajib",abusive_clause
+"Cross-Collateralization Hidden: cross-collateralization, hidden lien, all assets, dragnet, blanket security",abusive_clause
+"Cross-Collateralization Hidden: garantie croisée cachée, sûreté générale, tous les actifs",abusive_clause
+"Cross-Collateralization Hidden: agunan silang tersembunyi, hak gadai tersembunyi, semua aset, jaminan menyeluruh",abusive_clause
+"MAC Acceleration: material adverse change, MAC, acceleration, subjective trigger, call loan",abusive_clause
+"MAC Acceleration: accélération pour changement défavorable, MAC, exigibilité subjective",abusive_clause
+"MAC Acceleration: akselerasi karena perubahan merugikan, MAC, pemicu subjektif, tarik pinjaman",abusive_clause
+"Daily Compounding Default Interest: default interest, daily compounding, penalty interest, compounding default rate",abusive_clause
+"Daily Compounding Default Interest: intérêts de défaut composés quotidiennement, taux pénalité",abusive_clause
+"Daily Compounding Default Interest: bunga gagal bayar harian majemuk, bunga penalti, suku bunga default majemuk",abusive_clause
+"Personal Guarantee Uncapped: personal guarantee, unlimited guarantee, no cap, guarantor liability",abusive_clause
+"Personal Guarantee Uncapped: garantie personnelle illimitée, caution sans plafond",abusive_clause
+"Personal Guarantee Uncapped: jaminan pribadi tanpa batas, penjamin tanpa plafon, tanggung jawab penjamin",abusive_clause
+"Account Sweep Rights: account sweep, set-off, seize deposits, lender sweep, freeze accounts",abusive_clause
+"Account Sweep Rights: balayage des comptes, compensation, saisie des dépôts, gel des comptes",abusive_clause
+"Account Sweep Rights: penyapuan rekening, set-off, sita simpanan, bekukan rekening",abusive_clause
+"Mandatory Additional Collateral on Demand: additional collateral, top-up demand, margin top-up, collateral call",abusive_clause
+"Mandatory Additional Collateral on Demand: garantie additionnelle sur demande, appel de garantie discrétionnaire",abusive_clause
+"Mandatory Additional Collateral on Demand: agunan tambahan sesuai permintaan, panggilan agunan diskresioner",abusive_clause
+"Yield Maintenance Penalty: yield maintenance, prepayment penalty, make-whole, defeasance, lock-in",abusive_clause
+"Yield Maintenance Penalty: maintien de rendement, pénalité de remboursement anticipé, make-whole",abusive_clause
+"Yield Maintenance Penalty: penalti pemeliharaan imbal hasil, penalti pelunasan dini, make-whole, terkunci",abusive_clause
+"Springing Recourse Triggers: springing recourse, bad boy carve-out, full recourse, non-recourse loss",abusive_clause
+"Springing Recourse Triggers: recours surgissant, exception bad-boy, recours total",abusive_clause
+"Springing Recourse Triggers: pemicu recourse mendadak, pengecualian bad-boy, recourse penuh",abusive_clause
+"Mandatory Deposit Relationship: mandatory deposit, compensating balance, tied deposits, banking relationship",abusive_clause
+"Mandatory Deposit Relationship: relation de dépôt obligatoire, solde compensatoire, dépôts liés",abusive_clause
+"Mandatory Deposit Relationship: wajib hubungan simpanan, saldo kompensasi, simpanan terikat",abusive_clause
+"Late Fee Pyramiding: late fee pyramiding, stacked fees, fee on fee, compounding penalties",abusive_clause
+"Late Fee Pyramiding: empilement de frais de retard, frais sur frais, pénalités cumulées",abusive_clause
+"Late Fee Pyramiding: penumpukan denda keterlambatan, denda atas denda, penalti majemuk",abusive_clause
+"Cure Rights Forfeiture: cure forfeiture, no second chance, one default, lose cure rights",abusive_clause
+"Cure Rights Forfeiture: perte du droit de régularisation, un seul défaut, aucune seconde chance",abusive_clause
+"Cure Rights Forfeiture: hilangnya hak perbaikan, tanpa kesempatan kedua, satu kali default",abusive_clause
+"Mandatory Subordination to Future Debt: subordination, future debt priority, automatic subordination, junior position",abusive_clause
+"Mandatory Subordination to Future Debt: subordination à la dette future, priorité automatique, rang inférieur",abusive_clause
+"Mandatory Subordination to Future Debt: subordinasi pada utang masa depan, prioritas otomatis, posisi junior",abusive_clause
+"Unilateral Covenant Tightening: covenant tightening, unilateral covenant, ratchet, lender discretion covenants",abusive_clause
+"Unilateral Covenant Tightening: durcissement unilatéral des engagements, clauses à cliquet",abusive_clause
+"Unilateral Covenant Tightening: pengetatan kovenan sepihak, kovenan diskresi pemberi pinjaman",abusive_clause
+"Mandatory Hedging at Borrower Cost: mandatory hedging, swap requirement, hedge at borrower cost, derivative tie",abusive_clause
+"Mandatory Hedging at Borrower Cost: couverture obligatoire aux frais de l'emprunteur, swap imposé",abusive_clause
+"Mandatory Hedging at Borrower Cost: lindung nilai wajib atas biaya peminjam, kewajiban swap, derivatif terikat",abusive_clause
+"Earnout Forfeiture on Termination: earnout forfeiture, lose earnout, termination forfeits, conditional payment",abusive_clause
+"Earnout Forfeiture on Termination: perte de complément de prix au départ, earnout perdu, paiement conditionnel",abusive_clause
+"Earnout Forfeiture on Termination: hangus earnout saat pemutusan, kehilangan earnout, pembayaran bersyarat",abusive_clause
+"Subjective Working Capital Adjustment: working capital adjustment, subjective, post-closing adjustment, true-up",abusive_clause
+"Subjective Working Capital Adjustment: ajustement subjectif du fonds de roulement, ajustement post-clôture",abusive_clause
+"Subjective Working Capital Adjustment: penyesuaian modal kerja subjektif, penyesuaian pasca-penutupan, true-up",abusive_clause
+"Sandbagging Prohibition: anti-sandbagging, prohibition, knowledge waiver, buyer knowledge defense",abusive_clause
+"Sandbagging Prohibition: interdiction du sandbagging, renonciation par connaissance",abusive_clause
+"Sandbagging Prohibition: larangan sandbagging, pelepasan karena pengetahuan, pembelaan pengetahuan pembeli",abusive_clause
+"Indefinite Indemnity Escrow Hold: indemnity escrow, indefinite hold, no release, escrow trap, holdback",abusive_clause
+"Indefinite Indemnity Escrow Hold: séquestre d'indemnité indéfini, retenue sans libération",abusive_clause
+"Indefinite Indemnity Escrow Hold: penahanan escrow indemnitas tak terbatas, holdback tanpa pelepasan",abusive_clause
+"Forced Capital Call Dilution: capital call, forced dilution, pay-to-play, punitive dilution, down round",abusive_clause
+"Forced Capital Call Dilution: appel de fonds forcé, dilution punitive, pay-to-play, tour baissier",abusive_clause
+"Forced Capital Call Dilution: dilusi paksa lewat panggilan modal, dilusi hukuman, pay-to-play, putaran turun",abusive_clause
+"Liquidation Preference Stacking: liquidation preference, stacked preference, multiple, participating preferred",abusive_clause
+"Liquidation Preference Stacking: empilement de préférences de liquidation, préférence participative multiple",abusive_clause
+"Liquidation Preference Stacking: penumpukan preferensi likuidasi, preferensi partisipatif berlipat",abusive_clause
+"Founder Vesting Reset: vesting reset, re-vesting, restart vesting, founder lock, clawback equity",abusive_clause
+"Founder Vesting Reset: réinitialisation du vesting fondateur, redémarrage d'acquisition",abusive_clause
+"Founder Vesting Reset: reset vesting pendiri, mulai ulang vesting, klawback ekuitas",abusive_clause
+"Veto Over Personal Finances: investor veto, personal finances, control founder life, broad veto, consent rights",abusive_clause
+"Veto Over Personal Finances: veto sur les finances personnelles, contrôle de la vie du fondateur",abusive_clause
+"Veto Over Personal Finances: veto atas keuangan pribadi, kendali hidup pendiri, hak persetujuan luas",abusive_clause
+"Unilateral Valuation Authority: valuation authority, unilateral valuation, set price, no independent appraisal",abusive_clause
+"Unilateral Valuation Authority: autorité unilatérale d'évaluation, fixation du prix sans expertise indépendante",abusive_clause
+"Unilateral Valuation Authority: wewenang valuasi sepihak, tetapkan harga, tanpa penilaian independen",abusive_clause
+"Information Rights Termination: information rights, cut off reporting, no financials, blind investor",abusive_clause
+"Information Rights Termination: suppression des droits d'information, arrêt du reporting, investisseur aveugle",abusive_clause
+"Information Rights Termination: penghentian hak informasi, putus pelaporan keuangan, investor buta",abusive_clause
+"Squeeze-Out Below Fair Value: squeeze-out, forced sale, minority squeeze, below market, compulsory buyout",abusive_clause
+"Squeeze-Out Below Fair Value: éviction sous la valeur, vente forcée des minoritaires, rachat obligatoire",abusive_clause
+"Squeeze-Out Below Fair Value: squeeze-out di bawah nilai wajar, penjualan paksa minoritas, pembelian wajib",abusive_clause
+"Unilateral Board Expansion: board expansion, pack the board, add directors, control board, dilute votes",abusive_clause
+"Unilateral Board Expansion: expansion unilatérale du conseil, ajout d'administrateurs, prise de contrôle",abusive_clause
+"Unilateral Board Expansion: perluasan dewan sepihak, jejali dewan, tambah direktur, kuasai dewan",abusive_clause
+"Mandatory Conversion at Discretion: mandatory conversion, forced conversion, discretionary conversion, wipe preference",abusive_clause
+"Mandatory Conversion at Discretion: conversion forcée discrétionnaire, suppression des préférences",abusive_clause
+"Mandatory Conversion at Discretion: konversi wajib atas diskresi, konversi paksa, hapus preferensi",abusive_clause
+"No Reps Survival (Asymmetric): no survival, reps and warranties, asymmetric survival, expire immediately",abusive_clause
+"No Reps Survival (Asymmetric): non-survie asymétrique des déclarations, expiration immédiate",abusive_clause
+"No Reps Survival (Asymmetric): tanpa keberlangsungan pernyataan (asimetris), kedaluwarsa seketika",abusive_clause
+"Tag-Along Exclusion: tag-along exclusion, no co-sale, minority excluded, founder sells alone",abusive_clause
+"Tag-Along Exclusion: exclusion du droit de sortie conjointe, minoritaires écartés",abusive_clause
+"Tag-Along Exclusion: pengecualian tag-along, tanpa hak ikut jual, minoritas dikecualikan",abusive_clause
+"Take-or-Pay Without Cap: take-or-pay, minimum volume, pay regardless, uncapped commitment",abusive_clause
+"Take-or-Pay Without Cap: obligation d'enlèvement ou paiement sans plafond, volume minimum imposé",abusive_clause
+"Take-or-Pay Without Cap: take-or-pay tanpa batas, volume minimum, bayar terlepas kebutuhan",abusive_clause
+"Mandatory Exclusive Sourcing: exclusive sourcing, single source, no alternative supplier, sole supply",abusive_clause
+"Mandatory Exclusive Sourcing: approvisionnement exclusif obligatoire, source unique, fournisseur exclusif",abusive_clause
+"Mandatory Exclusive Sourcing: sumber eksklusif wajib, sumber tunggal, tanpa pemasok alternatif",abusive_clause
+"Retroactive Defect Liability: retroactive defect, past shipments, retroactive recall, backward liability",abusive_clause
+"Retroactive Defect Liability: responsabilité rétroactive pour défauts, livraisons passées, rappel rétroactif",abusive_clause
+"Retroactive Defect Liability: tanggung jawab cacat retroaktif, pengiriman lampau, penarikan retroaktif",abusive_clause
+"Forced Tooling Transfer: tooling transfer, mold ownership, transfer tools, free tooling, IP transfer",abusive_clause
+"Forced Tooling Transfer: transfert forcé d'outillage, propriété des moules, outillage gratuit",abusive_clause
+"Forced Tooling Transfer: transfer perkakas paksa, kepemilikan cetakan, serahkan perkakas gratis",abusive_clause
+"Currency Risk Shift to Supplier: currency risk, FX shift, exchange rate risk, supplier bears FX",abusive_clause
+"Currency Risk Shift to Supplier: transfert du risque de change au fournisseur, risque FX",abusive_clause
+"Currency Risk Shift to Supplier: pengalihan risiko mata uang ke pemasok, risiko nilai tukar",abusive_clause
+"Forced Year-over-Year Price Cuts: price reduction, annual cut, forced deflation, year-over-year decrease",abusive_clause
+"Forced Year-over-Year Price Cuts: baisses de prix annuelles forcées, déflation imposée",abusive_clause
+"Forced Year-over-Year Price Cuts: pemotongan harga tahunan paksa, deflasi paksa, penurunan tiap tahun",abusive_clause
+"Mandatory Buffer Stock at Supplier Cost: buffer stock, safety stock, supplier-funded inventory, mandatory stock",abusive_clause
+"Mandatory Buffer Stock at Supplier Cost: stock tampon aux frais du fournisseur, stock de sécurité imposé",abusive_clause
+"Mandatory Buffer Stock at Supplier Cost: stok penyangga atas biaya pemasok, stok pengaman wajib",abusive_clause
+"Demand Forecast Liability: forecast liability, binding forecast, penalty for shortfall, forecast commitment",abusive_clause
+"Demand Forecast Liability: responsabilité sur les prévisions, prévision contraignante, pénalité d'écart",abusive_clause
+"Demand Forecast Liability: tanggung jawab prakiraan permintaan, prakiraan mengikat, penalti kekurangan",abusive_clause
+"Consignment Risk Without Compensation: consignment risk, unpaid stock, supplier owns risk, no payment until sold",abusive_clause
+"Consignment Risk Without Compensation: risque de consignation sans compensation, stock non payé",abusive_clause
+"Consignment Risk Without Compensation: risiko konsinyasi tanpa kompensasi, stok belum dibayar, bayar setelah terjual",abusive_clause
+"Forced Acceptance of Substitutes: substitute goods, forced acceptance, alternate product, no rejection right",abusive_clause
+"Forced Acceptance of Substitutes: acceptation forcée de produits de substitution, produit alternatif imposé",abusive_clause
+"Forced Acceptance of Substitutes: penerimaan paksa barang pengganti, produk alternatif, tanpa hak menolak",abusive_clause
+"Unilateral Incoterm Reallocation: incoterm change, shift delivery terms, reallocate risk, freight shift",abusive_clause
+"Unilateral Incoterm Reallocation: réallocation unilatérale des Incoterms, transfert des frais de transport",abusive_clause
+"Unilateral Incoterm Reallocation: realokasi Incoterm sepihak, ubah syarat pengiriman, alihkan ongkos angkut",abusive_clause
+"Customs Duty Liability Shift: customs duty, tariff liability, duty shift, importer of record, tariff risk",abusive_clause
+"Customs Duty Liability Shift: transfert de la responsabilité des droits de douane, risque tarifaire",abusive_clause
+"Customs Duty Liability Shift: pengalihan tanggung jawab bea masuk, risiko tarif, importir tercatat",abusive_clause
+"Uncapped Rent Escalation: rent escalation, uncapped increase, rent hike, no ceiling rent",abusive_clause
+"Uncapped Rent Escalation: indexation de loyer sans plafond, hausse illimitée du loyer",abusive_clause
+"Uncapped Rent Escalation: eskalasi sewa tanpa batas, kenaikan sewa tak terbatas, tanpa plafon",abusive_clause
+"Demolition Clause Without Compensation: demolition clause, redevelopment, terminate lease, no compensation, evict for rebuild",abusive_clause
+"Demolition Clause Without Compensation: clause de démolition sans indemnité, réaménagement, résiliation du bail",abusive_clause
+"Demolition Clause Without Compensation: klausul pembongkaran tanpa kompensasi, pembangunan ulang, akhiri sewa",abusive_clause
+"Continuous Operation Covenant: continuous operation, keep open, operating covenant, no going dark, mandatory hours",abusive_clause
+"Continuous Operation Covenant: obligation d'exploitation continue, maintien d'ouverture",abusive_clause
+"Continuous Operation Covenant: kovenan operasi berkelanjutan, tetap buka, jam wajib, larangan tutup",abusive_clause
+"Landlord Relocation Right: landlord relocation, forced move, relocate tenant, move premises",abusive_clause
+"Landlord Relocation Right: droit de relocalisation du bailleur, déplacement forcé du locataire",abusive_clause
+"Landlord Relocation Right: hak relokasi pemilik, pindah paksa penyewa, geser lokasi",abusive_clause
+"Excessive Holdover Penalty: holdover penalty, double rent, triple rent, holdover rent, overstay charge",abusive_clause
+"Excessive Holdover Penalty: pénalité de maintien excessive, loyer doublé en cas de maintien",abusive_clause
+"Excessive Holdover Penalty: denda holdover berlebihan, sewa berlipat, biaya tinggal lebih lama",abusive_clause
+"Waiver of Quiet Enjoyment: quiet enjoyment waiver, disturb tenant, no peaceful possession, landlord interference",abusive_clause
+"Waiver of Quiet Enjoyment: renonciation à la jouissance paisible, trouble de jouissance",abusive_clause
+"Waiver of Quiet Enjoyment: pelepasan hak menikmati dengan tenang, ganggu penyewa, gangguan pemilik",abusive_clause
+"Landlord Lien on Business Assets: landlord lien, lien on equipment, seize inventory, security interest tenant assets",abusive_clause
+"Landlord Lien on Business Assets: privilège du bailleur sur les actifs, sûreté sur l'équipement",abusive_clause
+"Landlord Lien on Business Assets: hak gadai pemilik atas aset bisnis, sita peralatan, jaminan aset penyewa",abusive_clause
+"Repair Obligation Shift (Structural): structural repairs, tenant repairs, shift maintenance, roof and walls tenant",abusive_clause
+"Repair Obligation Shift (Structural): transfert des réparations structurelles au locataire, gros entretien",abusive_clause
+"Repair Obligation Shift (Structural): pengalihan kewajiban perbaikan struktural, perawatan ke penyewa, atap dan dinding",abusive_clause
+"Uncapped CAM Charges: CAM charges, common area maintenance, uncapped operating expenses, pass-through",abusive_clause
+"Uncapped CAM Charges: charges communes sans plafond, dépenses d'exploitation refacturées",abusive_clause
+"Uncapped CAM Charges: biaya CAM tanpa batas, biaya perawatan area bersama, beban operasi diteruskan",abusive_clause
+"Self-Help Eviction Rights: self-help eviction, lockout, seize premises, no court eviction, forcible entry",abusive_clause
+"Self-Help Eviction Rights: expulsion par voie de fait, verrouillage sans procédure judiciaire",abusive_clause
+"Self-Help Eviction Rights: hak pengusiran main hakim sendiri, kunci paksa, sita tempat tanpa pengadilan",abusive_clause
+"SNDA Waiver: SNDA waiver, subordination, non-disturbance waiver, lender forecloses, lose lease",abusive_clause
+"SNDA Waiver: renonciation SNDA, subordination sans non-perturbation",abusive_clause
+"SNDA Waiver: pelepasan SNDA, subordinasi tanpa perlindungan non-gangguan, sita pemberi pinjaman",abusive_clause
+"Mandatory Restoration to Shell: restoration to shell, remove improvements, restore premises, demolition obligation",abusive_clause
+"Mandatory Restoration to Shell: remise en état brut obligatoire, retrait des aménagements",abusive_clause
+"Mandatory Restoration to Shell: wajib kembalikan ke kondisi kosong, bongkar renovasi, pulihkan tempat",abusive_clause
+"License Revocation at Will: license revocation, revoke at will, terminate license, pull access, kill switch",abusive_clause
+"License Revocation at Will: révocation de licence à volonté, retrait d'accès, interrupteur",abusive_clause
+"License Revocation at Will: pencabutan lisensi sesuka hati, putus akses, cabut lisensi, sakelar mati",abusive_clause
+"Unilateral Royalty Rate Change: royalty rate change, unilateral royalty, increase royalties, fee hike licensor",abusive_clause
+"Unilateral Royalty Rate Change: modification unilatérale du taux de redevance, hausse des royalties",abusive_clause
+"Unilateral Royalty Rate Change: perubahan tarif royalti sepihak, naikkan royalti, kenaikan biaya lisensi",abusive_clause
+"Mandatory Derivative Assignment: derivative work assignment, assign improvements, licensor owns derivatives",abusive_clause
+"Mandatory Derivative Assignment: cession obligatoire des œuvres dérivées, propriété des améliorations",abusive_clause
+"Mandatory Derivative Assignment: wajib pengalihan karya turunan, alihkan peningkatan, pemberi lisensi miliki turunan",abusive_clause
+"Whole-Business Royalty Audit: royalty audit, audit entire business, broad audit, books inspection unlimited",abusive_clause
+"Whole-Business Royalty Audit: audit de redevances sur toute l'entreprise, inspection illimitée",abusive_clause
+"Whole-Business Royalty Audit: audit royalti seluruh bisnis, inspeksi buku tanpa batas",abusive_clause
+"Patent Challenge Termination: patent challenge termination, no-challenge, terminate on validity dispute",abusive_clause
+"Patent Challenge Termination: résiliation pour contestation de brevet, clause de non-contestation",abusive_clause
+"Patent Challenge Termination: pemutusan karena menantang paten, larangan menggugat, putus saat sengketa validitas",abusive_clause
+"Termination Forfeits All Licenses: termination forfeits licenses, lose all rights, cross-default licenses, total forfeiture",abusive_clause
+"Termination Forfeits All Licenses: la résiliation fait perdre toutes les licences, déchéance totale",abusive_clause
+"Termination Forfeits All Licenses: pemutusan menghapus semua lisensi, kehilangan semua hak, gagal silang lisensi",abusive_clause
+"Mandatory Open Source Disclosure: open source disclosure, forced GPL, copyleft trap, disclose source, viral license",abusive_clause
+"Mandatory Open Source Disclosure: divulgation open source obligatoire, piège copyleft, licence virale",abusive_clause
+"Mandatory Open Source Disclosure: wajib pengungkapan open source, jebakan copyleft, lisensi viral, ungkap sumber",abusive_clause
+"Perpetual Publicity Rights Grant: publicity rights, perpetual likeness, name and image, irrevocable publicity",abusive_clause
+"Perpetual Publicity Rights Grant: cession perpétuelle des droits à l'image, nom et image irrévocables",abusive_clause
+"Perpetual Publicity Rights Grant: pemberian hak publisitas selamanya, citra abadi, nama dan gambar tak dapat dicabut",abusive_clause
+"Unilateral Content Takedown: content takedown, remove content, no appeal, unilateral removal, platform discretion",abusive_clause
+"Unilateral Content Takedown: retrait de contenu unilatéral, suppression sans recours, discrétion de la plateforme",abusive_clause
+"Unilateral Content Takedown: penghapusan konten sepihak, hapus konten, tanpa banding, diskresi platform",abusive_clause
+"Royalty on Unrelated Products: royalty on unrelated, broad royalty base, all products, expansive royalty",abusive_clause
+"Royalty on Unrelated Products: redevance sur produits non liés, base de redevance étendue",abusive_clause
+"Royalty on Unrelated Products: royalti atas produk tak terkait, basis royalti luas, semua produk",abusive_clause
+"Improvement Grant-Back Exclusive: exclusive grant-back, improvements, assign back, licensor owns improvements",abusive_clause
+"Improvement Grant-Back Exclusive: rétrocession exclusive des améliorations, cession des perfectionnements",abusive_clause
+"Improvement Grant-Back Exclusive: grant-back peningkatan eksklusif, alihkan kembali, pemberi lisensi miliki peningkatan",abusive_clause
+"Reverse Engineering Liability Uncapped: reverse engineering, uncapped liability, RE prohibition, interop block",abusive_clause
+"Reverse Engineering Liability Uncapped: responsabilité illimitée pour rétro-ingénierie, blocage d'interopérabilité",abusive_clause
+"Reverse Engineering Liability Uncapped: tanggung jawab rekayasa balik tanpa batas, larangan RE, blokir interoperabilitas",abusive_clause
+"Unilateral Territory Reduction: territory reduction, shrink territory, unilateral carve-out, reduce exclusivity",abusive_clause
+"Unilateral Territory Reduction: réduction unilatérale du territoire, diminution de l'exclusivité",abusive_clause
+"Unilateral Territory Reduction: pengurangan teritori sepihak, perkecil wilayah, kurangi eksklusivitas",abusive_clause
+"Indefinite Indemnity Survival: indemnity survival, indefinite, no time limit indemnity, perpetual indemnity",abusive_clause
+"Indefinite Indemnity Survival: survie indéfinie de l'indemnisation, indemnité perpétuelle",abusive_clause
+"Indefinite Indemnity Survival: keberlangsungan indemnitas tak terbatas, indemnitas abadi, tanpa batas waktu",abusive_clause
+"Defense Costs Outside the Cap: defense costs, outside cap, legal fees uncapped, costs in addition",abusive_clause
+"Defense Costs Outside the Cap: frais de défense hors plafond, honoraires juridiques illimités",abusive_clause
+"Defense Costs Outside the Cap: biaya pembelaan di luar plafon, biaya hukum tanpa batas, biaya sebagai tambahan",abusive_clause
+"Indemnity Without Negligence: indemnity without fault, no-fault indemnity, indemnify regardless, strict indemnity",abusive_clause
+"Indemnity Without Negligence: indemnisation sans faute, indemniser quelle que soit la responsabilité",abusive_clause
+"Indemnity Without Negligence: indemnitas tanpa kelalaian, indemnitas tanpa kesalahan, indemnitas tetap berlaku",abusive_clause
+"Mandatory Tail Coverage at Own Cost: tail coverage, run-off insurance, own cost, extended reporting, post-term insurance",abusive_clause
+"Mandatory Tail Coverage at Own Cost: couverture subséquente à ses frais, assurance de prolongation",abusive_clause
+"Mandatory Tail Coverage at Own Cost: wajib tail coverage atas biaya sendiri, asuransi run-off, asuransi pasca-kontrak",abusive_clause
+"Coverage Exclusion Retroactive: retroactive exclusion, deny coverage, backdated exclusion, claims-made trap",abusive_clause
+"Coverage Exclusion Retroactive: exclusion de couverture rétroactive, refus de prise en charge",abusive_clause
+"Coverage Exclusion Retroactive: pengecualian pertanggungan retroaktif, tolak klaim, pengecualian surut",abusive_clause
+"Notice of Claim Strict Forfeiture: claim notice forfeiture, strict deadline, late notice bars claim, notice trap",abusive_clause
+"Notice of Claim Strict Forfeiture: déchéance stricte pour avis tardif, forclusion du sinistre",abusive_clause
+"Notice of Claim Strict Forfeiture: hangus klaim karena pemberitahuan terlambat, tenggat ketat, jebakan pemberitahuan",abusive_clause
+"Cross-Indemnity Imbalance: cross-indemnity, imbalanced indemnity, one-sided cross indemnity, asymmetric",abusive_clause
+"Cross-Indemnity Imbalance: déséquilibre des indemnisations croisées, indemnité asymétrique",abusive_clause
+"Cross-Indemnity Imbalance: ketidakseimbangan indemnitas silang, indemnitas asimetris, satu pihak lebih luas",abusive_clause
+"Mandatory Additional Insured Broad: additional insured, broad endorsement, name as insured, extend coverage free",abusive_clause
+"Mandatory Additional Insured Broad: assuré additionnel large, extension de couverture gratuite",abusive_clause
+"Mandatory Additional Insured Broad: tertanggung tambahan luas, endorsemen luas, perluas pertanggungan gratis",abusive_clause
+"Unilateral Deductible Increase: deductible increase, unilateral retention, raise self-insured retention",abusive_clause
+"Unilateral Deductible Increase: augmentation unilatérale de la franchise, hausse de la rétention",abusive_clause
+"Unilateral Deductible Increase: kenaikan deductible sepihak, naikkan retensi sendiri di tengah masa berlaku",abusive_clause
+"Sanctions Risk Shift Entirely: sanctions risk, full shift, OFAC liability, sole responsibility sanctions",abusive_clause
+"Sanctions Risk Shift Entirely: transfert total du risque de sanctions, responsabilité OFAC unilatérale",abusive_clause
+"Sanctions Risk Shift Entirely: pengalihan risiko sanksi sepenuhnya, tanggung jawab OFAC sepihak, sanksi tanggungan sendiri",abusive_clause
+"Forced Technology Transfer: technology transfer, forced disclosure, transfer know-how, local partner access",abusive_clause
+"Forced Technology Transfer: transfert forcé de technologie, divulgation du savoir-faire",abusive_clause
+"Forced Technology Transfer: transfer teknologi paksa, pengungkapan paksa, alihkan pengetahuan, akses mitra lokal",abusive_clause
+"Mandatory Local Partner Control: local partner, forced JV, majority local, control requirement, equity mandate",abusive_clause
+"Mandatory Local Partner Control: contrôle obligatoire par un partenaire local, coentreprise imposée",abusive_clause
+"Mandatory Local Partner Control: kendali mitra lokal wajib, JV paksa, mayoritas lokal, persyaratan kepemilikan",abusive_clause
+"Tax Gross-Up Unlimited: tax gross-up, unlimited gross-up, bear all taxes, withholding gross-up",abusive_clause
+"Tax Gross-Up Unlimited: majoration fiscale illimitée, prise en charge de toutes les taxes",abusive_clause
+"Tax Gross-Up Unlimited: gross-up pajak tanpa batas, tanggung semua pajak, gross-up pemotongan",abusive_clause
+"Choice of Law in Unstable Jurisdiction: unstable jurisdiction, governing law risk, hostile forum, weak rule of law",abusive_clause
+"Choice of Law in Unstable Jurisdiction: droit applicable dans une juridiction instable, for hostile",abusive_clause
+"Choice of Law in Unstable Jurisdiction: pilihan hukum di yurisdiksi tidak stabil, forum tidak bersahabat, supremasi hukum lemah",abusive_clause
+"Repatriation Restriction: repatriation restriction, trapped capital, no profit transfer, currency control",abusive_clause
+"Repatriation Restriction: restriction de rapatriement, capitaux bloqués, contrôle des changes",abusive_clause
+"Repatriation Restriction: pembatasan repatriasi, modal terjebak, larangan transfer laba, kontrol devisa",abusive_clause
+"Anti-Bribery Indemnity Uncapped: anti-bribery indemnity, FCPA, uncapped, corruption liability, agent acts",abusive_clause
+"Anti-Bribery Indemnity Uncapped: indemnité anticorruption illimitée, actes d'agents, FCPA",abusive_clause
+"Anti-Bribery Indemnity Uncapped: indemnitas anti-suap tanpa batas, FCPA, tanggung jawab korupsi, tindakan agen",abusive_clause
+"Mandatory Foreign Currency Payment: foreign currency payment, FX exposure, pay in their currency, no local currency",abusive_clause
+"Mandatory Foreign Currency Payment: paiement obligatoire en devise étrangère, exposition au change",abusive_clause
+"Mandatory Foreign Currency Payment: wajib pembayaran mata uang asing, paparan nilai tukar, bayar dalam mata uang mereka",abusive_clause
+"Export Control Liability Uncapped: export control, uncapped liability, dual-use, end-user risk, re-export",abusive_clause
+"Export Control Liability Uncapped: responsabilité illimitée en contrôle des exportations, réexportation",abusive_clause
+"Export Control Liability Uncapped: tanggung jawab kontrol ekspor tanpa batas, dual-use, risiko pengguna akhir, re-ekspor",abusive_clause
+"Pay-When-Paid Indefinite: pay-when-paid, pay-if-paid, contingent payment, no payment until owner pays",abusive_clause
+"Pay-When-Paid Indefinite: paiement conditionné au paiement, paiement contingent indéfini",abusive_clause
+"Pay-When-Paid Indefinite: bayar-saat-dibayar tak terbatas, pembayaran kontingen, tanpa bayar hingga pemilik bayar",abusive_clause
+"No Extension for Owner Delay: no time extension, owner delay, no relief, no-damages-for-delay, concurrent delay",abusive_clause
+"No Extension for Owner Delay: aucune prolongation pour retard du maître d'ouvrage, no-damages-for-delay",abusive_clause
+"No Extension for Owner Delay: tanpa perpanjangan untuk keterlambatan pemilik, tanpa keringanan, keterlambatan bersamaan",abusive_clause
+"Retention Held Indefinitely: retention, retainage, indefinite hold, withhold final payment, no release retention",abusive_clause
+"Retention Held Indefinitely: retenue de garantie conservée indéfiniment, paiement final retenu",abusive_clause
+"Retention Held Indefinitely: retensi ditahan tanpa batas, retainage, tahan pembayaran akhir",abusive_clause
+"Unilateral Change Order Without Pricing: change order, no pricing, directed change, perform first dispute later, unilateral directive",abusive_clause
+"Unilateral Change Order Without Pricing: ordre de modification sans prix, exécuter avant accord sur le prix",abusive_clause
+"Unilateral Change Order Without Pricing: perintah perubahan tanpa harga, kerjakan dulu sengketakan kemudian, arahan sepihak",abusive_clause
+"Waiver of Lien Rights Upfront: lien waiver upfront, waive mechanics lien, no lien rights, advance waiver",abusive_clause
+"Waiver of Lien Rights Upfront: renonciation préalable au privilège, abandon du privilège du constructeur",abusive_clause
+"Waiver of Lien Rights Upfront: pelepasan hak gadai di muka, lepaskan hak gadai mekanik, pelepasan dini",abusive_clause
+"Design Liability Shift to Builder: design liability, shift to contractor, owner design defects, builder bears design",abusive_clause
+Design Liability Shift to Builder: transfert de la responsabilité de conception à l'entrepreneur,abusive_clause
+"Design Liability Shift to Builder: pengalihan tanggung jawab desain ke pembangun, cacat desain pemilik",abusive_clause
+"Liquidated Damages No Bonus: liquidated damages, no early bonus, one-sided LDs, penalty only",abusive_clause
+"Liquidated Damages No Bonus: dommages-intérêts forfaitaires sans prime, pénalités unilatérales",abusive_clause
+"Liquidated Damages No Bonus: ganti rugi tertentu tanpa bonus, LD sepihak, hanya penalti",abusive_clause
+"Back-Charge Without Notice: back-charge, deduct without notice, set-off costs, unilateral deduction",abusive_clause
+"Back-Charge Without Notice: refacturation sans préavis, déduction unilatérale de coûts",abusive_clause
+"Back-Charge Without Notice: back-charge tanpa pemberitahuan, potong tanpa pemberitahuan, set-off biaya",abusive_clause
+"Mandatory Bonding at Contractor Cost: performance bond, bonding cost, contractor pays bond, mandatory surety",abusive_clause
+"Mandatory Bonding at Contractor Cost: cautionnement obligatoire aux frais de l'entrepreneur, garantie de bonne fin",abusive_clause
+"Mandatory Bonding at Contractor Cost: wajib penjaminan atas biaya kontraktor, biaya bonding, kontraktor bayar surety",abusive_clause
+"Concurrent Delay No Relief: concurrent delay, no relief, both at fault, deny extension, apportionment denied",abusive_clause
+"Concurrent Delay No Relief: retard concurrent sans relief, aucun aménagement, répartition refusée",abusive_clause
+"Concurrent Delay No Relief: keterlambatan bersamaan tanpa keringanan, kedua pihak salah, pembagian ditolak",abusive_clause
+"Unilateral Franchise Fee Increase: franchise fee increase, unilateral fee, raise royalties, increase ad fund",abusive_clause
+"Unilateral Franchise Fee Increase: augmentation unilatérale des redevances de franchise, hausse du fonds publicitaire",abusive_clause
+"Unilateral Franchise Fee Increase: kenaikan biaya waralaba sepihak, naikkan royalti, tambah dana iklan",abusive_clause
+"Mandatory Remodel at Franchisee Cost: mandatory remodel, refresh at own cost, forced renovation, image upgrade",abusive_clause
+"Mandatory Remodel at Franchisee Cost: rénovation obligatoire aux frais du franchisé, mise à niveau d'image",abusive_clause
+"Mandatory Remodel at Franchisee Cost: wajib renovasi atas biaya penerima waralaba, peremajaan paksa, pembaruan citra",abusive_clause
+"Territory Encroachment Allowed: territory encroachment, no exclusivity, open new units nearby, cannibalize sales",abusive_clause
+"Territory Encroachment Allowed: empiétement territorial autorisé, absence d'exclusivité, cannibalisation",abusive_clause
+"Territory Encroachment Allowed: perambahan teritori diizinkan, tanpa eksklusivitas, buka unit baru di dekat, kanibalisasi",abusive_clause
+"Mandatory Supply from Franchisor: mandatory supply, buy from franchisor, captive supply, inflated supply prices",abusive_clause
+"Mandatory Supply from Franchisor: approvisionnement obligatoire auprès du franchiseur, prix gonflés",abusive_clause
+"Mandatory Supply from Franchisor: wajib pasokan dari pemberi waralaba, beli dari pewaralaba, harga pasokan digelembungkan",abusive_clause
+"Personal Guarantee Survives Transfer: personal guarantee survives, transfer liability, guarantor after sale, lingering guarantee",abusive_clause
+"Personal Guarantee Survives Transfer: garantie personnelle survivant au transfert, responsabilité après vente",abusive_clause
+"Personal Guarantee Survives Transfer: jaminan pribadi tetap berlaku setelah pengalihan, tanggung jawab setelah jual",abusive_clause
+"Liquidated Damages Full Term on Termination: liquidated damages full term, future royalties, lost future fees, accelerated damages",abusive_clause
+"Liquidated Damages Full Term on Termination: dommages forfaitaires sur toute la durée à la résiliation, redevances futures",abusive_clause
+"Liquidated Damages Full Term on Termination: ganti rugi penuh sisa masa saat pemutusan, royalti masa depan, ganti rugi dipercepat",abusive_clause
+"Resale Price Maintenance: resale price maintenance, RPM, fixed pricing, mandated retail price, price floor",abusive_clause
+"Resale Price Maintenance: prix de revente imposé, RPM, prix de détail dicté, prix plancher",abusive_clause
+"Resale Price Maintenance: penetapan harga jual kembali, RPM, harga ritel ditentukan, harga dasar",abusive_clause
+"Termination Without Cure for Standards: termination no cure, standards breach, no remedy period, instant termination standards",abusive_clause
+"Termination Without Cure for Standards: résiliation sans régularisation pour non-respect des normes, fin immédiate",abusive_clause
+"Termination Without Cure for Standards: pemutusan tanpa perbaikan untuk standar, pelanggaran standar, tanpa masa perbaikan",abusive_clause
+"Unilateral System Standard Change: system standard change, unilateral changes, new requirements, costly mandates",abusive_clause
+"Unilateral System Standard Change: modification unilatérale des normes du système, nouvelles exigences coûteuses",abusive_clause
+"Unilateral System Standard Change: perubahan standar sistem sepihak, persyaratan baru, mandat mahal",abusive_clause
+"Amendment by Posting: amendment by posting, change terms online, unilateral amendment, posted changes binding",abusive_clause
+"Amendment by Posting: modification par simple publication, changement des conditions en ligne",abusive_clause
+"Amendment by Posting: amandemen lewat unggahan, ubah ketentuan daring, perubahan diunggah mengikat",abusive_clause
+"Deemed Consent by Silence: deemed consent, silence is acceptance, no response means yes, automatic agreement",abusive_clause
+"Deemed Consent by Silence: consentement réputé par le silence, le silence vaut acceptation",abusive_clause
+"Deemed Consent by Silence: persetujuan dianggap dari diam, diam berarti setuju, tanpa balasan berarti ya",abusive_clause
+"Entire Agreement Excluding Fraud: entire agreement, exclude fraud, no reliance, disclaim representations, integration",abusive_clause
+"Entire Agreement Excluding Fraud: clause d'intégralité excluant la fraude, absence de confiance, déni de déclarations",abusive_clause
+"Entire Agreement Excluding Fraud: klausul keseluruhan kecuali penipuan, tanpa kebergantungan, sangkal pernyataan",abusive_clause
+"No Oral Modification Trap: no oral modification, NOM clause, only written changes, ignore practice",abusive_clause
+"No Oral Modification Trap: piège de non-modification orale, clause NOM, ignorer la pratique",abusive_clause
+"No Oral Modification Trap: jebakan tanpa modifikasi lisan, klausul NOM, hanya perubahan tertulis",abusive_clause
+"Loser Pays All Costs: loser pays, fee shifting, all costs, prevailing party, full cost recovery",abusive_clause
+"Loser Pays All Costs: le perdant paie tous les frais, transfert intégral des coûts",abusive_clause
+"Loser Pays All Costs: yang kalah bayar semua biaya, pengalihan biaya, pemulihan biaya penuh",abusive_clause
+"Survival of All Obligations: survival of all, everything survives, perpetual obligations, no clean exit",abusive_clause
+"Survival of All Obligations: survie de toutes les obligations, aucune sortie nette",abusive_clause
+"Survival of All Obligations: keberlangsungan semua kewajiban, semua tetap berlaku, tanpa keluar bersih",abusive_clause
+"Unilateral Notice Address Control: notice address, unilateral change, deemed received, notice trap, service of notice",abusive_clause
+"Unilateral Notice Address Control: contrôle unilatéral de l'adresse de notification, avis réputé reçu",abusive_clause
+"Unilateral Notice Address Control: kendali alamat pemberitahuan sepihak, dianggap diterima, jebakan pemberitahuan",abusive_clause
+"Electronic Acceptance Binds Affiliates: electronic acceptance, bind affiliates, clickwrap binds group, broad acceptance",abusive_clause
+"Electronic Acceptance Binds Affiliates: acceptation électronique engageant les filiales, clic engageant le groupe",abusive_clause
+"Electronic Acceptance Binds Affiliates: penerimaan elektronik mengikat afiliasi, clickwrap mengikat grup",abusive_clause
+"Waiver of Class Arbitration: class arbitration waiver, no collective arbitration, individual only, mass claim bar",abusive_clause
+"Waiver of Class Arbitration: renonciation à l'arbitrage collectif, arbitrage individuel uniquement",abusive_clause
+"Waiver of Class Arbitration: pelepasan arbitrase kelompok, hanya arbitrase individu, larangan klaim massal",abusive_clause
+"Unilateral Set-Off Across Contracts: set-off across contracts, global set-off, net across deals, cross-contract offset",abusive_clause
+"Unilateral Set-Off Across Contracts: compensation entre tous les contrats, compensation globale",abusive_clause
+"Unilateral Set-Off Across Contracts: set-off lintas kontrak, set-off global, offset antar kesepakatan",abusive_clause
+"Most Favored Customer Audit Intrusion: MFC audit, most favored, pricing audit, disclose all deals, benchmark intrusion",abusive_clause
+"Most Favored Customer Audit Intrusion: intrusion d'audit client le plus favorisé, divulgation de tous les accords",abusive_clause
+"Most Favored Customer Audit Intrusion: intrusi audit pelanggan paling diutamakan, ungkap semua kesepakatan",abusive_clause
+"Unilateral Indemnity Control of Defense: control of defense, indemnitor control, no settlement consent, defense takeover",abusive_clause
+"Unilateral Indemnity Control of Defense: contrôle unilatéral de la défense par l'indemnisant, transaction sans accord",abusive_clause
+"Unilateral Indemnity Control of Defense: kendali pembelaan sepihak oleh penjamin, penyelesaian tanpa persetujuan",abusive_clause
+"Perpetual Audit of Former Partners: audit former partners, post-exit audit, perpetual audit rights, ongoing inspection",abusive_clause
+"Perpetual Audit of Former Partners: audit perpétuel des anciens associés, inspection après le départ",abusive_clause
+"Perpetual Audit of Former Partners: audit abadi mantan mitra, audit pasca-keluar, hak audit permanen",abusive_clause
+"Unilateral Currency of Judgment: currency of judgment, judgment currency clause, FX on judgment, conversion date control",abusive_clause
+"Unilateral Currency of Judgment: monnaie de jugement unilatérale, date de conversion contrôlée",abusive_clause
+"Unilateral Currency of Judgment: mata uang putusan sepihak, tanggal konversi dikendalikan, nilai tukar atas putusan",abusive_clause
+"Unilateral Termination for Convenience (No Wind-Down): termination for convenience, no wind-down, abrupt exit, no transition, strand work",abusive_clause
+"Unilateral Termination for Convenience (No Wind-Down): résiliation pour convenance sans liquidation, sortie abrupte sans transition",abusive_clause
+"Unilateral Termination for Convenience (No Wind-Down): pemutusan demi kenyamanan sepihak (tanpa penyelesaian), keluar mendadak tanpa transisi",abusive_clause
+"Mandatory Press Release Approval: press release approval, publicity control, no announcement, gag on deal, communications veto",abusive_clause
+"Mandatory Press Release Approval: approbation obligatoire des communiqués, veto sur les communications",abusive_clause
+"Mandatory Press Release Approval: wajib persetujuan siaran pers, kendali publisitas, veto komunikasi",abusive_clause
+"Unilateral Exclusivity Extension: exclusivity extension, auto-extend exclusivity, lock-up extension, unilateral renewal exclusivity",abusive_clause
+"Unilateral Exclusivity Extension: extension unilatérale d'exclusivité, prolongation du verrouillage",abusive_clause
+"Unilateral Exclusivity Extension: perpanjangan eksklusivitas sepihak, perpanjang lock-up, perpanjangan otomatis eksklusivitas",abusive_clause
+"Mandatory Most-Favored Terms Across All Future Deals: most favored terms, future deals, retroactive MFN, apply best terms forever",abusive_clause
+"Mandatory Most-Favored Terms Across All Future Deals: conditions les plus favorables sur tous les accords futurs, MFN perpétuel",abusive_clause
+"Mandatory Most-Favored Terms Across All Future Deals: ketentuan paling diutamakan di semua kesepakatan masa depan, MFN abadi",abusive_clause
+"Unilateral Data Use for Marketing Without Limit: marketing use unlimited, data for marketing, broad marketing rights, repurpose data",abusive_clause
+"Unilateral Data Use for Marketing Without Limit: usage marketing illimité des données, réutilisation à des fins promotionnelles",abusive_clause
+"Unilateral Data Use for Marketing Without Limit: penggunaan data untuk pemasaran tanpa batas, hak pemasaran luas, gunakan ulang data",abusive_clause
+"Liability Cap Below Fees Paid: liability cap below fees, tiny cap, nominal liability, cap less than fees",abusive_clause
+"Liability Cap Below Fees Paid: plafond de responsabilité inférieur aux frais payés, responsabilité dérisoire",abusive_clause
+"Liability Cap Below Fees Paid: plafon tanggung jawab di bawah biaya dibayar, plafon kecil, tanggung jawab nominal",abusive_clause
+"Unilateral Suspension of Performance: suspend performance, unilateral suspension, stop service, withhold work, halt at will",abusive_clause
+"Unilateral Suspension of Performance: suspension unilatérale de la prestation, arrêt du service à volonté",abusive_clause
+"Unilateral Suspension of Performance: penangguhan kinerja sepihak, hentikan layanan, tahan pekerjaan, berhenti sesuka hati",abusive_clause
+"Mandatory Liquidated Damages for Disclosure: liquidated damages disclosure, fixed penalty per breach, NDA penalty, per-incident damages",abusive_clause
+"Mandatory Liquidated Damages for Disclosure: dommages forfaitaires obligatoires pour divulgation, pénalité fixe par manquement",abusive_clause
+"Mandatory Liquidated Damages for Disclosure: ganti rugi tertentu wajib untuk pengungkapan, penalti tetap per pelanggaran, denda per insiden",abusive_clause
+"Unilateral Reclassification of Worker: reclassify worker, contractor reclassification, deny employee status, misclassification",abusive_clause
+"Unilateral Reclassification of Worker: reclassification unilatérale du travailleur, déni du statut de salarié",abusive_clause
+"Unilateral Reclassification of Worker: reklasifikasi pekerja sepihak, klasifikasi ulang kontraktor, sangkal status karyawan",abusive_clause
+"Forced Waiver of Moral and Attribution Rights: moral rights waiver, attribution waiver, no credit, disclaim authorship, anonymize work",abusive_clause
+"Forced Waiver of Moral and Attribution Rights: renonciation forcée aux droits moraux et de paternité, absence de crédit",abusive_clause
+"Forced Waiver of Moral and Attribution Rights: pelepasan paksa hak moral dan atribusi, tanpa kredit, sangkal kepengarangan",abusive_clause
+"Unilateral Renewal Denial: renewal denial, deny renewal, no renewal rights, arbitrary non-renewal, refuse extension",abusive_clause
+"Unilateral Renewal Denial: refus unilatéral de renouvellement, non-renouvellement arbitraire",abusive_clause
+"Unilateral Renewal Denial: penolakan perpanjangan sepihak, tolak pembaruan, tanpa hak perpanjangan, non-perpanjangan sewenang-wenang",abusive_clause
+"Excessive Minimum Spend Commitment: minimum spend, committed spend, shortfall penalty, take-or-pay services, minimum revenue",abusive_clause
+"Excessive Minimum Spend Commitment: engagement de dépense minimale excessive, pénalité de manque à dépenser",abusive_clause
+"Excessive Minimum Spend Commitment: komitmen belanja minimum berlebihan, penalti kekurangan, minimum pendapatan",abusive_clause
+"Unilateral IP Ownership of Feedback: feedback ownership, ideas assignment, suggestions become theirs, free feedback license",abusive_clause
+"Unilateral IP Ownership of Feedback: propriété unilatérale de la PI sur les retours, cession des idées",abusive_clause
+"Unilateral IP Ownership of Feedback: kepemilikan HKI sepihak atas umpan balik, pengalihan ide, saran menjadi milik mereka",abusive_clause
+"Mandatory Continuous Personal Guarantee Replenishment: guarantee replenishment, top-up guarantee, refresh personal guarantee, maintain guarantee level",abusive_clause
+"Mandatory Continuous Personal Guarantee Replenishment: réapprovisionnement continu de la garantie personnelle, maintien du niveau de garantie",abusive_clause
+"Mandatory Continuous Personal Guarantee Replenishment: wajib pengisian ulang jaminan pribadi berkelanjutan, jaga tingkat jaminan, perbarui jaminan",abusive_clause
+"Automatic Escalation of Penalties: escalating penalties, ratcheting fines, repeat breach multiplier, compounding penalty",abusive_clause
+"Automatic Escalation of Penalties: escalade automatique des pénalités, amendes croissantes, multiplicateur de récidive",abusive_clause
+"Automatic Escalation of Penalties: eskalasi penalti otomatis, denda meningkat, pengganda pelanggaran berulang, penalti majemuk",abusive_clause
+"Unilateral Definition of Confidential Carve-Outs: confidential carve-outs, unilateral exceptions, redefine confidential, narrow protection",abusive_clause
+"Unilateral Definition of Confidential Carve-Outs: définition unilatérale des exceptions de confidentialité, exceptions arbitraires",abusive_clause
+"Unilateral Definition of Confidential Carve-Outs: definisi pengecualian rahasia sepihak, pengecualian sewenang-wenang, persempit perlindungan",abusive_clause
+"Forced Arbitration with Vendor-Picked Arbitrator: vendor-picked arbitrator, biased arbitrator, one-sided arbitrator selection, captive arbitrator",abusive_clause
+"Forced Arbitration with Vendor-Picked Arbitrator: arbitre choisi par le fournisseur, sélection partiale de l'arbitre",abusive_clause
+"Forced Arbitration with Vendor-Picked Arbitrator: arbiter dipilih vendor, arbiter bias, pemilihan arbiter sepihak, arbiter terkurung",abusive_clause
+"Indefinite Standstill on Legal Action: standstill, no legal action, waive right to sue temporarily, indefinite tolling block",abusive_clause
+"Indefinite Standstill on Legal Action: statu quo indéfini sur les actions en justice, interdiction d'agir",abusive_clause
+"Indefinite Standstill on Legal Action: standstill tak terbatas atas tindakan hukum, larangan menggugat, blokir tenggat tak terbatas",abusive_clause
+"Unilateral Allocation of Tax Liability: tax allocation, shift tax liability, bear all taxes, unilateral tax assignment",abusive_clause
+"Unilateral Allocation of Tax Liability: allocation unilatérale de la charge fiscale, transfert de toutes les taxes",abusive_clause
+"Unilateral Allocation of Tax Liability: alokasi tanggung jawab pajak sepihak, alihkan beban pajak, tanggung semua pajak",abusive_clause
+"Mandatory Acceptance of Future Products: future products, forced purchase, accept new releases, mandatory upgrades buy, bundled future",abusive_clause
+"Mandatory Acceptance of Future Products: acceptation obligatoire de produits futurs, achat forcé de nouveautés",abusive_clause
+"Mandatory Acceptance of Future Products: wajib menerima produk masa depan, pembelian paksa, terima rilis baru, beli peningkatan wajib",abusive_clause
+"Unilateral Determination of Breach: sole determination of breach, judge in own cause, unilateral breach finding, self-judging",abusive_clause
+"Unilateral Determination of Breach: détermination unilatérale du manquement, juge et partie",abusive_clause
+"Unilateral Determination of Breach: penentuan pelanggaran sepihak, menghakimi perkara sendiri, temuan pelanggaran sepihak",abusive_clause
+"Forced Cross-Guarantee of Group Companies: cross-guarantee, group guarantee, guarantee affiliates' debts, joint group liability",abusive_clause
+"Forced Cross-Guarantee of Group Companies: garantie croisée forcée des sociétés du groupe, garantie des dettes des filiales",abusive_clause
+"Forced Cross-Guarantee of Group Companies: jaminan silang paksa perusahaan grup, jamin utang afiliasi, tanggung jawab grup bersama",abusive_clause
+"Unilateral Imposition of New Compliance Costs: new compliance costs, pass-through compliance, regulatory cost shift, unilateral cost addition",abusive_clause
+"Unilateral Imposition of New Compliance Costs: imposition unilatérale de nouveaux coûts de conformité, transfert réglementaire",abusive_clause
+"Unilateral Imposition of New Compliance Costs: pengenaan biaya kepatuhan baru sepihak, teruskan biaya kepatuhan, alihkan biaya regulasi",abusive_clause
+"Mandatory Waiver of Counterclaims: waive counterclaims, no counterclaim, bar offset, surrender defenses, claim only one way",abusive_clause
+"Mandatory Waiver of Counterclaims: renonciation obligatoire aux demandes reconventionnelles, abandon des moyens de défense",abusive_clause
+"Mandatory Waiver of Counterclaims: wajib pelepasan gugatan balik, tanpa gugatan balik, larang offset, serahkan pembelaan",abusive_clause
+"Unilateral Extension of Warranty Obligations to Third Parties: warranty to third parties, extend warranty, downstream warranty, unlimited beneficiaries",abusive_clause
+"Unilateral Extension of Warranty Obligations to Third Parties: extension unilatérale des garanties à des tiers, bénéficiaires illimités",abusive_clause
+"Unilateral Extension of Warranty Obligations to Third Parties: perluasan kewajiban garansi sepihak ke pihak ketiga, garansi hilir, penerima manfaat tanpa batas",abusive_clause
+"Acceleration on Cross-Default of Affiliates: cross-default affiliates, affiliate default triggers, group default, contagion default",abusive_clause
+"Acceleration on Cross-Default of Affiliates: accélération sur défaut croisé des filiales, contagion de défaut",abusive_clause
+"Acceleration on Cross-Default of Affiliates: akselerasi karena gagal silang afiliasi, gagal bayar grup, default menular",abusive_clause
+"Unilateral Conversion of Debt to Equity: debt to equity conversion, forced conversion, lender takes equity, dilution on default",abusive_clause
+"Unilateral Conversion of Debt to Equity: conversion unilatérale de dette en capital, prise de participation forcée",abusive_clause
+"Unilateral Conversion of Debt to Equity: konversi utang ke ekuitas sepihak, konversi paksa, pemberi pinjaman ambil ekuitas, dilusi saat gagal bayar",abusive_clause
+"Mandatory Exclusivity of Distribution Without Minimums Protection: exclusive distribution no minimum, exclusivity without protection, locked exclusive, no performance floor",abusive_clause
+"Mandatory Exclusivity of Distribution Without Minimums Protection: exclusivité de distribution sans protection de minimums, exclusivité verrouillée",abusive_clause
+"Mandatory Exclusivity of Distribution Without Minimums Protection: eksklusivitas distribusi wajib tanpa perlindungan minimum, eksklusif terkunci, tanpa ambang kinerja",abusive_clause
+"Unilateral Patient Data Use: patient data use, PHI reuse, secondary use health data, no consent health",abusive_clause
+"Unilateral Patient Data Use: usage unilatéral des données patient, réutilisation des données de santé",abusive_clause
+"Unilateral Patient Data Use: penggunaan data pasien sepihak, penggunaan ulang PHI, tanpa persetujuan kesehatan",abusive_clause
+"Uncapped HIPAA Indemnity: HIPAA indemnity, uncapped health liability, breach indemnity health, regulatory fines",abusive_clause
+"Uncapped HIPAA Indemnity: indemnité HIPAA illimitée, responsabilité santé sans plafond",abusive_clause
+"Uncapped HIPAA Indemnity: indemnitas HIPAA tanpa batas, tanggung jawab kesehatan tanpa plafon, denda regulasi",abusive_clause
+"Rolling Reserve Without Release: rolling reserve, payment reserve, withhold funds, no release schedule, reserve trap",abusive_clause
+"Rolling Reserve Without Release: réserve glissante sans libération, retenue de fonds indéfinie",abusive_clause
+"Rolling Reserve Without Release: rolling reserve tanpa pelepasan, cadangan pembayaran, tahan dana, jebakan cadangan",abusive_clause
+"Unilateral Account Freeze: account freeze, suspend funds, hold balance, freeze without notice, lock account",abusive_clause
+"Unilateral Account Freeze: gel unilatéral du compte, suspension des fonds, blocage sans préavis",abusive_clause
+"Unilateral Account Freeze: pembekuan rekening sepihak, tangguhkan dana, tahan saldo, kunci rekening tanpa pemberitahuan",abusive_clause
+"Excessive Chargeback Liability: chargeback liability, excessive chargeback fees, fraud liability shift, dispute penalty",abusive_clause
+"Excessive Chargeback Liability: responsabilité excessive des rétrofacturations, transfert de la fraude",abusive_clause
+"Excessive Chargeback Liability: tanggung jawab chargeback berlebihan, alihkan tanggung jawab penipuan, denda sengketa",abusive_clause
+"Mandatory Ad Spend Commitment: ad spend commitment, minimum media spend, committed budget, shortfall penalty ads",abusive_clause
+"Mandatory Ad Spend Commitment: engagement de dépense publicitaire obligatoire, budget média minimum",abusive_clause
+"Mandatory Ad Spend Commitment: komitmen belanja iklan wajib, belanja media minimum, penalti kekurangan iklan",abusive_clause
+"No Make-Good for Underdelivery: no make-good, ad underdelivery, no refund impressions, missed delivery, no remedy",abusive_clause
+"No Make-Good for Underdelivery: absence de compensation pour sous-livraison publicitaire, aucune remise",abusive_clause
+"No Make-Good for Underdelivery: tanpa make-good untuk kekurangan tayang, tanpa pengembalian impresi, tanpa upaya hukum",abusive_clause
+"Unilateral Impression Repricing: impression repricing, dynamic ad pricing, unilateral CPM change, reprice inventory",abusive_clause
+"Unilateral Impression Repricing: retarification unilatérale des impressions, changement de CPM",abusive_clause
+"Unilateral Impression Repricing: penetapan ulang harga impresi sepihak, harga iklan dinamis, ubah CPM sepihak",abusive_clause
+"Minimum Energy Offtake Commitment: minimum offtake, energy take-or-pay, capacity payment, pay for unused energy",abusive_clause
+"Minimum Energy Offtake Commitment: engagement d'enlèvement minimal d'énergie, paiement de capacité",abusive_clause
+"Minimum Energy Offtake Commitment: komitmen pembelian energi minimum, take-or-pay energi, bayar energi tak terpakai",abusive_clause
+"Unilateral Tariff Reclassification: tariff reclassification, rate class change, reclassify customer, higher tariff band",abusive_clause
+"Unilateral Tariff Reclassification: reclassification tarifaire unilatérale, changement de classe de tarif",abusive_clause
+"Unilateral Tariff Reclassification: reklasifikasi tarif sepihak, ubah kelas tarif, naikkan pita tarif",abusive_clause
+"Demurrage Without Cap: demurrage, uncapped demurrage, detention charges, port delay fees, no cap",abusive_clause
+"Demurrage Without Cap: surestaries sans plafond, frais de détention, retards portuaires",abusive_clause
+"Demurrage Without Cap: demurrage tanpa batas, biaya detensi, biaya keterlambatan pelabuhan, tanpa plafon",abusive_clause
+"Deadfreight Full Liability: deadfreight, unused cargo space, full freight liability, book or pay shipping",abusive_clause
+"Deadfreight Full Liability: responsabilité totale de fret mort, espace de cargaison inutilisé",abusive_clause
+"Deadfreight Full Liability: tanggung jawab penuh deadfreight, ruang kargo tak terpakai, book-or-pay pengiriman",abusive_clause
+"Unilateral Vessel Substitution: vessel substitution, change ship, substitute carrier, reroute, swap vessel",abusive_clause
+"Unilateral Vessel Substitution: substitution unilatérale de navire, changement de transporteur, déroutement",abusive_clause
+"Unilateral Vessel Substitution: penggantian kapal sepihak, ganti kapal, alihkan rute, tukar kapal",abusive_clause
+"Deactivation Without Cause: deactivation, account termination, no cause, platform ban, remove worker no appeal",abusive_clause
+"Deactivation Without Cause: désactivation sans motif, bannissement de la plateforme, sans recours",abusive_clause
+"Deactivation Without Cause: deaktivasi tanpa alasan, penghentian akun, larangan platform, hapus pekerja tanpa banding",abusive_clause
+"Unilateral Algorithmic Pay Change: algorithmic pay change, change rates, opaque pay algorithm, unilateral rate cut gig",abusive_clause
+"Unilateral Algorithmic Pay Change: modification algorithmique unilatérale de la rémunération, baisse de taux",abusive_clause
+"Unilateral Algorithmic Pay Change: perubahan bayaran algoritmik sepihak, ubah tarif, algoritma bayaran tak transparan",abusive_clause
+"Excessive Attrition Penalty: attrition penalty, room block, unused rooms, event minimum, attrition charge",abusive_clause
+"Excessive Attrition Penalty: pénalité d'attrition excessive, bloc de chambres, minimum d'événement",abusive_clause
+"Excessive Attrition Penalty: denda atrisi berlebihan, blok kamar, kamar tak terpakai, minimum acara",abusive_clause
+"Full-Value Cancellation Penalty: cancellation penalty, full value, no refund cancel, 100% cancellation fee",abusive_clause
+"Full-Value Cancellation Penalty: pénalité d'annulation à pleine valeur, frais d'annulation de 100%",abusive_clause
+"Full-Value Cancellation Penalty: denda pembatalan nilai penuh, tanpa pengembalian batal, biaya pembatalan 100%",abusive_clause
+"Special Assessment Without Cap: special assessment, uncapped assessment, surprise levy, HOA assessment, mandatory contribution",abusive_clause
+"Special Assessment Without Cap: cotisation spéciale sans plafond, prélèvement surprise, contribution obligatoire",abusive_clause
+"Special Assessment Without Cap: iuran khusus tanpa batas, pungutan mendadak, kontribusi wajib, iuran perhimpunan",abusive_clause
+"Unilateral Governing Document Amendment: governing document amendment, change bylaws, unilateral rules change, amend covenants",abusive_clause
+"Unilateral Governing Document Amendment: modification unilatérale des statuts, changement du règlement",abusive_clause
+"Unilateral Governing Document Amendment: amandemen dokumen tata kelola sepihak, ubah anggaran dasar, ubah kovenan",abusive_clause
+"Forced Ramp-Down Without Compensation: ramp-down, volume reduction, no compensation, idle capacity, stranded staffing",abusive_clause
+"Forced Ramp-Down Without Compensation: réduction forcée d'activité sans compensation, capacité inactive",abusive_clause
+"Forced Ramp-Down Without Compensation: ramp-down paksa tanpa kompensasi, pengurangan volume, kapasitas menganggur, staf terdampar",abusive_clause
+"Mandatory Productivity Discount: productivity discount, mandatory savings, forced efficiency credit, annual price give-back",abusive_clause
+"Mandatory Productivity Discount: remise de productivité obligatoire, restitution annuelle de prix",abusive_clause
+"Mandatory Productivity Discount: diskon produktivitas wajib, penghematan wajib, kredit efisiensi paksa, give-back harga tahunan",abusive_clause
+"Unilateral Designation of Key Personnel Lock: key personnel lock, named staff requirement, cannot reassign, personnel handcuff",abusive_clause
+"Unilateral Designation of Key Personnel Lock: verrouillage unilatéral du personnel clé, interdiction de réaffecter",abusive_clause
+"Unilateral Designation of Key Personnel Lock: penguncian personel kunci sepihak, syarat staf bernama, tak bisa mengalihtugaskan",abusive_clause
+"Mandatory Benchmarking with Forced Price Cut: benchmarking forced cut, market benchmark, mandatory reduction, one-way benchmark",abusive_clause
+"Mandatory Benchmarking with Forced Price Cut: étalonnage avec baisse de prix forcée, référence de marché unilatérale",abusive_clause
+"Mandatory Benchmarking with Forced Price Cut: benchmarking dengan pemotongan harga paksa, tolok ukur pasar, pengurangan wajib",abusive_clause
+"Unilateral Service Credit Forfeiture: service credit forfeiture, lapse credits, expire SLA credits, lose earned credits",abusive_clause
+"Unilateral Service Credit Forfeiture: déchéance unilatérale des crédits de service, expiration des crédits SLA",abusive_clause
+"Unilateral Service Credit Forfeiture: hangus kredit layanan sepihak, kredit kedaluwarsa, hilang kredit SLA",abusive_clause
+"Broad Non-Solicitation of Clients: non-sollicitation, clients, prospects, territoire",abusive_clause
+"Exclusivity in Unrelated Markets: exclusivité, non liée, non-concurrence large",abusive_clause
+"Exclusivity in Unrelated Markets: eksklusivitas, pasar terkait, non-kompetisi luas",abusive_clause
+"Indefinite Liability Duration: survives for X years, liability, claim, no limitation period",abusive_clause
+"No Audit Rights: no audit, no inspection, refuse access",abusive_clause
+"No Audit Rights: tidak ada hak audit, tidak ada inspeksi, tolak akses",abusive_clause
+"Non-Compete for Contractors: non-concurrence, restriction, territoire, durée, entrave au commerce",abusive_clause
+"Non-Compete for Contractors: non-concurrence, restriction, territoire, durée, entrave au commerce",abusive_clause
+"Non-Compete for Contractors: non-concurrence, restriction, territoire, durée, entrave au commerce",abusive_clause
+"Unilateral Convenience Termination: résiliation, à convenance, sans préavis",abusive_clause
+"Intellectual Property: hak kekayaan intelektual, haki, hak cipta, paten, merek dagang, kepemilikan",normal
+"Audit Rights: hak audit, hak inspeksi, verifikasi, pemeriksaan",normal
+"Language Clause: bahasa, bahasa yang berlaku, interpretasi, terjemahan",normal
+"Non-Compete: non-kompetisi, perjanjian pembatasan, larangan bersaing",normal
+"Non-Compete: non-concurrence, clause de restriction, interdiction de concurrence",normal
+"Cybersecurity Obligations: obligations de cybersécurité, mesures de sécurité, cryptage, protection des données",normal
+"Export Compliance: kontrol ekspor, EAR, ITAR, kepatuhan perdagangan, sanksi",normal
+"Anti-Corruption: anti-corruption, pots-de-vin, FCPA, UK Bribery Act, éthique",normal
+"Sanctions Compliance: OFAC, daftar sanksi, pihak terbatas, embargo perdagangan",normal
+"Sanctions Compliance: conformité aux sanctions, listes de sanctions, parties restreintes",normal
+"Health and Safety: santé et sécurité, sécurité au travail, équipement de protection",normal
+"Environmental Compliance: conformité environnementale, durabilité, empreinte carbone, déchets",normal
+"Tax Obligations: TVA, taxe de vente, retenue à la source, gross-up, indemnité fiscale",normal
+"Insurance Requirements: exigences d'assurance, responsabilité civile, indemnité professionnelle, limites",normal
+"Step-in Rights: droits de substitution, intervention directe, reprise",normal
+"Subcontracting Approval: sous-traitance, consentement préalable, déléguer",normal
+"Technical Support: support technique, assistance, dépannage",normal
+"Escalation Path: procédure d'escalade, hiérarchie, direction",normal
+"Site Access: accès au site, entrée physique, protocole visiteur",normal
+"Equipment Maintenance: maintenance du matériel, réparation, entretien",normal
+"Documentation Standards: normes de documentation, manuels, guides d'utilisation",normal
+"Project Milestones: jalons du projet, étapes, calendrier de livraison",normal
+"User Acceptance: recette utilisateur, validation, processus d'approbation",normal
+"Conflict of Interest: conflit d'intérêts, divulgation, impartialité",normal
+"Gift Policy: politique de cadeaux, hospitalité, divertissement, seuils",normal
+"Lobbying Disclosure: divulgation de lobbying, relations gouvernementales",normal
+"Employee Training: formation des employés, perfectionnement, ateliers",normal
+"Remote Work Policy: kebijakan kerja jarak jauh, telecommuting, kantor rumah",normal
+"Remote Work Policy: politique de télétravail, travail à domicile",normal
+"Expenses Reimbursement: remboursement des frais, frais de déplacement, débours",normal
+"Currency Fluctuations: fluktuasi mata uang, nilai tukar, risiko forex, hedging",normal
+"Currency Fluctuations: fluctuations monétaires, taux de change, risque de change",normal
+"Open Source Compliance: conformité open source, FOSS, GPL, licence MIT",normal
+"Trademark Usage: utilisation des marques, utilisation de la marque, directives de logo",normal
+"Domain Name Rights: droits sur les noms de domaine, URL, enregistrement",normal
+"Social Media Policy: politique de médias sociaux, publication en ligne",normal
+"KPIs: KPI, indicateurs clés de performance, métriques",normal
+"Service Credits: crédits de service, remise, pénalité d'indisponibilité",normal
+"Boilerplate Clauses: boilerplate, standard clauses, general provisions, miscellaneous",normal
+"Boilerplate Clauses: boilerplate, klausul standar, ketentuan umum, aneka ragam",normal
+"Boilerplate Clauses: clauses types, clauses standard, dispositions générales, divers",normal
+"Waiver: waiver, non-waiver, no waiver, failure to enforce",normal
+"Waiver: pengesampingan hak, non-waiver, tidak mengesampingkan, kegagalan menegakkan",normal
+"Waiver: renonciation, non-renonciation, défaut d'exécuter",normal
+"Counterparts: counterparts, duplicate, separate copies, signature pages",normal
+"Counterparts: salinan, duplikat, salinan terpisah, halaman tanda tangan",normal
+"Counterparts: exemplaires, copies séparées, pages de signature",normal
+"Recitals: recitals, whereas clauses, preamble, background",normal
+"Recitals: konsiderans, klausul whereas, pembukaan, latar belakang",normal
+"Recitals: considérants, clauses 'attendu que', préambule, contexte",normal
+"Representations and Warranties: pernyataan dan jaminan, pernyataan fakta, asuransi",normal
+"Representations and Warranties: déclarations et garanties, déclarations de fait, assurances",normal
+"Disclaimer of Warranties: disclaimer, warranties disclaimed, as is, no warranty",normal
+"Disclaimer of Warranties: penafian jaminan, jaminan dikesampingkan, sebagaimana adanya, tanpa jaminan",normal
+"Disclaimer of Warranties: exclusion de garanties, garanties exclues, en l'état, sans garantie",normal
+"Non-Reliance: non-reliance, no reliance, independent judgment",normal
+"Non-Reliance: tidak mengandalkan, tanpa ketergantungan, penilaian independen",normal
+"Non-Reliance: non-confiance, confiance exclusive, jugement indépendant",normal
+"Third-Party Beneficiary: third-party beneficiary, intended beneficiary, incidental beneficiary",normal
+"Third-Party Beneficiary: penerima manfaat pihak ketiga, penerima manfaat yang dimaksud, penerima manfaat insidental",normal
+"Third-Party Beneficiary: tiers bénéficiaire, bénéficiaire visé, bénéficiaire accessoire",normal
+"No Oral Modification: no oral modification, written amendment only, no oral variation",normal
+"No Oral Modification: tidak ada perubahan lisan, amandemen tertulis saja, tidak ada variasi lisan",normal
+"No Oral Modification: aucune modification orale, modification écrite uniquement",normal
+"Further Assurances: further assurances, cooperation, additional documents",normal
+"Further Assurances: jaminan lebih lanjut, kerja sama, dokumen tambahan",normal
+"Further Assurances: garanties complémentaires, coopération, documents additionnels",normal
+"Time is of the Essence: time is of the essence, strict deadlines, performance timing",normal
+"Time is of the Essence: waktu adalah esensi, tenggat waktu ketat, waktu kinerja",normal
+"Time is of the Essence: le temps est essentiel, délais stricts, exécution temporelle",normal
+"Waiver of Consequential Damages: consequential damages, indirect damages, lost profits",normal
+"Waiver of Consequential Damages: pengesampingan ganti rugi konsekuensial, ganti rugi tidak langsung, kehilangan laba",normal
+"Waiver of Consequential Damages: renonciation aux dommages indirects, pertes de bénéfices",normal
+"Cumulative Remedies: cumulative remedies, additional remedies, not exclusive",normal
+"Cumulative Remedies: pemulihan kumulatif, pemulihan tambahan, tidak eksklusif",normal
+"Cumulative Remedies: recours cumulatifs, recours supplémentaires, non exclusifs",normal
+"Liquidated Damages: liquidated damages, agreed damages, predetermined damages",normal
+"Liquidated Damages: ganti rugi yang ditentukan, ganti rugi disepakati, ganti rugi ditetapkan",normal
+"Liquidated Damages: clauses pénales, dommages-intérêts convenus, dommages prédéterminés",normal
+"Right of First Refusal: right of first refusal, ROFR, pre-emptive right, first offer",normal
+"Right of First Refusal: hak penolakan pertama, ROFR, hak pre-emptif, penawaran pertama",normal
+"Right of First Refusal: droit de préemption, ROFR, droit préférentiel, première offre",normal
+"Non-Waiver of Default: non-waiver of default, no waiver, repeated default",normal
+"Non-Waiver of Default: tidak mengesampingkan wanprestasi, tidak ada pengesampingan, wanprestasi berulang",normal
+"Non-Waiver of Default: non-renonciation au manquement, manquement répété",normal
+"Construction/Interpretation: construction, interpretation, no rule of contra proferentem",normal
+"Construction/Interpretation: konstruksi, interpretasi, tidak ada aturan contra proferentem",normal
+"Construction/Interpretation: construction, interprétation, non-application de la règle contra proferentem",normal
+"Costs and Expenses: costs, expenses, legal fees, attorneys' fees, each party bears own costs",normal
+"Costs and Expenses: biaya dan pengeluaran, biaya hukum, biaya pengacara, masing-masing pihak menanggung biaya sendiri",normal
+"Costs and Expenses: frais et dépenses, frais juridiques, honoraires d'avocat, chaque partie supporte ses propres frais",normal
+"Data Processing Agreement (DPA): DPA, data processing, GDPR, personal data, subprocessor",normal
+"Data Processing Agreement (DPA): DPA, pemrosesan data, GDPR, data pribadi, subprosesor",normal
+"Data Processing Agreement (DPA): accord de traitement des données, DPA, RGPD, données personnelles, sous-traitant",normal
+"Service Level Agreement (SLA): SLA, tingkat layanan, waktu aktif, waktu respons, ketersediaan",normal
+"Service Level Agreement (SLA): accord de niveau de service, SLA, disponibilité, temps de réponse",normal
+"Acceptance Testing: acceptance testing, UAT, user acceptance testing, sign-off",normal
+"Acceptance Testing: pengujian penerimaan, UAT, pengujian penerimaan pengguna, persetujuan",normal
+"Acceptance Testing: tests d'acceptation, recette utilisateur, approbation",normal
+"Beta Testing: beta testing, pilot testing, trial period, evaluation",normal
+"Beta Testing: pengujian beta, uji coba, periode percobaan, evaluasi",normal
+"Beta Testing: test bêta, essai pilote, période d'essai, évaluation",normal
+"Dispute Resolution (Multi-Tiered): penyelesaian sengketa bertingkat, eskalasi, mediasi sebelum arbitrase",normal
+"Dispute Resolution (Multi-Tiered): résolution des litiges à plusieurs niveaux, escalade, médiation avant arbitrage",normal
+"Confidentiality of Settlement: confidentiality of settlement, non-disclosure of terms, settlement confidentiality",normal
+"Confidentiality of Settlement: kerahasiaan penyelesaian, tidak mengungkapkan ketentuan, kerahasiaan penyelesaian",normal
+"Confidentiality of Settlement: confidentialité du règlement, non-divulgation des termes",normal
+"Mutuality: mutuality, reciprocal, mutual obligations, both parties",normal
+"Mutuality: timbal balik, resiprokal, kewajiban bersama, kedua belah pihak",normal
+"Mutuality: réciprocité, obligations mutuelles, les deux parties",normal
+"Good Faith and Fair Dealing: good faith, fair dealing, implied covenant",normal
+"Good Faith and Fair Dealing: iktikad baik, pelaksanaan yang adil, perjanjian tersirat",normal
+"Good Faith and Fair Dealing: bonne foi, exécution de bonne foi, devoir implicite",normal
+"Non-Compete (Employment): non-compete, employee non-compete, restraint of trade",normal
+"Non-Compete (Employment): non-kompetisi, non-kompetisi karyawan, pembatasan perdagangan",normal
+"Non-Compete (Employment): non-concurrence, clause de non-concurrence employé",normal
+"Non-Solicitation (Employment): non-solisitasi, non-solisitasi karyawan, tidak merekrut karyawan",normal
+"Non-Solicitation (Employment): non-sollicitation, clause de non-débauchage employé",normal
+"Invention Assignment: invention assignment, assignment of inventions, IP ownership",normal
+"Invention Assignment: pengalihan penemuan, pengalihan penemuan, kepemilikan IP",normal
+"Invention Assignment: cession d'inventions, cession de brevets, propriété intellectuelle",normal
+"Return of Property: return of property, return of equipment, exit obligations",normal
+"Return of Property: pengembalian properti, pengembalian peralatan, kewajiban keluar",normal
+"Return of Property: restitution des biens, retour du matériel, obligations de sortie",normal
+"Background Checks: pemeriksaan latar belakang, verifikasi, hak melakukan pemeriksaan",normal
+"Background Checks: vérifications des antécédents, droit d'effectuer des vérifications",normal
+"Employee Invention Reporting: invention reporting, disclosure of inventions, duty to report",normal
+"Employee Invention Reporting: pelaporan penemuan karyawan, pengungkapan penemuan, kewajiban melapor",normal
+"Employee Invention Reporting: déclaration d'inventions employé, devoir de signaler",normal
+"Drug and Alcohol Testing: drug testing, alcohol testing, substance abuse testing",normal
+"Drug and Alcohol Testing: pengujian narkoba, pengujian alkohol, pengujian penyalahgunaan zat",normal
+Drug and Alcohol Testing: tests de dépistage de drogues et d'alcool,normal
+"Severance Pay: severance pay, termination pay, redundancy pay",normal
+"Severance Pay: pesangon, uang pesangon, uang terminasi",normal
+"Severance Pay: indemnité de licenciement, indemnité de départ",normal
+"Probation Period: probation period, trial period, introductory period",normal
+"Probation Period: masa percobaan, periode percobaan, masa pengenalan",normal
+"Probation Period: période d'essai, période probatoire",normal
+"Leave of Absence: leave of absence, unpaid leave, sabbatical, personal leave",normal
+"Leave of Absence: cuti, cuti tanpa bayaran, cuti panjang, cuti pribadi",normal
+"Leave of Absence: congé sans solde, congé personnel, sabbatique",normal
+"Resignation Notice: resignation notice, notice of resignation, employee resignation",normal
+"Resignation Notice: pemberitahuan pengunduran diri, surat pengunduran diri karyawan",normal
+"Resignation Notice: préavis de démission, démission",normal
+"Restrictive Covenants (General): pembatasan umum, pembatasan pasca-pemutusan, cuti taman",normal
+"Restrictive Covenants (General): clauses de restriction, restrictions post-contractuelles",normal
+"Consent to Electronic Signatures: electronic signatures, e-signatures, consent to electronic execution",normal
+"Consent to Electronic Signatures: tanda tangan elektronik, e-signatures, persetujuan pelaksanaan elektronik",normal
+"Consent to Electronic Signatures: signatures électroniques, consentement à l'exécution électronique",normal
+"Authority to Sign: authority to sign, signing authority, representative capacity",normal
+"Authority to Sign: kewenangan menandatangani, kapasitas perwakilan",normal
+"Authority to Sign: autorité de signature, capacité de représentation",normal
+"Exclusivity: exclusivity, exclusive rights, sole provider, sole distributor",normal
+"Exclusivity: eksklusivitas, hak eksklusif, penyedia tunggal, distributor tunggal",normal
+"Exclusivity: exclusivité, droits exclusifs, fournisseur unique, distributeur exclusif",normal
+"Minimum Purchase Obligation: minimum purchase, volume commitment, take-or-pay",normal
+"Minimum Purchase Obligation: kewajiban pembelian minimum, komitmen volume, take-or-pay",normal
+"Minimum Purchase Obligation: obligation d'achat minimum, engagement de volume, take-or-pay",normal
+"Most Favored Customer: most favored customer, MFC, best pricing",normal
+"Most Favored Customer: pelanggan paling diuntungkan, MFC, harga terbaik",normal
+"Most Favored Customer: client le plus favorisé, MFC, meilleur prix",normal
+"Price Escalation: price escalation, price adjustment, cost increase pass-through",normal
+"Price Escalation: eskalasi harga, penyesuaian harga, penerusan kenaikan biaya",normal
+"Price Escalation: escalade des prix, ajustement des prix, répercussion des hausses de coûts",normal
+"Volume Discount: volume discount, tiered pricing, quantity discount",normal
+"Volume Discount: diskon volume, harga berjenjang, diskon kuantitas",normal
+"Volume Discount: remise sur volume, tarification par tranches, remise quantitative",normal
+"Delivery Delay Penalty: delay penalty, late delivery penalty, liquidated damages for delay",normal
+"Delivery Delay Penalty: penalti keterlambatan pengiriman, ganti rugi yang ditentukan untuk keterlambatan",normal
+"Delivery Delay Penalty: pénalité de retard de livraison, dommages-intérêts forfaitaires pour retard",normal
+"Quality Standards: quality standards, specifications, technical requirements",normal
+"Quality Standards: standar kualitas, spesifikasi, persyaratan teknis",normal
+"Quality Standards: normes de qualité, spécifications, exigences techniques",normal
+"Inspection Rights: inspection rights, right to inspect, quality control",normal
+"Inspection Rights: hak inspeksi, hak memeriksa, kontrol kualitas",normal
+"Inspection Rights: droits d'inspection, contrôle qualité",normal
+"Rejection of Non-Conforming Goods: rejection, non-conforming goods, right to reject",normal
+"Rejection of Non-Conforming Goods: penolakan barang tidak sesuai, hak menolak",normal
+"Rejection of Non-Conforming Goods: rejet de biens non conformes, droit de rejet",normal
+"Cure Period: cure period, right to cure, notice of breach",normal
+"Cure Period: masa perbaikan, hak memperbaiki, pemberitahuan pelanggaran",normal
+"Cure Period: délai de guérison, droit de remédier, avis de manquement",normal
+"Right to Set-Off: right to set-off, set-off, offset, cross-claim",normal
+"Right to Set-Off: hak set-off, offset, kompensasi, klaim silang",normal
+"Right to Set-Off: droit de compensation, compensation, créance croisée",normal
+"No Set-Off: no set-off, no deduction, payment without set-off",normal
+"No Set-Off: tanpa set-off, tanpa pemotongan, pembayaran tanpa set-off",normal
+"No Set-Off: absence de compensation, paiement sans compensation",normal
+"Retention of Title: retention of title, Romalpa clause, reservation of ownership",normal
+"Retention of Title: retensi hak milik, klausul Romalpa, reservasi kepemilikan",normal
+"Retention of Title: réserve de propriété, clause de réserve de propriété, Romalpa",normal
+"Stop Shipment: stop shipment, right to stop delivery, stoppage in transit",normal
+"Stop Shipment: penghentian pengiriman, hak menghentikan pengiriman",normal
+"Stop Shipment: arrêt de livraison, droit d'arrêter l'expédition",normal
+"Indemnity for IP Infringement: IP indemnity, indemnification for infringement, patent indemnity",normal
+"Indemnity for IP Infringement: indemnitas IP, ganti rugi untuk pelanggaran, indemnitas paten",normal
+"Indemnity for IP Infringement: indemnité pour contrefaçon de PI, indemnité de brevet",normal
+"Indemnity for Property Damage: property damage indemnity, indemnity for damage to property",normal
+"Indemnity for Property Damage: indemnitas kerusakan properti, ganti rugi untuk kerusakan properti",normal
+Indemnity for Property Damage: indemnité pour dommages matériels,normal
+"Indemnity for Personal Injury: personal injury indemnity, bodily injury indemnity",normal
+"Indemnity for Personal Injury: indemnitas cedera pribadi, indemnitas cedera tubuh",normal
+Indemnity for Personal Injury: indemnité pour dommages corporels,normal
+"No Consequential Damages for Indemnity: no consequential damages for indemnity, indirect damages exclusion",normal
+"No Consequential Damages for Indemnity: tidak ada ganti rugi konsekuensial untuk indemnitas, pengecualian kerugian tidak langsung",normal
+No Consequential Damages for Indemnity: exclusion des dommages indirects pour l'indemnité,normal
+"Duty to Defend: duty to defend, defense obligation, indemnitor's duty",normal
+"Duty to Defend: kewajiban membela, kewajiban pembelaan, kewajiban pemberi indemnitas",normal
+"Duty to Defend: obligation de défendre, devoir de l'indemnisateur",normal
+"Anti-Assignment: anti-assignment, no assignment without consent, non-assignable",normal
+"Anti-Assignment: anti-pengalihan, tidak ada pengalihan tanpa persetujuan, tidak dapat dialihkan",normal
+"Anti-Assignment: anti-cession, non-cession sans consentement, incessible",normal
+"Assignment to Affiliates: assignment to affiliates, affiliate assignment, intra-group transfer",normal
+"Assignment to Affiliates: pengalihan ke afiliasi, pengalihan afiliasi, transfer intra-grup",normal
+"Assignment to Affiliates: cession à des affiliés, transfert intra-groupe",normal
+"Successors and Assigns: successors and assigns, binding effect, assigns",normal
+"Successors and Assigns: penerus dan penerima pengalihan, efek mengikat, penerima pengalihan",normal
+"Successors and Assigns: successeurs et ayants droit, effet obligatoire",normal
+"No Third-Party Beneficiaries: no third-party beneficiaries, no third-party rights",normal
+"No Third-Party Beneficiaries: tidak ada penerima manfaat pihak ketiga, tidak ada hak pihak ketiga",normal
+"No Third-Party Beneficiaries: absence de tiers bénéficiaires, pas de droits des tiers",normal
+"Force Majeure Specific Events: force majeure events, specified force majeure, pandemics, cyber attacks",normal
+"Force Majeure Specific Events: keadaan kahar, peristiwa spesifik, pandemi, serangan siber",normal
+"Force Majeure Specific Events: force majeure, événements spécifiques, pandémies, cyberattaques",normal
+"Force Majeure Mitigation: mitigation of force majeure, duty to mitigate, minimize impact",normal
+"Force Majeure Mitigation: mitigasi keadaan kahar, kewajiban mitigasi, meminimalkan dampak",normal
+"Force Majeure Mitigation: atténuation de la force majeure, devoir d'atténuer, minimiser l'impact",normal
+"Termination for Convenience: termination for convenience, unilateral termination, early termination",normal
+"Termination for Convenience: pemutusan demi kenyamanan, pemutusan sepihak, pemutusan dini",normal
+"Termination for Convenience: résiliation pour convenance, résiliation unilatérale, résiliation anticipée",normal
+"Termination for Cause: termination for cause, breach termination, default termination",normal
+"Termination for Cause: pemutusan karena alasan, pemutusan karena pelanggaran, pemutusan wanprestasi",normal
+"Termination for Cause: résiliation pour manquement, résiliation pour défaut",normal
+"Survival of Obligations: survival, survival clause, post-termination obligations",normal
+"Survival of Obligations: kelangsungan kewajiban, klausul kelangsungan, kewajiban pasca-pemutusan",normal
+"Survival of Obligations: survie des obligations, clause de survie, obligations post-contractuelles",normal
+"Acceleration: acceleration, acceleration clause, early payment demand",normal
+"Acceleration: akselerasi, klausul akselerasi, permintaan pembayaran dini",normal
+"Acceleration: accélération, clause d'accélération, demande de paiement anticipé",normal
+"Subordination: subordination, subordination clause, junior debt",normal
+"Subordination: subordinasi, klausul subordinasi, utang junior",normal
+"Subordination: subordination, clause de subordination, dette junior",normal
+"Cross-Default: cross-default, cross-default clause, default linkage",normal
+"Cross-Default: gagal bayar silang, klausul cross-default, tautan gagal bayar",normal
+"Cross-Default: défaut croisé, clause de défaut croisé",normal
+"Waiver of Jury Trial: waiver of jury trial, jury trial waiver, bench trial",normal
+"Waiver of Jury Trial: pengesampingan persidangan juri, pengesampingan juri, persidangan hakim",normal
+"Waiver of Jury Trial: renonciation au jury, procès sans jury",normal
+"Class Action Waiver: pengesampingan gugatan kelas, tidak ada gugatan kelas, arbitrase individu",normal
+"Class Action Waiver: renonciation aux actions collectives, pas d'action collective",normal
+"Consent to Jurisdiction: consent to jurisdiction, submission to jurisdiction, forum selection",normal
+"Consent to Jurisdiction: persetujuan yurisdiksi, penyerahan yurisdiksi, pilihan forum",normal
+"Consent to Jurisdiction: consentement à la juridiction, soumission à la juridiction",normal
+"Service of Process: service of process, notice of lawsuit, legal documents",normal
+"Service of Process: pemanggilan, pemberitahuan gugatan, dokumen hukum",normal
+"Service of Process: signification, notification de poursuites, documents juridiques",normal
+"Arbitration Rules: arbitration rules, ICC, SIAC, LCIA, UNCITRAL, AAA",normal
+"Arbitration Rules: aturan arbitrase, ICC, SIAC, LCIA, UNCITRAL, AAA",normal
+"Arbitration Rules: règles d'arbitrage, ICC, SIAC, LCIA",normal
+"Arbitration Number of Arbitrators: number of arbitrators, sole arbitrator, three arbitrators",normal
+"Arbitration Number of Arbitrators: jumlah arbiter, arbiter tunggal, tiga arbiter",normal
+"Arbitration Number of Arbitrators: nombre d'arbitres, arbitre unique, trois arbitres",normal
+"Arbitration Language: arbitration language, language of arbitration, English/French",normal
+"Arbitration Language: bahasa arbitrase, bahasa arbitrase, Inggris/Prancis",normal
+"Arbitration Language: langue de l'arbitrage, anglais/français",normal
+"Mediation: mediation, settlement discussions, neutral third party",normal
+"Mediation: mediasi, diskusi penyelesaian, pihak ketiga netral",normal
+"Mediation: médiation, discussions de règlement, tiers neutre",normal
+"Expert Determination: expert determination, technical expert, valuation expert",normal
+"Expert Determination: penentuan ahli, ahli teknis, ahli penilaian",normal
+"Expert Determination: détermination par expert, expert technique",normal
+"Liquidated Damages (Delay in Construction): liquidated damages, construction delay, daily penalty",normal
+"Liquidated Damages (Delay in Construction): ganti rugi yang ditentukan, keterlambatan konstruksi, penalti harian",normal
+"Liquidated Damages (Delay in Construction): clause pénale, retard de construction, pénalité journalière",normal
+"Change Order: change order, variation order, work change",normal
+"Change Order: perintah perubahan, variasi pekerjaan, perubahan pekerjaan",normal
+"Change Order: ordre de modification, variation des travaux",normal
+"Site Conditions: site conditions, differing site conditions, unforeseen conditions",normal
+"Site Conditions: kondisi lokasi, kondisi lokasi berbeda, kondisi tak terduga",normal
+"Site Conditions: conditions du site, conditions imprévues",normal
+"Pay-when-paid: bayar-saat-dibayar, pembayaran bersyarat, pembayaran tergantung penerimaan",normal
+"Pay-when-paid: paiement à réception, paiement conditionnel",normal
+"Pay-if-paid: pay-if-paid, no obligation to pay if owner defaults",normal
+"Pay-if-paid: bayar-jika-dibayar, tidak ada kewajiban membayar jika pemilik gagal bayar",normal
+"Pay-if-paid: paiement si payé, pas d'obligation de payer si le propriétaire ne paie pas",normal
+"No Waiver of Rights: no waiver, non-waiver, preservation of rights",normal
+"No Waiver of Rights: tidak ada pengesampingan hak, pelestarian hak",normal
+"No Waiver of Rights: non-renonciation, préservation des droits",normal
+"Entire Agreement (Comprehensive): entire agreement, integration clause, merger clause",normal
+"Entire Agreement (Comprehensive): keseluruhan perjanjian, klausul integrasi, klausul merger",normal
+"Entire Agreement (Comprehensive): intégralité de l'accord, clause d'intégration",normal
+"Relationship of the Parties: relationship, independent contractor, no partnership, no agency",normal
+"Relationship of the Parties: hubungan para pihak, kontraktor independen, bukan kemitraan, bukan keagenan",normal
+"Relationship of the Parties: relation entre les parties, entrepreneur indépendant, absence de partenariat",normal
+"Force Majeure Non-Payment: non-payment as force majeure, payment default force majeure",normal
+"Force Majeure Non-Payment: non-pembayaran sebagai keadaan kahar, wanprestasi pembayaran keadaan kahar",normal
+Force Majeure Non-Payment: non-paiement comme force majeure,normal
+"Time of the Essence (Specific): waktu adalah esensi untuk kewajiban tertentu, tenggat waktu ketat untuk milestone",normal
+Time of the Essence (Specific): le temps est essentiel pour certaines obligations,normal
+"Electronic Delivery: electronic delivery, email delivery, soft copy delivery",normal
+"Electronic Delivery: pengiriman elektronik, pengiriman email, soft copy",normal
+"Electronic Delivery: livraison électronique, livraison par email",normal
+"Notice Period for Changes: notice period for changes, advance notice of price change",normal
+"Notice Period for Changes: masa pemberitahuan untuk perubahan, pemberitahuan awal perubahan harga",normal
+Notice Period for Changes: délai de préavis pour les modifications,normal
+"Waiver of Notice: waiver of notice, no notice required, notice period waived",normal
+"Waiver of Notice: pengesampingan pemberitahuan, tanpa pemberitahuan, masa pemberitahuan dikesampingkan",normal
+Waiver of Notice: renonciation au préavis,normal
+"Subcontractor Flow-Down: subcontractor flow-down, flow-down clauses, back-to-back",normal
+"Subcontractor Flow-Down: subkontraktor flow-down, klausul berjenjang",normal
+"Subcontractor Flow-Down: clauses de cascade, répercussion sur le sous-traitant",normal
+"Non-Circumvention: non-circumvention, no bypass, direct dealing prohibition",normal
+"Non-Circumvention: non-sirkumvensi, tidak menghindar, larangan transaksi langsung",normal
+"Non-Circumvention: non-contournement, interdiction de traiter directement",normal
+"Currency: currency, payment currency, exchange rate",normal
+"Currency: mata uang, mata uang pembayaran, nilai tukar",normal
+"Currency: devise, monnaie de paiement, taux de change",normal
+"Warranty of Authority: warranty of authority, authority to contract, signatory authority",normal
+"Warranty of Authority: jaminan kewenangan, kewenangan membuat kontrak",normal
+"Warranty of Authority: garantie d'autorité, autorité de signer",normal
+"Warranty of No Conflicts: warranty of no conflicts, non-conflict, no violation",normal
+"Warranty of No Conflicts: jaminan tidak ada konflik, tanpa konflik",normal
+Warranty of No Conflicts: garantie d'absence de conflits,normal
+"Financial Statements: financial statements, delivery of accounts, financial reporting",normal
+"Financial Statements: laporan keuangan, penyampaian akun, pelaporan keuangan",normal
+"Financial Statements: états financiers, transmission des comptes",normal
+"Compliance with Laws: compliance with laws, legal compliance, applicable laws",normal
+"Compliance with Laws: kepatuhan terhadap hukum, kepatuhan hukum, hukum yang berlaku",normal
+"Compliance with Laws: conformité aux lois, respect des lois",normal
+"Sanctions Clause: sanctions, embargo, restricted party, OFAC, EU sanctions",normal
+"Sanctions Clause: klausul sanksi, embargo, pihak terbatas, OFAC, sanksi EU",normal
+"Sanctions Clause: clause de sanctions, embargo, partie restreinte",normal
+"Anti-Money Laundering: anti-money laundering, AML, suspicious activity",normal
+"Anti-Money Laundering: anti-pencucian uang, AML, aktivitas mencurigakan",normal
+"Anti-Money Laundering: anti-blanchiment, AML, activité suspecte",normal
+"Know Your Customer (KYC): know your customer, KYC, customer due diligence",normal
+"Know Your Customer (KYC): kenali pelanggan Anda, KYC, uji tuntas pelanggan",normal
+"Know Your Customer (KYC): connaissance du client, KYC, diligence raisonnable",normal
+"Data Processing Security: data security, encryption, data processing security",normal
+"Data Processing Security: keamanan data, enkripsi, keamanan pemrosesan data",normal
+"Data Processing Security: sécurité des données, cryptage, sécurité du traitement des données",normal
+"Data Subject Rights: data subject rights, GDPR rights, access, rectification, erasure",normal
+"Data Subject Rights: hak subjek data, hak GDPR, akses, perbaikan, penghapusan",normal
+"Data Subject Rights: droits des personnes concernées, accès, rectification, effacement",normal
+"Data Breach Notification: data breach notification, breach reporting, 72 hours",normal
+"Data Breach Notification: notifikasi pelanggaran data, pelaporan pelanggaran, 72 jam",normal
+"Data Breach Notification: notification de violation de données, déclaration de violation, 72 heures",normal
+"International Data Transfer: international data transfer, cross-border data, adequacy decision",normal
+"International Data Transfer: transfer data internasional, data lintas batas, keputusan kecukupan",normal
+"International Data Transfer: transfert international de données, données transfrontalières",normal
+"Data Protection Impact Assessment: DPIA, data protection impact assessment, prior consultation",normal
+"Data Protection Impact Assessment: DPIA, penilaian dampak perlindungan data, konsultasi sebelumnya",normal
+"Data Protection Impact Assessment: analyse d'impact sur la protection des données, AIPD",normal
+"Record of Processing Activities: record of processing activities, ROPA, data processing register",normal
+"Record of Processing Activities: catatan kegiatan pemrosesan, ROPA, daftar pemrosesan data",normal
+"Record of Processing Activities: registre des activités de traitement, registre",normal
+"Subprocessor Approval: persetujuan subprosesor, persetujuan subprosesor, pemroses pihak ketiga",normal
+"Subprocessor Approval: approbation du sous-traitant, consentement",normal
+"Data Processing Termination: pengakhiran pemrosesan data, pengembalian data, penghapusan data",normal
+"Data Processing Termination: fin du traitement des données, restitution des données, suppression",normal
+"Confidentiality of Trade Secrets: kerahasiaan rahasia dagang, lindungi rahasia dagang",normal
+Confidentiality of Trade Secrets: confidentialité des secrets commerciaux,normal
+"Confidentiality Duration: confidentiality duration, survival period, confidentiality term",normal
+"Confidentiality Duration: durasi kerahasiaan, periode kelangsungan, masa kerahasiaan",normal
+"Confidentiality Duration: durée de confidentialité, période de survie",normal
+"Confidentiality Exceptions: confidentiality exceptions, permitted disclosures, required by law",normal
+"Confidentiality Exceptions: pengecualian kerahasiaan, pengungkapan yang diizinkan, diwajibkan hukum",normal
+"Confidentiality Exceptions: exceptions à la confidentialité, divulgations autorisées",normal
+"Return of Confidential Information: return of confidential information, destruction, certification",normal
+"Return of Confidential Information: pengembalian informasi rahasia, penghancuran, sertifikasi",normal
+"Return of Confidential Information: restitution des informations confidentielles, destruction, certification",normal
+"Injunctive Relief: injunctive relief, equitable relief, temporary restraining order",normal
+"Injunctive Relief: upaya injunctif, upaya keadilan, perintah penahanan sementara",normal
+"Injunctive Relief: mesures injonctives, réparation en équité",normal
+"Remedies Cumulative: pemulihan kumulatif, tidak ada pemilihan pemulihan, semua hak",normal
+"Remedies Cumulative: recours cumulatifs, non-élection de recours",normal
+"No Implied Waiver: no implied waiver, waiver not implied",normal
+"No Implied Waiver: tidak ada pengesampingan tersirat, pengesampingan tidak tersirat",normal
+No Implied Waiver: absence de renonciation implicite,normal
+"Severability (Blue Pencil): severability, blue pencil doctrine, partial invalidity",normal
+"Severability (Blue Pencil): keterpisahan, doktrin blue pencil, ketidakabsahan parsial",normal
+"Severability (Blue Pencil): divisibilité, doctrine du scalpel, invalidité partielle",normal
+"Controlling Language: controlling language, prevailing language, translation precedence",normal
+"Controlling Language: bahasa yang mengendalikan, bahasa yang berlaku, prioritas terjemahan",normal
+"Controlling Language: langue contrôlante, langue prévalente, priorité de traduction",normal
+"Execution in Counterparts: execution in counterparts, multiple signature pages",normal
+"Execution in Counterparts: pelaksanaan dalam salinan, beberapa halaman tanda tangan",normal
+"Execution in Counterparts: exécution en plusieurs exemplaires, pages de signature multiples",normal
+"Facsimile and Electronic Signatures: facsimile signature, electronic signature, scanned signature",normal
+"Facsimile and Electronic Signatures: tanda tangan faksimili, tanda tangan elektronik, tanda tangan pindaian",normal
+"Facsimile and Electronic Signatures: signature par télécopie, signature électronique, signature scannée",normal
+"Notice by Email: notice by email, email notice, electronic notice",normal
+"Notice by Email: pemberitahuan melalui email, email pemberitahuan, pemberitahuan elektronik",normal
+"Notice by Email: avis par email, notification électronique",normal
+"Notice Period for Termination: notice period for termination, termination notice period",normal
+"Notice Period for Termination: masa pemberitahuan untuk pengakhiran, masa pemberitahuan pemutusan",normal
+Notice Period for Termination: délai de préavis de résiliation,normal
+"Force Majeure Notice: pemberitahuan keadaan kahar, kewajiban memberitahu keadaan kahar",normal
+"Force Majeure Notice: notification de force majeure, obligation de notifier",normal
+"Breach Notice: breach notice, notice of breach, cure notice",normal
+"Breach Notice: pemberitahuan pelanggaran, pemberitahuan wanprestasi, pemberitahuan perbaikan",normal
+"Breach Notice: avis de manquement, notification de manquement",normal
+"Waiver of Breach: waiver of breach, no waiver, non-waiver",normal
+"Waiver of Breach: pengesampingan pelanggaran, tanpa pengesampingan",normal
+"Waiver of Breach: renonciation au manquement, non-renonciation",normal
+"Cost of Enforcement: cost of enforcement, legal fees, collection costs",normal
+"Cost of Enforcement: biaya penegakan, biaya hukum, biaya penagihan",normal
+"Cost of Enforcement: frais d'exécution, frais juridiques",normal
+"Indemnity Procedure: prosedur indemnitas, pemberitahuan klaim, asumsi pembelaan",normal
+"Indemnity Procedure: procédure d'indemnisation, avis de réclamation",normal
+"Insurance Certificates: insurance certificates, proof of insurance, COI",normal
+"Insurance Certificates: sertifikat asuransi, bukti asuransi, COI",normal
+"Insurance Certificates: certificats d'assurance, preuve d'assurance",normal
+"Additional Insured: additional insured, named insured, insurance endorsement",normal
+"Additional Insured: tertanggung tambahan, tertanggung yang disebutkan, endosemen asuransi",normal
+"Additional Insured: assuré supplémentaire, avenant d'assurance",normal
+"Waiver of Subrogation: pengesampingan subrogasi, waiver subrogasi",normal
+Waiver of Subrogation: renonciation à la subrogation,normal
+"Mutual Indemnity: mutual indemnity, reciprocal indemnity",normal
+"Mutual Indemnity: indemnitas timbal balik, indemnitas resiprokal",normal
+"Mutual Indemnity: indemnité mutuelle, réciprocité",normal
+"Indemnity Cap: indemnity cap, limit of indemnity, maximum indemnity",normal
+"Indemnity Cap: batas indemnitas, batas ganti rugi, indemnitas maksimum",normal
+"Indemnity Cap: plafond d'indemnisation, limite d'indemnité",normal
+"Excluded Losses from Indemnity: excluded losses, indemnity exclusions, consequential loss",normal
+"Excluded Losses from Indemnity: kerugian yang dikecualikan, pengecualian indemnitas, kerugian konsekuensial",normal
+"Excluded Losses from Indemnity: pertes exclues, exclusions d'indemnisation",normal
+"Indemnity for Third-Party Claims: third-party indemnity, indemnify against third-party claims",normal
+"Indemnity for Third-Party Claims: indemnitas untuk klaim pihak ketiga, ganti rugi klaim pihak ketiga",normal
+Indemnity for Third-Party Claims: indemnisation des réclamations de tiers,normal
+"Cooperation in Defense: cooperation in defense, duty to cooperate, indemnity cooperation",normal
+"Cooperation in Defense: kerjasama dalam pembelaan, kewajiban kerjasama",normal
+Cooperation in Defense: coopération à la défense,normal
+"Settlement Restrictions: settlement restrictions, no settlement without consent, indemnity settlement",normal
+"Settlement Restrictions: batasan penyelesaian, tidak ada penyelesaian tanpa persetujuan",normal
+"Settlement Restrictions: restrictions de règlement, pas de règlement sans consentement",normal
+"Duty to Mitigate Damages: duty to mitigate damages, mitigation obligation",normal
+"Duty to Mitigate Damages: kewajiban mitigasi kerugian, kewajiban mengurangi kerugian",normal
+Duty to Mitigate Damages: obligation de minimiser les dommages,normal
+"Calculation of Damages: calculation of damages, measure of damages, direct damages",normal
+"Calculation of Damages: perhitungan ganti rugi, ukuran ganti rugi, ganti rugi langsung",normal
+"Calculation of Damages: calcul des dommages-intérêts, dommages directs",normal
+"Set-Off on Termination: set-off on termination, termination set-off",normal
+"Set-Off on Termination: set-off dalam pengakhiran, set-off pemutusan",normal
+Set-Off on Termination: compensation à la résiliation,normal
+"Post-Termination Assistance: post-termination assistance, transition services, wind-down",normal
+"Post-Termination Assistance: bantuan pasca-pemutusan, layanan transisi, wind-down",normal
+"Post-Termination Assistance: assistance post-résiliation, services de transition",normal
+"Data Portability: data portability, data export, right to data",normal
+"Data Portability: portabilitas data, ekspor data, hak atas data",normal
+"Data Portability: portabilité des données, exportation des données",normal
+"Non-Solicitation of Customers: non-solicitation of customers, no poaching customers",normal
+"Non-Solicitation of Customers: non-solisitasi pelanggan, tidak merekrut pelanggan",normal
+Non-Solicitation of Customers: non-sollicitation de clients,normal
+"Non-Disparagement: non-diskreditasi, tidak ada pernyataan negatif, saling menghormati",normal
+"Non-Disparagement: non-dénigrement, absence de déclarations négatives",normal
+"Publicity Right: publicity right, right to use name, marketing permission",normal
+"Publicity Right: hak publisitas, hak menggunakan nama, izin pemasaran",normal
+"Publicity Right: droit de publicité, autorisation marketing",normal
+"Referral Fees: referral fees, commission, finder's fee",normal
+"Referral Fees: biaya rujukan, komisi, biaya pencari",normal
+"Referral Fees: frais de recommandation, commission, courtage",normal
+"Marketing Spend Commitment: marketing spend commitment, advertising spend, promotion budget",normal
+"Marketing Spend Commitment: komitmen belanja pemasaran, anggaran iklan",normal
+"Marketing Spend Commitment: engagement de dépenses marketing, budget publicitaire",normal
+"Logo Usage Guidelines: logo usage guidelines, brand guidelines, trademark usage",normal
+"Logo Usage Guidelines: panduan penggunaan logo, pedoman merek, penggunaan merek dagang",normal
+"Logo Usage Guidelines: directives d'utilisation du logo, charte graphique",normal
+"Cross-Promotion: cross-promotion, mutual promotion, co-marketing",normal
+"Cross-Promotion: promosi silang, promosi bersama, co-marketing",normal
+"Cross-Promotion: promotion croisée, co-marketing",normal
+"Exclusive Territory: exclusive territory, exclusive distribution territory, sales territory",normal
+"Exclusive Territory: wilayah eksklusif, wilayah distribusi eksklusif, wilayah penjualan",normal
+"Exclusive Territory: territoire exclusif, zone de distribution exclusive",normal
+"Minimum Sales Target: target penjualan minimum, kuota penjualan, target kinerja",normal
+"Minimum Sales Target: objectif de vente minimum, quota de vente",normal
+"Reporting Obligations: reporting obligations, sales reports, activity reports",normal
+"Reporting Obligations: kewajiban pelaporan, laporan penjualan, laporan kegiatan",normal
+"Reporting Obligations: obligations de reporting, rapports de vente",normal
+"Intellectual Property Ownership (Foreground): foreground IP ownership, created IP, newly developed IP",normal
+"Intellectual Property Ownership (Foreground): kepemilikan IP foreground, IP yang dibuat, IP yang baru dikembangkan",normal
+"Intellectual Property Ownership (Foreground): propriété de la PI de création, PI développée",normal
+"IP License Back: license back, grant-back license, feedback license",normal
+"IP License Back: lisensi kembali, grant-back license, lisensi umpan balik",normal
+"IP License Back: licence retour, licence d'amélioration",normal
+"Non-Assertion of IP: non-assertion, no IP claims, covenant not to sue",normal
+"Non-Assertion of IP: non-penegasan IP, tidak ada klaim IP, janji tidak menuntut",normal
+"Non-Assertion of IP: non-affirmation de PI, engagement de ne pas poursuivre",normal
+"Technology Escrow: technology escrow, source code escrow, software escrow",normal
+"Technology Escrow: escrow teknologi, escrow kode sumber, escrow perangkat lunak",normal
+"Technology Escrow: séquestre technologique, séquestre de code source",normal
+"Royalty Payments: royalty payments, royalty rate, license fee",normal
+"Royalty Payments: pembayaran royalti, tarif royalti, biaya lisensi",normal
+"Royalty Payments: paiements de redevances, taux de redevance",normal
+"Royalty Audit Rights: royalty audit, audit of sales, royalty verification",normal
+"Royalty Audit Rights: hak audit royalti, audit penjualan, verifikasi royalti",normal
+"Royalty Audit Rights: droit d'audit des redevances, vérification des redevances",normal
+"Improvement Ownership: improvement ownership, derivative works ownership",normal
+"Improvement Ownership: kepemilikan perbaikan, kepemilikan karya turunan",normal
+"Improvement Ownership: propriété des améliorations, œuvres dérivées",normal
+"No Reverse Engineering: no reverse engineering, reverse engineering prohibited",normal
+"No Reverse Engineering: tanpa rekayasa balik, dilarang rekayasa balik",normal
+No Reverse Engineering: interdiction de rétro-ingénierie,normal
+"Number of Users: jumlah pengguna, pengguna berlisensi, kursi pengguna",normal
+"Number of Users: nombre d'utilisateurs, utilisateurs autorisés",normal
+"Field of Use: field of use, restricted use, permitted applications",normal
+"Field of Use: bidang penggunaan, penggunaan terbatas, aplikasi yang diizinkan",normal
+"Field of Use: champ d'utilisation, applications autorisées",normal
+"Sublicensing: sublicensing, right to sublicense, sublicense fee",normal
+"Sublicensing: sublisensi, hak sublisensi, biaya sublisensi",normal
+"Sublicensing: sous-licence, droit de sous-licencier",normal
+"Notice of Infringement: notice of infringement, third-party IP claims",normal
+"Notice of Infringement: pemberitahuan pelanggaran, klaim IP pihak ketiga",normal
+"Notice of Infringement: avis de contrefaçon, réclamations de PI de tiers",normal
+"No Challenge Clause: no challenge clause, non-challenge, no contest",normal
+"No Challenge Clause: klausul tidak menantang, tidak menggugat",normal
+No Challenge Clause: clause de non-contestation,normal
+"Most Favored Licensee: most favored licensee, MFL, best terms",normal
+"Most Favored Licensee: penerima lisensi paling diuntungkan, MFL, ketentuan terbaik",normal
+"Most Favored Licensee: licencié le plus favorisé, meilleures conditions",normal
+"License Maintenance: license maintenance, support and maintenance, software maintenance",normal
+"License Maintenance: pemeliharaan lisensi, dukungan dan pemeliharaan, pemeliharaan perangkat lunak",normal
+"License Maintenance: maintenance de licence, support et maintenance",normal
+"Termination of License: termination of license, license termination for breach",normal
+"Termination of License: pengakhiran lisensi, pengakhiran lisensi karena pelanggaran",normal
+"Termination of License: résiliation de licence, résiliation pour manquement",normal
+"Verification of Compliance: verification of compliance, compliance audit, license audit",normal
+"Verification of Compliance: verifikasi kepatuhan, audit kepatuhan, audit lisensi",normal
+"Verification of Compliance: vérification de conformité, audit de licence",normal
+"Source Code Availability: source code availability, escrowed source code, access to source",normal
+"Source Code Availability: ketersediaan kode sumber, kode sumber escrow, akses ke kode sumber",normal
+"Source Code Availability: disponibilité du code source, code source séquestré",normal
+"Open Source Notification: open source notification, disclosure of open source",normal
+"Open Source Notification: pemberitahuan open source, pengungkapan open source",normal
+"Open Source Notification: notification open source, divulgation open source",normal
+"API Documentation: API documentation, technical documentation, integration guide",normal
+"API Documentation: dokumentasi API, dokumentasi teknis, panduan integrasi",normal
+"API Documentation: documentation API, documentation technique",normal
+"API Changes Notice: API changes notice, deprecation notice, version changes",normal
+"API Changes Notice: pemberitahuan perubahan API, pemberitahuan penghentian, perubahan versi",normal
+"API Changes Notice: avis de modification d'API, avis de dépréciation",normal
+"Service Level Credits (Detailed): service level credits, SLA credits, compensation for downtime",normal
+"Service Level Credits (Detailed): kredit tingkat layanan (detail), kredit SLA, kompensasi untuk downtime",normal
+"Service Level Credits (Detailed): crédits de niveau de service (détaillés), crédits SLA",normal
+"Excluded Downtime: downtime yang dikecualikan, pemeliharaan terjadwal, downtime keadaan kahar",normal
+"Excluded Downtime: indisponibilité exclue, maintenance programmée",normal
+"Service Level Reporting: service level reporting, SLA reports, uptime reports",normal
+"Service Level Reporting: pelaporan tingkat layanan, laporan SLA, laporan uptime",normal
+"Service Level Reporting: rapports de niveau de service, rapports SLA",normal
+"Right to Terminate for Persistent Poor Service: termination for persistent poor service, repeat SLA failures",normal
+"Right to Terminate for Persistent Poor Service: hak mengakhiri karena layanan buruk berkelanjutan, kegagalan SLA berulang",normal
+Right to Terminate for Persistent Poor Service: droit de résiliation pour service médiocre persistant,normal
+"Service Credits as Sole Remedy: service credits as sole remedy, exclusive remedy for SLA failures",normal
+"Service Credits as Sole Remedy: kredit layanan sebagai satu-satunya pemulihan, pemulihan eksklusif untuk kegagalan SLA",normal
+Service Credits as Sole Remedy: crédits de service comme recours unique,normal
+"SLA Definitions: SLA definitions, uptime definition, response time definition",normal
+"SLA Definitions: definisi SLA, definisi uptime, definisi waktu respons",normal
+"SLA Definitions: définitions SLA, définition de disponibilité, délai de réponse",normal
+"Business Hours for Support: business hours, support hours, coverage hours",normal
+"Business Hours for Support: jam kerja untuk dukungan, jam dukungan, jam cakupan",normal
+"Business Hours for Support: heures ouvrables pour le support, heures de support",normal
+"First Response Time: first response time, initial response SLA, acknowledgment time",normal
+"First Response Time: waktu respons pertama, SLA respons awal, waktu pengakuan",normal
+"First Response Time: délai de première réponse, temps d'accusé de réception",normal
+"Resolution Time: resolution time, fix time, problem resolution SLA",normal
+"Resolution Time: waktu resolusi, waktu perbaikan, SLA resolusi masalah",normal
+"Resolution Time: délai de résolution, délai de correction",normal
+"Severity Levels: severity levels, priority levels, critical, major, minor",normal
+"Severity Levels: tingkat keparahan, tingkat prioritas, kritis, mayor, minor",normal
+"Severity Levels: niveaux de gravité, priorités, critique, majeur, mineur",normal
+"SLA Exclusions: SLA exclusions, what is not covered, SLA exceptions",normal
+"SLA Exclusions: pengecualian SLA, apa yang tidak dicakup, pengecualian SLA",normal
+"SLA Exclusions: exclusions des SLA, ce qui n'est pas couvert",normal
+"Monitoring and Logging: monitoring and logging, service monitoring, audit logs",normal
+"Monitoring and Logging: pemantauan dan pencatatan, pemantauan layanan, log audit",normal
+"Monitoring and Logging: surveillance et journalisation, logs d'audit",normal
+"Incident Reporting: incident reporting, outage notification, service disruption notice",normal
+"Incident Reporting: pelaporan insiden, pemberitahuan pemadaman, pemberitahuan gangguan layanan",normal
+"Incident Reporting: rapport d'incident, notification de panne",normal
+"Post-Incident Review: post-incident review, root cause analysis, RFO",normal
+"Post-Incident Review: tinjauan pasca-insiden, analisis akar masalah, RFO",normal
+"Post-Incident Review: revue post-incident, analyse des causes profondes",normal
+"Disaster Recovery Time Objective: RTO, recovery time objective, maximum downtime after disaster",normal
+"Disaster Recovery Time Objective: RTO, target waktu pemulihan, waktu henti maksimum setelah bencana",normal
+"Disaster Recovery Time Objective: objectif de délai de reprise, RTO",normal
+"Recovery Point Objective: RPO, recovery point objective, data loss tolerance",normal
+"Recovery Point Objective: RPO, target titik pemulihan, toleransi kehilangan data",normal
+"Recovery Point Objective: objectif de point de reprise, RPO",normal
+"Disaster Recovery Testing: DR testing, failover testing, annual DR test",normal
+"Disaster Recovery Testing: pengujian DR, pengujian failover, uji DR tahunan",normal
+"Disaster Recovery Testing: test de reprise après sinistre, test DR annuel",normal
+"Data Backup Frequency: data backup frequency, daily backup, backup schedule",normal
+"Data Backup Frequency: frekuensi pencadangan data, pencadangan harian, jadwal pencadangan",normal
+"Data Backup Frequency: fréquence de sauvegarde des données, sauvegarde quotidienne",normal
+"Data Restoration: data restoration, restore from backup, data recovery",normal
+"Data Restoration: pemulihan data, pemulihan dari cadangan, pemulihan data",normal
+"Data Restoration: restauration des données, récupération de données",normal
+"Data Center Locations: data center locations, hosting regions, data residency",normal
+"Data Center Locations: lokasi pusat data, wilayah hosting, residensi data",normal
+"Data Center Locations: emplacements des centres de données, résidence des données",normal
+"Data Deletion on Termination: data deletion on termination, secure deletion, data erasure",normal
+"Data Deletion on Termination: penghapusan data pada pengakhiran, penghapusan aman, penghapusan data",normal
+"Data Deletion on Termination: suppression des données à la résiliation, effacement sécurisé",normal
+"Right to Audit Security: right to audit security, security audit clause, penetration test rights",normal
+"Right to Audit Security: hak audit keamanan, klausul audit keamanan, hak uji penetrasi",normal
+"Right to Audit Security: droit d'audit de sécurité, tests d'intrusion",normal
+"Security Incident Response: security incident response, breach response, incident handling",normal
+"Security Incident Response: respons insiden keamanan, respons pelanggaran, penanganan insiden",normal
+"Security Incident Response: réponse aux incidents de sécurité, gestion des incidents",normal
+"Security Certifications: security certifications, ISO 27001, SOC 2, compliance",normal
+"Security Certifications: sertifikasi keamanan, ISO 27001, SOC 2, kepatuhan",normal
+"Security Certifications: certifications de sécurité, ISO 27001, SOC 2",normal
+"Encryption Standards: encryption standards, data encryption, TLS, AES-256",normal
+"Encryption Standards: standar enkripsi, enkripsi data, TLS, AES-256",normal
+"Encryption Standards: normes de cryptage, cryptage des données, TLS, AES-256",normal
+"Access Control: access control, role-based access, least privilege",normal
+"Access Control: kontrol akses, akses berbasis peran, hak istimewa minimal",normal
+"Access Control: contrôle d'accès, accès basé sur les rôles, moindre privilège",normal
+"Background Checks: pemeriksaan latar belakang, verifikasi, hak melakukan pemeriksaan",normal
+"Class Action Waiver: pengesampingan gugatan kelas, tidak ada gugatan kelas, arbitrase individu",normal
+"Confidentiality of Trade Secrets: kerahasiaan rahasia dagang, lindungi rahasia dagang",normal
+"Data Processing Termination: pengakhiran pemrosesan data, pengembalian data, penghapusan data",normal
+"Dispute Resolution (Multi-Tiered): penyelesaian sengketa bertingkat, eskalasi, mediasi sebelum arbitrase",normal
+"Excluded Downtime: downtime yang dikecualikan, pemeliharaan terjadwal, downtime keadaan kahar",normal
+"Force Majeure Notice: pemberitahuan keadaan kahar, kewajiban memberitahu keadaan kahar",normal
+"Indemnity Procedure: prosedur indemnitas, pemberitahuan klaim, asumsi pembelaan",normal
+"Minimum Sales Target: target penjualan minimum, kuota penjualan, target kinerja",normal
+"Non-Disparagement: non-diskreditasi, tidak ada pernyataan negatif, saling menghormati",normal
+"Non-Solicitation (Employment): non-solisitasi, non-solisitasi karyawan, tidak merekrut karyawan",normal
+"Number of Users: jumlah pengguna, pengguna berlisensi, kursi pengguna",normal
+"Pay-when-paid: bayar-saat-dibayar, pembayaran bersyarat, pembayaran tergantung penerimaan",normal
+"Remedies Cumulative: pemulihan kumulatif, tidak ada pemilihan pemulihan, semua hak",normal
+"Representations and Warranties: pernyataan dan jaminan, pernyataan fakta, asuransi",normal
+"Restrictive Covenants (General): pembatasan umum, pembatasan pasca-pemutusan, cuti taman",normal
+"Service Level Agreement (SLA): SLA, tingkat layanan, waktu aktif, waktu respons, ketersediaan",normal
+"Subprocessor Approval: persetujuan subprosesor, persetujuan subprosesor, pemroses pihak ketiga",normal
+"Time of the Essence (Specific): waktu adalah esensi untuk kewajiban tertentu, tenggat waktu ketat untuk milestone",normal
+"Waiver of Subrogation: pengesampingan subrogasi, waiver subrogasi",normal
+"Set-Off in Termination: set-off on termination, termination set-off",normal

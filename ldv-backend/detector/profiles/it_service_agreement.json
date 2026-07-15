@@ -1,0 +1,74 @@
+{
+  "profile_id": "it_service_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-14",
+  "metadata": {
+    "display_name": "IT Service Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Information Technology service agreement profile.",
+    "release_stage": "stable",
+    "aliases": [
+      "it service agreement",
+      "it services agreement",
+      "information technology services contract"
+    ]
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document involves professional IT support, consulting, or managed services.",
+    "keyword_overrides": {
+      "EN": [
+        "it service",
+        "it services",
+        "it support",
+        "information technology services"
+      ],
+      "ID": [
+        "layanan ti",
+        "jasa ti",
+        "teknologi informasi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "confidentiality"
+    }
+  ]
+}

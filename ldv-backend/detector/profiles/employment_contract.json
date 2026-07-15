@@ -1,0 +1,77 @@
+{
+  "profile_id": "employment_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "Employment Contract",
+    "family": "employment_agreements",
+    "description": "Standard Employment Contract profile mapping required clauses.",
+    "aliases": [
+      "employment contract",
+      "labor contract",
+      "perjanjian kerja"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document involves employment terms between employer and employee.",
+    "keyword_overrides": {
+      "EN": [
+        "employee",
+        "employer",
+        "employment",
+        "salary",
+        "wages",
+        "worker",
+        "work promise"
+      ],
+      "ID": [
+        "karyawan",
+        "majikan",
+        "gaji",
+        "pekerja",
+        "pemberi kerja",
+        "perjanjian kerja"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "notice_period"
+    },
+    {
+      "clause_id": "compensation"
+    },
+    {
+      "clause_id": "working_hours"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ]
+}

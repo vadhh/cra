@@ -192,12 +192,16 @@ def _validate_and_extract(file) -> tuple[bytes, str, str]:
     if detected_mime not in allowed_mimes:
         raise ValueError(f"File content does not match extension '{ext}'")
 
-    if ext == ".pdf":
-        text = _extract_pdf(data)
-    elif ext == ".docx":
-        text = _extract_docx(data)
-    else:
-        text = _extract_txt(data)
+    try:
+        if ext == ".pdf":
+            text = _extract_pdf(data)
+        elif ext == ".docx":
+            text = _extract_docx(data)
+        else:
+            text = _extract_txt(data)
+    except Exception as e:
+        logger.warning("Failed to extract text from %s: %s", ext, e)
+        raise ValueError(f"Corrupted or invalid {ext} file: {str(e)}")
 
     if not text.strip():
         raise ValueError("Scan/OCR required. No usable text could be extracted from this document.")
@@ -234,11 +238,16 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
             "generic": "general contract"
         }
         mapped_label = mapping.get(override_type.lower(), override_type.lower())
+        original_model_conf = (layer2.get("document_type") or {}).get("model_confidence") or (layer2.get("document_type") or {}).get("confidence") or 0.0
         layer2["document_type"] = {
             "label": mapped_label,
             "confidence": 1.0,
-            "candidates": [{"label": mapped_label, "confidence": 1.0}],
-            "source": "user_selected"
+            "model_confidence": original_model_conf,
+            "keyword_override_confidence": 0.0,
+            "override_applied": True,
+            "override_reason": "user_selected",
+            "source": "user_selected",
+            "candidates": [{"label": mapped_label, "confidence": 1.0}]
         }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()
@@ -1271,9 +1280,9 @@ def health():
     # Check datasets
     datasets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets")
     required_csvs = [
-        "abusive_clauses.csv", "dangerous_clauses.csv",
+        "abusive_clauses.csv", "dangerous_clauses_MASTERv2.csv",
         "illegal_clauses.csv", "leonine_clauses.csv",
-        "required_clauses.csv", "legal_citations.csv"
+        "required_clauses_MASTER.csv", "legal_citations.csv"
     ]
     datasets_ok = all(os.path.exists(os.path.join(datasets_dir, f)) for f in required_csvs)
     
@@ -1365,6 +1374,158 @@ def frontend_files(filename):
     if os.path.isfile(filepath):
         return send_from_directory(FRONTEND_DIR, filename)
     return send_from_directory(FRONTEND_DIR, "index.html")
+
+
+# ── Profile Admin APIs ──────────────────────────────────────────────────────────
+
+@app.route("/api/v1/admin/profiles", methods=["GET"])
+@auth.admin_required
+def admin_list_profiles():
+    """List all profiles in the registry (both active and inactive)."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        
+        # Load active and inactive profile lists
+        active_ids = manager._registry.get("profiles", {}).keys()
+        inactive_ids = manager._registry.get("inactive_profiles", {}).keys()
+        
+        profiles = []
+        for pid in list(active_ids) + list(inactive_ids):
+            try:
+                p = manager.get_profile(pid)
+                metadata = p.get("metadata", {})
+                profiles.append({
+                    "profile_id": pid,
+                    "version": p.get("version"),
+                    "validation_status": p.get("validation_status"),
+                    "review_date": p.get("review_date"),
+                    "display_name": metadata.get("display_name"),
+                    "family": metadata.get("family"),
+                    "active": pid in active_ids
+                })
+            except Exception as err:
+                profiles.append({
+                    "profile_id": pid,
+                    "active": pid in active_ids,
+                    "error": str(err)
+                })
+                
+        return jsonify({"profiles": profiles})
+    except Exception as exc:
+        return jsonify({"error": f"Failed to list profiles: {exc}"}), 500
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>", methods=["GET"])
+@auth.admin_required
+def admin_get_profile(profile_id):
+    """Retrieve details of a specific profile by ID."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        p = manager.get_profile(profile_id)
+        active = profile_id in manager._registry.get("profiles", {})
+        return jsonify({
+            "profile": p,
+            "active": active
+        })
+    except ValueError:
+        try:
+            from detector.detector_profiles import ProfileManager
+            manager = ProfileManager()
+            inactive_map = manager._registry.get("inactive_profiles", {})
+            if profile_id in inactive_map:
+                filename = inactive_map[profile_id]
+                profile_path = os.path.join(os.path.dirname(manager.registry_path), filename)
+                with open(profile_path, "r", encoding="utf-8") as f:
+                    p = json.load(f)
+                return jsonify({
+                    "profile": p,
+                    "active": False
+                })
+        except Exception:
+            pass
+        return jsonify({"error": f"Profile '{profile_id}' not found."}), 404
+    except Exception as exc:
+        return jsonify({"error": f"Failed to retrieve profile: {exc}"}), 500
+
+
+@app.route("/api/v1/admin/profiles/validate", methods=["POST"])
+@auth.admin_required
+def admin_validate_profile_payload():
+    """Validate a raw profile payload against JSON schema and rules."""
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "No JSON payload provided"}), 400
+        
+    try:
+        from detector.detector_profiles import ProfileManager, validate_profile
+        manager = ProfileManager()
+        validate_profile(payload, manager._rules)
+        return jsonify({"status": "valid", "message": "Profile payload conforms to schema and rules classification."})
+    except Exception as exc:
+        return jsonify({"status": "invalid", "error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/publish", methods=["POST"])
+@auth.admin_required
+def admin_publish_profile(profile_id):
+    """Publish or update a profile specification payload."""
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "No JSON payload provided"}), 400
+        
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.publish_profile(profile_id, payload)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' published successfully and activated."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/activate", methods=["POST"])
+@auth.admin_required
+def admin_activate_profile(profile_id):
+    """Activate a deactivated profile."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.activate_profile(profile_id)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' activated successfully."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/deactivate", methods=["POST"])
+@auth.admin_required
+def admin_deactivate_profile(profile_id):
+    """Deactivate an active profile."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.deactivate_profile(profile_id)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' deactivated successfully."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/rollback", methods=["POST"])
+@auth.admin_required
+def admin_rollback_profile(profile_id):
+    """Roll back a profile to a previous version stored in history."""
+    params = request.get_json() or {}
+    target_version = params.get("version")
+    if not target_version:
+        return jsonify({"error": "Missing 'version' parameter in payload"}), 400
+        
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.rollback_profile(profile_id, target_version)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' successfully rolled back to version {target_version}."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 if __name__ == "__main__":

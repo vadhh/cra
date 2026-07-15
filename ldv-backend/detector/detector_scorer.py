@@ -155,6 +155,8 @@ def _extract_features(layer1: dict, layer2: dict) -> dict:
         "has_governing_law":    has_governing_law,
         "has_venue":            has_venue,
         "l2_available":         bool(layer2 and layer2.get("layer2_available")),
+        "red_flags":            red_flags,
+        "jurisdiction":         layer1.get("jurisdiction")
     }
 
 
@@ -165,7 +167,34 @@ def _compute_score(features: dict, policy: dict) -> tuple[int, list[dict]]:
     score = 100
     breakdown = []
 
-    w = policy.get("weights", _DEFAULT_POLICY["weights"])
+    # 1. Resolve Contract Profile for overrides
+    ctype = features.get("contract_type", "unknown")
+    profile = None
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        profile = manager.resolve_profile_by_name(ctype)
+    except Exception as exc:
+        logger.warning("Scorer failed to resolve profile: %s", exc)
+
+    profile_scoring = profile.get("scoring", {}) if profile else {}
+
+    # 2. Setup Base Weights
+    w = dict(policy.get("weights", _DEFAULT_POLICY["weights"]))
+    
+    # Apply profile weights overrides
+    if "weights" in profile_scoring:
+        for k, v in profile_scoring["weights"].items():
+            w[k] = v
+
+    # Apply jurisdiction adjustments
+    jurisdiction = features.get("jurisdiction")
+    if jurisdiction and "jurisdiction_adjustments" in profile_scoring:
+        ja = profile_scoring["jurisdiction_adjustments"]
+        if jurisdiction in ja:
+            for k, v in ja[jurisdiction].items():
+                w[k] = v
+
     impact_weights = w.get("impact_weights", _DEFAULT_POLICY["weights"]["impact_weights"])
     w_missing_fallback = w.get("missing_required_fallback", -10)
     w_red_flag_high = w.get("red_flag_high", -25)
@@ -174,12 +203,20 @@ def _compute_score(features: dict, policy: dict) -> tuple[int, list[dict]]:
     w_no_gov_law = w.get("no_governing_law", -12)
     w_no_venue = w.get("no_venue", -8)
 
-    ctype = features.get("contract_type", "unknown")
+    # 3. Missing Mandatory Clauses
     for cid in features["missing_mandatory_ids"]:
-        # Weight by Ilham's Impact_Level when the clause is reconciled to her DB;
-        # fall back to the flat weight for unmapped clauses.
         impact = clause_impact(cid)
-        points = impact_weights.get(impact, w_missing_fallback)
+        
+        # Check profile-specific missing weight override
+        points = None
+        if "missing_clause_weights" in profile_scoring:
+            mcw = profile_scoring["missing_clause_weights"]
+            if cid in mcw:
+                points = mcw[cid]
+                
+        if points is None:
+            points = impact_weights.get(impact, w_missing_fallback)
+
         score += points
         sev = f" [{impact}]" if impact else ""
         breakdown.append({
@@ -187,20 +224,33 @@ def _compute_score(features: dict, policy: dict) -> tuple[int, list[dict]]:
             "points": points,
         })
 
-    for _ in range(features["high_flags"]):
-        score += w_red_flag_high
+    # 4. Red Flags (Abusive/Dangerous)
+    for flag in features.get("red_flags", []):
+        fid = flag["id"]
+        sev = flag["severity"]
+        base_points = w_red_flag_high if sev == "HIGH" else w_red_flag_medium
+        
+        points = None
+        category = flag.get("category")
+        if category == "Abusive" and "abusive_clause_weights" in profile_scoring:
+            acw = profile_scoring["abusive_clause_weights"]
+            if fid in acw:
+                points = acw[fid]
+        elif "dangerous_clause_weights" in profile_scoring:
+            dcw = profile_scoring["dangerous_clause_weights"]
+            if fid in dcw:
+                points = dcw[fid]
+                
+        if points is None:
+            points = base_points
+            
+        score += points
         breakdown.append({
-            "reason": "HIGH severity red flag (L1)",
-            "points": w_red_flag_high,
+            "reason": f"{sev} severity red flag (L1)",
+            "points": points,
         })
 
-    for _ in range(features["medium_flags"]):
-        score += w_red_flag_medium
-        breakdown.append({
-            "reason": "MEDIUM severity red flag (L1)",
-            "points": w_red_flag_medium,
-        })
-
+    # 5. Unique L2 Clauses
     for item in features["unique_l2_items"]:
         score += w_l2_unique
         breakdown.append({
@@ -208,6 +258,7 @@ def _compute_score(features: dict, policy: dict) -> tuple[int, list[dict]]:
             "points": w_l2_unique,
         })
 
+    # 6. Governance Clauses
     if not features["has_governing_law"]:
         score += w_no_gov_law
         breakdown.append({
@@ -223,7 +274,6 @@ def _compute_score(features: dict, policy: dict) -> tuple[int, list[dict]]:
         })
 
     score = max(0, min(100, score))
-    # Convert safety score (100=clean) to risk score (100=risky)
     risk_score = 100 - score
     return risk_score, breakdown
 

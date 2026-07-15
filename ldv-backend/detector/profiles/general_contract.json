@@ -1,0 +1,63 @@
+{
+  "profile_id": "general_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "General Contract",
+    "family": "baseline_agreements",
+    "description": "Standard General Contract profile mapping required baseline clauses.",
+    "aliases": [
+      "general contract",
+      "contract",
+      "agreement",
+      "perjanjian",
+      "kontrak"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This is a general legal agreement between two or more parties.",
+    "keyword_overrides": {}
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "limitation_liability"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

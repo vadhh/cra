@@ -168,7 +168,15 @@ def generate_pdf(result: dict) -> bytes:
     layer2     = result.get("layer2", {}) or {}
     lang       = result.get("language", "unknown")
     juris      = result.get("jurisdiction", "not detected")
-    doctype    = layer2.get("document_type", "not detected")
+    
+    doctype_dict = layer2.get("document_type")
+    if isinstance(doctype_dict, dict):
+        doctype = doctype_dict.get("label", "not detected")
+        confidence_val = doctype_dict.get("confidence")
+    else:
+        doctype = doctype_dict or "not detected"
+        confidence_val = None
+
     gov_law    = layer1.get("governing_law") or "not detected"
     venue      = layer1.get("venue") or "not detected"
     red_flags  = layer1.get("red_flags", [])
@@ -176,14 +184,43 @@ def generate_pdf(result: dict) -> bytes:
     missing    = [c for c in clauses if c.get("required") and not c.get("present")]
     l2_flagged = layer2.get("flagged_clauses", [])
 
+    profile_used = "N/A"
+    profile_version = "N/A"
+    validation_status = "N/A"
+    
+    if doctype and doctype != "not detected":
+        try:
+            from detector.detector_profiles import ProfileManager
+            manager = ProfileManager()
+            profile = manager.resolve_profile_by_name(doctype)
+            if profile:
+                profile_used = profile["metadata"]["display_name"]
+                profile_version = profile["version"]
+                validation_status = profile["validation_status"]
+        except Exception as exc:
+            logger.warning("PDF generator failed to resolve profile: %s", exc)
+
+    if confidence_val is not None:
+        confidence_str = f"{confidence_val * 100:.1f}%" if confidence_val <= 1.0 else f"{confidence_val:.1f}%"
+    else:
+        confidence_str = "N/A"
+
+    analysis_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     summary_rows = [
         ["Language",         lang.upper() if lang not in ("unknown", "") else "Not detected"],
-        ["Document type",    doctype or "Not detected"],
+        ["Contract Type",    doctype.title() if doctype not in ("not detected", "", None) else "Not detected"],
+        ["Detection Confidence", confidence_str],
         ["Jurisdiction",     juris or "Not detected"],
         ["Governing law",    gov_law],
         ["Dangerous clauses", str(len(red_flags) + len(l2_flagged))],
         ["Missing clauses",   str(len(missing))],
+        ["Profile Used",     profile_used],
+        ["Profile Version",  profile_version],
+        ["Validation Status", validation_status],
+        ["Analysis Date",    analysis_date]
     ]
+
     story.append(Table(
         summary_rows,
         colWidths=[W * 0.38, W * 0.62],

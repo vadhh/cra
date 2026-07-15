@@ -1,0 +1,78 @@
+{
+  "profile_id": "saas_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-14",
+  "metadata": {
+    "display_name": "SaaS Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Software-as-a-Service profile.",
+    "release_stage": "stable",
+    "aliases": [
+      "saas agreement",
+      "software as a service agreement",
+      "cloud service agreement"
+    ]
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document involves software-as-a-service (SaaS) subscriptions and cloud service terms.",
+    "keyword_overrides": {
+      "EN": [
+        "saas",
+        "software as a service",
+        "cloud service",
+        "subscription fee",
+        "cloud agreement"
+      ],
+      "ID": [
+        "saas",
+        "layanan awan",
+        "berlangganan perangkat lunak"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "license_grant"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "warranty_disclaimer"
+    }
+  ]
+}

@@ -52,7 +52,12 @@ MODEL_ID = (
 # Patterns are anchored as whole words (\b) to avoid false matches like
 # "employé annuellement" (French: "applied annually") triggering employment.
 
-_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
+# Minimum keyword hits to trust a keyword result over NLI
+_KEYWORD_MIN_HITS = 2
+# NLI confidence below this → apply keyword override when keyword is strong
+_NLI_OVERRIDE_THRESHOLD = 0.85
+
+_STATIC_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
     "lease agreement": [
         r"\bbail\b", r"\bbailleur\b", r"\blocataire\b", r"\bloyer\b",
         r"\bhuurder\b", r"\bverhuurder\b", r"\bhuurprijs\b",
@@ -116,32 +121,8 @@ _KEYWORD_DOC_TYPES: dict[str, list[str]] = {
     ],
 }
 
-# Minimum keyword hits to trust a keyword result over NLI
-_KEYWORD_MIN_HITS = 2
-# NLI confidence below this → apply keyword override when keyword is strong
-_NLI_OVERRIDE_THRESHOLD = 0.40
 
-
-def _keyword_doc_type(text: str) -> tuple[str | None, int]:
-    """Return (best_label, hit_count) from keyword matching on text[:1200]."""
-    snippet = text[:1200]
-    scores: dict[str, int] = {}
-    for label, patterns in _KEYWORD_DOC_TYPES.items():
-        count = sum(1 for p in patterns if re.search(p, snippet, re.I))
-        if count > 0:
-            scores[label] = count
-    if not scores:
-        return None, 0
-    best = max(scores, key=lambda k: scores[k])
-    return best, scores[best]
-
-
-# ── Document type labels with calibrated hypotheses ───────────────────────────
-# Each label has a specific hypothesis proven to discriminate well under
-# typeform/distilbert-base-uncased-mnli (MultiNLI-trained).
-# The article "a/an" issue is avoided by using descriptive phrasing.
-
-_DOC_TYPE_SPECS: list[dict] = [
+_STATIC_DOC_TYPE_SPECS: list[dict] = [
     {
         "label":      "employment contract",
         "hypothesis": "This document involves employment terms between employer and employee.",
@@ -203,6 +184,173 @@ _DOC_TYPE_SPECS: list[dict] = [
         "hypothesis": "This document is a resume, curriculum vitae (CV), article, advertisement, letter, or other non-contract text.",
     },
 ]
+
+_CACHED_DOC_TYPE_SPECS: Optional[list[dict]] = None
+_CACHED_KEYWORD_DOC_TYPES: Optional[dict[str, list[str]]] = None
+
+
+def clear_classification_cache() -> None:
+    """Clear cached document type specs and keyword overrides."""
+    global _CACHED_DOC_TYPE_SPECS, _CACHED_KEYWORD_DOC_TYPES
+    _CACHED_DOC_TYPE_SPECS = None
+    _CACHED_KEYWORD_DOC_TYPES = None
+
+
+def load_doc_type_specs() -> list[dict]:
+    global _CACHED_DOC_TYPE_SPECS
+    if _CACHED_DOC_TYPE_SPECS is not None:
+        return _CACHED_DOC_TYPE_SPECS
+    
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        specs = []
+        for pid in manager.list_profiles():
+            p = manager.get_profile(pid)
+            label = p["metadata"]["display_name"].lower()
+            specs.append({
+                "label": label,
+                "hypothesis": p["classification"]["nli_hypothesis"]
+            })
+        
+        # Append non-contract specs that aren't in the registry
+        for spec in _STATIC_DOC_TYPE_SPECS:
+            if spec["label"] in ["invoice", "receipt", "purchase order", "non-contract"]:
+                specs.append(spec)
+                
+        _CACHED_DOC_TYPE_SPECS = specs
+        return _CACHED_DOC_TYPE_SPECS
+    except Exception as e:
+        logger.warning("Failed to load doc type specs dynamically, falling back to static: %s", e)
+        return _STATIC_DOC_TYPE_SPECS
+
+
+def load_keyword_doc_types() -> dict[str, list[str]]:
+    global _CACHED_KEYWORD_DOC_TYPES
+    if _CACHED_KEYWORD_DOC_TYPES is not None:
+        return _CACHED_KEYWORD_DOC_TYPES
+    
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        kw_types = {}
+        for pid in manager.list_profiles():
+            p = manager.get_profile(pid)
+            label = p["metadata"]["display_name"].lower()
+            patterns = []
+            ko = p["classification"].get("keyword_overrides", {})
+            for lang, words in ko.items():
+                for word in words:
+                    escaped_word = re.escape(word)
+                    pattern = escaped_word.replace(r"\ ", r"\s+").replace(" ", r"\s+")
+                    patterns.append(rf"\b{pattern}\b")
+            kw_types[label] = patterns
+
+            
+        # Append non-contract types
+        for k in ["invoice", "receipt", "purchase order", "non-contract"]:
+            kw_types[k] = _STATIC_KEYWORD_DOC_TYPES[k]
+            
+        _CACHED_KEYWORD_DOC_TYPES = kw_types
+        return _CACHED_KEYWORD_DOC_TYPES
+    except Exception as e:
+        logger.warning("Failed to load keyword doc types dynamically, falling back to static: %s", e)
+        return _STATIC_KEYWORD_DOC_TYPES
+
+
+def _has_word(word: str, text: str) -> bool:
+    pattern = r'\b' + re.escape(word).replace(r'\ ', r'\s+').replace(' ', r'\s+') + r'\b'
+    return re.search(pattern, text, re.I) is not None
+
+def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
+    """Return (best_label, hit_count, is_title_match) from highly specific keyword matching on text[:1200]."""
+    # Extract the first 3 lines of the text for title-matching
+    lines = [line.strip().lower() for line in text.split('\n') if line.strip()][:3]
+    header = " ".join(lines)
+    
+    # 1. Header/Title Matching (Precedence based on explicit title terms)
+    if any(x in header for x in ["saas", "software as a service"]):
+        return "saas agreement", 5, True
+    if any(x in header for x in ["it service", "it support", "information technology"]):
+        return "it service agreement", 5, True
+    if any(x in header for x in ["construction"]):
+        return "construction agreement", 5, True
+    if any(x in header for x in ["insurance"]):
+        return "insurance agreement", 5, True
+    if any(x in header for x in ["consulting", "consultant"]):
+        return "consulting agreement", 5, True
+    if any(x in header for x in ["partnership", "kemitraan"]):
+        return "partnership agreement", 5, True
+    if any(x in header for x in ["non-disclosure", "confidentiality", "nda", "kerahasiaan"]):
+        return "non-disclosure agreement", 5, True
+    if any(x in header for x in ["loan", "lender", "borrower", "pinjaman"]):
+        return "loan agreement", 5, True
+    if any(x in header for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja"]):
+        return "employment contract", 5, True
+    if any(x in header for x in ["lease", "rental", "sewa", "bail"]):
+        return "lease agreement", 5, True
+    if any(x in header for x in ["software license", "lisensi", "eula"]):
+        return "software license", 5, True
+    if any(x in header for x in ["purchase agreement", "purchase of", "pembelian"]):
+        return "purchase agreement", 5, True
+    if any(x in header for x in ["commercial agreement", "commercial contract", "commercial b2b", "business agreement", "commercial"]):
+        return "commercial agreement", 5, True
+    if any(x in header for x in ["master services", "general contract", "general agreement", "long agreement"]):
+        return "general contract", 5, True
+    if any(x in header for x in ["service agreement", "services agreement", "prestation de service"]):
+        return "service agreement", 5, True
+    if any(x in header for x in ["invoice", "faktur"]):
+        return "invoice", 5, True
+    if any(x in header for x in ["receipt", "kwitansi", "reçu"]):
+        return "receipt", 5, True
+    if any(x in header for x in ["purchase order"]):
+        return "purchase order", 5, True
+
+    # 2. Body Snippet Matching
+    snippet = text[:1200].lower()
+    
+    if any(_has_word(x, snippet) for x in ["saas", "software as a service"]):
+        return "saas agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["it service", "it support", "information technology services"]):
+        return "it service agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["construction", "building contract"]):
+        return "construction agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["insurance policy", "insurer"]):
+        return "insurance agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["software license", "licensor", "licensee", "eula"]):
+        return "software license", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["non-disclosure", "confidentiality", "nda"]):
+        # Verify it's not a generic contract mentioning NDA
+        if "master services" not in snippet and "services agreement" not in snippet:
+            return "non-disclosure agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["loan", "lender", "borrower"]):
+        return "loan agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["employee", "employer", "employment", "pekerja", "pemberi kerja", "perjanjian kerja"]):
+        return "employment contract", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["lease", "tenant", "landlord", "rent", "sewa", "bail"]):
+        return "lease agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["partnership", "partner"]):
+        if "non-disclosure" not in snippet and "confidentiality" not in snippet:
+            return "partnership agreement", 5, False
+            
+    if any(_has_word(x, snippet) for x in ["purchase", "seller", "buyer", "goods"]):
+        return "purchase agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["commercial agreement", "commercial contract", "business agreement"]):
+        return "commercial agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["services", "provider", "client", "jasa"]):
+        if any(_has_word(x, snippet) for x in ["consulting", "consultant", "advisory"]):
+            return "consulting agreement", 5, False
+        return "service agreement", 5, False
+        
+    return "general contract", 2, False
+
 
 # ── Clause risk hypotheses for zero-shot classification ───────────────────────
 #
@@ -358,10 +506,11 @@ def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
 def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
     """Score text against each doc-type spec; return sorted by confidence desc."""
     results = []
-    for spec in _DOC_TYPE_SPECS:
+    for spec in load_doc_type_specs():
         score = _entailment_score(model, tokenizer, text, spec["hypothesis"])
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
+
 
 
 # ── Text splitting ─────────────────────────────────────────────────────────────
@@ -403,7 +552,7 @@ def classify_document_type(text: str) -> dict:
 
     Returns
     -------
-    {"label": str, "confidence": float, "candidates": list[dict], "source": str}
+    {"label": str, "confidence": float, "candidates": list[dict], "source": str, ...}
     Null values when model unavailable. "source" is always "classifier" here;
     app.py overrides it to "user_selected" when the user picks the document
     type manually, so consumers can tell a real ML confidence from a
@@ -411,34 +560,75 @@ def classify_document_type(text: str) -> dict:
     """
     model, tokenizer = _load_model()
     if model is None:
-        return {"label": None, "confidence": None, "candidates": [], "source": "classifier"}
+        return {
+            "label": None,
+            "confidence": None,
+            "model_confidence": None,
+            "keyword_override_confidence": None,
+            "override_applied": False,
+            "override_reason": None,
+            "source": "classifier",
+            "candidates": []
+        }
 
     premise = text[:800].strip()
     candidates = _classify_doc_type(model, tokenizer, premise)
 
     top = candidates[0]
+    
+    # Store initial model state
+    model_conf = float(top["confidence"])
+    final_label = top["label"]
+    final_conf = model_conf
+    
+    keyword_override_conf = 0.0
+    override_applied = False
+    override_reason = None
+    source = "classifier"
 
     # Keyword override: when NLI is uncertain, use multilingual keyword matching.
-    # This prevents false positives like "employé annuellement" (French: "applied
-    # annually") causing a lease agreement to be classified as employment contract.
-    if top["confidence"] < _NLI_OVERRIDE_THRESHOLD:
-        kw_label, kw_hits = _keyword_doc_type(text)
-        if kw_label and kw_hits >= _KEYWORD_MIN_HITS:
+    kw_label, kw_hits, is_title_match = _keyword_doc_type(text)
+    
+    if kw_label:
+        is_generic_nli = top["label"] in ["service agreement", "general contract"]
+        is_specific_kw = kw_label not in ["service agreement", "general contract"]
+        
+        # Override conditions:
+        # 1. Ground truth title matched explicitly
+        # 2. NLI confidence is below threshold
+        # 3. NLI output is generic (e.g. services) but keywords found a highly specific subtype (e.g. saas, IT service)
+        if is_title_match or top["confidence"] < _NLI_OVERRIDE_THRESHOLD or (is_generic_nli and is_specific_kw):
+            override_applied = True
+            source = "keyword_override"
+            keyword_override_conf = 0.85
+            final_label = kw_label
+            final_conf = 0.85
+            
+            if is_title_match:
+                override_reason = "title_match"
+            elif is_generic_nli and is_specific_kw:
+                override_reason = "generic_to_specific"
+            else:
+                override_reason = "keyword_match"
+                
             logger.info(
-                "L2 doc type: NLI confidence %.2f < %.2f; keyword override → %s (%d hits)",
-                top["confidence"], _NLI_OVERRIDE_THRESHOLD, kw_label, kw_hits,
+                "L2 doc type override: selected '%s' (NLI was '%s' %.4f, reason=%s)",
+                kw_label, top["label"], model_conf, override_reason,
             )
-            top = {"label": kw_label, "confidence": round(kw_hits / 10.0, 2)}
 
     # If confidence is extremely low, treat the document type as unknown/None.
-    if top["confidence"] < 0.15:
-        top = {"label": None, "confidence": top["confidence"]}
+    if final_conf < 0.15:
+        final_label = None
 
     return {
-        "label":      top["label"],
-        "confidence": top["confidence"],
-        "candidates": candidates[:4],
-        "source":     "classifier",
+        "label":                      final_label,
+        "confidence":                 final_conf,
+        "model_confidence":           model_conf,
+        "keyword_override_confidence": keyword_override_conf,
+        "override_applied":           override_applied,
+        "override_reason":            override_reason,
+        "source":                     source,
+        "candidates":                 candidates[:4],
     }
 
 

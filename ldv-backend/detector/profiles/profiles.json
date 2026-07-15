@@ -1,0 +1,41 @@
+{
+  "profiles": {
+    "employment_contract": "employment_contract.json",
+    "lease_agreement": "lease_agreement.json",
+    "software_license": "software_license.json",
+    "service_agreement": "service_agreement.json",
+    "consulting_agreement": "consulting_agreement.json",
+    "commercial_agreement": "commercial_agreement.json",
+    "non_disclosure_agreement": "non_disclosure_agreement.json",
+    "loan_agreement": "loan_agreement.json",
+    "partnership_agreement": "partnership_agreement.json",
+    "purchase_agreement": "purchase_agreement.json",
+    "general_contract": "general_contract.json",
+    "saas_agreement": "saas_agreement.json",
+    "it_service_agreement": "it_service_agreement.json",
+    "construction_agreement": "construction_agreement.json",
+    "insurance_agreement": "insurance_agreement.json"
+  },
+  "families": {
+    "employment_agreements": {
+      "display_name": "Employment Agreements",
+      "description": "Contracts defining employment, freelance, or consulting terms."
+    },
+    "property_agreements": {
+      "display_name": "Property Agreements",
+      "description": "Contracts relating to property leases, rentals, or sales."
+    },
+    "commercial_agreements": {
+      "display_name": "Commercial and Service Agreements",
+      "description": "B2B and commercial services contracts."
+    },
+    "corporate_agreements": {
+      "display_name": "Corporate and Partnership Agreements",
+      "description": "Contracts defining corporate entity creation and financing."
+    },
+    "baseline_agreements": {
+      "display_name": "Baseline Contracts",
+      "description": "Generic legal agreements and templates."
+    }
+  }
+}

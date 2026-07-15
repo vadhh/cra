@@ -1,0 +1,88 @@
+{
+  "profile_id": "software_license",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "Software License",
+    "family": "commercial_agreements",
+    "description": "Standard Software License Agreement profile mapping required clauses.",
+    "aliases": [
+      "software license",
+      "license agreement",
+      "EULA",
+      "softwarelicentie"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document grants a license to use software between licensor and licensee.",
+    "keyword_overrides": {
+      "EN": [
+        "software",
+        "license",
+        "licensor",
+        "licensee",
+        "EULA"
+      ],
+      "ID": [
+        "perangkat lunak",
+        "lisensi",
+        "lisensor",
+        "penerima lisensi"
+      ],
+      "FR": [
+        "logiciel",
+        "licence",
+        "conc\u00e9dant",
+        "licenci\u00e9"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "license_grant"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "warranty_disclaimer"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

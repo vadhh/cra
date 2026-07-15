@@ -610,6 +610,16 @@ def required_clauses_for(doc_type: Optional[str]) -> list[str]:
     Falls back to the generic baseline for unknown or missing types, so the
     analyzer always has an explicit required-clause set to score against.
     """
+    if doc_type:
+        try:
+            from detector.detector_profiles import ProfileManager
+            manager = ProfileManager()
+            p = manager.resolve_profile_by_name(doc_type)
+            if p:
+                return [c["clause_id"] for c in p.get("required_clauses", [])]
+        except Exception as e:
+            logger.warning("Dynamic required clauses resolution failed: %s", e)
+
     return list(_CONTRACT_TYPE_PROFILES.get(normalize_doc_type(doc_type), _BASELINE_REQUIRED))
 
 
@@ -648,9 +658,18 @@ def evaluate_contract_type_requirements(
     ]
     missing = [cid for cid in required_ids if cid not in present_ids]
 
+    has_profile = False
+    if doc_type:
+        try:
+            from detector.detector_profiles import ProfileManager
+            manager = ProfileManager()
+            has_profile = (manager.resolve_profile_by_name(doc_type) is not None)
+        except Exception:
+            pass
+
     return {
         "contract_type":   norm or "unknown",
-        "matched_profile": norm in _CONTRACT_TYPE_PROFILES,
+        "matched_profile": has_profile or (norm in _CONTRACT_TYPE_PROFILES),
         "mandatory":       mandatory,
         "present":         [cid for cid in required_ids if cid in present_ids],
         "missing":         missing,

@@ -1,0 +1,9 @@
+SOFTWARE AS A SERVICE AGREEMENT
+This agreement is governed by the laws of Indonesia. Any dispute shall be referred to the courts of Jakarta.
+The provider grants the customer a non-exclusive right to access the cloud services.
+All intellectual property ownership remains with the provider.
+The services are provided 'as is' and the provider disclaims all implied warranties.
+Fees shall be paid monthly within 30 days of invoice.
+
+ABUSIVE ADDENDUM:
+The provider reserves the right to modify these terms unilaterally at any time without notice. The client waives all legal rights including the right to a trial.

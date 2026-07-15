@@ -1,0 +1,8 @@
+LOAN AGREEMENT AND PROMISSORY NOTE
+This agreement is governed by the laws of the United States. Any disputes shall be resolved in the courts of New York.
+The principal amount of the loan is 50000 USD. The borrower agrees to repay the principal with interest at 5% per annum.
+The repayment schedule consists of 12 equal monthly instalments.
+An event of default occurs if the borrower fails to pay any instalment when due and fails to cure within 15 days.
+
+ABUSIVE ADDENDUM:
+The provider reserves the right to modify these terms unilaterally at any time without notice. The client waives all legal rights including the right to a trial.

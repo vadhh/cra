@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import sys
 
+# pyrefly: ignore [missing-import]
 from cryptography.fernet import Fernet
 
 import auth
