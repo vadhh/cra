@@ -1,94 +1,15 @@
 import logging
 import os
+# pyrefly: ignore [missing-import]
 from deep_translator import GoogleTranslator
 
 logger = logging.getLogger(__name__)
 
-# Helsinki-NLP/opus-mt model ids per langdetect source code
-# ponytail: mul-en covers anything not listed; models download lazily on first use
-_OPUS_MT = {
-    "id": "Helsinki-NLP/opus-mt-id-en",
-    "fr": "Helsinki-NLP/opus-mt-fr-en",
-    "nl": "Helsinki-NLP/opus-mt-nl-en",
-    "de": "Helsinki-NLP/opus-mt-de-en",
-    "es": "Helsinki-NLP/opus-mt-es-en",
-    "it": "Helsinki-NLP/opus-mt-it-en",
-    "pt": "Helsinki-NLP/opus-mt-pt-en",
-}
-_OPUS_MT_FALLBACK = "Helsinki-NLP/opus-mt-mul-en"
-
-_local_model_cache: dict = {}  # model_id → (model, tokenizer)
-
 
 def _local_translate(text: str, src_lang: str) -> str:
-    """Translate using a locally-cached Helsinki-NLP Marian model (no network after download)."""
-    from transformers import MarianMTModel, MarianTokenizer
-
-    model_name = _OPUS_MT.get(src_lang, _OPUS_MT_FALLBACK)
-    folder_name = model_name.split("/")[-1]
-    
-    # Try custom models directory first, then default local models/ directory, then download from HF
-    env_dir = os.getenv("LDV_MODELS_DIR", "")
-    local_dir = os.path.join(os.path.dirname(__file__), "models")
-    
-    model_path = model_name
-    if env_dir and os.path.isdir(os.path.join(env_dir, folder_name)):
-        model_path = os.path.join(env_dir, folder_name)
-    elif os.path.isdir(os.path.join(local_dir, folder_name)):
-        model_path = os.path.join(local_dir, folder_name)
-
-    if model_path not in _local_model_cache:
-        logger.info("Local translation: loading %s", model_path)
-        try:
-            tok = MarianTokenizer.from_pretrained(model_path)
-            mdl = MarianMTModel.from_pretrained(model_path)
-            # Ensure model runs on GPU if available
-            import torch
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-            mdl = mdl.to(device)
-            _local_model_cache[model_path] = (mdl, tok)
-        except Exception as e:
-            logger.warning("Local translation model load failed (%s): %s — returning original text", model_path, e)
-            return text
-
-    mdl, tok = _local_model_cache[model_path]
-
-    # Translate line-by-line, not by raw character windows. Contracts put one
-    # clause per line, and detector_distilbert._split_paragraphs (which the
-    # semantic clause-presence check relies on) splits on that structure.
-    # Marian's generate/decode normalizes whitespace, so newlines embedded
-    # inside a multi-line chunk don't survive translation — blind 1500-char
-    # windows silently merge multiple clauses into one paragraph, which then
-    # causes every clause hypothesis to be scored against the same blob.
-    device = next(mdl.parameters()).device
-
-    def _translate_chunk(chunk: str) -> str:
-        inputs = tok(chunk, return_tensors="pt", padding=True, truncation=True, max_length=512).to(device)
-        translated = mdl.generate(**inputs)
-        return tok.decode(translated[0], skip_special_tokens=True)
-
-    out = []
-    for line in text.split("\n"):
-        if not line.strip():
-            out.append(line)
-            continue
-        try:
-            words = line.split(" ")
-            # ponytail: a line without newlines (e.g. a PDF paragraph the
-            # extractor didn't break up) can exceed Marian's 512-token limit;
-            # tok(..., truncation=True) would then silently drop the tail
-            # instead of translating it. 300-word sub-chunks stay safely
-            # under that limit for these languages without a second
-            # tokenizer pass just to count tokens.
-            if len(words) > 300:
-                sub_chunks = [" ".join(words[i:i + 300]) for i in range(0, len(words), 300)]
-                out.append(" ".join(_translate_chunk(c) for c in sub_chunks))
-            else:
-                out.append(_translate_chunk(line))
-        except Exception as e:
-            logger.warning("Local translation line failed: %s", e)
-            out.append(line)
-    return "\n".join(out)
+    """Translate using the local lightml-translator microservice."""
+    from translator_client import translate_via_microservice
+    return translate_via_microservice(text, src_lang)
 
 
 def translate_text(text, target_lang, src_lang: str = "auto"):

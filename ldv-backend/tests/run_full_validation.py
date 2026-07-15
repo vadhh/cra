@@ -207,9 +207,14 @@ def check_2() -> None:
     for p in sorted((FIXTURES / "pdf").glob("*.pdf")):
         try:
             text = _extract_pdf(p.read_bytes())
-            ok = len(text.strip()) > 100 and "\x00" not in text
-            _add("2.1", f"PDF text extracted: {p.name}", ok,
-                 f"{len(text.strip())} chars" if ok else f"too short or null bytes ({len(text)} chars)")
+            if p.name == "06_scanned_blank_en.pdf":
+                ok = len(text.strip()) == 0
+                _add("2.1", f"PDF text extracted: {p.name}", ok,
+                     "is blank as expected" if ok else f"expected blank, got {len(text)} chars")
+            else:
+                ok = len(text.strip()) > 100 and "\x00" not in text
+                _add("2.1", f"PDF text extracted: {p.name}", ok,
+                     f"{len(text.strip())} chars" if ok else f"too short or null bytes ({len(text)} chars)")
         except Exception as e:
             _add("2.1", f"PDF extraction no crash: {p.name}", False, str(e))
 

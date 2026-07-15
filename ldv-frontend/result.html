@@ -7,6 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="images/sydeco_shield.svg">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
+  <script defer src="/i18n.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <script id="tailwind-config">
@@ -459,6 +460,27 @@
       color: #dee2f4;
       line-height: 1.5;
     }
+    .danger-reason {
+      margin-top: 8px;
+      background: rgba(124, 58, 237, 0.06);
+      border: 1px solid rgba(124, 58, 237, 0.18);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #dee2f4;
+      line-height: 1.5;
+    }
+    .confidence-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.03em;
+      margin-left: 8px;
+    }
+    .confidence-High { background: rgba(3,152,85,0.15); color: #039855; }
+    .confidence-Medium { background: rgba(220,104,3,0.15); color: #f1bc8c; }
+    .confidence-Low { background: rgba(217,45,32,0.15); color: #ffb4ab; }
     .ai-finding-card {
       background: rgba(212,175,55,0.05);
       border: 1px solid rgba(212,175,55,0.15);
@@ -558,6 +580,10 @@
 <body class="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col justify-between"
       x-data="resultApp()" x-init="init()">
 
+  <button type="button" data-lang-toggle onclick="i18n.toggleLang()"
+          class="fixed top-3 right-3 z-[60] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-primary/40 bg-surface-container/90 text-primary hover:bg-primary hover:text-on-primary transition-colors backdrop-blur-sm"
+          aria-label="Toggle language / Ganti bahasa">ID</button>
+
   <!-- TopNavBar -->
   <header class="sticky top-0 z-50 border-b border-outline-variant/10" style="background:rgba(14,19,31,0.85);backdrop-filter:blur(20px);">
     <div class="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
@@ -569,15 +595,15 @@
           <path d="M70 80L130 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
           <path d="M80 120L120 120" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
         </svg>
-        <a class="font-editorial text-xl text-primary tracking-tight" href="/" style="text-decoration:none;">Sydeco CRA</a>
+        <a class="font-editorial text-xl text-primary tracking-tight" href="/" style="text-decoration:none;" data-i18n="brand.name">Sydeco CRA</a>
       </div>
       <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/" style="text-decoration:none;">New Analysis</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/admin" style="text-decoration:none;">Dashboard</a>
-        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/citations" style="text-decoration:none;">Citation Library</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/" style="text-decoration:none;" data-i18n="nav.new_analysis">New Analysis</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/admin" style="text-decoration:none;" data-i18n="nav.dashboard">Dashboard</a>
+        <a class="text-on-surface-variant hover:text-primary transition-colors font-medium text-sm" href="/citations" style="text-decoration:none;" data-i18n="nav.citation_library">Citation Library</a>
       </nav>
       <div class="flex items-center gap-6">
-        <a href="/logout" class="text-on-surface-variant hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider" style="text-decoration:none;">Secure Logout</a>
+        <a href="/logout" class="text-on-surface-variant hover:text-primary transition-colors text-xs font-bold uppercase tracking-wider" style="text-decoration:none;" data-i18n="nav.secure_logout">Secure Logout</a>
       </div>
     </div>
   </header>
@@ -587,15 +613,15 @@
     <!-- Loading State -->
     <div x-show="loading" class="flex flex-col items-center justify-center py-20">
       <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-      <p class="font-body text-sm mt-3 text-on-surface-variant">Decrypting and loading assessment data…</p>
+      <p class="font-body text-sm mt-3 text-on-surface-variant" data-i18n="result.loading.message">Decrypting and loading assessment data…</p>
     </div>
 
     <!-- Error State -->
     <div x-show="!loading && errorMsg" style="display:none;" class="max-w-xl mx-auto py-12">
       <div class="bg-red-950/20 border border-red-500/30 rounded p-8 text-center space-y-6">
-        <h2 class="font-editorial text-2xl text-red-400">Assessment Error</h2>
+        <h2 class="font-editorial text-2xl text-red-400" data-i18n="result.error.title">Assessment Error</h2>
         <p class="font-body text-on-surface-variant text-sm" x-text="errorMsg"></p>
-        <a href="/" class="btn btn-primary inline-flex">← Run New Analysis</a>
+        <a href="/" class="btn btn-primary inline-flex" data-i18n="result.error.retry_link">← Run New Analysis</a>
       </div>
     </div>
 
@@ -606,15 +632,15 @@
         <span class="material-symbols-outlined text-primary text-[36px] absolute">sync_saved_locally</span>
       </div>
       <div class="space-y-2">
-        <h3 class="font-editorial text-2xl text-primary">Sovereign Pipeline Processing…</h3>
-        <p class="text-on-surface-variant text-sm font-body max-w-lg">
+        <h3 class="font-editorial text-2xl text-primary" data-i18n="result.processing.title">Sovereign Pipeline Processing…</h3>
+        <p class="text-on-surface-variant text-sm font-body max-w-lg" data-i18n="result.processing.description">
           Your document is executing inside the secure partition. This report will automatically load upon completion.
         </p>
       </div>
       <!-- Progress Bar -->
       <div class="w-full bg-surface-container-low p-5 border border-outline-variant/15 rounded-md space-y-3 text-left">
         <div class="flex justify-between items-center text-xs font-semibold font-body">
-          <span class="text-on-surface-variant uppercase tracking-widest font-bold text-[10px]">Overall Progress</span>
+          <span class="text-on-surface-variant uppercase tracking-widest font-bold text-[10px]" data-i18n="result.processing.overall_progress">Overall Progress</span>
           <span class="text-primary font-mono font-bold text-sm" x-text="progressPct + '%'">0%</span>
         </div>
         <div class="w-full bg-surface-variant/40 rounded-full h-2 overflow-hidden border border-outline-variant/10">
@@ -658,7 +684,7 @@
               <span class="material-symbols-outlined text-[18px]" x-text="pdfLoading ? 'sync' : 'download'"></span>
               <span x-text="pdfLoading ? 'Generating…' : 'PDF Report'">PDF Report</span>
             </button>
-            <a href="/" class="btn btn-outline text-xs tracking-wider" style="text-decoration:none;">+ New Scan</a>
+            <a href="/" class="btn btn-outline text-xs tracking-wider" style="text-decoration:none;" data-i18n="result.case_header.new_scan_button">+ New Scan</a>
           </div>
         </div>
       </div>
@@ -701,7 +727,7 @@
               </svg>
               <div class="risk-score-value">
                 <span class="risk-score-num" x-text="riskScore"></span>
-                <span class="risk-score-label">Risk Score</span>
+                <span class="risk-score-label" data-i18n="result.risk.score_label">Risk Score</span>
               </div>
             </div>
 
@@ -714,7 +740,7 @@
             <!-- Separate Confidence Meter -->
             <div class="w-full pt-4 border-t border-outline-variant/10 z-10 flex flex-col items-center gap-2">
               <div class="flex items-center justify-between w-full px-2 text-xs font-body text-on-surface-variant">
-                <span>Pipeline Confidence:</span>
+                <span data-i18n="result.risk.confidence_label">Pipeline Confidence:</span>
                 <span class="font-bold text-on-surface" x-text="confidencePercent + '%'"></span>
               </div>
               <div class="flex gap-1.5 w-full px-2">
@@ -722,27 +748,27 @@
                 <div class="h-2 flex-1 rounded-full" :class="confidencePercent >= 65 ? confidenceColor : 'bg-surface-container-highest'"></div>
                 <div class="h-2 flex-1 rounded-full" :class="confidencePercent >= 85 ? confidenceColor : 'bg-surface-container-highest'"></div>
               </div>
-              <p class="text-[10px] text-on-surface-variant/60 text-center font-body italic mt-1">
+              <p class="text-[10px] text-on-surface-variant/60 text-center font-body italic mt-1" data-i18n="result.risk.confidence_footnote">
                 Calibrated against doc type NLI classifier telemetry.
               </p>
             </div>
 
-            <p style="font-size:0.68rem;color:#9ca3af;text-align:center;padding:10px 12px 0;line-height:1.5;border-top:1px solid rgba(212,175,55,0.08);margin-top:8px;">
+            <p style="font-size:0.68rem;color:#9ca3af;text-align:center;padding:10px 12px 0;line-height:1.5;border-top:1px solid rgba(212,175,55,0.08);margin-top:8px;" data-i18n="result.risk.disclaimer">
               Decision support only — not legal advice. Does not guarantee validity or enforceability.
             </p>
           </div>
 
           <!-- Next Actions (Priority 5) -->
           <div class="glass-card p-6 space-y-4">
-            <h3 class="font-editorial text-sm font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10 pb-2">Next Actions</h3>
+            <h3 class="font-editorial text-sm font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10 pb-2" data-i18n="result.next_actions.title">Next Actions</h3>
             <div class="space-y-3 font-body text-xs">
               <div class="flex flex-col gap-1 bg-surface-container/20 p-3 rounded border border-outline-variant/10">
-                <span class="text-[10px] uppercase text-on-surface-variant/60 font-semibold">Current Assignee</span>
+                <span class="text-[10px] uppercase text-on-surface-variant/60 font-semibold" data-i18n="result.next_actions.current_assignee_label">Current Assignee</span>
                 <span class="font-bold text-on-surface" x-text="reviewerName"></span>
               </div>
-              
+
               <button class="w-full py-3 rounded border border-primary/20 hover:bg-primary/5 text-primary font-semibold transition-all uppercase tracking-wider"
-                      @click="showAssignModal = true">
+                      @click="showAssignModal = true" data-i18n="result.next_actions.assign_reviewer_button">
                 Assign Reviewer
               </button>
 
@@ -755,9 +781,9 @@
 
               <!-- Version comparison stub -->
               <div class="pt-2">
-                <label class="text-[10px] uppercase text-on-surface-variant/60 font-semibold block mb-1">Compare Versions</label>
+                <label class="text-[10px] uppercase text-on-surface-variant/60 font-semibold block mb-1" data-i18n="result.next_actions.compare_versions_label">Compare Versions</label>
                 <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-xs">
-                  <option value="">No previous versions</option>
+                  <option value="" data-i18n="result.next_actions.no_previous_versions">No previous versions</option>
                 </select>
               </div>
             </div>
@@ -765,26 +791,26 @@
 
           <!-- Professional Legal Review Card (Sprint 4) -->
           <div class="glass-card p-6 space-y-4">
-            <h3 class="font-editorial text-sm font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10 pb-2">Professional Review</h3>
-            
+            <h3 class="font-editorial text-sm font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10 pb-2" data-i18n="result.professional_review.title">Professional Review</h3>
+
             <!-- Current Review Outcome -->
             <div class="space-y-3 font-body text-xs" x-show="reviewStatus !== 'unreviewed'">
               <div class="grid grid-cols-2 gap-2">
                 <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
-                  <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Status</span>
+                  <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold" data-i18n="result.professional_review.status_label">Status</span>
                   <span class="font-bold text-teal-400 block mt-0.5 uppercase tracking-wider" x-text="reviewStatus"></span>
                 </div>
                 <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
-                  <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Reviewer</span>
+                  <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold" data-i18n="result.professional_review.reviewer_label">Reviewer</span>
                   <span class="font-bold text-on-surface block mt-0.5 truncate" :title="result ? result.reviewer_email : ''" x-text="result ? result.reviewer_email : 'Anonymous'"></span>
                 </div>
               </div>
               <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
-                <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold block mb-0.5">Review Date</span>
+                <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold block mb-0.5" data-i18n="result.professional_review.review_date_label">Review Date</span>
                 <span class="text-on-surface-variant" x-text="result && result.reviewed_at ? new Date(result.reviewed_at.replace(' ', 'T')).toLocaleString() : '—'"></span>
               </div>
               <div class="bg-surface-container/20 p-3 rounded border border-outline-variant/10">
-                <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold block mb-0.5">Comments</span>
+                <span class="text-[9px] uppercase text-on-surface-variant/60 font-semibold block mb-0.5" data-i18n="result.professional_review.comments_label">Comments</span>
                 <p class="text-on-surface leading-relaxed text-xs italic" x-text="result && result.review_comment ? result.review_comment : 'No review comments provided.'"></p>
               </div>
             </div>
@@ -794,29 +820,30 @@
               <span class="text-[10px] uppercase text-on-surface-variant/60 font-semibold block" x-text="reviewStatus === 'unreviewed' ? 'Submit Legal Review' : 'Update Legal Review'"></span>
               <form @submit.prevent="submitReview()" class="space-y-3">
                 <div class="flex flex-col gap-1">
-                  <label class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Review Status</label>
+                  <label class="text-[9px] uppercase text-on-surface-variant/60 font-semibold" data-i18n="result.professional_review.review_status_select_label">Review Status</label>
                   <select x-model="reviewForm.status" class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-xs">
-                    <option value="unreviewed">Unreviewed</option>
-                    <option value="confirmed">Confirmed (Verified Correct)</option>
-                    <option value="edited">Edited (Adjusted/Corrected)</option>
-                    <option value="rejected">Rejected (Flawed Analysis)</option>
-                    <option value="escalated">Escalated (Higher-level Review Needed)</option>
+                    <option value="unreviewed" data-i18n="result.professional_review.status_unreviewed">Unreviewed</option>
+                    <option value="confirmed" data-i18n="result.professional_review.status_confirmed">Confirmed (Verified Correct)</option>
+                    <option value="edited" data-i18n="result.professional_review.status_edited">Edited (Adjusted/Corrected)</option>
+                    <option value="rejected" data-i18n="result.professional_review.status_rejected">Rejected (Flawed Analysis)</option>
+                    <option value="escalated" data-i18n="result.professional_review.status_escalated">Escalated (Higher-level Review Needed)</option>
                   </select>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-[9px] uppercase text-on-surface-variant/60 font-semibold">Review Comments</label>
+                  <label class="text-[9px] uppercase text-on-surface-variant/60 font-semibold" data-i18n="result.professional_review.review_comments_label">Review Comments</label>
                   <textarea x-model="reviewForm.comment" rows="3" placeholder="Add legal assessment notes, overrides, or instructions..."
+                            data-i18n-placeholder="result.professional_review.comment_placeholder"
                             class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-xs placeholder:text-on-surface/20"></textarea>
                 </div>
                 <button type="submit" class="w-full py-2.5 rounded gold-button text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5"
                         :disabled="reviewSubmitting">
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="reviewSubmitting">sync</span>
-                  Submit Review
+                  <span data-i18n="result.professional_review.submit_button">Submit Review</span>
                 </button>
               </form>
             </div>
 
-            <div class="text-[10px] text-on-surface-variant/50 text-center italic font-body" x-show="reviewStatus === 'unreviewed' && role !== 'admin' && role !== 'reviewer'">
+            <div class="text-[10px] text-on-surface-variant/50 text-center italic font-body" x-show="reviewStatus === 'unreviewed' && role !== 'admin' && role !== 'reviewer'" data-i18n="result.professional_review.not_reviewed_notice">
               This assessment has not been reviewed by a qualified lawyer.
             </div>
           </div>
@@ -826,7 +853,7 @@
             <div class="section-header" style="cursor:default;">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>
-                <span>Priority Actions</span>
+                <span data-i18n="result.priority_actions.title">Priority Actions</span>
               </div>
             </div>
             <div class="section-body font-body">
@@ -841,7 +868,7 @@
                     <span x-text="rec"></span>
                   </div>
                 </template>
-                <div x-show="recommendations.length === 0" style="display:none;" class="text-xs text-on-surface-variant/60 py-2">
+                <div x-show="recommendations.length === 0" style="display:none;" class="text-xs text-on-surface-variant/60 py-2" data-i18n="result.priority_actions.empty">
                   No priority actions — no actionable findings detected.
                 </div>
               </div>
@@ -857,7 +884,7 @@
             <div class="section-header" style="cursor:default;">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Detected Findings &amp; Anomalies</span>
+                <span data-i18n="result.findings.title">Detected Findings &amp; Anomalies</span>
               </div>
               <span class="text-xs text-on-surface-variant font-body font-semibold" x-text="'Showing ' + filteredFindings.length + ' of ' + findings.length"></span>
             </div>
@@ -869,34 +896,35 @@
                 <div class="flex-1 relative flex items-center">
                   <span class="material-symbols-outlined text-[18px] text-on-surface-variant/40 absolute left-3">search</span>
                   <input type="text" x-model="filters.search" placeholder="Search evidence or categories…"
+                         data-i18n-placeholder="result.findings.search_placeholder"
                          class="w-full bg-surface-container border border-outline-variant/20 rounded pl-10 pr-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0"/>
                 </div>
                 <!-- Severity Filter -->
                 <div class="flex flex-col gap-1 shrink-0">
                   <select x-model="filters.severity" class="bg-surface-container border border-outline-variant/20 rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0">
-                    <option value="all">All Severities</option>
-                    <option value="CRITICAL">Critical Severity</option>
-                    <option value="HIGH">High Severity</option>
-                    <option value="MEDIUM">Medium Severity</option>
-                    <option value="LOW">Low Severity</option>
+                    <option value="all" data-i18n="result.findings.severity_all">All Severities</option>
+                    <option value="CRITICAL" data-i18n="result.findings.severity_critical">Critical Severity</option>
+                    <option value="HIGH" data-i18n="result.findings.severity_high">High Severity</option>
+                    <option value="MEDIUM" data-i18n="result.findings.severity_medium">Medium Severity</option>
+                    <option value="LOW" data-i18n="result.findings.severity_low">Low Severity</option>
                   </select>
                 </div>
                 <!-- Category Filter -->
                 <div class="flex flex-col gap-1 shrink-0">
                   <select x-model="filters.category" class="bg-surface-container border border-outline-variant/20 rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0">
-                    <option value="all">All Categories</option>
-                    <option value="Unfair Clause">Unfair Clauses</option>
-                    <option value="AI Classifier Finding">AI Classifier Findings</option>
-                    <option value="Missing Required Clause">Missing Required Clauses</option>
+                    <option value="all" data-i18n="result.findings.category_all">All Categories</option>
+                    <option value="Unfair Clause" data-i18n="result.findings.category_unfair">Unfair Clauses</option>
+                    <option value="AI Classifier Finding" data-i18n="result.findings.category_ai_classifier">AI Classifier Findings</option>
+                    <option value="Missing Required Clause" data-i18n="result.findings.category_missing_clause">Missing Required Clauses</option>
                   </select>
                 </div>
                 <!-- Status Filter -->
                 <div class="flex flex-col gap-1 shrink-0">
                   <select x-model="filters.status" class="bg-surface-container border border-outline-variant/20 rounded px-3 py-2 text-xs text-on-surface focus:outline-none focus:border-primary/50 focus:ring-0">
-                    <option value="all">All Statuses</option>
-                    <option value="Unreviewed">Unreviewed</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Rejected">Rejected</option>
+                    <option value="all" data-i18n="result.findings.status_all">All Statuses</option>
+                    <option value="Unreviewed" data-i18n="result.findings.status_unreviewed">Unreviewed</option>
+                    <option value="Confirmed" data-i18n="result.findings.status_confirmed">Confirmed</option>
+                    <option value="Rejected" data-i18n="result.findings.status_rejected">Rejected</option>
                   </select>
                 </div>
               </div>
@@ -924,17 +952,29 @@
                           <div class="danger-evidence" x-text="'“' + finding.evidence + '”'"></div>
                         </template>
                         
+                        <!-- Why This Matters (Explain Mode reason) -->
+                        <template x-if="finding.reason">
+                          <div class="danger-reason">
+                            <strong data-i18n="result.findings.why_matters_label">Why This Matters:</strong> <span x-text="finding.reason"></span>
+                            <template x-if="finding.confidenceLabel">
+                              <span class="confidence-badge" :class="'confidence-' + finding.confidenceLabel"
+                                    :title="finding.confidencePct + '% confidence'"
+                                    x-text="finding.confidenceLabel + ' Confidence'"></span>
+                            </template>
+                          </div>
+                        </template>
+
                         <!-- Custom Rewrite / Recommendation -->
                         <template x-if="finding.recommendation">
                           <div class="danger-rewrite">
-                            <strong>Revision Recommendation:</strong> <span x-text="finding.recommendation"></span>
+                            <strong data-i18n="result.findings.suggested_replacement_label">Suggested Replacement Clause:</strong> <span x-text="finding.recommendation"></span>
                           </div>
                         </template>
 
                         <!-- Legal Citations (Inline verified citations only) -->
                         <template x-if="finding.citations && finding.citations.length">
                           <div class="mt-3 flex flex-wrap gap-2 items-center text-[10px] text-on-surface-variant font-semibold">
-                            <span>Verified Citations:</span>
+                            <span data-i18n="result.findings.verified_citations_label">Verified Citations:</span>
                             <template x-for="cite in finding.citations">
                               <span class="px-2 py-0.5 rounded bg-teal-950/40 text-teal-400 border border-teal-500/10 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[12px]">verified</span>
@@ -951,17 +991,17 @@
                           <button class="px-3 py-1.5 rounded border border-outline-variant/30 hover:border-primary/50 text-[11px] font-semibold text-on-surface-variant hover:text-primary transition-all flex items-center gap-1 justify-center"
                                   @click="highlightText(finding.evidence)">
                             <span class="material-symbols-outlined text-[14px]">find_in_page</span>
-                            View Excerpt
+                            <span data-i18n="result.findings.view_excerpt_button">View Excerpt</span>
                           </button>
                         </template>
                         <div class="flex gap-1">
                           <button class="px-2.5 py-1.5 rounded bg-green-950/20 hover:bg-green-900/40 text-green-400 border border-green-500/20 text-[10px] font-bold uppercase transition-all"
-                                  @click="confirmFinding(finding)">Confirm</button>
+                                  @click="confirmFinding(finding)" data-i18n="result.findings.confirm_button">Confirm</button>
                           <button class="px-2.5 py-1.5 rounded bg-red-950/20 hover:bg-red-900/40 text-red-400 border border-red-500/20 text-[10px] font-bold uppercase transition-all"
-                                  @click="rejectFinding(finding)">Reject</button>
+                                  @click="rejectFinding(finding)" data-i18n="result.findings.reject_button">Reject</button>
                         </div>
                         <button class="px-3 py-1.5 rounded border border-outline-variant/30 hover:border-primary/50 text-[10px] font-semibold text-on-surface-variant hover:text-primary transition-all uppercase"
-                                @click="openEditRecommendation(finding)">Edit Spec</button>
+                                @click="openEditRecommendation(finding)" data-i18n="result.findings.edit_spec_button">Edit Spec</button>
                       </div>
                     </div>
                   </div>
@@ -970,8 +1010,8 @@
                 <!-- Zero findings state (Section 10.F) -->
                 <div x-show="filteredFindings.length === 0" style="display:none;" class="text-center py-12 border border-dashed border-outline-variant/20 rounded p-6">
                   <span class="material-symbols-outlined text-[48px] text-on-surface-variant/30 mb-3">checklist_rtl</span>
-                  <p class="font-editorial text-lg mb-2 text-on-surface">No findings match the current filter matrix</p>
-                  <p class="text-xs text-on-surface-variant/60 max-w-md mx-auto leading-relaxed">
+                  <p class="font-editorial text-lg mb-2 text-on-surface" data-i18n="result.findings.empty_title">No findings match the current filter matrix</p>
+                  <p class="text-xs text-on-surface-variant/60 max-w-md mx-auto leading-relaxed" data-i18n="result.findings.empty_note">
                     Note: Automated screening is a decision support tool and may not detect all compliance violations. Obtain professional legal review before final signature.
                   </p>
                 </div>
@@ -985,7 +1025,7 @@
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Mandatory Clause Checklist</span>
+                <span data-i18n="result.checklist.title">Mandatory Clause Checklist</span>
               </div>
               <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1006,7 +1046,7 @@
                     <span class="check-name" x-text="c.title || c.clause_id"></span>
                     <span class="text-[10px] text-on-surface-variant/50 mr-4 font-semibold uppercase" x-text="c.source ? ('Source: ' + c.source) : ''"></span>
                     <template x-if="c.required">
-                      <span class="check-required-badge">REQUIRED</span>
+                      <span class="check-required-badge" data-i18n="result.checklist.required_badge">REQUIRED</span>
                     </template>
                   </li>
                 </template>
@@ -1019,7 +1059,7 @@
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 4v6l4 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>AI Explanation</span>
+                <span data-i18n="result.ai_explanation.title">AI Explanation</span>
               </div>
               <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1027,19 +1067,19 @@
             </div>
             <div class="section-body font-body space-y-4" x-show="open" x-transition>
               <div x-show="layer4 && layer4.summary">
-                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">SUMMARY</p>
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1" data-i18n="result.ai_explanation.summary_label">SUMMARY</p>
                 <div class="text-sm" x-html="layer4 && mdLite(layer4.summary)"></div>
               </div>
               <div x-show="layer4 && layer4.clause_commentary">
-                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">CLAUSE COMMENTARY</p>
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1" data-i18n="result.ai_explanation.clause_commentary_label">CLAUSE COMMENTARY</p>
                 <div class="text-sm" x-html="layer4 && mdLite(layer4.clause_commentary)"></div>
               </div>
               <div x-show="layer4 && layer4.compliance_notes">
-                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">COMPLIANCE NOTES</p>
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1" data-i18n="result.ai_explanation.compliance_notes_label">COMPLIANCE NOTES</p>
                 <div class="text-sm" x-html="layer4 && mdLite(layer4.compliance_notes)"></div>
               </div>
               <div x-show="layer4 && layer4.recommendations">
-                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1">RECOMMENDATIONS</p>
+                <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-1" data-i18n="result.ai_explanation.recommendations_label">RECOMMENDATIONS</p>
                 <div class="text-sm" x-html="layer4 && mdLite(layer4.recommendations)"></div>
               </div>
             </div>
@@ -1050,14 +1090,14 @@
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Extracted Agreement Text &amp; Evidence Viewer</span>
+                <span data-i18n="result.evidence.title">Extracted Agreement Text &amp; Evidence Viewer</span>
               </div>
               <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
             <div class="section-body font-body" x-show="open" x-transition>
-              <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-2">matched evidence phrases are highlighted in the document scroll panel below.</p>
+              <p class="text-[10px] text-on-surface-variant/60 font-semibold mb-2" data-i18n="result.evidence.note">matched evidence phrases are highlighted in the document scroll panel below.</p>
               <pre class="text-pane custom-scrollbar" id="extractedText" x-html="highlightedText"></pre>
             </div>
           </div>
@@ -1067,7 +1107,7 @@
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                <span>Scoring Penalty Audit</span>
+                <span data-i18n="result.scoring.title">Scoring Penalty Audit</span>
               </div>
               <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1095,7 +1135,7 @@
             <div class="section-header" @click="open=!open">
               <div class="section-title-wrapper font-editorial">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01" stroke-linecap="round"/></svg>
-                <span>Analysis Limitations</span>
+                <span data-i18n="result.limitations.title">Analysis Limitations</span>
               </div>
               <span class="section-toggle-icon" :style="open ? '' : 'transform:rotate(-90deg)'">
                 <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2.5px;fill:none;"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1125,21 +1165,21 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 font-body" x-show="showEditModal" style="display:none;" x-transition>
       <div class="obsidian-panel w-full max-w-lg p-8 rounded-lg space-y-6">
         <header>
-          <h3 class="font-editorial text-xl text-on-surface font-bold">Edit Finding specification</h3>
+          <h3 class="font-editorial text-xl text-on-surface font-bold" data-i18n="result.edit_modal.title">Edit Finding specification</h3>
           <p class="text-xs text-on-surface-variant mt-1" x-text="editingFinding ? editingFinding.title : ''"></p>
         </header>
         <div class="space-y-4">
           <div class="flex flex-col gap-2">
-            <label class="font-semibold text-xs text-on-surface-variant uppercase tracking-wider" for="recomInput">Revision Recommendation Wording</label>
+            <label class="font-semibold text-xs text-on-surface-variant uppercase tracking-wider" for="recomInput" data-i18n="result.edit_modal.label">Revision Recommendation Wording</label>
             <textarea id="recomInput" x-model="editingRecommendationText" rows="4"
                       class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface p-3 rounded focus:outline-none focus:border-primary/50 text-sm"></textarea>
           </div>
         </div>
         <div class="flex justify-end gap-3 pt-4 border-t border-outline-variant/10">
           <button type="button" class="px-5 py-2.5 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold text-on-surface-variant transition-colors"
-                  @click="showEditModal = false">Cancel</button>
+                  @click="showEditModal = false" data-i18n="result.modal.cancel_button">Cancel</button>
           <button type="button" class="gold-button px-6 py-2.5 rounded text-xs font-bold transition-all"
-                  @click="saveEditRecommendation()">Save Changes</button>
+                  @click="saveEditRecommendation()" data-i18n="result.edit_modal.save_button">Save Changes</button>
         </div>
       </div>
     </div>
@@ -1148,21 +1188,22 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 font-body" x-show="showRejectModal" style="display:none;" x-transition>
       <div class="obsidian-panel w-full max-w-lg p-8 rounded-lg space-y-6">
         <header>
-          <h3 class="font-editorial text-xl text-on-surface font-bold">Reject Finding</h3>
+          <h3 class="font-editorial text-xl text-on-surface font-bold" data-i18n="result.reject_modal.title">Reject Finding</h3>
           <p class="text-xs text-on-surface-variant mt-1" x-text="rejectingFinding ? rejectingFinding.title : ''"></p>
         </header>
         <div class="space-y-4">
           <div class="flex flex-col gap-2">
-            <label class="font-semibold text-xs text-on-surface-variant uppercase tracking-wider" for="rejectReasonInput">Reason for Rejection</label>
+            <label class="font-semibold text-xs text-on-surface-variant uppercase tracking-wider" for="rejectReasonInput" data-i18n="result.reject_modal.reason_label">Reason for Rejection</label>
             <textarea id="rejectReasonInput" x-model="rejectionReasonText" rows="4" placeholder="e.g. False positive — clause is present in section 4.2"
+                      data-i18n-placeholder="result.reject_modal.reason_placeholder"
                       class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface p-3 rounded focus:outline-none focus:border-primary/50 text-sm"></textarea>
           </div>
         </div>
         <div class="flex justify-end gap-3 pt-4 border-t border-outline-variant/10">
           <button type="button" class="px-5 py-2.5 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold text-on-surface-variant transition-colors"
-                  @click="showRejectModal = false">Cancel</button>
+                  @click="showRejectModal = false" data-i18n="result.modal.cancel_button">Cancel</button>
           <button type="button" class="px-6 py-2.5 rounded text-xs font-bold uppercase bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/40 transition-all"
-                  @click="confirmRejectFinding()">Reject Finding</button>
+                  @click="confirmRejectFinding()" data-i18n="result.reject_modal.confirm_button">Reject Finding</button>
         </div>
       </div>
     </div>
@@ -1171,31 +1212,31 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 font-body" x-show="showAssignModal" style="display:none;" x-transition>
       <div class="obsidian-panel w-full max-w-md p-8 rounded-lg space-y-6">
         <header>
-          <h3 class="font-editorial text-xl text-on-surface font-bold">Assign Case Reviewer</h3>
-          <p class="text-xs text-on-surface-variant mt-1">Select an active reviewer to delegate legal verification.</p>
+          <h3 class="font-editorial text-xl text-on-surface font-bold" data-i18n="result.assign_modal.title">Assign Case Reviewer</h3>
+          <p class="text-xs text-on-surface-variant mt-1" data-i18n="result.assign_modal.description">Select an active reviewer to delegate legal verification.</p>
         </header>
         <div class="space-y-4 text-xs font-body">
           <div class="flex flex-col gap-2">
-            <label class="font-semibold text-on-surface-variant uppercase tracking-wider">Select Reviewer</label>
+            <label class="font-semibold text-on-surface-variant uppercase tracking-wider" data-i18n="result.assign_modal.select_label">Select Reviewer</label>
             <select x-model="assignedReviewer" class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-3 rounded text-sm focus:outline-none focus:border-primary/50 focus:ring-0">
-              <option value="auto">System Default / Auto-Assign</option>
-              <option value="Lead Analyst Team">Lead Analyst Team</option>
-              <option value="Senior Corporate Reviewer">Senior Corporate Reviewer</option>
+              <option value="auto" data-i18n="result.assign_modal.option_auto">System Default / Auto-Assign</option>
+              <option value="Lead Analyst Team" data-i18n="result.assign_modal.option_lead">Lead Analyst Team</option>
+              <option value="Senior Corporate Reviewer" data-i18n="result.assign_modal.option_senior">Senior Corporate Reviewer</option>
             </select>
           </div>
         </div>
         <div class="flex justify-end gap-3 pt-4 border-t border-outline-variant/10">
           <button type="button" class="px-5 py-2.5 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold text-on-surface-variant transition-colors"
-                  @click="showAssignModal = false">Cancel</button>
+                  @click="showAssignModal = false" data-i18n="result.modal.cancel_button">Cancel</button>
           <button type="button" class="gold-button px-6 py-2.5 rounded text-xs font-bold transition-all"
-                  @click="saveReviewerAssignment()">Assign Case</button>
+                  @click="saveReviewerAssignment()" data-i18n="result.assign_modal.assign_button">Assign Case</button>
         </div>
       </div>
     </div>
 
   </main>
 
-  <footer class="text-center py-8 text-xs border-t border-outline-variant/10 font-body" style="color:#9ca3af;">
+  <footer class="text-center py-8 text-xs border-t border-outline-variant/10 font-body" style="color:#9ca3af;" data-i18n="result.footer.copyright">
     © 2026 PT SYDECO — Contract Risk Analyzer
   </footer>
 
@@ -1387,7 +1428,7 @@
             }
 
             const status = data.status;
-            if (status === 'queued' || status === 'running') {
+            if (status === 'queued' || status === 'processing') {
               this.isProcessing = true;
               this.progressPct = data.progress_pct || 0;
               this.progressText = data.progress_stage ? data.progress_stage.replace('_', ' ').toUpperCase() + '…' : 'PROCESSING…';
@@ -1445,6 +1486,7 @@
 
           // 1. L1 Regex Red Flags
           (layer1.red_flags || []).forEach(flag => {
+            const exp = flag.explanation || null;
             unified.push({
               id: flag.id,
               type: 'abusive',
@@ -1455,7 +1497,12 @@
               source: flag.source ? `Rules (${flag.source})` : 'Rules Engine (L1)',
               status: flag.status || 'Unreviewed',
               citations: flag.citations || [],
-              recommendation: _REWRITES[flag.id] || ''
+              // Explain Mode (risk_explainer.py): why it's dangerous + a
+              // ready-to-paste replacement clause, not just "how to fix" advice.
+              reason: exp ? exp.reason : '',
+              recommendation: (exp && exp.suggested_correction) || _REWRITES[flag.id] || '',
+              confidenceLabel: exp ? exp.confidence_label : '',
+              confidencePct: exp ? Math.round(exp.confidence * 100) : null
             });
           });
 
@@ -1479,6 +1526,7 @@
           (layer1.clause_presence || []).forEach(clause => {
             if (clause.required && !clause.present) {
               const severity = clause.impact_level || 'HIGH';
+              const exp = clause.explanation || null;
               unified.push({
                 id: clause.clause_id,
                 type: 'missing_clause',
@@ -1489,7 +1537,10 @@
                 source: 'Rules Engine (L1)',
                 status: clause.status || 'Unreviewed',
                 citations: clause.citations || [],
-                recommendation: clause.recommendation || `Incorporate a standard ${clause.title || clause.clause_id} clause.`
+                reason: exp ? exp.reason : '',
+                recommendation: (exp && exp.suggested_correction) || clause.recommendation || `Incorporate a standard ${clause.title || clause.clause_id} clause.`,
+                confidenceLabel: exp ? exp.confidence_label : '',
+                confidencePct: exp ? Math.round(exp.confidence * 100) : null
               });
             }
           });

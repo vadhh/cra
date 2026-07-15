@@ -1,0 +1,5 @@
+SOFTWARE LICENSE AGREEMENT
+This agreement is governed by the laws of Belgium. Any dispute shall be referred to the courts of Brussels.
+The licensor grants the licensee a non-exclusive, non-transferable license to use the software.
+All intellectual property ownership remains with the licensor.
+The software is provided 'as is' and the licensor disclaims all implied warranties of merchantability.

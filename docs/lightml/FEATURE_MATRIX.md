@@ -1,0 +1,25 @@
+# Contract Risk Analyzer (CRA) — Feature Matrix
+
+This matrix maps each architectural feature of the Contract Risk Analyzer system to its active implementation file, class/function definition, and status.
+
+| Feature Name | Implementation File | Key Symbols / Classes / Methods | Status |
+| :--- | :--- | :--- | :--- |
+| **Contract Profile Registry** | [ldv-backend/detector/profiles/profiles.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/profiles.json) | Registry maps profile IDs to JSON file definitions | `🟢 Fully Implemented` |
+| **Profile Loader** | [ldv-backend/detector/detector_profiles.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/detector_profiles.py) | `ProfileManager` class; `.get_profile()`, `.resolve_profile_by_name()`, `.publish_profile()` | `🟢 Fully Implemented` |
+| **Required Clause Loader** | [ldv-backend/detector/clause_db.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/clause_db.py) | `_load()`, `clause_guidance()`, `clause_keywords()` (reads `required_clauses_MASTER.csv`) | `🟢 Fully Implemented` |
+| **Dangerous Clause Loader** | [ldv-backend/detector/risk_clause_db.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/risk_clause_db.py) | `_load()`, `detect_keyword_flags()` (reads abusive/dangerous/illegal/leonine CSVs) | `🟢 Fully Implemented` |
+| **Risk Rules** | [ldv-backend/detector/detector_rules.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/detector_rules.py) | `_CLAUSE_RULES` (11 types), `_RED_FLAGS` (8 categories), `check_clause_presence()` | `🟢 Fully Implemented` |
+| **Translator Client** | [ldv-backend/translator.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/translator.py) <br> [ldv-backend/translator_client.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/translator_client.py) | `translate_text()`, `translate_via_microservice()` (requests to translation service) | `🟢 Fully Implemented` |
+| **Citation System** | [ldv-backend/detector/citation_db.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/citation_db.py) | `citations_for()`, `annotate_layer1()`, `verify_citation()` (writes to `legal_citations.csv`) | `🟢 Fully Implemented` |
+| **Explain Mode** | [ldv-backend/detector/detector_explain.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/detector_explain.py) <br> [ldv-backend/send_prompt.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/send_prompt.py) | `layer4_explain()`, `query_llm()` (opt-in Qwen model inference) | `🟢 Fully Implemented` |
+| **Scoring Policy** | [ldv-backend/detector/detector_scorer.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/detector_scorer.py) | `layer3_score()`, `load_scoring_policy()` (loads `default_v1.json`), `_mlp_score()` | `🟢 Fully Implemented` |
+| **Authentication** | [ldv-backend/auth.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/auth.py) <br> [ldv-backend/app.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/app.py) | `login_required`, `role_required`, `/login`, `/logout`, `/api/v1/mfa/*` views (Session & Token auth) | `🟢 Fully Implemented` |
+| **Organizations** | [ldv-backend/database.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/database.py) | `create_org()`, `get_org_usage()`, `increment_org_usage()`, `organizations` table | `🟢 Fully Implemented` |
+| **Audit Log** | [ldv-backend/database.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/database.py) | `write_audit()`, `get_audit_log()`, writes to SQLite + durable append-only log file | `🟢 Fully Implemented` |
+| **Retention** | [ldv-backend/database.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/database.py) <br> [ldv-backend/manage.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/manage.py) | `purge_expired()`, `org_retention_days()`, `manage.py purge` cron command | `🟢 Fully Implemented` |
+| **Retry Logic** | [lightml-translator/app/services/translation_service.py](file:///mnt/c/Users/ADVAN/cra/lightml-translator/app/services/translation_service.py) | `_translate_batch_with_retry_inner()`, `_translate_batch_with_retry()` | `🟢 Fully Implemented` |
+| **Background Worker** | [ldv-backend/worker.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/worker.py) | `ThreadPoolExecutor(max_workers=1)`, `submit_job()`, `_run_job()` | `🟢 Fully Implemented` |
+| **PDF Generator** | [ldv-backend/pdf_report.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/pdf_report.py) | `generate_pdf()` (ReportLab rendering pipeline) | `🟢 Fully Implemented` |
+| **Report Templates** | [ldv-backend/pdf_report.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/pdf_report.py) | Table styles, HexColors, inline ParagraphStyles, rewrite text dictionaries | `🟢 Fully Implemented` |
+| **Dashboard** | [ldv-frontend/index.html](file:///mnt/c/Users/ADVAN/cra/ldv-frontend/index.html) <br> [ldv-frontend/admin.html](file:///mnt/c/Users/ADVAN/cra/ldv-frontend/admin.html) | `uploadApp()` Alpine.js app, static UI grids, team and MFA controls | `🟢 Fully Implemented` |
+| **Job Recovery** | [ldv-backend/database.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/database.py) | `cleanup_stuck_analyses()` (fails running/queued tasks older than 30 mins) | `🟢 Fully Implemented` |

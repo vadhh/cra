@@ -44,3 +44,45 @@ working_hours,ID,UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah
 compensation,ID,UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023,Indonesian statute (UU),UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023; peraturan ketenagakerjaan terkait.,verified
 delivery_terms,ID,"Pasal 1320, Pasal 1338",KUH Perdata (Indonesian Civil Code),Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.,verified
 warranty,ID,"Pasal 1320, Pasal 1338",KUH Perdata (Indonesian Civil Code),Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.,verified
+lease_term,generic,Art. 1709,French civil-style code,Lease term must be defined or determinable,verified
+lease_term,FR,Art. 1709,French Code civil,Le contrat de louage doit être conclu pour un temps certain,verified
+lease_term,ID,Pasal 1548,KUHPerdata,Perjanjian sewa-menyewa dibuat untuk waktu tertentu,verified
+rent_amount,generic,Art. 1709,French civil-style code,Rent amount must be agreed by both parties,verified
+rent_amount,FR,Art. 1709,French Code civil,Le bail exige l'obligation de payer un prix certain,verified
+rent_amount,ID,Pasal 1548,KUHPerdata,Penyewa wajib membayar suatu harga sewa tertentu,verified
+security_deposit,generic,Art. 2288,French civil-style code,Security deposit is a caution/pledge contract,verified
+security_deposit,FR,Art. 2288,French Code civil,Dépôt de garantie ou cautionnement de obligations,verified
+security_deposit,ID,Pasal 1820,KUHPerdata,Penanggungan utang atau jaminan uang deposit sewa,verified
+maintenance_responsibility,generic,Art. 1719,French civil-style code,Landlord must maintain the leased premises,verified
+maintenance_responsibility,FR,Art. 1719,French Code civil,Le bailleur est obligé d'entretenir la chose louée,verified
+maintenance_responsibility,ID,Pasal 1550,KUHPerdata,Pemberi sewa wajib memelihara barang sewaan,verified
+license_grant,generic,IP usage license,general law,License grant defines permissions and boundaries,verified
+license_grant,FR,Art. L122-4,French Code de la propriété intellectuelle,Toute représentation ou reproduction intégrale ou partielle requiert autorisation,verified
+license_grant,ID,UU No. 28 Tahun 2014,UU Hak Cipta,Lisensi hak cipta harus dibuat secara tertulis,verified
+ip_ownership,generic,IP ownership rules,general law,Ownership of IP remains with creator unless assigned,verified
+ip_ownership,FR,Art. L111-1,French Code de la propriété intellectuelle,L'auteur jouit d'un droit de propriété incorporelle exclusif,verified
+ip_ownership,ID,UU No. 28 Tahun 2014,UU Hak Cipta,Hak milik kekayaan intelektual dilindungi oleh undang-undang,verified
+warranty_disclaimer,generic,UCC 2-316,Uniform Commercial Code,Disclaimers of implied warranties must be conspicuous,verified
+warranty_disclaimer,FR,Art. 1643,French Code civil,Exclusion de garantie des vices cachés possible si convenue,verified
+warranty_disclaimer,ID,Pasal 1491,KUHPerdata,Penyangkalan jaminan cacat tersembunyi dapat disepakati,verified
+default_provisions,generic,Default provisions,general law,Default clauses set the grounds for breach,verified
+default_provisions,FR,Art. 1224,French Code civil,La résolution résulte soit d'une clause résolutoire,verified
+default_provisions,ID,Pasal 1238,KUHPerdata,Wanprestasi memerlukan adanya pernyataan lalai,verified
+capital_contribution,generic,Art. 1832,French civil-style code,Partners must contribute capital or industry,verified
+capital_contribution,FR,Art. 1832,French Code civil,Les associés conviennent d'apporter des biens ou leur industrie,verified
+capital_contribution,ID,Pasal 1618,KUHPerdata,Setiap sekutu wajib memasukkan modal ke persekutuan,verified
+profit_sharing,generic,Art. 1832,French civil-style code,Partners must share profits and losses,verified
+profit_sharing,FR,Art. 1832,French Code civil,Les associés partagent le bénéfice ou profit et les pertes,verified
+profit_sharing,ID,Pasal 1618,KUHPerdata,Pembagian untung dan rugi diatur berdasarkan kontribusi modal,verified
+management_rights,generic,Management rights,general law,Management and voting rights govern the partnership,verified
+management_rights,FR,Art. 1852,French Code civil,Les associés prennent les décisions collectives de gestion,verified
+management_rights,ID,Pasal 1636,KUHPerdata,Pengurus persekutuan ditunjuk untuk mengelola hubungan usaha,verified
+goods_description,generic,UCC 2-201,Uniform Commercial Code,Description of goods is required for sale validity,verified
+goods_description,FR,Art. 1583,French Code civil,La vente est parfaite dès qu'on est convenu de la chose,verified
+goods_description,ID,Pasal 1457,KUHPerdata,Jual beli memerlukan penentuan barang yang dijual,verified
+return_of_materials,generic,Return of materials,general law,NDA property return/destruction obligations are standard,verified
+return_of_materials,FR,Art. 1134,French Code civil,Les conventions légalement formées tiennent lieu de loi,verified
+return_of_materials,ID,Pasal 1338,KUHPerdata,Persetujuan yang dibuat secara sah berlaku sebagai undang-undang,verified
+title_transfer,generic,UCC 2-401,Uniform Commercial Code,Title transfers upon physical delivery unless agreed,verified
+title_transfer,FR,Art. 1583,French Code civil,Le transfert de propriété s'opère par l'accord sur la chose,verified
+title_transfer,ID,Pasal 1459,KUHPerdata,Hak milik atas barang tidak pindah sebelum penyerahan,verified

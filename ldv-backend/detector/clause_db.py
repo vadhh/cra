@@ -81,6 +81,21 @@ _CLAUSE_ID_TO_ILHAM: dict[str, str] = {
     "severability":         "Severability",
     "entire_agreement":     "Entire Agreement",
     "amendment":            "Amendment",
+    # Mapped orphans
+    "lease_term":           "Lease Term",
+    "rent_amount":          "Rent Amount",
+    "security_deposit":     "Security Deposit",
+    "maintenance_responsibility": "Maintenance Responsibility",
+    "license_grant":        "License Grant",
+    "ip_ownership":         "IP Ownership",
+    "warranty_disclaimer":  "Warranty Disclaimer",
+    "default_provisions":   "Default Provisions",
+    "capital_contribution": "Capital Contribution",
+    "profit_sharing":       "Profit Sharing",
+    "management_rights":    "Management Rights",
+    "goods_description":    "Goods Description",
+    "return_of_materials":  "Return of Materials",
+    "title_transfer":       "Title Transfer",
 }
 
 _DEFAULT_LANG = "EN"

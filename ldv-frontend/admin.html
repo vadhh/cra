@@ -472,8 +472,8 @@
                           <span class="tbl-pill flex items-center justify-center gap-1.5 w-max"
                                 :style="{ minWidth: '85px' }"
                                 :class="'tbl-pill-' + (row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : 'PENDING'))">
-                            <span class="material-symbols-outlined text-[12px] animate-spin" x-show="row.status === 'running' || row.status === 'queued'">sync</span>
-                            <span x-text="row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : (row.status === 'running' ? 'RUNNING' : 'QUEUED'))"></span>
+                            <span class="material-symbols-outlined text-[12px] animate-spin" x-show="row.status === 'processing' || row.status === 'queued'">sync</span>
+                            <span x-text="row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : (row.status === 'processing' ? 'PROCESSING' : 'QUEUED'))"></span>
                           </span>
                         </td>
                         <td style="color:#9ca3af;" x-text="timeAgo(row.analyzed_at)"></td>
@@ -542,7 +542,7 @@
                         class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-3 py-2 rounded text-sm">
                   <option value="">All Statuses</option>
                   <option value="completed">Completed</option>
-                  <option value="running">Running</option>
+                  <option value="processing">Processing</option>
                   <option value="queued">Queued</option>
                   <option value="failed">Failed</option>
                 </select>
@@ -603,7 +603,7 @@
                         <span class="tbl-pill flex items-center justify-center gap-1.5 w-max"
                               :style="{ minWidth: '85px' }"
                               :class="'tbl-pill-' + (row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : 'PENDING'))">
-                          <span x-text="row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : (row.status === 'running' ? 'RUNNING' : 'QUEUED'))"></span>
+                          <span x-text="row.status === 'completed' ? row.risk_label : (row.status === 'failed' ? 'FAILED' : (row.status === 'processing' ? 'PROCESSING' : 'QUEUED'))"></span>
                         </span>
                       </td>
                       <td>

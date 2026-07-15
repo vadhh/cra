@@ -81,6 +81,49 @@ def _risk_color(label: str) -> colors.Color:
     )
 
 
+# ReportLab's default Helvetica uses WinAnsiEncoding, which has no glyph for
+# "smart" Unicode punctuation (non-breaking hyphen, en/em dash, curly quotes,
+# ellipsis) -- those render as a black box instead of raising an error.
+# Lawyer-authored CSV guidance text (clause_db, risk_clause_db) uses these
+# characters, so anything sourced from those tables needs normalizing before
+# it reaches a Paragraph().
+_ASCII_MAP = str.maketrans({
+    "‐": "-", "‑": "-", "‒": "-", "–": "-", "—": "--",
+    "‘": "'", "’": "'", "“": '"', "”": '"',
+    "…": "...", " ": " ",
+})
+
+
+def _clean(text) -> str:
+    return text.translate(_ASCII_MAP) if text else text
+
+
+# ── Explain Mode / citation formatting ───────────────────────────────────────
+# Lawyers read words better than decimals (reviewer feedback, 2026-07-13):
+# render risk_explainer.py's 0-1 confidence score as a High/Medium/Low band
+# with the percentage kept alongside, not as a bare float.
+
+def _confidence_line(score) -> str:
+    try:
+        s = float(score)
+    except (TypeError, ValueError):
+        return ""
+    band = "High" if s >= 0.85 else "Medium" if s >= 0.65 else "Low"
+    return f"{band} confidence ({round(s * 100)}%)"
+
+
+def _citation_line(citations: list[dict] | None) -> str:
+    """First verified citation as 'Source: <source>, <article>' (or its note)."""
+    if not citations:
+        return ""
+    c = citations[0]
+    bits = [_clean(b) for b in (c.get("source"), c.get("article")) if b]
+    if bits:
+        return "Source: " + ", ".join(bits)
+    note = _clean(c.get("note"))
+    return f"Source: {note}" if note else ""
+
+
 # ── PDF builder ───────────────────────────────────────────────────────────────
 
 def generate_pdf(result: dict) -> bytes:
@@ -168,7 +211,15 @@ def generate_pdf(result: dict) -> bytes:
     layer2     = result.get("layer2", {}) or {}
     lang       = result.get("language", "unknown")
     juris      = result.get("jurisdiction", "not detected")
-    doctype    = layer2.get("document_type", "not detected")
+    
+    doctype_dict = layer2.get("document_type")
+    if isinstance(doctype_dict, dict):
+        doctype = doctype_dict.get("label", "not detected")
+        confidence_val = doctype_dict.get("confidence")
+    else:
+        doctype = doctype_dict or "not detected"
+        confidence_val = None
+
     gov_law    = layer1.get("governing_law") or "not detected"
     venue      = layer1.get("venue") or "not detected"
     red_flags  = layer1.get("red_flags", [])
@@ -176,14 +227,43 @@ def generate_pdf(result: dict) -> bytes:
     missing    = [c for c in clauses if c.get("required") and not c.get("present")]
     l2_flagged = layer2.get("flagged_clauses", [])
 
+    profile_used = "N/A"
+    profile_version = "N/A"
+    validation_status = "N/A"
+    
+    if doctype and doctype != "not detected":
+        try:
+            from detector.detector_profiles import ProfileManager
+            manager = ProfileManager()
+            profile = manager.resolve_profile_by_name(doctype)
+            if profile:
+                profile_used = profile["metadata"]["display_name"]
+                profile_version = profile["version"]
+                validation_status = profile["validation_status"]
+        except Exception as exc:
+            logger.warning("PDF generator failed to resolve profile: %s", exc)
+
+    if confidence_val is not None:
+        confidence_str = f"{confidence_val * 100:.1f}%" if confidence_val <= 1.0 else f"{confidence_val:.1f}%"
+    else:
+        confidence_str = "N/A"
+
+    analysis_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     summary_rows = [
         ["Language",         lang.upper() if lang not in ("unknown", "") else "Not detected"],
-        ["Document type",    doctype or "Not detected"],
+        ["Contract Type",    doctype.title() if doctype not in ("not detected", "", None) else "Not detected"],
+        ["Detection Confidence", confidence_str],
         ["Jurisdiction",     juris or "Not detected"],
         ["Governing law",    gov_law],
         ["Dangerous clauses", str(len(red_flags) + len(l2_flagged))],
         ["Missing clauses",   str(len(missing))],
+        ["Profile Used",     profile_used],
+        ["Profile Version",  profile_version],
+        ["Validation Status", validation_status],
+        ["Analysis Date",    analysis_date]
     ]
+
     story.append(Table(
         summary_rows,
         colWidths=[W * 0.38, W * 0.62],
@@ -206,20 +286,31 @@ def generate_pdf(result: dict) -> bytes:
         story.append(Paragraph("No dangerous clauses detected.", body))
     else:
         for flag in red_flags:
-            sev       = flag.get("severity", "")
-            sev_hex   = "#dc3545" if sev == "HIGH" else "#fd7e14"
-            flag_id   = flag.get("id", "")
-            desc      = flag.get("description", flag.get("type", ""))
-            evidence  = flag.get("evidence", "")
+            sev         = flag.get("severity", "")
+            sev_hex     = "#dc3545" if sev == "HIGH" else "#fd7e14"
+            flag_id     = flag.get("id", "")
+            desc        = _clean(flag.get("description", flag.get("type", "")))
+            evidence    = _clean(flag.get("evidence", ""))
+            explanation = flag.get("explanation") or {}
             story.append(Paragraph(
                 f'<font color="{sev_hex}"><b>[{sev}]</b></font> {desc}',
                 _style("df", fontSize=9, leading=13, textColor=_RED),
             ))
+            reason = _clean(explanation.get("reason"))
+            if reason:
+                story.append(Paragraph(reason, body))
             if evidence:
                 story.append(Paragraph(f'Evidence: "…{evidence}…"', small))
-            rw = _REWRITES.get(flag_id)
-            if rw:
-                story.append(Paragraph(rw, rewrite))
+            correction = _clean(explanation.get("suggested_correction")) or _REWRITES.get(flag_id)
+            if correction:
+                label = "Suggested clause: " if explanation.get("suggested_correction") else ""
+                story.append(Paragraph(f"{label}{correction}", rewrite))
+            footer_bits = [b for b in (
+                _confidence_line(explanation.get("confidence")),
+                _citation_line(flag.get("citations")),
+            ) if b]
+            if footer_bits:
+                story.append(Paragraph("  |  ".join(footer_bits), small))
 
         for fl in l2_flagged:
             lbl = fl.get("label", "").replace("_", " ").title()
@@ -251,6 +342,30 @@ def generate_pdf(result: dict) -> bytes:
             col = _GREEN if row[0].startswith("✓") else _RED
             ts.append(("TEXTCOLOR", (0, i), (0, i), col))
         story.append(Table(rows, colWidths=[W * 0.22, W * 0.78], style=TableStyle(ts)))
+
+        explained_missing = [c for c in missing if c.get("explanation")]
+        if explained_missing:
+            story.append(Spacer(1, 0.25 * cm))
+            story.append(Paragraph("Why This Matters", _style(
+                "h3", fontSize=10.5, textColor=_NAVY, fontName="Helvetica-Bold",
+                spaceBefore=2, spaceAfter=4,
+            )))
+            for c in explained_missing:
+                explanation = c["explanation"]
+                title = _clean(c.get("title", c.get("clause_id", "")))
+                story.append(Paragraph(f"<b>{title}</b>", body))
+                reason = _clean(explanation.get("reason"))
+                if reason:
+                    story.append(Paragraph(reason, body))
+                correction = _clean(explanation.get("suggested_correction"))
+                if correction:
+                    story.append(Paragraph(f"Suggested clause: {correction}", rewrite))
+                footer_bits = [b for b in (
+                    _confidence_line(explanation.get("confidence")),
+                    _citation_line(c.get("citations")),
+                ) if b]
+                if footer_bits:
+                    story.append(Paragraph("  |  ".join(footer_bits), small))
 
     story.append(Spacer(1, 0.3 * cm))
 

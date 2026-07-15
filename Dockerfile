@@ -18,9 +18,10 @@ COPY ldv-frontend/ /app/ldv-frontend/
 COPY datasets/ /app/datasets/
 
 WORKDIR /app/ldv-backend
+RUN chmod +x start.sh
 
 # Expose server port (HF Spaces defaults to 7860)
 EXPOSE 7860
 
-# Executing gunicorn on port 7860
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7860", "app:app"]
+# start.sh re-provisions the pilot-admin account (ephemeral storage) then execs gunicorn
+CMD ["./start.sh"]

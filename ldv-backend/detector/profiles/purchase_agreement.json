@@ -1,0 +1,90 @@
+{
+  "profile_id": "purchase_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "Purchase Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Purchase Agreement profile mapping required clauses.",
+    "aliases": [
+      "purchase agreement",
+      "sale agreement",
+      "sales contract",
+      "perjanjian pembelian"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document covers the purchase or sale of goods or assets.",
+    "keyword_overrides": {
+      "EN": [
+        "purchase",
+        "sale",
+        "buyer",
+        "seller",
+        "goods"
+      ],
+      "ID": [
+        "pembelian",
+        "penjualan",
+        "pembeli",
+        "penjual",
+        "barang"
+      ],
+      "FR": [
+        "achat",
+        "vente",
+        "acheteur",
+        "vendeur",
+        "marchandises"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "goods_description"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "delivery_terms"
+    },
+    {
+      "clause_id": "warranty"
+    },
+    {
+      "clause_id": "title_transfer"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

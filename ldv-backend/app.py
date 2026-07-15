@@ -1,4 +1,10 @@
 import os
+
+# Enforce offline mode if downloads not allowed
+if os.getenv("LDV_DOWNLOAD_MODELS", "0") != "1":
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 import logging
 import json
 import time
@@ -17,8 +23,9 @@ import fitz
 from langdetect import detect
 
 from detector.detector_jurisdiction import detect_jurisdiction
-from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title
+from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title, reconcile_required_flags
 from detector.citation_db import annotate_layer1
+from detector.risk_explainer import explain_findings
 from detector.detector_distilbert import layer2_analyze, semantic_clause_presence
 from detector.detector_scorer import layer3_score
 from detector.detector_explain import layer4_explain
@@ -40,6 +47,11 @@ SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 
 # Document types that are not contracts — skip full clause/risk analysis for these
 _NON_CONTRACT_TYPES = {"invoice", "receipt", "purchase order", "non-contract"}
+
+# Statuses where result_json isn't ready to serve: the job is still in flight
+# (queued/processing) or needs a retry before it will ever produce a result
+# (failed/retryable).
+_HIDDEN_RESULT_STATUSES = {"queued", "processing", "failed", "retryable"}
 
 _MIME_ALLOWLIST = {
     ".pdf":  {"application/pdf"},
@@ -140,7 +152,32 @@ def handle_exception(e):
 
 def _extract_pdf(data: bytes) -> str:
     doc = fitz.open(stream=data, filetype="pdf")
-    return "\n".join(page.get_text() for page in doc)
+    text = "\n".join(page.get_text() for page in doc)
+    if not text.strip():
+        text = _ocr_pdf(doc)
+    return text
+
+
+def _ocr_pdf(doc) -> str:
+    """OCR fallback for scanned/image-only PDFs with no text layer.
+
+    Slow (~1-3s/page on CPU); only invoked when normal text extraction finds
+    nothing. Needs the tesseract-ocr system binary + language packs
+    (tesseract-ocr-eng/fra/ind/nld) -- degrades to empty text (surfacing the
+    existing "Scan/OCR required" error) if unavailable.
+    """
+    import pytesseract
+    from PIL import Image
+    from io import BytesIO
+    try:
+        parts = []
+        for page in doc:
+            img = Image.open(BytesIO(page.get_pixmap(dpi=300).tobytes("png")))
+            parts.append(pytesseract.image_to_string(img, lang="eng+fra+ind+nld"))
+        return "\n".join(parts)
+    except Exception as e:
+        logger.warning("OCR fallback failed: %s", e)
+        return ""
 
 
 def _extract_docx(data: bytes) -> str:
@@ -186,12 +223,16 @@ def _validate_and_extract(file) -> tuple[bytes, str, str]:
     if detected_mime not in allowed_mimes:
         raise ValueError(f"File content does not match extension '{ext}'")
 
-    if ext == ".pdf":
-        text = _extract_pdf(data)
-    elif ext == ".docx":
-        text = _extract_docx(data)
-    else:
-        text = _extract_txt(data)
+    try:
+        if ext == ".pdf":
+            text = _extract_pdf(data)
+        elif ext == ".docx":
+            text = _extract_docx(data)
+        else:
+            text = _extract_txt(data)
+    except Exception as e:
+        logger.warning("Failed to extract text from %s: %s", ext, e)
+        raise ValueError(f"Corrupted or invalid {ext} file: {str(e)}")
 
     if not text.strip():
         raise ValueError("Scan/OCR required. No usable text could be extracted from this document.")
@@ -228,14 +269,20 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
             "generic": "general contract"
         }
         mapped_label = mapping.get(override_type.lower(), override_type.lower())
+        original_model_conf = (layer2.get("document_type") or {}).get("model_confidence") or (layer2.get("document_type") or {}).get("confidence") or 0.0
         layer2["document_type"] = {
             "label": mapped_label,
             "confidence": 1.0,
-            "candidates": [{"label": mapped_label, "confidence": 1.0}],
-            "source": "user_selected"
+            "model_confidence": original_model_conf,
+            "keyword_override_confidence": 0.0,
+            "override_applied": True,
+            "override_reason": "user_selected",
+            "source": "user_selected",
+            "candidates": [{"label": mapped_label, "confidence": 1.0}]
         }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()
+    reconcile_required_flags(layer1.get("clause_presence") or [], doc_type_label)
     if doc_type_label in _NON_CONTRACT_TYPES:
         logger.info("Document type '%s' — skipping clause analysis", doc_type_label)
         return {
@@ -255,6 +302,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         }
 
     _semantic_backfill(layer1, doc_type_label, analysis_text)
+    explain_findings(layer1, jurisdiction, doc_type_label)
 
     layer3 = layer3_score(layer1, layer2, lang=lang, policy_name=policy_name)
     clause_tags = _sydeco_classify(analysis_text)
@@ -705,14 +753,31 @@ def api_result(analysis_id: str):
     if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
         return jsonify({"error": "Forbidden"}), 403
     row.pop("org_id", None)  # internal field, not part of the API response
-    
+
     # ponytail: Expose raw_text via ?debug=1 only (P3 item 15)
     extracted_text = row.pop("extracted_text", None)
     if request.args.get("debug") == "1":
         row["raw_text"] = extracted_text
 
+    # Phase 3 (S2): deserialize score_breakdown from JSON string
+    if row.get("score_breakdown") and isinstance(row["score_breakdown"], str):
+        try:
+            row["score_breakdown"] = json.loads(row["score_breakdown"])
+        except (ValueError, TypeError):
+            pass
+
     status = row.get("status", "completed")
-    if status in ("queued", "running", "failed"):
+    if status in _HIDDEN_RESULT_STATUSES:
+        if status == "retryable" and row.get("error_message") == "low_confidence":
+            if row.get("result_json"):
+                try:
+                    res_dict = json.loads(row["result_json"])
+                    dt_info = res_dict.get("layer2", {}).get("document_type", {})
+                    row["candidates"] = dt_info.get("candidates", [])
+                    row["detected_label"] = dt_info.get("label")
+                    row["detected_confidence"] = dt_info.get("confidence")
+                except Exception:
+                    pass
         row["result"] = None
         row.pop("result_json", None)
         return jsonify(row)
@@ -720,6 +785,7 @@ def api_result(analysis_id: str):
     row["result"] = json.loads(row["result_json"]) if row.get("result_json") else None
     row.pop("result_json", None)
     return jsonify(row)
+
 
 
 @app.route("/api/v1/result/<analysis_id>", methods=["DELETE"])
@@ -743,6 +809,35 @@ def api_delete_result(analysis_id: str):
     )
     logger.info("DELETE: id=%s org=%s by=%s", analysis_id, row.get("org_id"), user["email"])
     return jsonify({"deleted": True, "id": analysis_id})
+
+
+@app.route("/api/v1/result/<analysis_id>/retry", methods=["POST"])
+@auth.login_required
+def api_retry_result(analysis_id: str):
+    row = database.get_result(analysis_id)
+    if row is None:
+        return jsonify({"error": "Not found"}), 404
+    user = g.user
+    if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    data = request.get_json(silent=True) or {}
+    override_type = data.get("type")
+    override_jurisdiction = data.get("jurisdiction")
+
+    new_status = database.retry_analysis(analysis_id)
+    if new_status is None:
+        return jsonify({"error": "Analysis is not retryable (wrong status or retry limit exhausted)"}), 409
+
+    text = row.get("extracted_text")
+    lang = row.get("language") or "unknown"
+    worker.submit_job(analysis_id, text, lang, False, override_type=override_type, override_jurisdiction=override_jurisdiction)
+
+    database.write_audit(
+        "analysis.retry", user_id=user["id"], org_id=row.get("org_id"),
+        resource_id=analysis_id, ip=_ip(),
+    )
+    return jsonify({"id": analysis_id, "status": "queued"}), 202
 
 
 @app.route("/api/v1/result/<analysis_id>/download-link", methods=["POST"])
@@ -1271,6 +1366,7 @@ def analyze():
 # ── Health ─────────────────────────────────────────────────────────────────────
 
 @app.route("/health")
+@limiter.exempt
 def health():
     from detector.detector_distilbert import is_available as l2_available
     from sydeco_engine import is_available as mlp_available
@@ -1280,9 +1376,9 @@ def health():
     # Check datasets
     datasets_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "datasets")
     required_csvs = [
-        "abusive_clauses.csv", "dangerous_clauses.csv",
+        "abusive_clauses.csv", "dangerous_clauses_MASTERv2.csv",
         "illegal_clauses.csv", "leonine_clauses.csv",
-        "required_clauses.csv", "legal_citations.csv"
+        "required_clauses_MASTER.csv", "legal_citations.csv"
     ]
     datasets_ok = all(os.path.exists(os.path.join(datasets_dir, f)) for f in required_csvs)
     
@@ -1374,6 +1470,158 @@ def frontend_files(filename):
     if os.path.isfile(filepath):
         return send_from_directory(FRONTEND_DIR, filename)
     return send_from_directory(FRONTEND_DIR, "index.html")
+
+
+# ── Profile Admin APIs ──────────────────────────────────────────────────────────
+
+@app.route("/api/v1/admin/profiles", methods=["GET"])
+@auth.admin_required
+def admin_list_profiles():
+    """List all profiles in the registry (both active and inactive)."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        
+        # Load active and inactive profile lists
+        active_ids = manager._registry.get("profiles", {}).keys()
+        inactive_ids = manager._registry.get("inactive_profiles", {}).keys()
+        
+        profiles = []
+        for pid in list(active_ids) + list(inactive_ids):
+            try:
+                p = manager.get_profile(pid)
+                metadata = p.get("metadata", {})
+                profiles.append({
+                    "profile_id": pid,
+                    "version": p.get("version"),
+                    "validation_status": p.get("validation_status"),
+                    "review_date": p.get("review_date"),
+                    "display_name": metadata.get("display_name"),
+                    "family": metadata.get("family"),
+                    "active": pid in active_ids
+                })
+            except Exception as err:
+                profiles.append({
+                    "profile_id": pid,
+                    "active": pid in active_ids,
+                    "error": str(err)
+                })
+                
+        return jsonify({"profiles": profiles})
+    except Exception as exc:
+        return jsonify({"error": f"Failed to list profiles: {exc}"}), 500
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>", methods=["GET"])
+@auth.admin_required
+def admin_get_profile(profile_id):
+    """Retrieve details of a specific profile by ID."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        p = manager.get_profile(profile_id)
+        active = profile_id in manager._registry.get("profiles", {})
+        return jsonify({
+            "profile": p,
+            "active": active
+        })
+    except ValueError:
+        try:
+            from detector.detector_profiles import ProfileManager
+            manager = ProfileManager()
+            inactive_map = manager._registry.get("inactive_profiles", {})
+            if profile_id in inactive_map:
+                filename = inactive_map[profile_id]
+                profile_path = os.path.join(os.path.dirname(manager.registry_path), filename)
+                with open(profile_path, "r", encoding="utf-8") as f:
+                    p = json.load(f)
+                return jsonify({
+                    "profile": p,
+                    "active": False
+                })
+        except Exception:
+            pass
+        return jsonify({"error": f"Profile '{profile_id}' not found."}), 404
+    except Exception as exc:
+        return jsonify({"error": f"Failed to retrieve profile: {exc}"}), 500
+
+
+@app.route("/api/v1/admin/profiles/validate", methods=["POST"])
+@auth.admin_required
+def admin_validate_profile_payload():
+    """Validate a raw profile payload against JSON schema and rules."""
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "No JSON payload provided"}), 400
+        
+    try:
+        from detector.detector_profiles import ProfileManager, validate_profile
+        manager = ProfileManager()
+        validate_profile(payload, manager._rules)
+        return jsonify({"status": "valid", "message": "Profile payload conforms to schema and rules classification."})
+    except Exception as exc:
+        return jsonify({"status": "invalid", "error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/publish", methods=["POST"])
+@auth.admin_required
+def admin_publish_profile(profile_id):
+    """Publish or update a profile specification payload."""
+    payload = request.get_json()
+    if not payload:
+        return jsonify({"error": "No JSON payload provided"}), 400
+        
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.publish_profile(profile_id, payload)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' published successfully and activated."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/activate", methods=["POST"])
+@auth.admin_required
+def admin_activate_profile(profile_id):
+    """Activate a deactivated profile."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.activate_profile(profile_id)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' activated successfully."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/deactivate", methods=["POST"])
+@auth.admin_required
+def admin_deactivate_profile(profile_id):
+    """Deactivate an active profile."""
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.deactivate_profile(profile_id)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' deactivated successfully."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
+
+
+@app.route("/api/v1/admin/profiles/<profile_id>/rollback", methods=["POST"])
+@auth.admin_required
+def admin_rollback_profile(profile_id):
+    """Roll back a profile to a previous version stored in history."""
+    params = request.get_json() or {}
+    target_version = params.get("version")
+    if not target_version:
+        return jsonify({"error": "Missing 'version' parameter in payload"}), 400
+        
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        manager.rollback_profile(profile_id, target_version)
+        return jsonify({"status": "success", "message": f"Profile '{profile_id}' successfully rolled back to version {target_version}."})
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 400
 
 
 if __name__ == "__main__":

@@ -1,0 +1,89 @@
+{
+  "profile_id": "loan_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "Loan Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Loan Agreement profile mapping required clauses.",
+    "aliases": [
+      "loan agreement",
+      "loan contract",
+      "creditor agreement",
+      "perjanjian pinjaman"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document covers a loan of money between lender and borrower.",
+    "keyword_overrides": {
+      "EN": [
+        "loan",
+        "lender",
+        "borrower",
+        "principal",
+        "interest"
+      ],
+      "ID": [
+        "pinjaman",
+        "pemberi pinjaman",
+        "penerima pinjaman",
+        "bunga"
+      ],
+      "FR": [
+        "pr\u00eat",
+        "pr\u00eateur",
+        "emprunteur",
+        "principal",
+        "int\u00e9r\u00eat"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "principal_amount"
+    },
+    {
+      "clause_id": "interest_rate"
+    },
+    {
+      "clause_id": "repayment_schedule"
+    },
+    {
+      "clause_id": "default_provisions"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,83 @@
+{
+  "profile_id": "lease_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "Lease Agreement",
+    "family": "property_agreements",
+    "description": "Standard Lease Agreement profile mapping required clauses.",
+    "aliases": [
+      "lease agreement",
+      "rental agreement",
+      "tenancy agreement",
+      "perjanjian sewa"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a lease or rental agreement for property.",
+    "keyword_overrides": {
+      "EN": [
+        "lease",
+        "tenant",
+        "landlord",
+        "rent",
+        "rental"
+      ],
+      "ID": [
+        "sewa",
+        "penyewa",
+        "pemilik",
+        "uang sewa"
+      ],
+      "FR": [
+        "bail",
+        "locataire",
+        "bailleur",
+        "loyer"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "lease_term"
+    },
+    {
+      "clause_id": "rent_amount"
+    },
+    {
+      "clause_id": "security_deposit"
+    },
+    {
+      "clause_id": "maintenance_responsibility"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ]
+}

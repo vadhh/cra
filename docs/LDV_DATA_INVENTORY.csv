@@ -1,0 +1,25 @@
+Filename,Checksum,Rows,Columns,Languages,Purpose,Version,Used by,Unused,Duplicate,Conflicts,Missing references
+abusive_clauses.csv,59e984c5fef628f14b9ab8289af5dd56,93,10,"EN, FR, ID",Keywords to identify abusive clauses (L1/risk_clause_db.py),1.0,detector/risk_clause_db.py,False,False,None,None
+contract_logic_master .csv,fea85f71c7233a6f8941ff0f3954f151,857,10,"EN, FR, ID",Combined logic for training MLP and rules,1.0,scripts/import_datasets.py,False,True,Has duplicate IDs 661 and 662,None
+contract_logic_master_sorted.csv,6fd9242350f241f07fd72071d2b16444,1260,10,"EN, FR, ID",Combined logic sorted for MLP training database,1.1,scripts/import_datasets.py; scripts/train_mlp.py,False,True,Contains duplicate IDs (84 85 86 93 94 95 861 862 867 868 213 871 872 211 216 877 878 222 889 890 2001-2029 208),None
+dangerous_clauses.csv,756fe740181534bbe8a382a5781fc2fb,614,10,"EN, FR, ID",Dangerous clause reference database (historical),1.0,None,True,True,Contains duplicate IDs (867 868 213 871 872 2001-2029); merged into MASTERv2,None
+dangerous_clauses_ADDITIONS.csv,3f5c53afd4426d1a1277f13642cde8f2,619,10,"EN, FR, ID",Additional dangerous clauses (historical),1.0,None,True,True,Merged into MASTERv2,None
+dangerous_clauses_MASTER.csv,12b639e4747621fa2c928fbcbda81708,595,10,"EN, FR, ID",Baseline dangerous clauses (historical),1.0,None,True,True,Merged into MASTERv2,None
+dangerous_clauses_MASTERv2.csv,6777ceca475ef8583765be7e880611ed,1213,10,"EN, FR, ID",Complete dangerous clauses database (active),2.0,detector/risk_clause_db.py,False,False,None,None
+illegal_clauses.csv,58ca8a1d77f93f1286fb4e2d1a7379e3,78,12,"EN, FR, ID",Keywords to identify illegal clauses (L1/risk_clause_db.py),1.0,detector/risk_clause_db.py,False,False,None,None
+legal_citations.csv,b44fec45853b0c32b3a8f43b0f228e3b,46,6,"BE, FR, ID, NL, US, EN&W",Legal citations matching red flags and clauses (L1/citation_db.py),1.0,detector/citation_db.py,False,True,Duplicate IDs for leonine_profit leonine_no_loss excessive_penalty rights_waiver unilateral_modification total_liability_exclusion no_liability_intentional illegal_object governing_law dispute_resolution,None
+leonine_clauses.csv,239836c29009fd16013cb9c7cd983d8f,90,10,"EN, FR, ID",Keywords to identify leonine clauses (L1/risk_clause_db.py),1.0,detector/risk_clause_db.py,False,False,None,None
+required_clauses.csv,dde9e2710bd6377b53975832a6d63bc7,118,10,"EN, FR, ID",Required clauses list (historical),1.0,None,True,True,Merged into required_clauses_MASTER,None
+required_clauses_MASTER.csv,b79bbfb8c0477a6db3d2a086d51d4478,901,19,"EN, FR, ID, NL",Active required clauses database with legal references,2.0,detector/clause_db.py,False,True,Has duplicate IDs (314 359 368 383 392 413 518 551 569 629 632 635 650 674 686 695 734 755 785 827) due to language rows,None
+required_clauses_final_OPTIMAL_with_Legal_Reference.csv,f11d6c6f117709e7310637762d66dfe9,881,13,"EN, FR, ID",Required clauses optimized subset (historical),1.1,None,True,True,Superseded by required_clauses_MASTER,None
+risk_levels.csv,516ecd7d57e627993a807ae88e3dddc6,5,3,generic,Risk score range mapping to risk levels,1.0,ldv-backend/database.py,False,False,None,None
+banking_nl.txt,d41e2ced3cd7f4bea2c20f919c3d11b4,16,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+distribution_nl.txt,0788614558abdc2edeb88c5c6f8e1d8d,15,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+employment_nl.txt,ec934cd22fe22e473cdff1194a604e91,13,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+government_nl.txt,f5101f5a69f9b456be52c7f89b6d7b09,15,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+insurance_nl.txt,252f92b4afeed5bace03cd4ee609dc0c,15,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+lease_nl.txt,a8b4cc601e77679d2f3b388dab1b5644,21,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+nda_nl.txt,e05dfdf096e8eb4032aa2206162c628e,13,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+partnership_nl.txt,739c0faddaf7df415dfe2d47cd80a170,17,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+software_license_nl.txt,ee3a43d36dee5e2b1c20c09375947a71,15,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None
+supplier_nl.txt,5d3c2492434acb15f67cdb3a7144735f,16,1,NL,Translation training/evaluation domain text,1.0,lightml-translator/tests/run_benchmarks.py,False,False,None,None

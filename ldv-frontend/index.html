@@ -7,6 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="images/sydeco_shield.svg">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.12/dist/cdn.min.js" integrity="sha384-pb6hrQvo4s23cEUFtj0CZkzGE3jyK3pj26RIupXXxhSrrcUA/Cn0lZgcCrGH0t6L" crossorigin="anonymous"></script>
+  <script defer src="i18n.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <script id="tailwind-config">
@@ -168,6 +169,10 @@
 </head>
 <body class="selection:bg-primary selection:text-on-primary min-h-screen flex flex-col justify-between" x-data="uploadApp()" x-init="init()">
 
+  <button type="button" data-lang-toggle onclick="i18n.toggleLang()"
+          class="fixed top-3 right-3 z-[60] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-primary/40 bg-surface-container/90 text-primary hover:bg-primary hover:text-on-primary transition-colors backdrop-blur-sm"
+          aria-label="Toggle language / Ganti bahasa">ID</button>
+
   <!-- TopNavBar -->
   <header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-background/60 backdrop-blur-xl border-b border-outline-variant/10">
     <div class="flex items-center gap-3">
@@ -178,19 +183,19 @@
         <path d="M70 80L130 80" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
         <path d="M80 120L120 120" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
       </svg>
-      <span class="font-editorial text-2xl text-primary tracking-tight">Sydeco CRA</span>
+      <span class="font-editorial text-2xl text-primary tracking-tight" data-i18n="brand.name">Sydeco CRA</span>
     </div>
     <nav class="hidden md:flex items-center gap-8">
-      <a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="/">New Analysis</a>
-      <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="/admin">Dashboard</a>
-      <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="/citations">Citation Library</a>
+      <a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="/" data-i18n="nav.new_analysis">New Analysis</a>
+      <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="/admin" data-i18n="nav.dashboard">Dashboard</a>
+      <a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-label-md text-label-md" href="/citations" data-i18n="nav.citation_library">Citation Library</a>
     </nav>
     <div class="flex items-center gap-6">
       <template x-if="loggedIn">
-        <a href="/logout" class="gold-button px-6 py-2.5 rounded-md text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider" style="text-decoration:none;">Secure Logout</a>
+        <a href="/logout" class="gold-button px-6 py-2.5 rounded-md text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider" style="text-decoration:none;" data-i18n="nav.secure_logout">Secure Logout</a>
       </template>
       <template x-if="!loggedIn">
-        <a href="/login" class="gold-button px-6 py-2.5 rounded-md text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider" style="text-decoration:none;">Sign In</a>
+        <a href="/login" class="gold-button px-6 py-2.5 rounded-md text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider" style="text-decoration:none;" data-i18n="nav.sign_in">Sign In</a>
       </template>
     </div>
   </header>
@@ -200,7 +205,7 @@
     <div x-show="showMfaWarning" x-cloak style="display:none;" class="mb-8 flex items-center justify-between bg-amber-900/20 border border-amber-500/30 rounded p-4 text-amber-200 text-sm font-body">
       <div class="flex items-center gap-3">
         <span class="material-symbols-outlined text-amber-500">warning</span>
-        <span><strong>Security Notice:</strong> Multi-Factor Authentication (MFA) is not enabled on your account. <a href="/account" class="underline hover:text-amber-50 transition-colors">Activate it in your security settings</a> to secure institutional assets.</span>
+        <span><strong data-i18n="index.mfa_warning.title">Security Notice:</strong> <span data-i18n="index.mfa_warning.body">Multi-Factor Authentication (MFA) is not enabled on your account.</span> <a href="/account" class="underline hover:text-amber-50 transition-colors" data-i18n="index.mfa_warning.link">Activate it in your security settings</a> <span data-i18n="index.mfa_warning.suffix">to secure institutional assets.</span></span>
       </div>
       <button @click="dismissMfaWarning()" class="text-amber-400 hover:text-amber-200 transition-colors flex items-center">
         <span class="material-symbols-outlined text-[18px]">close</span>
@@ -217,7 +222,7 @@
                 :class="currentStep === 1 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 @click="goToStep(1)">
           <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
-          <span>1. Ingestion</span>
+          <span data-i18n="index.stepper.step1_label">1. Ingestion</span>
         </button>
         <span class="text-on-surface-variant/20">/</span>
         <!-- Step 2 Indicator -->
@@ -225,7 +230,7 @@
                 :class="currentStep === 2 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 :disabled="!selectedFile" @click="goToStep(2)">
           <span class="material-symbols-outlined text-[20px]">badge</span>
-          <span>2. Details</span>
+          <span data-i18n="index.stepper.step2_label">2. Details</span>
         </button>
         <span class="text-on-surface-variant/20">/</span>
         <!-- Step 3 Indicator -->
@@ -233,7 +238,7 @@
                 :class="currentStep === 3 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 :disabled="!selectedFile" @click="goToStep(3)">
           <span class="material-symbols-outlined text-[20px]">settings</span>
-          <span>3. Options</span>
+          <span data-i18n="index.stepper.step3_label">3. Options</span>
         </button>
         <span class="text-on-surface-variant/20">/</span>
         <!-- Step 4 Indicator -->
@@ -241,7 +246,7 @@
                 :class="currentStep === 4 ? 'text-primary border-primary' : 'text-on-surface-variant/40 border-transparent hover:text-on-surface-variant'"
                 :disabled="!selectedFile" @click="goToStep(4)">
           <span class="material-symbols-outlined text-[20px]">verified</span>
-          <span>4. Review</span>
+          <span data-i18n="index.stepper.step4_label">4. Review</span>
         </button>
       </div>
     </section>
@@ -260,8 +265,8 @@
             <div class="flex items-center gap-4 mb-8">
               <span class="material-symbols-outlined text-primary text-4xl">cloud_upload</span>
               <div>
-                <h3 class="font-editorial text-headline-md">Document Ingestion</h3>
-                <p class="text-label-md font-label-md text-on-surface-variant">Choose a contract asset to queue into the sovereign parsing pipeline.</p>
+                <h3 class="font-editorial text-headline-md" data-i18n="index.step1.title">Document Ingestion</h3>
+                <p class="text-label-md font-label-md text-on-surface-variant" data-i18n="index.step1.subtitle">Choose a contract asset to queue into the sovereign parsing pipeline.</p>
               </div>
             </div>
 
@@ -286,9 +291,9 @@
                   <div class="mb-6 p-6 rounded-md bg-surface-container/50 shadow-inner">
                     <span class="material-symbols-outlined text-primary text-5xl">upload_file</span>
                   </div>
-                  <p class="font-editorial text-2xl mb-2">Drag and drop legal assets here</p>
-                  <p class="text-on-surface-variant mb-10 font-body">or click to browse local secure storage</p>
-                  <span class="gold-button px-10 py-4 rounded-md text-on-primary font-bold tracking-widest text-label-md pointer-events-none">SELECT FILE</span>
+                  <p class="font-editorial text-2xl mb-2" data-i18n="index.step1.dropzone_title">Drag and drop legal assets here</p>
+                  <p class="text-on-surface-variant mb-10 font-body" data-i18n="index.step1.dropzone_subtitle">or click to browse local secure storage</p>
+                  <span class="gold-button px-10 py-4 rounded-md text-on-primary font-bold tracking-widest text-label-md pointer-events-none" data-i18n="index.step1.select_file_button">SELECT FILE</span>
                 </div>
               </template>
 
@@ -304,12 +309,12 @@
                   </div>
                   <div class="flex gap-3 mt-2">
                     <button type="button" @click="goToStep(2)"
-                            class="gold-button px-8 py-3.5 rounded-md font-bold tracking-widest text-label-md">
+                            class="gold-button px-8 py-3.5 rounded-md font-bold tracking-widest text-label-md" data-i18n="index.step1.confirm_continue">
                       CONFIRM & CONTINUE
                     </button>
                     <button type="button"
                             class="px-6 py-3.5 rounded-md border border-outline-variant/40 text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all text-sm font-semibold font-body"
-                            @click="selectedFile = null; errorMsg = ''">Clear</button>
+                            @click="selectedFile = null; errorMsg = ''" data-i18n="index.step1.clear_button">Clear</button>
                   </div>
                 </div>
               </template>
@@ -321,60 +326,60 @@
             <div class="flex items-center gap-4 mb-4">
               <span class="material-symbols-outlined text-primary text-4xl">badge</span>
               <div>
-                <h3 class="font-editorial text-headline-md">Document context</h3>
-                <p class="text-label-md font-label-md text-on-surface-variant">Calibrate context metrics to ensure correct rule sets apply.</p>
+                <h3 class="font-editorial text-headline-md" data-i18n="index.step2.title">Document context</h3>
+                <p class="text-label-md font-label-md text-on-surface-variant" data-i18n="index.step2.subtitle">Calibrate context metrics to ensure correct rule sets apply.</p>
               </div>
             </div>
 
             <div class="space-y-4 font-body text-sm">
               <!-- Display Name -->
               <div class="flex flex-col gap-2">
-                <label class="font-semibold text-on-surface" for="displayName">Display Name</label>
+                <label class="font-semibold text-on-surface" for="displayName" data-i18n="index.step2.display_name_label">Display Name</label>
                 <input class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm"
-                       id="displayName" type="text" x-model="displayName" placeholder="Document Name"/>
+                       id="displayName" type="text" x-model="displayName" placeholder="Document Name" data-i18n-placeholder="index.step2.display_name_placeholder"/>
               </div>
 
               <!-- Contract Type -->
               <div class="flex flex-col gap-2">
-                <label class="font-semibold text-on-surface" for="contractType">Contract Type Context</label>
+                <label class="font-semibold text-on-surface" for="contractType" data-i18n="index.step2.contract_type_label">Contract Type Context</label>
                 <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm"
                         id="contractType" x-model="contractType">
-                  <option value="auto">Auto-Detect via NLI Classifier (Recommended)</option>
-                  <option value="service">Service Agreement</option>
-                  <option value="nda">Non-Disclosure Agreement (NDA)</option>
-                  <option value="employment">Employment Contract</option>
-                  <option value="software">Software License</option>
-                  <option value="generic">Other / Generic Contract</option>
+                  <option value="auto" data-i18n="index.step2.contract_type_auto">Auto-Detect via NLI Classifier (Recommended)</option>
+                  <option value="service" data-i18n="index.step2.contract_type_service">Service Agreement</option>
+                  <option value="nda" data-i18n="index.step2.contract_type_nda">Non-Disclosure Agreement (NDA)</option>
+                  <option value="employment" data-i18n="index.step2.contract_type_employment">Employment Contract</option>
+                  <option value="software" data-i18n="index.step2.contract_type_software">Software License</option>
+                  <option value="generic" data-i18n="index.step2.contract_type_generic">Other / Generic Contract</option>
                 </select>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <!-- Jurisdiction Context -->
                 <div class="flex flex-col gap-2">
-                  <label class="font-semibold text-on-surface" for="jurisdiction">Jurisdiction Context</label>
+                  <label class="font-semibold text-on-surface" for="jurisdiction" data-i18n="index.step2.jurisdiction_label">Jurisdiction Context</label>
                   <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm"
                           id="jurisdiction" x-model="jurisdiction">
-                    <option value="auto">Auto-Detect Governed Juris (Recommended)</option>
-                    <option value="FR">France (FR)</option>
-                    <option value="BE">Belgium (BE)</option>
-                    <option value="ID">Indonesia (ID)</option>
-                    <option value="NL">Netherlands (NL)</option>
-                    <option value="EN&W">England & Wales (EN&W)</option>
-                    <option value="US">United States (US)</option>
-                    <option value="generic">Generic / International</option>
+                    <option value="auto" data-i18n="index.step2.jurisdiction_auto">Auto-Detect Governed Juris (Recommended)</option>
+                    <option value="FR" data-i18n="index.step2.jurisdiction_fr">France (FR)</option>
+                    <option value="BE" data-i18n="index.step2.jurisdiction_be">Belgium (BE)</option>
+                    <option value="ID" data-i18n="index.step2.jurisdiction_id">Indonesia (ID)</option>
+                    <option value="NL" data-i18n="index.step2.jurisdiction_nl">Netherlands (NL)</option>
+                    <option value="EN&W" data-i18n="index.step2.jurisdiction_enw">England & Wales (EN&W)</option>
+                    <option value="US" data-i18n="index.step2.jurisdiction_us">United States (US)</option>
+                    <option value="generic" data-i18n="index.step2.jurisdiction_generic">Generic / International</option>
                   </select>
                 </div>
 
                 <!-- Language Context -->
                 <div class="flex flex-col gap-2">
-                  <label class="font-semibold text-on-surface" for="language">Language Context</label>
+                  <label class="font-semibold text-on-surface" for="language" data-i18n="index.step2.language_label">Language Context</label>
                   <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm"
                           id="language" x-model="language">
-                    <option value="auto">Auto-Detect Language (Recommended)</option>
-                    <option value="en">English (EN)</option>
-                    <option value="fr">French (FR)</option>
-                    <option value="id">Indonesian (ID)</option>
-                    <option value="nl">Dutch (NL)</option>
+                    <option value="auto" data-i18n="index.step2.language_auto">Auto-Detect Language (Recommended)</option>
+                    <option value="en" data-i18n="index.step2.language_en">English (EN)</option>
+                    <option value="fr" data-i18n="index.step2.language_fr">French (FR)</option>
+                    <option value="id" data-i18n="index.step2.language_id">Indonesian (ID)</option>
+                    <option value="nl" data-i18n="index.step2.language_nl">Dutch (NL)</option>
                   </select>
                 </div>
               </div>
@@ -382,14 +387,14 @@
               <!-- Client & Case Folder References -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="flex flex-col gap-2">
-                  <label class="font-semibold text-on-surface" for="clientRef">Client Reference <span class="text-xs text-on-surface-variant/40">(Optional)</span></label>
+                  <label class="font-semibold text-on-surface" for="clientRef"><span data-i18n="index.step2.client_ref_label">Client Reference</span> <span class="text-xs text-on-surface-variant/40" data-i18n="index.step2.optional_suffix">(Optional)</span></label>
                   <input class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm placeholder:text-on-surface/20"
-                         id="clientRef" type="text" x-model="clientRef" placeholder="e.g. Acme Corp"/>
+                         id="clientRef" type="text" x-model="clientRef" placeholder="e.g. Acme Corp" data-i18n-placeholder="index.step2.client_ref_placeholder"/>
                 </div>
                 <div class="flex flex-col gap-2">
-                  <label class="font-semibold text-on-surface" for="caseFolder">Case Folder / Project <span class="text-xs text-on-surface-variant/40">(Optional)</span></label>
+                  <label class="font-semibold text-on-surface" for="caseFolder"><span data-i18n="index.step2.case_folder_label">Case Folder / Project</span> <span class="text-xs text-on-surface-variant/40" data-i18n="index.step2.optional_suffix">(Optional)</span></label>
                   <input class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-3 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-sm placeholder:text-on-surface/20"
-                         id="caseFolder" type="text" x-model="caseFolder" placeholder="e.g. Q3 NDAs"/>
+                         id="caseFolder" type="text" x-model="caseFolder" placeholder="e.g. Q3 NDAs" data-i18n-placeholder="index.step2.case_folder_placeholder"/>
                 </div>
               </div>
             </div>
@@ -397,11 +402,11 @@
             <!-- Footer navigation -->
             <div class="flex justify-between pt-6 border-t border-outline-variant/10">
               <button type="button" @click="goToStep(1)"
-                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-sm font-semibold transition-all">
+                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-sm font-semibold transition-all" data-i18n="index.step2.back_button">
                 Back to Ingestion
               </button>
               <button type="button" @click="goToStep(3)"
-                      class="gold-button px-8 py-3 rounded-md font-bold tracking-widest text-label-md">
+                      class="gold-button px-8 py-3 rounded-md font-bold tracking-widest text-label-md" data-i18n="index.step2.proceed_button">
                 PROCEED TO OPTIONS
               </button>
             </div>
@@ -412,15 +417,15 @@
             <div class="flex items-center gap-4 mb-4">
               <span class="material-symbols-outlined text-primary text-4xl">settings</span>
               <div>
-                <h3 class="font-editorial text-headline-md">Analysis configuration</h3>
-                <p class="text-label-md font-label-md text-on-surface-variant">Customize package depth, scope, and validation parameters.</p>
+                <h3 class="font-editorial text-headline-md" data-i18n="index.step3.title">Analysis configuration</h3>
+                <p class="text-label-md font-label-md text-on-surface-variant" data-i18n="index.step3.subtitle">Customize package depth, scope, and validation parameters.</p>
               </div>
             </div>
 
             <div class="space-y-6 font-body text-sm">
               <!-- Depth Picker Stack -->
               <div class="flex flex-col gap-3">
-                <label class="font-semibold text-on-surface">Analysis Scope Depth</label>
+                <label class="font-semibold text-on-surface" data-i18n="index.step3.depth_label">Analysis Scope Depth</label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <!-- Standard -->
                   <div class="p-5 bg-surface-container-low border rounded-md cursor-pointer transition-all hover:border-primary/40 flex flex-col gap-2"
@@ -428,9 +433,9 @@
                        @click="analysisDepth = 'standard'">
                     <div class="flex items-center gap-2 text-primary font-bold">
                       <span class="material-symbols-outlined text-[20px]">bolt</span>
-                      <span>Standard Analysis</span>
+                      <span data-i18n="index.step3.standard_title">Standard Analysis</span>
                     </div>
-                    <p class="text-xs text-on-surface-variant/80">L1 Rule Checks + L2 DistilBERT Classifier + L3 Scorer. Quick completion (typically 2-10s).</p>
+                    <p class="text-xs text-on-surface-variant/80" data-i18n="index.step3.standard_desc">L1 Rule Checks + L2 DistilBERT Classifier + L3 Scorer. Quick completion (typically 2-10s).</p>
                   </div>
                   <!-- Comprehensive -->
                   <div class="p-5 bg-surface-container-low border rounded-md cursor-pointer transition-all hover:border-primary/40 flex flex-col gap-2"
@@ -438,9 +443,9 @@
                        @click="analysisDepth = 'comprehensive'">
                     <div class="flex items-center gap-2 text-primary font-bold">
                       <span class="material-symbols-outlined text-[20px]">psychology</span>
-                      <span>Comprehensive Analysis</span>
+                      <span data-i18n="index.step3.comprehensive_title">Comprehensive Analysis</span>
                     </div>
-                    <p class="text-xs text-on-surface-variant/80">Includes L4 Qwen LLM Explanations & commentary loops. High system load (takes several minutes).</p>
+                    <p class="text-xs text-on-surface-variant/80" data-i18n="index.step3.comprehensive_desc">Includes L4 Qwen LLM Explanations & commentary loops. High system load (takes several minutes).</p>
                   </div>
                 </div>
               </div>
@@ -456,21 +461,21 @@
                 <!-- Advanced Options Container -->
                 <div x-show="showAdvancedOptions" x-transition class="mt-4 p-5 bg-surface-container rounded border border-outline-variant/15 space-y-4">
                   <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-xs uppercase text-on-surface-variant tracking-wider" for="policyName">Scoring Policy Version</label>
+                    <label class="font-semibold text-xs uppercase text-on-surface-variant tracking-wider" for="policyName" data-i18n="index.step3.policy_version_label">Scoring Policy Version</label>
                     <select class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-2.5 rounded text-xs"
                             id="policyName" x-model="policyName">
-                      <option value="default_v1">default_v1 (June 2026 calibrated baseline)</option>
-                      <option value="sandbox_beta">sandbox_beta (experimental rules)</option>
+                      <option value="default_v1" data-i18n="index.step3.policy_default">default_v1 (June 2026 calibrated baseline)</option>
+                      <option value="sandbox_beta" data-i18n="index.step3.policy_sandbox">sandbox_beta (experimental rules)</option>
                     </select>
                   </div>
 
                   <div class="flex flex-col gap-2">
-                    <label class="font-semibold text-xs uppercase text-on-surface-variant tracking-wider" for="assignedReviewer">Default Reviewer</label>
+                    <label class="font-semibold text-xs uppercase text-on-surface-variant tracking-wider" for="assignedReviewer" data-i18n="index.step3.reviewer_label">Default Reviewer</label>
                     <select class="w-full bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-2.5 rounded text-xs"
                             id="assignedReviewer" x-model="assignedReviewer">
-                      <option value="auto">Auto-Assign (Based on availability)</option>
-                      <option value="analyst_lead">Lead Analyst Team</option>
-                      <option value="legal_reviewer">Senior Corporate Reviewer</option>
+                      <option value="auto" data-i18n="index.step3.reviewer_auto">Auto-Assign (Based on availability)</option>
+                      <option value="analyst_lead" data-i18n="index.step3.reviewer_lead">Lead Analyst Team</option>
+                      <option value="legal_reviewer" data-i18n="index.step3.reviewer_senior">Senior Corporate Reviewer</option>
                     </select>
                   </div>
                 </div>
@@ -480,11 +485,11 @@
             <!-- Footer navigation -->
             <div class="flex justify-between pt-6 border-t border-outline-variant/10">
               <button type="button" @click="goToStep(2)"
-                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-sm font-semibold transition-all">
+                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-sm font-semibold transition-all" data-i18n="index.step3.back_button">
                 Back to Details
               </button>
               <button type="button" @click="goToStep(4)"
-                      class="gold-button px-8 py-3 rounded-md font-bold tracking-widest text-label-md">
+                      class="gold-button px-8 py-3 rounded-md font-bold tracking-widest text-label-md" data-i18n="index.step3.proceed_button">
                 PROCEED TO CONFIRMATION
               </button>
             </div>
@@ -495,32 +500,32 @@
             <div class="flex items-center gap-4 mb-4">
               <span class="material-symbols-outlined text-primary text-4xl">verified</span>
               <div>
-                <h3 class="font-editorial text-headline-md">Sovereign Compliance Review</h3>
-                <p class="text-label-md font-label-md text-on-surface-variant">Acknowledge storage retention and execute the local analysis pipeline.</p>
+                <h3 class="font-editorial text-headline-md" data-i18n="index.step4.title">Sovereign Compliance Review</h3>
+                <p class="text-label-md font-label-md text-on-surface-variant" data-i18n="index.step4.subtitle">Acknowledge storage retention and execute the local analysis pipeline.</p>
               </div>
             </div>
 
             <div class="space-y-6 font-body text-sm">
               <!-- Summary Table -->
               <div class="p-5 bg-surface-container-low border border-outline-variant/15 rounded space-y-4">
-                <h4 class="font-semibold text-primary border-b border-outline-variant/10 pb-2">Analysis Spec Summary</h4>
+                <h4 class="font-semibold text-primary border-b border-outline-variant/10 pb-2" data-i18n="index.step4.summary_title">Analysis Spec Summary</h4>
                 <div class="grid grid-cols-2 gap-y-3 text-xs leading-relaxed text-on-surface-variant">
-                  <span class="font-bold">File Asset:</span>
+                  <span class="font-bold" data-i18n="index.step4.file_asset_label">File Asset:</span>
                   <span class="text-on-surface text-right" x-text="selectedFile ? selectedFile.name : '—'"></span>
-                  
-                  <span class="font-bold">Display Identity:</span>
+
+                  <span class="font-bold" data-i18n="index.step4.display_identity_label">Display Identity:</span>
                   <span class="text-on-surface text-right" x-text="displayName"></span>
-                  
-                  <span class="font-bold">Contract Profile:</span>
+
+                  <span class="font-bold" data-i18n="index.step4.contract_profile_label">Contract Profile:</span>
                   <span class="text-on-surface text-right" x-text="contractType === 'auto' ? 'Auto-Detect via NLI' : contractType"></span>
-                  
-                  <span class="font-bold">Target Jurisdiction:</span>
+
+                  <span class="font-bold" data-i18n="index.step4.target_jurisdiction_label">Target Jurisdiction:</span>
                   <span class="text-on-surface text-right" x-text="jurisdiction === 'auto' ? 'Auto-Detect' : jurisdiction"></span>
 
-                  <span class="font-bold">Language Mode:</span>
+                  <span class="font-bold" data-i18n="index.step4.language_mode_label">Language Mode:</span>
                   <span class="text-on-surface text-right" x-text="language === 'auto' ? 'Auto-Detect' : language"></span>
-                  
-                  <span class="font-bold">Analysis Depth:</span>
+
+                  <span class="font-bold" data-i18n="index.step4.analysis_depth_label">Analysis Depth:</span>
                   <span class="text-on-surface text-right capitalize" x-text="analysisDepth"></span>
                 </div>
               </div>
@@ -530,15 +535,15 @@
                 <div class="flex items-start gap-3">
                   <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">lock_open</span>
                   <div>
-                    <strong class="text-on-surface block">AES-256 Storage Encryption</strong>
-                    <p class="text-on-surface-variant mt-0.5">The encryption node is operational. File text outputs and pipeline results are encrypted at rest with keys held strictly in localized server memory.</p>
+                    <strong class="text-on-surface block" data-i18n="index.step4.encryption_title">AES-256 Storage Encryption</strong>
+                    <p class="text-on-surface-variant mt-0.5" data-i18n="index.step4.encryption_desc">The encryption node is operational. File text outputs and pipeline results are encrypted at rest with keys held strictly in localized server memory.</p>
                   </div>
                 </div>
                 <div class="flex items-start gap-3">
                   <span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">delete_sweep</span>
                   <div>
-                    <strong class="text-on-surface block">30-Day Auto-Purge Policy</strong>
-                    <p class="text-on-surface-variant mt-0.5">This analysis session is assigned a hard retention schedule. The document, text extracts, and reports will be deleted in 30 days.</p>
+                    <strong class="text-on-surface block" data-i18n="index.step4.purge_title">30-Day Auto-Purge Policy</strong>
+                    <p class="text-on-surface-variant mt-0.5" data-i18n="index.step4.purge_desc">This analysis session is assigned a hard retention schedule. The document, text extracts, and reports will be deleted in 30 days.</p>
                   </div>
                 </div>
               </div>
@@ -551,7 +556,7 @@
               <div class="flex items-start gap-3 p-4 bg-surface-container-low border border-outline-variant/10 rounded">
                 <input class="w-4 h-4 border-outline-variant/50 rounded bg-transparent text-primary focus:ring-primary/20 cursor-pointer mt-1"
                        id="consent" type="checkbox" x-model="consentConfirmed"/>
-                <label class="text-xs text-on-surface-variant cursor-pointer leading-relaxed" for="consent">
+                <label class="text-xs text-on-surface-variant cursor-pointer leading-relaxed" for="consent" data-i18n="index.step4.consent_label">
                   I confirm that I possess corporate authorization and security clearance to upload this asset to the PT SYDECO LightML pipeline. I consent to automatic processing and transient text extraction.
                 </label>
               </div>
@@ -560,12 +565,12 @@
             <!-- Footer navigation -->
             <div class="flex justify-between pt-6 border-t border-outline-variant/10">
               <button type="button" @click="goToStep(3)"
-                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-sm font-semibold transition-all">
+                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-sm font-semibold transition-all" data-i18n="index.step4.back_button">
                 Back to Options
               </button>
               <button type="button" @click="startPipeline()"
                       :disabled="!consentConfirmed"
-                      class="gold-button px-10 py-3.5 rounded-md font-bold tracking-widest text-label-md">
+                      class="gold-button px-10 py-3.5 rounded-md font-bold tracking-widest text-label-md" data-i18n="index.step4.initiate_button">
                 INITIATE PIPELINE ANALYSIS
               </button>
             </div>
@@ -582,19 +587,19 @@
 
             <div class="space-y-2">
               <h3 class="font-editorial text-2xl" x-text="errorMsg ? 'Pipeline Execution Blocked' : 'Sovereign Pipeline Processing…'">Sovereign Pipeline Processing…</h3>
-              <p class="text-on-surface-variant text-sm font-body max-w-lg">
+              <p class="text-on-surface-variant text-sm font-body max-w-lg" data-i18n="index.step5.description">
                 Your document is executing locally inside the secure partition. This process runs synchronously.
               </p>
               <!-- Timer display -->
               <p class="text-primary font-mono text-sm mt-2 font-bold" x-show="!errorMsg">
-                Elapsed Time: <span x-text="elapsedSeconds"></span> seconds
+                <span data-i18n="index.step5.elapsed_time_label">Elapsed Time:</span> <span x-text="elapsedSeconds"></span> <span data-i18n="index.step5.seconds_suffix">seconds</span>
               </p>
             </div>
 
             <!-- Overall Progress Bar -->
             <div class="w-full max-w-md bg-surface-container-low p-5 border border-outline-variant/15 rounded-md space-y-3" x-show="!errorMsg">
               <div class="flex justify-between items-center text-xs font-semibold font-body">
-                <span class="text-on-surface-variant uppercase tracking-widest font-bold text-[10px]">Overall Progress</span>
+                <span class="text-on-surface-variant uppercase tracking-widest font-bold text-[10px]" data-i18n="index.step5.overall_progress_label">Overall Progress</span>
                 <span class="text-primary font-mono font-bold text-sm" x-text="progressPct + '%'">0%</span>
               </div>
               <div class="w-full bg-surface-variant/40 rounded-full h-2 overflow-hidden border border-outline-variant/10">
@@ -606,7 +611,7 @@
             </div>
 
             <!-- Stage checklists -->
-            <div class="w-full max-w-md text-left font-body text-xs space-y-4 bg-surface-container-low p-6 border border-outline-variant/15 rounded-md" x-show="!errorMsg">
+            <div class="w-full max-w-md text-left font-body text-xs space-y-4 bg-surface-container-low p-6 border border-outline-variant/15 rounded-md" x-show="!errorMsg && !showConfirmationPrompt">
               <!-- Uploading -->
               <div class="flex items-center justify-between"
                    :class="activeStage === 'uploading' ? 'text-primary font-bold' : (isStageDone('uploading') ? 'text-on-surface-variant/50' : 'opacity-30')">
@@ -614,7 +619,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('uploading')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'uploading'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('uploading')">pending</span>
-                  <span>1. Document Ingestion</span>
+                  <span data-i18n="index.step5.stage_uploading_label">1. Document Ingestion</span>
                 </span>
                 <span x-text="isStageDone('uploading') ? 'Secured' : (activeStage === 'uploading' ? 'Uploading…' : 'Queued')"></span>
               </div>
@@ -626,7 +631,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('extracting')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'extracting'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('extracting')">pending</span>
-                  <span>2. Structural Parsing & Text Extraction</span>
+                  <span data-i18n="index.step5.stage_extracting_label">2. Structural Parsing & Text Extraction</span>
                 </span>
                 <span x-text="isStageDone('extracting') ? 'Parsed' : (activeStage === 'extracting' ? 'Reading…' : 'Queued')"></span>
               </div>
@@ -638,7 +643,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('classifying')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'classifying'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('classifying')">pending</span>
-                  <span>3. Language, Juris, & Type Classification</span>
+                  <span data-i18n="index.step5.stage_classifying_label">3. Language, Juris, & Type Classification</span>
                 </span>
                 <span x-text="isStageDone('classifying') ? 'Classified' : (activeStage === 'classifying' ? 'Identifying…' : 'Queued')"></span>
               </div>
@@ -650,7 +655,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('analyzing')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'analyzing'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('analyzing')">pending</span>
-                  <span>4. Mandatory & Risky Clause Screening</span>
+                  <span data-i18n="index.step5.stage_analyzing_label">4. Mandatory & Risky Clause Screening</span>
                 </span>
                 <span x-text="isStageDone('analyzing') ? 'Screened' : (activeStage === 'analyzing' ? 'Checking…' : 'Queued')"></span>
               </div>
@@ -662,7 +667,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('scoring')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'scoring'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('scoring')">pending</span>
-                  <span>5. Risk Matrix Scoring</span>
+                  <span data-i18n="index.step5.stage_scoring_label">5. Risk Matrix Scoring</span>
                 </span>
                 <span x-text="isStageDone('scoring') ? 'Scored' : (activeStage === 'scoring' ? 'Calculating…' : 'Queued')"></span>
               </div>
@@ -674,7 +679,7 @@
                   <span class="material-symbols-outlined text-[16px] text-green-400" x-show="isStageDone('reasoning')">check_circle</span>
                   <span class="material-symbols-outlined text-[16px] animate-spin" x-show="activeStage === 'reasoning'">sync</span>
                   <span class="material-symbols-outlined text-[16px]" x-show="isStagePending('reasoning')">pending</span>
-                  <span>6. AI Reasoning &amp; Explanation (LLM)</span>
+                  <span data-i18n="index.step5.stage_reasoning_label">6. AI Reasoning &amp; Explanation (LLM)</span>
                 </span>
                 <span x-text="isStageDone('reasoning') ? 'Explained' : (activeStage === 'reasoning' ? 'Reasoning…' : 'Queued')"></span>
               </div>
@@ -692,23 +697,77 @@
               </div>
             </div>
 
+            <!-- Low Classification Confidence Confirmation Prompt -->
+            <div class="w-full max-w-md text-left font-body text-xs space-y-5 bg-surface-container-low p-6 border border-primary/30 rounded-md" x-show="showConfirmationPrompt">
+              <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-amber-500 text-[24px]">warning</span>
+                <div>
+                  <h4 class="font-bold text-sm text-on-surface mb-1">Low Classification Confidence</h4>
+                  <p class="text-on-surface-variant/80 leading-relaxed text-xs">
+                    The NLI classifier is uncertain about this document type. Please confirm or select the correct contract type profile to generate the professional analysis report.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Candidates list -->
+              <div class="border-t border-outline-variant/10 pt-4 space-y-2">
+                <span class="font-semibold text-on-surface text-[11px] uppercase tracking-wider">Top Detected Candidates:</span>
+                <div class="space-y-1.5 pt-1">
+                  <template x-for="cand in candidates" :key="cand.label">
+                    <div class="flex items-center justify-between bg-surface-container/50 px-3 py-2 rounded text-[11px]">
+                      <span class="font-medium text-on-surface" x-text="cand.label"></span>
+                      <span class="text-on-surface-variant font-mono" x-text="Math.round(cand.confidence * 100) + '%'"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Select Contract Type Dropdown -->
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-on-surface" for="confirmedType">Select Document Profile</label>
+                <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-2.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-xs"
+                        id="confirmedType" x-model="confirmedType">
+                  <option value="service">Service Agreement</option>
+                  <option value="nda">Non-Disclosure Agreement (NDA)</option>
+                  <option value="employment">Employment Contract</option>
+                  <option value="software">Software License</option>
+                  <option value="generic">Other / Generic Contract</option>
+                </select>
+              </div>
+
+              <div class="pt-2 flex justify-end gap-3">
+                <button type="button" @click="cancelPipeline()"
+                        class="px-4 py-2 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold font-body transition-all">
+                  Cancel
+                </button>
+                <button type="button" @click="confirmAndRetry()"
+                        class="gold-button px-5 py-2 rounded text-xs font-bold font-body uppercase tracking-wider">
+                  Confirm &amp; Analyze
+                </button>
+              </div>
+            </div>
+
             <!-- Error message container -->
             <div class="w-full max-w-md bg-red-900/20 border border-red-500/30 text-red-300 p-4 rounded text-left text-sm"
                  x-show="errorMsg" x-text="errorMsg"></div>
 
             <!-- Neutral message for long execution -->
-            <p class="text-[11px] text-on-surface-variant/50 max-w-md" x-show="elapsedSeconds > 15 && !errorMsg">
-              <strong>Notice:</strong> High-volume files or NLI/LLM reasoning blocks require processing time. You can safely close or navigate away from this screen; the analysis runs securely in the background.
+            <p class="text-[11px] text-on-surface-variant/50 max-w-md" x-show="elapsedSeconds > 15 && !errorMsg && !showConfirmationPrompt">
+              <strong data-i18n="index.step5.notice_title">Notice:</strong> <span data-i18n="index.step5.notice_body">High-volume files or NLI/LLM reasoning blocks require processing time. You can safely close or navigate away from this screen; the analysis runs securely in the background.</span>
             </p>
 
             <!-- Background trigger action -->
-            <div class="pt-4 flex gap-4 w-full max-w-md justify-center">
+            <div class="pt-4 flex gap-4 w-full max-w-md justify-center" x-show="!showConfirmationPrompt">
               <button type="button" @click="cancelPipeline()"
-                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold font-body transition-all">
+                      class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold font-body transition-all" data-i18n="index.step5.cancel_button">
                 Cancel Analysis
               </button>
+              <button type="button" @click="retryAnalysis()" x-show="showRetry"
+                      class="gold-button px-6 py-3 rounded-md text-xs font-bold font-body uppercase tracking-wider" data-i18n="index.step5.retry_button">
+                Retry Analysis
+              </button>
               <button type="button" @click="runInBackground()" x-show="!errorMsg"
-                      class="gold-button px-6 py-3 rounded-md text-xs font-bold font-body uppercase tracking-wider">
+                      class="gold-button px-6 py-3 rounded-md text-xs font-bold font-body uppercase tracking-wider" data-i18n="index.step5.background_button">
                 Run in Background
               </button>
             </div>
@@ -720,55 +779,55 @@
       <!-- RIGHT COMPANION METRICS SIDEBAR (4 cols) -->
       <div class="lg:col-span-4 glass-panel rounded-lg p-8 flex flex-col justify-between" x-show="currentStep < 5">
         <div>
-          <h3 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-6 border-b border-outline-variant/10 pb-4">Pipeline Telemetry</h3>
-          
+          <h3 class="font-label-md text-label-md text-primary uppercase tracking-widest mb-6 border-b border-outline-variant/10 pb-4" data-i18n="index.sidebar.title">Pipeline Telemetry</h3>
+
           <!-- Contextual guides depending on step -->
           <div class="space-y-6 font-body text-xs text-on-surface-variant/90 leading-relaxed">
             <!-- Step 1 Rationale -->
             <div x-show="currentStep === 1">
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Supported formats</h4>
-              <p class="mb-4">Ingests standard structured TXT, raw DOCX binaries, and clean text-based PDFs (up to 10 MB in size).</p>
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Sovereignty Notice</h4>
-              <p>All extraction algorithms and classification scripts run locally. Your documents do not traverse external servers.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step1_formats_title">Supported formats</h4>
+              <p class="mb-4" data-i18n="index.sidebar.step1_formats_desc">Ingests standard structured TXT, raw DOCX binaries, and clean text-based PDFs (up to 10 MB in size).</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step1_sovereignty_title">Sovereignty Notice</h4>
+              <p data-i18n="index.sidebar.step1_sovereignty_desc">All extraction algorithms and classification scripts run locally. Your documents do not traverse external servers.</p>
             </div>
 
             <!-- Step 2 Rationale -->
             <div x-show="currentStep === 2" style="display:none;">
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Why Context Matters</h4>
-              <p class="mb-4">Correct jurisdiction filters apply relevant local legal codes (e.g. Code civil articles in France). Contract categories assign custom mandatory clause lists to identify omissions accurately.</p>
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Auto-Detection Fallback</h4>
-              <p>If set to auto, the pipeline scans headings and governing clauses to identify parameters during Step 3 processing.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step2_context_title">Why Context Matters</h4>
+              <p class="mb-4" data-i18n="index.sidebar.step2_context_desc">Correct jurisdiction filters apply relevant local legal codes (e.g. Code civil articles in France). Contract categories assign custom mandatory clause lists to identify omissions accurately.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step2_fallback_title">Auto-Detection Fallback</h4>
+              <p data-i18n="index.sidebar.step2_fallback_desc">If set to auto, the pipeline scans headings and governing clauses to identify parameters during Step 3 processing.</p>
             </div>
 
             <!-- Step 3 Rationale -->
             <div x-show="currentStep === 3" style="display:none;">
-              <h4 class="font-bold text-on-surface mb-2 text-sm">L4 LLM Layer Latency</h4>
-              <p class="mb-4">Selecting Comprehensive mode engages local Qwen Transformers to output rationale explanations. This requires extensive local GPU/CPU cycles.</p>
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Review Routing</h4>
-              <p>Directing findings to specific analysts expedites reporting validation times inside the case queue.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step3_latency_title">L4 LLM Layer Latency</h4>
+              <p class="mb-4" data-i18n="index.sidebar.step3_latency_desc">Selecting Comprehensive mode engages local Qwen Transformers to output rationale explanations. This requires extensive local GPU/CPU cycles.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step3_routing_title">Review Routing</h4>
+              <p data-i18n="index.sidebar.step3_routing_desc">Directing findings to specific analysts expedites reporting validation times inside the case queue.</p>
             </div>
 
             <!-- Step 4 Rationale -->
             <div x-show="currentStep === 4" style="display:none;">
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Audit Trail Compliance</h4>
-              <p class="mb-4">Under sovereign directives, this upload action is logged as a secure audit event containing user credentials, IP address, and hash sums.</p>
-              <h4 class="font-bold text-on-surface mb-2 text-sm">Retention Lock</h4>
-              <p>Purges cannot be delayed. Once the 30-day window expires, files are scrubbed in compliance with corporate privacy standards.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step4_audit_title">Audit Trail Compliance</h4>
+              <p class="mb-4" data-i18n="index.sidebar.step4_audit_desc">Under sovereign directives, this upload action is logged as a secure audit event containing user credentials, IP address, and hash sums.</p>
+              <h4 class="font-bold text-on-surface mb-2 text-sm" data-i18n="index.sidebar.step4_retention_title">Retention Lock</h4>
+              <p data-i18n="index.sidebar.step4_retention_desc">Purges cannot be delayed. Once the 30-day window expires, files are scrubbed in compliance with corporate privacy standards.</p>
             </div>
           </div>
         </div>
-        
+
         <!-- Live Hardware State Indicators -->
         <div class="mt-8 pt-8 border-t border-outline-variant/10 space-y-4">
           <div class="flex justify-between items-center text-xs font-body">
-            <span class="text-on-surface-variant uppercase tracking-wider">Local Processing Node</span>
+            <span class="text-on-surface-variant uppercase tracking-wider" data-i18n="index.sidebar.node_label">Local Processing Node</span>
             <span class="text-green-400 font-bold flex items-center gap-1">
               <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span>
-              Online
+              <span data-i18n="index.sidebar.node_online">Online</span>
             </span>
           </div>
           <div class="flex justify-between items-center text-xs font-body">
-            <span class="text-on-surface-variant uppercase tracking-wider">Encryption Core</span>
+            <span class="text-on-surface-variant uppercase tracking-wider" data-i18n="index.sidebar.encryption_core_label">Encryption Core</span>
             <span class="text-primary font-bold">AES-256</span>
           </div>
         </div>
@@ -785,23 +844,23 @@
       <div class="text-center space-y-6 max-w-3xl mx-auto">
         <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-primary font-mono text-[10px] uppercase tracking-widest">
           <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-          Enterprise Security Partition Active
+          <span data-i18n="index.landing.badge">Enterprise Security Partition Active</span>
         </div>
         <h1 class="font-editorial text-5xl md:text-6xl text-on-surface leading-tight">
-          Sovereign Contract <br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-300 font-bold">Risk Intelligence</span>
+          <span data-i18n="index.landing.hero_title_line1">Sovereign Contract</span> <br>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-amber-300 font-bold" data-i18n="index.landing.hero_title_line2">Risk Intelligence</span>
         </h1>
-        <p class="font-body text-base text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+        <p class="font-body text-base text-on-surface-variant max-w-2xl mx-auto leading-relaxed" data-i18n="index.landing.hero_description">
           Sydeco Contract Risk Analyzer (CRA) provides multi-layered deep legal analysis on agreement documents. Audits governing law, venue, missing provisions, and risky clauses locally using LightML—without data leaving your network.
         </p>
         <div class="pt-6 flex flex-wrap justify-center gap-4">
           <a href="/login" class="gold-button px-8 py-4 rounded-md text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="text-decoration:none;">
             <span class="material-symbols-outlined text-[18px]">vpn_key</span>
-            Authenticate to Begin
+            <span data-i18n="index.landing.authenticate_button">Authenticate to Begin</span>
           </a>
           <a href="/docs" class="px-8 py-4 rounded-md border border-outline-variant/40 hover:bg-surface-container text-xs font-bold uppercase tracking-wider text-on-surface flex items-center gap-2" style="text-decoration:none;">
             <span class="material-symbols-outlined text-[18px]">menu_book</span>
-            View API Docs
+            <span data-i18n="index.landing.view_docs_button">View API Docs</span>
           </a>
         </div>
       </div>
@@ -815,8 +874,8 @@
             <div class="w-12 h-12 rounded-lg bg-primary/5 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors">
               <span class="material-symbols-outlined text-[28px]">shield</span>
             </div>
-            <h3 class="font-editorial text-xl font-bold text-on-surface">100% Local Sovereignty</h3>
-            <p class="font-body text-xs text-on-surface-variant leading-relaxed">
+            <h3 class="font-editorial text-xl font-bold text-on-surface" data-i18n="index.landing.pillar1_title">100% Local Sovereignty</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="index.landing.pillar1_desc">
               Your documents never traverse external networks. Ingestion, OCR parsing, NLI classification, and LLM explanation tasks execute fully locally on isolated hardware cores.
             </p>
           </div>
@@ -828,8 +887,8 @@
             <div class="w-12 h-12 rounded-lg bg-primary/5 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors">
               <span class="material-symbols-outlined text-[28px]">layers</span>
             </div>
-            <h3 class="font-editorial text-xl font-bold text-on-surface">LightML Layered Audit</h3>
-            <p class="font-body text-xs text-on-surface-variant leading-relaxed">
+            <h3 class="font-editorial text-xl font-bold text-on-surface" data-i18n="index.landing.pillar2_title">LightML Layered Audit</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="index.landing.pillar2_desc">
               Leverages a 4-layer inspection pipeline: rule-based compliance, DistilBERT classification models, structured score validation policies, and localized Qwen summary commentary.
             </p>
           </div>
@@ -841,8 +900,8 @@
             <div class="w-12 h-12 rounded-lg bg-primary/5 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary/10 transition-colors">
               <span class="material-symbols-outlined text-[28px]">library_books</span>
             </div>
-            <h3 class="font-editorial text-xl font-bold text-on-surface">Integrated Citations</h3>
-            <p class="font-body text-xs text-on-surface-variant leading-relaxed">
+            <h3 class="font-editorial text-xl font-bold text-on-surface" data-i18n="index.landing.pillar3_title">Integrated Citations</h3>
+            <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="index.landing.pillar3_desc">
               Every identified risk is automatically linked to matching citations from the system legal library. Reviewers can cross-reference, audit, and approve findings inside the interactive editor.
             </p>
           </div>
@@ -854,12 +913,12 @@
       <div class="glass-panel p-6 rounded-lg border border-outline-variant/15 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-body">
         <div class="flex items-center gap-3">
           <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping"></span>
-          <span class="text-on-surface">Security Node Node-01: <strong class="text-green-400">Ready</strong></span>
+          <span class="text-on-surface"><span data-i18n="index.landing.readiness_node_label">Security Node Node-01:</span> <strong class="text-green-400" data-i18n="index.landing.readiness_status">Ready</strong></span>
         </div>
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-on-surface-variant">
-          <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-primary">check_circle</span> DistilBERT Classifier Active</span>
-          <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-primary">check_circle</span> Qwen-3 Engine Available</span>
-          <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-primary">lock</span> AES-256 Storage Encrypted</span>
+          <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-primary">check_circle</span> <span data-i18n="index.landing.readiness_distilbert">DistilBERT Classifier Active</span></span>
+          <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-primary">check_circle</span> <span data-i18n="index.landing.readiness_qwen">Qwen-3 Engine Available</span></span>
+          <span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-primary">lock</span> <span data-i18n="index.landing.readiness_encryption">AES-256 Storage Encrypted</span></span>
         </div>
       </div>
 
@@ -869,14 +928,14 @@
   <!-- Footer -->
   <footer class="w-full py-10 px-margin-desktop flex flex-col md:flex-row justify-between items-center bg-surface-container-lowest border-t border-outline-variant/10">
     <div class="flex items-center gap-4 mb-6 md:mb-0">
-      <span class="font-editorial text-label-md text-primary text-lg">Sydeco CRA</span>
+      <span class="font-editorial text-label-md text-primary text-lg" data-i18n="brand.name">Sydeco CRA</span>
       <span class="text-on-surface-variant/40">|</span>
-      <span class="font-body text-[13px] text-on-surface-variant/80">© 2026 PT SYDECO. Contract Risk Analyzer.</span>
+      <span class="font-body text-[13px] text-on-surface-variant/80" data-i18n="index.footer.copyright">© 2026 PT SYDECO. Contract Risk Analyzer.</span>
     </div>
     <div class="flex gap-8 font-body text-xs">
-      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
-      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Terms</a>
-      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Compliance</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#" data-i18n="index.footer.privacy">Privacy</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#" data-i18n="index.footer.terms">Terms</a>
+      <a class="text-on-surface-variant hover:text-primary transition-colors" href="#" data-i18n="index.footer.compliance">Compliance</a>
     </div>
   </footer>
 
@@ -914,8 +973,16 @@
         elapsedSeconds: 0,
         activeStage: 'uploading', // 'uploading', 'extracting', 'classifying', 'analyzing', 'scoring', 'preparing'
         errorMsg: '',
+        showRetry: false,
         timerInterval: null,
         pollingInterval: null,
+
+        // Low confidence confirmation variables
+        showConfirmationPrompt: false,
+        candidates: [],
+        detectedLabel: '',
+        detectedConfidence: 0,
+        confirmedType: 'generic',
 
         setFile(file) {
           if (!file) return;
@@ -1026,13 +1093,13 @@
               if (resp.status === 401) { window.location.href = '/login'; return; }
               if (resp.ok) {
                 const data = await resp.json();
-                const status = data.status; // queued, running, completed, failed
+                const status = data.status; // queued, processing, completed, failed, retryable
                 this.progressPct = data.progress_pct !== undefined ? data.progress_pct : this.progressPct;
 
                 if (status === 'queued') {
                   this.activeStage = 'uploading';
                   this.progressText = 'Queuing file…';
-                } else if (status === 'running') {
+                } else if (status === 'processing') {
                   this.activeStage = data.progress_stage || this.activeStage;
                   this.progressText = data.progress_stage ? data.progress_stage.replace('_', ' ').toUpperCase() + '…' : 'PROCESSING…';
                 } else if (status === 'completed') {
@@ -1043,6 +1110,39 @@
                   setTimeout(() => {
                     window.location.href = '/result/' + this.analysisId;
                   }, 1000);
+                } else if (status === 'retryable') {
+                  this.progressPct = 100;
+                  if (data.error_message === 'low_confidence') {
+                    this.progressText = 'CONFIRMATION REQUIRED';
+                    this.showConfirmationPrompt = true;
+                    this.candidates = data.candidates || [];
+                    this.detectedLabel = data.detected_label || '';
+                    this.detectedConfidence = data.detected_confidence || 0;
+                    
+                    const labelMapping = {
+                      'service agreement': 'service',
+                      'non-disclosure agreement': 'nda',
+                      'employment contract': 'employment',
+                      'software license': 'software'
+                    };
+                    
+                    let foundMatch = false;
+                    if (this.detectedLabel) {
+                      const val = labelMapping[this.detectedLabel.toLowerCase()];
+                      if (val) {
+                        this.confirmedType = val;
+                        foundMatch = true;
+                      }
+                    }
+                    if (!foundMatch) {
+                      this.confirmedType = 'generic';
+                    }
+                  } else {
+                    this.progressText = 'INTERRUPTED';
+                    this.errorMsg = (data.error_message || 'Analysis was interrupted.') + ' Click Retry to resume.';
+                    this.showRetry = true;
+                  }
+                  this.stopTimers();
                 } else if (status === 'failed') {
                   this.progressPct = 100;
                   this.progressText = 'FAILED';
@@ -1054,6 +1154,49 @@
               // Ignore transient network errors during poll
             }
           }, 2000);
+        },
+
+        async retryAnalysis() {
+          this.showRetry = false;
+          this.errorMsg = '';
+          this.progressPct = 0;
+          this.progressText = 'Retrying…';
+          const resp = await fetch(`/api/v1/result/${this.analysisId}/retry`, { method: 'POST' });
+          if (resp.ok) {
+            this.pollStatus();
+          } else {
+            const err = await resp.json().catch(() => ({}));
+            this.errorMsg = err.error || 'Retry failed.';
+          }
+        },
+
+        async confirmAndRetry() {
+          this.showConfirmationPrompt = false;
+          this.errorMsg = '';
+          this.progressPct = 0;
+          this.progressText = 'Re-analyzing with confirmed type…';
+          this.loading = true;
+          this.activeStage = 'uploading';
+          
+          this.elapsedSeconds = 0;
+          if (!this.timerInterval) {
+            this.timerInterval = setInterval(() => {
+              this.elapsedSeconds++;
+            }, 1000);
+          }
+
+          const resp = await fetch(`/api/v1/result/${this.analysisId}/retry`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: this.confirmedType })
+          });
+          if (resp.ok) {
+            this.pollStatus();
+          } else {
+            const err = await resp.json().catch(() => ({}));
+            this.errorMsg = err.error || 'Failed to submit confirmation.';
+            this.stopTimers();
+          }
         },
 
         cancelPipeline() {

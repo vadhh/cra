@@ -33,6 +33,12 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 logger = logging.getLogger(__name__)
 
 import os as _os
+
+# Enforce offline mode if downloads not allowed
+if _os.getenv("LDV_DOWNLOAD_MODELS", "0") != "1":
+    _os.environ["HF_HUB_OFFLINE"] = "1"
+    _os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 _ENV_MODEL   = _os.getenv("LDV_DISTILBERT_MODEL", "")
 _LOCAL_MODEL = _os.path.join(_os.path.dirname(__file__), "..", "models", "distilbert-base-uncased-mnli")
 MODEL_ID = (
@@ -46,7 +52,12 @@ MODEL_ID = (
 # Patterns are anchored as whole words (\b) to avoid false matches like
 # "employé annuellement" (French: "applied annually") triggering employment.
 
-_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
+# Minimum keyword hits to trust a keyword result over NLI
+_KEYWORD_MIN_HITS = 2
+# NLI confidence below this → apply keyword override when keyword is strong
+_NLI_OVERRIDE_THRESHOLD = 0.85
+
+_STATIC_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
     "lease agreement": [
         r"\bbail\b", r"\bbailleur\b", r"\blocataire\b", r"\bloyer\b",
         r"\bhuurder\b", r"\bverhuurder\b", r"\bhuurprijs\b",
@@ -109,11 +120,6 @@ _KEYWORD_DOC_TYPES: dict[str, list[str]] = {
         r"\bexperience\s+summary\b",
     ],
 }
-
-# Minimum keyword hits to trust a keyword result over NLI
-_KEYWORD_MIN_HITS = 2
-# NLI confidence below this → apply keyword override when keyword is strong
-_NLI_OVERRIDE_THRESHOLD = 0.40
 
 
 def _keyword_doc_type(text: str) -> tuple[str | None, int]:
@@ -205,6 +211,175 @@ _DOC_TYPE_SPECS: list[dict] = [
         "hypothesis": "This document is a resume, curriculum vitae (CV), article, advertisement, letter, or other non-contract text.",
     },
 ]
+
+_STATIC_DOC_TYPE_SPECS = _DOC_TYPE_SPECS
+
+_CACHED_DOC_TYPE_SPECS: Optional[list[dict]] = None
+_CACHED_KEYWORD_DOC_TYPES: Optional[dict[str, list[str]]] = None
+
+
+def clear_classification_cache() -> None:
+    """Clear cached document type specs and keyword overrides."""
+    global _CACHED_DOC_TYPE_SPECS, _CACHED_KEYWORD_DOC_TYPES
+    _CACHED_DOC_TYPE_SPECS = None
+    _CACHED_KEYWORD_DOC_TYPES = None
+
+
+def load_doc_type_specs() -> list[dict]:
+    global _CACHED_DOC_TYPE_SPECS
+    if _CACHED_DOC_TYPE_SPECS is not None:
+        return _CACHED_DOC_TYPE_SPECS
+    
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        specs = []
+        for pid in manager.list_profiles():
+            p = manager.get_profile(pid)
+            label = p["metadata"]["display_name"].lower()
+            specs.append({
+                "label": label,
+                "hypothesis": p["classification"]["nli_hypothesis"]
+            })
+        
+        # Append non-contract specs that aren't in the registry
+        for spec in _STATIC_DOC_TYPE_SPECS:
+            if spec["label"] in ["invoice", "receipt", "purchase order", "non-contract"]:
+                specs.append(spec)
+                
+        _CACHED_DOC_TYPE_SPECS = specs
+        return _CACHED_DOC_TYPE_SPECS
+    except Exception as e:
+        logger.warning("Failed to load doc type specs dynamically, falling back to static: %s", e)
+        return _STATIC_DOC_TYPE_SPECS
+
+
+def load_keyword_doc_types() -> dict[str, list[str]]:
+    global _CACHED_KEYWORD_DOC_TYPES
+    if _CACHED_KEYWORD_DOC_TYPES is not None:
+        return _CACHED_KEYWORD_DOC_TYPES
+    
+    try:
+        from detector.detector_profiles import ProfileManager
+        manager = ProfileManager()
+        kw_types = {}
+        for pid in manager.list_profiles():
+            p = manager.get_profile(pid)
+            label = p["metadata"]["display_name"].lower()
+            patterns = []
+            ko = p["classification"].get("keyword_overrides", {})
+            for lang, words in ko.items():
+                for word in words:
+                    escaped_word = re.escape(word)
+                    pattern = escaped_word.replace(r"\ ", r"\s+").replace(" ", r"\s+")
+                    patterns.append(rf"\b{pattern}\b")
+            kw_types[label] = patterns
+
+            
+        # Append non-contract types
+        for k in ["invoice", "receipt", "purchase order", "non-contract"]:
+            kw_types[k] = _STATIC_KEYWORD_DOC_TYPES[k]
+            
+        _CACHED_KEYWORD_DOC_TYPES = kw_types
+        return _CACHED_KEYWORD_DOC_TYPES
+    except Exception as e:
+        logger.warning("Failed to load keyword doc types dynamically, falling back to static: %s", e)
+        return _STATIC_KEYWORD_DOC_TYPES
+
+
+def _has_word(word: str, text: str) -> bool:
+    pattern = r'\b' + re.escape(word).replace(r'\ ', r'\s+').replace(' ', r'\s+') + r'\b'
+    return re.search(pattern, text, re.I) is not None
+
+def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
+    """Return (best_label, hit_count, is_title_match) from highly specific keyword matching on text[:1200]."""
+    # Extract the first 3 lines of the text for title-matching
+    lines = [line.strip().lower() for line in text.split('\n') if line.strip()][:3]
+    header = " ".join(lines)
+    
+    # 1. Header/Title Matching (Precedence based on explicit title terms)
+    if any(x in header for x in ["saas", "software as a service"]):
+        return "saas agreement", 5, True
+    if any(x in header for x in ["it service", "it support", "information technology"]):
+        return "it service agreement", 5, True
+    if any(x in header for x in ["construction"]):
+        return "construction agreement", 5, True
+    if any(x in header for x in ["insurance"]):
+        return "insurance agreement", 5, True
+    if any(x in header for x in ["consulting", "consultant"]):
+        return "consulting agreement", 5, True
+    if any(x in header for x in ["partnership", "kemitraan"]):
+        return "partnership agreement", 5, True
+    if any(x in header for x in ["non-disclosure", "confidentiality", "nda", "kerahasiaan"]):
+        return "non-disclosure agreement", 5, True
+    if any(x in header for x in ["loan", "lender", "borrower", "pinjaman"]):
+        return "loan agreement", 5, True
+    if any(x in header for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja"]):
+        return "employment contract", 5, True
+    if any(x in header for x in ["lease", "rental", "sewa", "bail"]):
+        return "lease agreement", 5, True
+    if any(x in header for x in ["software license", "lisensi", "eula"]):
+        return "software license", 5, True
+    if any(x in header for x in ["purchase agreement", "purchase of", "pembelian"]):
+        return "purchase agreement", 5, True
+    if any(x in header for x in ["commercial agreement", "commercial contract", "commercial b2b", "business agreement", "commercial"]):
+        return "commercial agreement", 5, True
+    if any(x in header for x in ["master services", "general contract", "general agreement", "long agreement"]):
+        return "general contract", 5, True
+    if any(x in header for x in ["service agreement", "services agreement", "prestation de service"]):
+        return "service agreement", 5, True
+    if any(x in header for x in ["invoice", "faktur"]):
+        return "invoice", 5, True
+    if any(x in header for x in ["receipt", "kwitansi", "reçu"]):
+        return "receipt", 5, True
+    if any(x in header for x in ["purchase order"]):
+        return "purchase order", 5, True
+
+    # 2. Body Snippet Matching
+    snippet = text[:1200].lower()
+    
+    if any(_has_word(x, snippet) for x in ["saas", "software as a service"]):
+        return "saas agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["it service", "it support", "information technology services"]):
+        return "it service agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["construction", "building contract"]):
+        return "construction agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["insurance policy", "insurer"]):
+        return "insurance agreement", 5, False
+    if any(_has_word(x, snippet) for x in ["software license", "licensor", "licensee", "eula"]):
+        return "software license", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["non-disclosure", "confidentiality", "nda"]):
+        # Verify it's not a generic contract mentioning NDA
+        if "master services" not in snippet and "services agreement" not in snippet:
+            return "non-disclosure agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["loan", "lender", "borrower"]):
+        return "loan agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["employee", "employer", "employment", "pekerja", "pemberi kerja", "perjanjian kerja"]):
+        return "employment contract", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["lease", "tenant", "landlord", "rent", "sewa", "bail"]):
+        return "lease agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["partnership", "partner"]):
+        if "non-disclosure" not in snippet and "confidentiality" not in snippet:
+            return "partnership agreement", 5, False
+            
+    if any(_has_word(x, snippet) for x in ["purchase", "seller", "buyer", "goods"]):
+        return "purchase agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["commercial agreement", "commercial contract", "business agreement"]):
+        return "commercial agreement", 5, False
+        
+    if any(_has_word(x, snippet) for x in ["services", "provider", "client", "jasa"]):
+        if any(_has_word(x, snippet) for x in ["consulting", "consultant", "advisory"]):
+            return "consulting agreement", 5, False
+        return "service agreement", 5, False
+        
+    return "general contract", 2, False
+
 
 # ── Clause risk hypotheses for zero-shot classification ───────────────────────
 #
@@ -325,8 +500,10 @@ def _load_model():
 
     try:
         logger.info("Loading DistilBERT NLI model: %s", MODEL_ID)
-        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-        m = AutoModelForSequenceClassification.from_pretrained(MODEL_ID)
+        download_allowed = _os.getenv("LDV_DOWNLOAD_MODELS", "0") == "1"
+        local_files_only = not download_allowed
+        _tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, local_files_only=local_files_only)
+        m = AutoModelForSequenceClassification.from_pretrained(MODEL_ID, local_files_only=local_files_only)
         device = "cuda" if torch.cuda.is_available() else "cpu"
         m = m.to(device)
         m.training = False  # inference mode without using eval()
@@ -347,36 +524,86 @@ def is_available() -> bool:
 
 # ── NLI inference helpers ──────────────────────────────────────────────────────
 
-def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
-    """Return the entailment probability for (premise, hypothesis) pair."""
+def _batch_entailment_scores(model, tokenizer, pairs: list[tuple[str, str]], batch_size: int = 16) -> list[float]:
+    """Compute entailment probabilities for a list of (premise, hypothesis) pairs in batches."""
+    if not pairs:
+        return []
+
     device = next(model.parameters()).device
-    inputs = tokenizer(
-        premise,
-        hypothesis,
-        return_tensors="pt",
-        truncation=True,
-        max_length=512,
-        padding=True,
-    ).to(device)
-    with torch.no_grad():
-        logits = model(**inputs).logits
-
-    probs = torch.softmax(logits, dim=-1)[0]
-
     # Normalise label2id keys to uppercase to handle model variations
     label2id = {k.upper(): v for k, v in (model.config.label2id or {}).items()}
     entail_idx = label2id.get("ENTAILMENT", 2)
 
-    return float(probs[entail_idx])
+    # ponytail: batch size is set to 16 by default to balance CPU/GPU memory footprint and parallel speedups.
+    # Ceiling: large batch sizes (>64) on CPU or low-VRAM GPUs can cause memory congestion.
+    # Upgrade: dynamically adjust batch size based on execution environment.
+    env_batch = _os.getenv("LDV_NLI_BATCH_SIZE")
+    if env_batch:
+        try:
+            batch_size = int(env_batch)
+        except ValueError:
+            pass
+
+    scores = []
+    for i in range(0, len(pairs), batch_size):
+        batch = pairs[i:i + batch_size]
+        premises = [p for p, _ in batch]
+        hypotheses = [h for _, h in batch]
+
+        try:
+            inputs = tokenizer(
+                premises,
+                hypotheses,
+                return_tensors="pt",
+                truncation=True,
+                max_length=512,
+                padding=True,
+            ).to(device)
+            with torch.no_grad():
+                logits = model(**inputs).logits
+
+            probs = torch.softmax(logits, dim=-1)
+            for j in range(len(batch)):
+                scores.append(float(probs[j][entail_idx]))
+        except Exception as e:
+            logger.warning("Batch entailment score failed for range %d-%d: %s — falling back to sequential", i, i + len(batch), e)
+            # Fail-soft: sequential fallback for the failed batch
+            for premise, hypothesis in batch:
+                try:
+                    inputs = tokenizer(
+                        premise,
+                        hypothesis,
+                        return_tensors="pt",
+                        truncation=True,
+                        max_length=512,
+                        padding=True,
+                    ).to(device)
+                    with torch.no_grad():
+                        lgt = model(**inputs).logits
+                    prb = torch.softmax(lgt, dim=-1)[0]
+                    scores.append(float(prb[entail_idx]))
+                except Exception as ex:
+                    logger.warning("Sequential fallback entailment score failed: %s", ex)
+                    scores.append(0.0)
+
+    return scores
+
+
+def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
+    """Return the entailment probability for (premise, hypothesis) pair."""
+    return _batch_entailment_scores(model, tokenizer, [(premise, hypothesis)])[0]
 
 
 def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
     """Score text against each doc-type spec; return sorted by confidence desc."""
+    pairs = [(text, spec["hypothesis"]) for spec in _DOC_TYPE_SPECS]
+    scores = _batch_entailment_scores(model, tokenizer, pairs)
+
     results = []
-    for spec in _DOC_TYPE_SPECS:
-        score = _entailment_score(model, tokenizer, text, spec["hypothesis"])
+    for spec, score in zip(_DOC_TYPE_SPECS, scores):
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
+
 
 
 # ── Text splitting ─────────────────────────────────────────────────────────────
@@ -418,7 +645,7 @@ def classify_document_type(text: str) -> dict:
 
     Returns
     -------
-    {"label": str, "confidence": float, "candidates": list[dict], "source": str}
+    {"label": str, "confidence": float, "candidates": list[dict], "source": str, ...}
     Null values when model unavailable. "source" is always "classifier" here;
     app.py overrides it to "user_selected" when the user picks the document
     type manually, so consumers can tell a real ML confidence from a
@@ -426,34 +653,75 @@ def classify_document_type(text: str) -> dict:
     """
     model, tokenizer = _load_model()
     if model is None:
-        return {"label": None, "confidence": None, "candidates": [], "source": "classifier"}
+        return {
+            "label": None,
+            "confidence": None,
+            "model_confidence": None,
+            "keyword_override_confidence": None,
+            "override_applied": False,
+            "override_reason": None,
+            "source": "classifier",
+            "candidates": []
+        }
 
     premise = text[:800].strip()
     candidates = _classify_doc_type(model, tokenizer, premise)
 
     top = candidates[0]
+    
+    # Store initial model state
+    model_conf = float(top["confidence"])
+    final_label = top["label"]
+    final_conf = model_conf
+    
+    keyword_override_conf = 0.0
+    override_applied = False
+    override_reason = None
+    source = "classifier"
 
     # Keyword override: when NLI is uncertain, use multilingual keyword matching.
-    # This prevents false positives like "employé annuellement" (French: "applied
-    # annually") causing a lease agreement to be classified as employment contract.
-    if top["confidence"] < _NLI_OVERRIDE_THRESHOLD:
-        kw_label, kw_hits = _keyword_doc_type(text)
-        if kw_label and kw_hits >= _KEYWORD_MIN_HITS:
+    kw_label, kw_hits, is_title_match = _keyword_doc_type(text)
+    
+    if kw_label:
+        is_generic_nli = top["label"] in ["service agreement", "general contract"]
+        is_specific_kw = kw_label not in ["service agreement", "general contract"]
+        
+        # Override conditions:
+        # 1. Ground truth title matched explicitly
+        # 2. NLI confidence is below threshold
+        # 3. NLI output is generic (e.g. services) but keywords found a highly specific subtype (e.g. saas, IT service)
+        if is_title_match or top["confidence"] < _NLI_OVERRIDE_THRESHOLD or (is_generic_nli and is_specific_kw):
+            override_applied = True
+            source = "keyword_override"
+            keyword_override_conf = 0.85
+            final_label = kw_label
+            final_conf = 0.85
+            
+            if is_title_match:
+                override_reason = "title_match"
+            elif is_generic_nli and is_specific_kw:
+                override_reason = "generic_to_specific"
+            else:
+                override_reason = "keyword_match"
+                
             logger.info(
-                "L2 doc type: NLI confidence %.2f < %.2f; keyword override → %s (%d hits)",
-                top["confidence"], _NLI_OVERRIDE_THRESHOLD, kw_label, kw_hits,
+                "L2 doc type override: selected '%s' (NLI was '%s' %.4f, reason=%s)",
+                kw_label, top["label"], model_conf, override_reason,
             )
-            top = {"label": kw_label, "confidence": round(kw_hits / 10.0, 2)}
 
     # If confidence is extremely low, treat the document type as unknown/None.
-    if top["confidence"] < 0.15:
-        top = {"label": None, "confidence": top["confidence"]}
+    if final_conf < 0.15:
+        final_label = None
 
     return {
-        "label":      top["label"],
-        "confidence": top["confidence"],
-        "candidates": candidates[:4],
-        "source":     "classifier",
+        "label":                      final_label,
+        "confidence":                 final_conf,
+        "model_confidence":           model_conf,
+        "keyword_override_confidence": keyword_override_conf,
+        "override_applied":           override_applied,
+        "override_reason":            override_reason,
+        "source":                     source,
+        "candidates":                 candidates[:4],
     }
 
 
@@ -477,19 +745,30 @@ def classify_clauses(text: str) -> list[dict]:
     paragraphs = _split_paragraphs(text)
     paragraphs = paragraphs[:40]  # cap for CPU inference time
 
-    flagged = []
-    for para in paragraphs:
-        best_label = None
-        best_score = 0.0
+    pairs = []
+    task_mapping = []  # tracks (para_idx, spec_label) for each pair
 
+    for para_idx, para in enumerate(paragraphs):
         for spec in _CLAUSE_SPECS:
             # OR-logic: take the highest score across all hypotheses for this label
             for hyp in spec["hypotheses"]:
-                score = _entailment_score(model, tokenizer, para, hyp)
-                if score > best_score:
-                    best_score = score
-                    best_label = spec["label"]
+                pairs.append((para, hyp))
+                task_mapping.append((para_idx, spec["label"]))
 
+    if not pairs:
+        return []
+
+    scores = _batch_entailment_scores(model, tokenizer, pairs)
+
+    # Resolve the highest score per paragraph
+    para_best = {i: (None, 0.0) for i in range(len(paragraphs))}
+    for (para_idx, label), score in zip(task_mapping, scores):
+        if score > para_best[para_idx][1]:
+            para_best[para_idx] = (label, score)
+
+    flagged = []
+    for para_idx, para in enumerate(paragraphs):
+        best_label, best_score = para_best[para_idx]
         if best_score >= _CLAUSE_CONFIDENCE_THRESHOLD:
             flagged.append({
                 "text":       para[:300],
@@ -532,19 +811,32 @@ def semantic_clause_presence(
     if not paragraphs:
         return {}
 
-    found: dict[str, float] = {}
+    pairs = []
+    task_mapping = []  # tracks (clause_id, para_idx) for each pair
+
     for clause_id, title in clauses:
         hyps = _presence_hypotheses(clause_id, title)
-        best = 0.0
-        for para in paragraphs:
+        for para_idx, para in enumerate(paragraphs):
             for hyp in hyps:
-                score = _entailment_score(model, tokenizer, para, hyp)
-                if score > best:
-                    best = score
-            if best >= _SEM_PRESENCE_THRESHOLD:
-                break  # early exit — one entailing paragraph is enough
-        if best >= _SEM_PRESENCE_THRESHOLD:
-            found[clause_id] = round(best, 4)
+                pairs.append((para, hyp))
+                task_mapping.append((clause_id, para_idx))
+
+    if not pairs:
+        return {}
+
+    scores = _batch_entailment_scores(model, tokenizer, pairs)
+
+    # Resolve the highest score per clause
+    clause_best = {clause_id: 0.0 for clause_id, _ in clauses}
+    for (clause_id, _), score in zip(task_mapping, scores):
+        if score > clause_best[clause_id]:
+            clause_best[clause_id] = score
+
+    found: dict[str, float] = {}
+    for clause_id, _ in clauses:
+        best_score = clause_best[clause_id]
+        if best_score >= _SEM_PRESENCE_THRESHOLD:
+            found[clause_id] = round(best_score, 4)
 
     if found:
         logger.info("L2 semantic presence recovered %d clause(s): %s",

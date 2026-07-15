@@ -1,0 +1,75 @@
+{
+  "profile_id": "insurance_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-14",
+  "metadata": {
+    "display_name": "Insurance Agreement",
+    "family": "baseline_agreements",
+    "description": "Standard insurance policy or coverage agreement profile.",
+    "release_stage": "stable",
+    "aliases": [
+      "insurance agreement",
+      "insurance policy",
+      "verzekeringsovereenkomst"
+    ]
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document involves insurance policy coverage, premiums, or claims.",
+    "keyword_overrides": {
+      "EN": [
+        "insurance policy",
+        "insurance agreement",
+        "premium payment",
+        "insurer",
+        "insured"
+      ],
+      "ID": [
+        "asuransi",
+        "polis asuransi",
+        "premi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "default_provisions"
+    },
+    {
+      "clause_id": "notice_period"
+    }
+  ]
+}

@@ -31,6 +31,34 @@ Verify pinned deps installed cleanly — no version conflicts in pip output.
 
 ---
 
+## 2a. Alternative: Docker Compose (skips steps 3–5)
+
+`docker-compose.yml` runs the full stack (app + redis + nginx/TLS) in one command. Faster for local/staging smoke-testing than the bare-metal path above.
+
+```bash
+git clone https://github.com/vadhh/cra.git /opt/ldv && cd /opt/ldv
+
+# nginx needs a cert — deploy/certs/ is gitignored (holds a private key),
+# so a fresh clone has none. Generate a self-signed one first:
+bash deploy/gen-cert.sh          # writes deploy/certs/server.{crt,key}
+
+export LDV_SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+export LDV_ENCRYPTION_KEY=$(cd ldv-backend && python3 manage.py gen-key)
+
+docker compose up --build
+```
+
+Skipping `gen-cert.sh` is why nginx fails with `cannot load certificate "/etc/nginx/certs/server.crt"` — the mount exists, the file doesn't.
+
+Seed the admin account (once containers are up):
+```bash
+docker compose exec app python3 manage.py seed-admin
+```
+
+Serves on `https://localhost` (self-signed — browser will warn). Continue at section 6 for the health check.
+
+---
+
 ## 3. Environment Variables
 
 Create `/opt/ldv/ldv-backend/.env` (never commit this file):

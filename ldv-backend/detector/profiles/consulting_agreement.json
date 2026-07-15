@@ -1,0 +1,83 @@
+{
+  "profile_id": "consulting_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-13",
+  "metadata": {
+    "display_name": "Consulting Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Consulting Agreement profile mapping required clauses.",
+    "aliases": [
+      "consulting agreement",
+      "consultancy agreement",
+      "advisory agreement"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document covers consulting or advisory services.",
+    "keyword_overrides": {
+      "EN": [
+        "consulting",
+        "consultant",
+        "advisory",
+        "services"
+      ],
+      "ID": [
+        "konsultan",
+        "konsultasi",
+        "penasihat",
+        "jasa"
+      ],
+      "FR": [
+        "consultant",
+        "conseil",
+        "prestations",
+        "accord de conseil"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "confidentiality"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

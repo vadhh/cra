@@ -1,0 +1,83 @@
+{
+  "profile_id": "construction_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-14",
+  "metadata": {
+    "display_name": "Construction Agreement",
+    "family": "property_agreements",
+    "description": "Standard Construction, building, and engineering contract profile.",
+    "release_stage": "stable",
+    "aliases": [
+      "construction agreement",
+      "building contract",
+      "aannemingsovereenkomst"
+    ]
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document involves building construction, engineering, or real estate development.",
+    "keyword_overrides": {
+      "EN": [
+        "construction",
+        "building contract",
+        "contractor",
+        "engineering work",
+        "drawings",
+        "specifications"
+      ],
+      "ID": [
+        "konstruksi",
+        "pembangunan",
+        "kontraktor",
+        "pekerjaan sipil"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "warranty"
+    },
+    {
+      "clause_id": "indemnification"
+    },
+    {
+      "clause_id": "insurance"
+    }
+  ]
+}

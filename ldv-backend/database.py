@@ -172,6 +172,10 @@ def init_db() -> None:
             )
             if "status" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN status TEXT DEFAULT 'completed'")
+            # "running" was renamed to "processing" (2026-07-10, job-recovery durability
+            # work) to match the standard queued/processing/completed/failed/retryable
+            # vocabulary. Idempotent -- a no-op once no row holds the old value.
+            conn.execute("UPDATE analyses SET status = 'processing' WHERE status = 'running'")
             if "error_message" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN error_message TEXT")
             if "progress_pct" not in cols:
@@ -271,6 +275,25 @@ def init_db() -> None:
                 conn.execute("ALTER TABLE analyses ADD COLUMN review_comment TEXT")
             if "reviewed_at" not in cols:
                 conn.execute("ALTER TABLE analyses ADD COLUMN reviewed_at TIMESTAMP")
+            if "retry_count" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN retry_count INTEGER NOT NULL DEFAULT 0")
+
+            # Phase 2 (P6): profile provenance columns
+            if "profile_id" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN profile_id TEXT")
+            if "profile_version" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN profile_version TEXT")
+            if "detection_source" not in cols:
+                # Values: 'classifier', 'user_override', 'baseline'
+                conn.execute("ALTER TABLE analyses ADD COLUMN detection_source TEXT")
+            if "detection_confidence" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN detection_confidence REAL")
+
+            # Phase 3 (S2): score audit columns
+            if "score_breakdown" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN score_breakdown TEXT")  # JSON list
+            if "policy_version" not in cols:
+                conn.execute("ALTER TABLE analyses ADD COLUMN policy_version TEXT")
 
             # Auto-seed a default admin user if the users table is completely empty
             # (useful for fresh Docker deployments like Hugging Face Spaces)
@@ -315,6 +338,9 @@ def _conn():
     c = sqlite3.connect(get_db_path(), timeout=30.0)
     c.row_factory = sqlite3.Row
     c.execute("PRAGMA journal_mode=WAL")
+    c.execute("PRAGMA synchronous=NORMAL")
+    c.execute("PRAGMA cache_size=-10000")
+    c.execute("PRAGMA foreign_keys=ON")
     try:
         yield c
         c.commit()
@@ -388,6 +414,14 @@ def update_analysis(
     error_message: str | None = None,
     progress_pct: int | None = None,
     progress_stage: str | None = None,
+    # Phase 2 (P6): profile provenance
+    profile_id: str | None = None,
+    profile_version: str | None = None,
+    detection_source: str | None = None,
+    detection_confidence: float | None = None,
+    # Phase 3 (S2): score audit
+    score_breakdown: list | None = None,
+    policy_version: str | None = None,
 ) -> None:
     updates = ["status = ?"]
     params = [status]
@@ -415,6 +449,24 @@ def update_analysis(
     if progress_stage is not None:
         updates.append("progress_stage = ?")
         params.append(progress_stage)
+    if profile_id is not None:
+        updates.append("profile_id = ?")
+        params.append(profile_id)
+    if profile_version is not None:
+        updates.append("profile_version = ?")
+        params.append(profile_version)
+    if detection_source is not None:
+        updates.append("detection_source = ?")
+        params.append(detection_source)
+    if detection_confidence is not None:
+        updates.append("detection_confidence = ?")
+        params.append(detection_confidence)
+    if score_breakdown is not None:
+        updates.append("score_breakdown = ?")
+        params.append(json.dumps(score_breakdown))
+    if policy_version is not None:
+        updates.append("policy_version = ?")
+        params.append(policy_version)
     params.append(public_id)
     query = f"UPDATE analyses SET {', '.join(updates)} WHERE public_id = ?"
     with _conn() as db:
@@ -427,7 +479,9 @@ def get_result(public_id: str) -> dict | None:
             """SELECT a.public_id AS id, a.risk_score, a.risk_label, a.jurisdiction,
                       a.document_type, a.result_json, a.analyzed_at, a.status, a.error_message,
                       a.progress_pct, a.progress_stage, a.review_status, a.reviewer_email,
-                      a.review_comment, a.reviewed_at,
+                      a.review_comment, a.reviewed_at, a.retry_count,
+                      a.profile_id, a.profile_version, a.detection_source, a.detection_confidence,
+                      a.score_breakdown, a.policy_version,
                       d.original_filename, d.file_size, d.file_type, d.language,
                       d.extracted_text, d.uploaded_at, d.org_id, d.client, d.case_folder
                FROM analyses a
@@ -764,7 +818,7 @@ def count_active_admins() -> int:
 
 
 def cleanup_stuck_analyses() -> None:
-    """Fail analysis records abandoned by a crashed/killed process.
+    """Mark analysis records abandoned by a crashed/killed process as retryable.
 
     Runs on every process start, including each gunicorn worker boot — so it
     must not touch jobs a sibling worker is still actively processing.
@@ -775,9 +829,32 @@ def cleanup_stuck_analyses() -> None:
     """
     with _conn() as db:
         db.execute(
-            "UPDATE analyses SET status = 'failed', error_message = 'Task interrupted during server reload.' "
-            "WHERE status IN ('running', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
+            "UPDATE analyses SET status = 'retryable', "
+            "error_message = 'Interrupted by a server restart -- click Retry to resume.' "
+            "WHERE status IN ('processing', 'queued') AND analyzed_at < datetime('now', '-30 minutes')"
         )
+
+
+_MAX_RETRIES = 3
+
+
+def retry_analysis(public_id: str) -> str | None:
+    """Move a failed/retryable analysis back to 'queued' for re-execution.
+
+    Returns "queued" on success, or None if the analysis isn't in a
+    retryable state or has exhausted its retry budget (_MAX_RETRIES).
+    Caller is responsible for re-submitting the job to the worker.
+    """
+    with _conn() as db:
+        cur = db.execute(
+            "UPDATE analyses SET status = 'queued', retry_count = retry_count + 1, "
+            "error_message = NULL "
+            "WHERE public_id = ? AND status IN ('failed', 'retryable') AND retry_count < ?",
+            (public_id, _MAX_RETRIES),
+        )
+        if cur.rowcount == 1:
+            return "queued"
+        return None
 
 
 def get_org_usage(org_id: int) -> dict:

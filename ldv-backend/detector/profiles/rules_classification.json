@@ -1,0 +1,203 @@
+{
+  "groups": {
+    "generic_rules": {
+      "display_name": "Generic Legal Rules",
+      "description": "Standard legal provisions common across general contracts.",
+      "rule_ids": [
+        "governing_law",
+        "jurisdiction_venue",
+        "payment_terms",
+        "termination",
+        "dispute_resolution",
+        "limitation_liability"
+      ]
+    },
+    "contract_specific_rules": {
+      "display_name": "Contract Specific Rules",
+      "description": "Domain-specific rules tailored to particular contract types.",
+      "rule_ids": [
+        "notice_period",
+        "compensation",
+        "working_hours",
+        "lease_term",
+        "rent_amount",
+        "security_deposit",
+        "maintenance_responsibility",
+        "license_grant",
+        "ip_ownership",
+        "warranty_disclaimer",
+        "scope_of_services",
+        "confidentiality",
+        "return_of_materials",
+        "principal_amount",
+        "interest_rate",
+        "repayment_schedule",
+        "default_provisions",
+        "capital_contribution",
+        "profit_sharing",
+        "management_rights",
+        "goods_description",
+        "delivery_terms",
+        "warranty",
+        "title_transfer",
+        "force_majeure",
+        "indemnification",
+        "insurance",
+        "assignment",
+        "severability",
+        "entire_agreement",
+        "amendment"
+      ]
+    }
+  },
+  "rules": {
+    "governing_law": {
+      "type": "generic",
+      "display_name": "Governing Law"
+    },
+    "jurisdiction_venue": {
+      "type": "generic",
+      "display_name": "Jurisdiction Venue"
+    },
+    "payment_terms": {
+      "type": "generic",
+      "display_name": "Payment Terms"
+    },
+    "termination": {
+      "type": "generic",
+      "display_name": "Termination"
+    },
+    "dispute_resolution": {
+      "type": "generic",
+      "display_name": "Dispute Resolution"
+    },
+    "limitation_liability": {
+      "type": "generic",
+      "display_name": "Limitation of Liability"
+    },
+    "notice_period": {
+      "type": "contract_specific",
+      "display_name": "Notice Period"
+    },
+    "compensation": {
+      "type": "contract_specific",
+      "display_name": "Compensation"
+    },
+    "working_hours": {
+      "type": "contract_specific",
+      "display_name": "Working Hours"
+    },
+    "lease_term": {
+      "type": "contract_specific",
+      "display_name": "Lease Term"
+    },
+    "rent_amount": {
+      "type": "contract_specific",
+      "display_name": "Rent Amount"
+    },
+    "security_deposit": {
+      "type": "contract_specific",
+      "display_name": "Security Deposit"
+    },
+    "maintenance_responsibility": {
+      "type": "contract_specific",
+      "display_name": "Maintenance Responsibility"
+    },
+    "license_grant": {
+      "type": "contract_specific",
+      "display_name": "License Grant"
+    },
+    "ip_ownership": {
+      "type": "contract_specific",
+      "display_name": "IP Ownership"
+    },
+    "warranty_disclaimer": {
+      "type": "contract_specific",
+      "display_name": "Warranty Disclaimer"
+    },
+    "scope_of_services": {
+      "type": "contract_specific",
+      "display_name": "Scope of Services"
+    },
+    "confidentiality": {
+      "type": "contract_specific",
+      "display_name": "Confidentiality"
+    },
+    "return_of_materials": {
+      "type": "contract_specific",
+      "display_name": "Return of Materials"
+    },
+    "principal_amount": {
+      "type": "contract_specific",
+      "display_name": "Principal Amount"
+    },
+    "interest_rate": {
+      "type": "contract_specific",
+      "display_name": "Interest Rate"
+    },
+    "repayment_schedule": {
+      "type": "contract_specific",
+      "display_name": "Repayment Schedule"
+    },
+    "default_provisions": {
+      "type": "contract_specific",
+      "display_name": "Default Provisions"
+    },
+    "capital_contribution": {
+      "type": "contract_specific",
+      "display_name": "Capital Contribution"
+    },
+    "profit_sharing": {
+      "type": "contract_specific",
+      "display_name": "Profit Sharing"
+    },
+    "management_rights": {
+      "type": "contract_specific",
+      "display_name": "Management Rights"
+    },
+    "goods_description": {
+      "type": "contract_specific",
+      "display_name": "Goods Description"
+    },
+    "delivery_terms": {
+      "type": "contract_specific",
+      "display_name": "Delivery Terms"
+    },
+    "warranty": {
+      "type": "contract_specific",
+      "display_name": "Warranty"
+    },
+    "title_transfer": {
+      "type": "contract_specific",
+      "display_name": "Title Transfer"
+    },
+    "force_majeure": {
+      "type": "contract_specific",
+      "display_name": "Force Majeure"
+    },
+    "indemnification": {
+      "type": "contract_specific",
+      "display_name": "Indemnification"
+    },
+    "insurance": {
+      "type": "contract_specific",
+      "display_name": "Insurance"
+    },
+    "assignment": {
+      "type": "contract_specific",
+      "display_name": "Assignment"
+    },
+    "severability": {
+      "type": "contract_specific",
+      "display_name": "Severability"
+    },
+    "entire_agreement": {
+      "type": "contract_specific",
+      "display_name": "Entire Agreement"
+    },
+    "amendment": {
+      "type": "contract_specific",
+      "display_name": "Amendment"
+    }
+  }
+}

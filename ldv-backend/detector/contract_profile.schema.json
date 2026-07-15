@@ -1,0 +1,192 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ContractProfile",
+  "type": "object",
+  "properties": {
+    "profile_id": { "type": "string" },
+    "version": { "type": "string" },
+    "validation_status": { "type": "string" },
+    "review_date": { "type": "string" },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "display_name": { "type": "string" },
+        "family": { "type": "string" },
+        "description": { "type": "string" },
+        "release_stage": { "type": "string" },
+        "aliases": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["display_name", "family"]
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "languages": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["languages", "jurisdictions"]
+    },
+    "classification": {
+      "type": "object",
+      "properties": {
+        "nli_hypothesis": { "type": "string" },
+        "keyword_overrides": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "required": ["nli_hypothesis"]
+    },
+    "required_clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause_id": { "type": "string" },
+          "severity_override": { "type": "string" },
+          "custom_report_wording": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["clause_id"]
+      }
+    },
+    "recommended_clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause_id": { "type": "string" },
+          "custom_report_wording": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["clause_id"]
+      }
+    },
+    "dangerous_clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause_id": { "type": "string" },
+          "severity_override": { "type": "string" },
+          "custom_report_wording": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["clause_id"]
+      }
+    },
+    "abusive_clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause_id": { "type": "string" },
+          "severity_override": { "type": "string" },
+          "custom_report_wording": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["clause_id"]
+      }
+    },
+    "leonine_clauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "clause_id": { "type": "string" },
+          "severity_override": { "type": "string" },
+          "custom_report_wording": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["clause_id"]
+      }
+    },
+    "legal_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": { "type": "string" },
+          "jurisdiction": { "type": "string" },
+          "article": { "type": "string" },
+          "source": { "type": "string" }
+        },
+        "required": ["finding_id", "jurisdiction", "article"]
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "properties": {
+        "weights": {
+          "type": "object",
+          "properties": {
+            "missing_required_fallback": { "type": "integer" },
+            "red_flag_high": { "type": "integer" },
+            "red_flag_medium": { "type": "integer" },
+            "l2_unique": { "type": "integer" },
+            "no_governing_law": { "type": "integer" },
+            "no_venue": { "type": "integer" }
+          }
+        },
+        "missing_clause_weights": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "dangerous_clause_weights": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "abusive_clause_weights": {
+          "type": "object",
+          "additionalProperties": { "type": "integer" }
+        },
+        "jurisdiction_adjustments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "missing_required_fallback": { "type": "integer" },
+              "red_flag_high": { "type": "integer" },
+              "red_flag_medium": { "type": "integer" },
+              "l2_unique": { "type": "integer" },
+              "no_governing_law": { "type": "integer" },
+              "no_venue": { "type": "integer" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "profile_id",
+    "version",
+    "validation_status",
+    "review_date",
+    "metadata",
+    "coverage",
+    "classification",
+    "required_clauses"
+  ]
+}
