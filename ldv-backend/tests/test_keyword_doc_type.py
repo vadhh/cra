@@ -24,7 +24,7 @@ def test_repeated_single_keyword_clears_min_hits():
         "Article 2 - Purpose. This contract regulates the confidentiality.\n"
         "Article 3 - Confidential Information. All data shared is confidential.\n"
     )
-    label, hits = _keyword_doc_type(text)
+    label, hits, _ = _keyword_doc_type(text)
     assert label == "non-disclosure agreement"
     assert hits >= _KEYWORD_MIN_HITS, f"expected >= {_KEYWORD_MIN_HITS} hits from 3 occurrences, got {hits}"
 

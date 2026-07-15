@@ -24,6 +24,10 @@ def mock_entailment_score(model, tokenizer, premise: str, hypothesis: str) -> fl
             
     return 0.10
 
+def mock_batch_entailment_scores(model, tokenizer, pairs, batch_size=16):
+    return [mock_entailment_score(model, tokenizer, premise, hypothesis) for premise, hypothesis in pairs]
+
+
 # Mock templates mapping required clauses for all 11 profiles
 TEMPLATES = {
     "employment_contract": {
@@ -113,10 +117,13 @@ class TestProfileValidationSuite(unittest.TestCase):
 
     def setUp(self):
         self.original_entailment_score = db_module._entailment_score
+        self.original_batch_entailment_scores = db_module._batch_entailment_scores
         db_module._entailment_score = mock_entailment_score
+        db_module._batch_entailment_scores = mock_batch_entailment_scores
 
     def tearDown(self):
         db_module._entailment_score = self.original_entailment_score
+        db_module._batch_entailment_scores = self.original_batch_entailment_scores
 
     def _run(self, text, pid):
         mapping = {

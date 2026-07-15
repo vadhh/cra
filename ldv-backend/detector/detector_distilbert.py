@@ -122,10 +122,6 @@ _STATIC_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
 }
 
 
-<<<<<<< HEAD
-_STATIC_DOC_TYPE_SPECS: list[dict] = [
-=======
-
 def _keyword_doc_type(text: str) -> tuple[str | None, int]:
     """Return (best_label, hit_count) from keyword matching on text[:1200].
 
@@ -154,7 +150,6 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int]:
 # The article "a/an" issue is avoided by using descriptive phrasing.
 
 _DOC_TYPE_SPECS: list[dict] = [
->>>>>>> 9852ba59887b6bbb8a65259bf6932e756a5d8352
     {
         "label":      "employment contract",
         "hypothesis": "This document involves employment terms between employer and employee.",
@@ -216,6 +211,8 @@ _DOC_TYPE_SPECS: list[dict] = [
         "hypothesis": "This document is a resume, curriculum vitae (CV), article, advertisement, letter, or other non-contract text.",
     },
 ]
+
+_STATIC_DOC_TYPE_SPECS = _DOC_TYPE_SPECS
 
 _CACHED_DOC_TYPE_SPECS: Optional[list[dict]] = None
 _CACHED_KEYWORD_DOC_TYPES: Optional[dict[str, list[str]]] = None
@@ -603,12 +600,7 @@ def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
     scores = _batch_entailment_scores(model, tokenizer, pairs)
 
     results = []
-<<<<<<< HEAD
-    for spec in load_doc_type_specs():
-        score = _entailment_score(model, tokenizer, text, spec["hypothesis"])
-=======
     for spec, score in zip(_DOC_TYPE_SPECS, scores):
->>>>>>> 9852ba59887b6bbb8a65259bf6932e756a5d8352
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
 
