@@ -44,3 +44,5 @@ uploads/
 # Log file sementara
 *.log
 .DS_Store
+# Local git worktrees
+.worktrees/

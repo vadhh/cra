@@ -130,6 +130,10 @@ def is_mfa_mandatory(user: dict) -> bool:
         pass
     elif os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1":
         return False
+    # Admin-configured per-account exemption (set via the mfa-exempt endpoint/manage.py),
+    # not a hardcoded bypass — auditable and reversible. Intended for pilot-phase test accounts.
+    if user.get("mfa_exempt"):
+        return False
     if os.getenv("LDV_PRODUCTION") == "1":
         return True
     import database as _db  # local import to avoid circular at module load

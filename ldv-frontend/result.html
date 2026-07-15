@@ -459,6 +459,27 @@
       color: #dee2f4;
       line-height: 1.5;
     }
+    .danger-reason {
+      margin-top: 8px;
+      background: rgba(124, 58, 237, 0.06);
+      border: 1px solid rgba(124, 58, 237, 0.18);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      color: #dee2f4;
+      line-height: 1.5;
+    }
+    .confidence-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.03em;
+      margin-left: 8px;
+    }
+    .confidence-High { background: rgba(3,152,85,0.15); color: #039855; }
+    .confidence-Medium { background: rgba(220,104,3,0.15); color: #f1bc8c; }
+    .confidence-Low { background: rgba(217,45,32,0.15); color: #ffb4ab; }
     .ai-finding-card {
       background: rgba(212,175,55,0.05);
       border: 1px solid rgba(212,175,55,0.15);
@@ -924,10 +945,22 @@
                           <div class="danger-evidence" x-text="'“' + finding.evidence + '”'"></div>
                         </template>
                         
+                        <!-- Why This Matters (Explain Mode reason) -->
+                        <template x-if="finding.reason">
+                          <div class="danger-reason">
+                            <strong>Why This Matters:</strong> <span x-text="finding.reason"></span>
+                            <template x-if="finding.confidenceLabel">
+                              <span class="confidence-badge" :class="'confidence-' + finding.confidenceLabel"
+                                    :title="finding.confidencePct + '% confidence'"
+                                    x-text="finding.confidenceLabel + ' Confidence'"></span>
+                            </template>
+                          </div>
+                        </template>
+
                         <!-- Custom Rewrite / Recommendation -->
                         <template x-if="finding.recommendation">
                           <div class="danger-rewrite">
-                            <strong>Revision Recommendation:</strong> <span x-text="finding.recommendation"></span>
+                            <strong>Suggested Replacement Clause:</strong> <span x-text="finding.recommendation"></span>
                           </div>
                         </template>
 
@@ -1387,7 +1420,7 @@
             }
 
             const status = data.status;
-            if (status === 'queued' || status === 'running') {
+            if (status === 'queued' || status === 'processing') {
               this.isProcessing = true;
               this.progressPct = data.progress_pct || 0;
               this.progressText = data.progress_stage ? data.progress_stage.replace('_', ' ').toUpperCase() + '…' : 'PROCESSING…';
@@ -1445,6 +1478,7 @@
 
           // 1. L1 Regex Red Flags
           (layer1.red_flags || []).forEach(flag => {
+            const exp = flag.explanation || null;
             unified.push({
               id: flag.id,
               type: 'abusive',
@@ -1455,7 +1489,12 @@
               source: flag.source ? `Rules (${flag.source})` : 'Rules Engine (L1)',
               status: flag.status || 'Unreviewed',
               citations: flag.citations || [],
-              recommendation: _REWRITES[flag.id] || ''
+              // Explain Mode (risk_explainer.py): why it's dangerous + a
+              // ready-to-paste replacement clause, not just "how to fix" advice.
+              reason: exp ? exp.reason : '',
+              recommendation: (exp && exp.suggested_correction) || _REWRITES[flag.id] || '',
+              confidenceLabel: exp ? exp.confidence_label : '',
+              confidencePct: exp ? Math.round(exp.confidence * 100) : null
             });
           });
 
@@ -1479,6 +1518,7 @@
           (layer1.clause_presence || []).forEach(clause => {
             if (clause.required && !clause.present) {
               const severity = clause.impact_level || 'HIGH';
+              const exp = clause.explanation || null;
               unified.push({
                 id: clause.clause_id,
                 type: 'missing_clause',
@@ -1489,7 +1529,10 @@
                 source: 'Rules Engine (L1)',
                 status: clause.status || 'Unreviewed',
                 citations: clause.citations || [],
-                recommendation: clause.recommendation || `Incorporate a standard ${clause.title || clause.clause_id} clause.`
+                reason: exp ? exp.reason : '',
+                recommendation: (exp && exp.suggested_correction) || clause.recommendation || `Incorporate a standard ${clause.title || clause.clause_id} clause.`,
+                confidenceLabel: exp ? exp.confidence_label : '',
+                confidencePct: exp ? Math.round(exp.confidence * 100) : null
               });
             }
           });

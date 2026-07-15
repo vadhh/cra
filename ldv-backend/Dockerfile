@@ -4,6 +4,11 @@ FROM python:3.10-slim
 RUN apt-get update && apt-get install -y \
     libmagic1 \
     curl \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-fra \
+    tesseract-ocr-ind \
+    tesseract-ocr-nld \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

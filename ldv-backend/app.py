@@ -23,8 +23,9 @@ import fitz
 from langdetect import detect
 
 from detector.detector_jurisdiction import detect_jurisdiction
-from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title
+from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title, reconcile_required_flags
 from detector.citation_db import annotate_layer1
+from detector.risk_explainer import explain_findings
 from detector.detector_distilbert import layer2_analyze, semantic_clause_presence
 from detector.detector_scorer import layer3_score
 from detector.detector_explain import layer4_explain
@@ -46,6 +47,11 @@ SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".txt"}
 
 # Document types that are not contracts — skip full clause/risk analysis for these
 _NON_CONTRACT_TYPES = {"invoice", "receipt", "purchase order", "non-contract"}
+
+# Statuses where result_json isn't ready to serve: the job is still in flight
+# (queued/processing) or needs a retry before it will ever produce a result
+# (failed/retryable).
+_HIDDEN_RESULT_STATUSES = {"queued", "processing", "failed", "retryable"}
 
 _MIME_ALLOWLIST = {
     ".pdf":  {"application/pdf"},
@@ -146,7 +152,32 @@ def handle_exception(e):
 
 def _extract_pdf(data: bytes) -> str:
     doc = fitz.open(stream=data, filetype="pdf")
-    return "\n".join(page.get_text() for page in doc)
+    text = "\n".join(page.get_text() for page in doc)
+    if not text.strip():
+        text = _ocr_pdf(doc)
+    return text
+
+
+def _ocr_pdf(doc) -> str:
+    """OCR fallback for scanned/image-only PDFs with no text layer.
+
+    Slow (~1-3s/page on CPU); only invoked when normal text extraction finds
+    nothing. Needs the tesseract-ocr system binary + language packs
+    (tesseract-ocr-eng/fra/ind/nld) -- degrades to empty text (surfacing the
+    existing "Scan/OCR required" error) if unavailable.
+    """
+    import pytesseract
+    from PIL import Image
+    from io import BytesIO
+    try:
+        parts = []
+        for page in doc:
+            img = Image.open(BytesIO(page.get_pixmap(dpi=300).tobytes("png")))
+            parts.append(pytesseract.image_to_string(img, lang="eng+fra+ind+nld"))
+        return "\n".join(parts)
+    except Exception as e:
+        logger.warning("OCR fallback failed: %s", e)
+        return ""
 
 
 def _extract_docx(data: bytes) -> str:
@@ -251,6 +282,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()
+    reconcile_required_flags(layer1.get("clause_presence") or [], doc_type_label)
     if doc_type_label in _NON_CONTRACT_TYPES:
         logger.info("Document type '%s' — skipping clause analysis", doc_type_label)
         return {
@@ -270,6 +302,7 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
         }
 
     _semantic_backfill(layer1, doc_type_label, analysis_text)
+    explain_findings(layer1, jurisdiction, doc_type_label)
 
     layer3 = layer3_score(layer1, layer2, lang=lang, policy_name=policy_name)
     clause_tags = _sydeco_classify(analysis_text)
@@ -720,14 +753,21 @@ def api_result(analysis_id: str):
     if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
         return jsonify({"error": "Forbidden"}), 403
     row.pop("org_id", None)  # internal field, not part of the API response
-    
+
     # ponytail: Expose raw_text via ?debug=1 only (P3 item 15)
     extracted_text = row.pop("extracted_text", None)
     if request.args.get("debug") == "1":
         row["raw_text"] = extracted_text
 
+    # Phase 3 (S2): deserialize score_breakdown from JSON string
+    if row.get("score_breakdown") and isinstance(row["score_breakdown"], str):
+        try:
+            row["score_breakdown"] = json.loads(row["score_breakdown"])
+        except (ValueError, TypeError):
+            pass
+
     status = row.get("status", "completed")
-    if status in ("queued", "running", "failed"):
+    if status in _HIDDEN_RESULT_STATUSES:
         row["result"] = None
         row.pop("result_json", None)
         return jsonify(row)
@@ -735,6 +775,7 @@ def api_result(analysis_id: str):
     row["result"] = json.loads(row["result_json"]) if row.get("result_json") else None
     row.pop("result_json", None)
     return jsonify(row)
+
 
 
 @app.route("/api/v1/result/<analysis_id>", methods=["DELETE"])
@@ -758,6 +799,31 @@ def api_delete_result(analysis_id: str):
     )
     logger.info("DELETE: id=%s org=%s by=%s", analysis_id, row.get("org_id"), user["email"])
     return jsonify({"deleted": True, "id": analysis_id})
+
+
+@app.route("/api/v1/result/<analysis_id>/retry", methods=["POST"])
+@auth.login_required
+def api_retry_result(analysis_id: str):
+    row = database.get_result(analysis_id)
+    if row is None:
+        return jsonify({"error": "Not found"}), 404
+    user = g.user
+    if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
+        return jsonify({"error": "Forbidden"}), 403
+
+    new_status = database.retry_analysis(analysis_id)
+    if new_status is None:
+        return jsonify({"error": "Analysis is not retryable (wrong status or retry limit exhausted)"}), 409
+
+    text = row.get("extracted_text")
+    lang = row.get("language") or "unknown"
+    worker.submit_job(analysis_id, text, lang, False)
+
+    database.write_audit(
+        "analysis.retry", user_id=user["id"], org_id=row.get("org_id"),
+        resource_id=analysis_id, ip=_ip(),
+    )
+    return jsonify({"id": analysis_id, "status": "queued"}), 202
 
 
 @app.route("/api/v1/result/<analysis_id>/download-link", methods=["POST"])
@@ -956,6 +1022,22 @@ def api_admin_user_download_access(target_id: int):
     database.update_user_download_access(target_id, disabled)
     action = "user.download.disable" if disabled else "user.download.enable"
     database.write_audit(action, user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip())
+    return jsonify({"ok": True})
+
+
+@app.route("/api/v1/admin/users/<int:target_id>/mfa-exempt", methods=["POST"])
+@auth.role_required("admin")
+def api_admin_user_mfa_exempt(target_id: int):
+    user = g.user
+    data = request.json or {}
+    exempt = int(bool(data.get("mfa_exempt", 0)))
+
+    target = database.get_user_by_id(target_id)
+    if not target:
+        return jsonify({"error": "User not found"}), 404
+
+    database.update_user_mfa_exempt(target_id, exempt)
+    database.write_audit("user.mfa_exempt_change", user_id=user["id"], org_id=target["org_id"], resource_id=str(target_id), ip=_ip(), detail=str(bool(exempt)))
     return jsonify({"ok": True})
 
 
