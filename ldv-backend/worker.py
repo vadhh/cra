@@ -98,9 +98,16 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         _score = layer3_data.get("score") if layer3_data else None
         _label = layer3_data.get("label") if layer3_data else None
 
+        final_status = "completed"
+        final_error = None
+        if detection_source == "classifier" and detection_confidence is not None and detection_confidence < 0.70:
+            final_status = "retryable"
+            final_error = "low_confidence"
+
         database.update_analysis(
             public_id=public_id,
-            status="completed",
+            status=final_status,
+            error_message=final_error,
             jurisdiction=jurisdiction,
             document_type=doc_type_str,
             risk_score=_score,
@@ -116,10 +123,16 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
             policy_version=_policy_ver,
         )
 
-        app_logger.info(
-            "ASYNC WORKER: completed id=%s jurisdiction=%s risk=%s/%s time=%.2fs",
-            public_id, jurisdiction, layer3_data.get("score"), layer3_data.get("label"), elapsed
-        )
+        if final_status == "completed":
+            app_logger.info(
+                "ASYNC WORKER: completed id=%s jurisdiction=%s risk=%s/%s time=%.2fs",
+                public_id, jurisdiction, layer3_data.get("score"), layer3_data.get("label"), elapsed
+            )
+        else:
+            app_logger.info(
+                "ASYNC WORKER: interrupted (low classification confidence) id=%s time=%.2fs",
+                public_id, elapsed
+            )
     except Exception as e:
         err_msg = f"{str(e)}\n{traceback.format_exc()}"
         app_logger.error("ASYNC WORKER ERROR: id=%s err=%s", public_id, err_msg)

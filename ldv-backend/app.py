@@ -768,6 +768,16 @@ def api_result(analysis_id: str):
 
     status = row.get("status", "completed")
     if status in _HIDDEN_RESULT_STATUSES:
+        if status == "retryable" and row.get("error_message") == "low_confidence":
+            if row.get("result_json"):
+                try:
+                    res_dict = json.loads(row["result_json"])
+                    dt_info = res_dict.get("layer2", {}).get("document_type", {})
+                    row["candidates"] = dt_info.get("candidates", [])
+                    row["detected_label"] = dt_info.get("label")
+                    row["detected_confidence"] = dt_info.get("confidence")
+                except Exception:
+                    pass
         row["result"] = None
         row.pop("result_json", None)
         return jsonify(row)
@@ -811,13 +821,17 @@ def api_retry_result(analysis_id: str):
     if user["role"] != "admin" and row.get("org_id") != user["org_id"]:
         return jsonify({"error": "Forbidden"}), 403
 
+    data = request.get_json(silent=True) or {}
+    override_type = data.get("type")
+    override_jurisdiction = data.get("jurisdiction")
+
     new_status = database.retry_analysis(analysis_id)
     if new_status is None:
         return jsonify({"error": "Analysis is not retryable (wrong status or retry limit exhausted)"}), 409
 
     text = row.get("extracted_text")
     lang = row.get("language") or "unknown"
-    worker.submit_job(analysis_id, text, lang, False)
+    worker.submit_job(analysis_id, text, lang, False, override_type=override_type, override_jurisdiction=override_jurisdiction)
 
     database.write_audit(
         "analysis.retry", user_id=user["id"], org_id=row.get("org_id"),

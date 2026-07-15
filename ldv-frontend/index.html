@@ -606,7 +606,7 @@
             </div>
 
             <!-- Stage checklists -->
-            <div class="w-full max-w-md text-left font-body text-xs space-y-4 bg-surface-container-low p-6 border border-outline-variant/15 rounded-md" x-show="!errorMsg">
+            <div class="w-full max-w-md text-left font-body text-xs space-y-4 bg-surface-container-low p-6 border border-outline-variant/15 rounded-md" x-show="!errorMsg && !showConfirmationPrompt">
               <!-- Uploading -->
               <div class="flex items-center justify-between"
                    :class="activeStage === 'uploading' ? 'text-primary font-bold' : (isStageDone('uploading') ? 'text-on-surface-variant/50' : 'opacity-30')">
@@ -692,17 +692,67 @@
               </div>
             </div>
 
+            <!-- Low Classification Confidence Confirmation Prompt -->
+            <div class="w-full max-w-md text-left font-body text-xs space-y-5 bg-surface-container-low p-6 border border-primary/30 rounded-md" x-show="showConfirmationPrompt">
+              <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-amber-500 text-[24px]">warning</span>
+                <div>
+                  <h4 class="font-bold text-sm text-on-surface mb-1">Low Classification Confidence</h4>
+                  <p class="text-on-surface-variant/80 leading-relaxed text-xs">
+                    The NLI classifier is uncertain about this document type. Please confirm or select the correct contract type profile to generate the professional analysis report.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Candidates list -->
+              <div class="border-t border-outline-variant/10 pt-4 space-y-2">
+                <span class="font-semibold text-on-surface text-[11px] uppercase tracking-wider">Top Detected Candidates:</span>
+                <div class="space-y-1.5 pt-1">
+                  <template x-for="cand in candidates" :key="cand.label">
+                    <div class="flex items-center justify-between bg-surface-container/50 px-3 py-2 rounded text-[11px]">
+                      <span class="font-medium text-on-surface" x-text="cand.label"></span>
+                      <span class="text-on-surface-variant font-mono" x-text="Math.round(cand.confidence * 100) + '%'"></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Select Contract Type Dropdown -->
+              <div class="flex flex-col gap-2">
+                <label class="font-semibold text-on-surface" for="confirmedType">Select Document Profile</label>
+                <select class="w-full bg-surface-container border border-outline-variant/30 text-on-surface px-4 py-2.5 rounded focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 text-xs"
+                        id="confirmedType" x-model="confirmedType">
+                  <option value="service">Service Agreement</option>
+                  <option value="nda">Non-Disclosure Agreement (NDA)</option>
+                  <option value="employment">Employment Contract</option>
+                  <option value="software">Software License</option>
+                  <option value="generic">Other / Generic Contract</option>
+                </select>
+              </div>
+
+              <div class="pt-2 flex justify-end gap-3">
+                <button type="button" @click="cancelPipeline()"
+                        class="px-4 py-2 rounded border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold font-body transition-all">
+                  Cancel
+                </button>
+                <button type="button" @click="confirmAndRetry()"
+                        class="gold-button px-5 py-2 rounded text-xs font-bold font-body uppercase tracking-wider">
+                  Confirm &amp; Analyze
+                </button>
+              </div>
+            </div>
+
             <!-- Error message container -->
             <div class="w-full max-w-md bg-red-900/20 border border-red-500/30 text-red-300 p-4 rounded text-left text-sm"
                  x-show="errorMsg" x-text="errorMsg"></div>
 
             <!-- Neutral message for long execution -->
-            <p class="text-[11px] text-on-surface-variant/50 max-w-md" x-show="elapsedSeconds > 15 && !errorMsg">
+            <p class="text-[11px] text-on-surface-variant/50 max-w-md" x-show="elapsedSeconds > 15 && !errorMsg && !showConfirmationPrompt">
               <strong>Notice:</strong> High-volume files or NLI/LLM reasoning blocks require processing time. You can safely close or navigate away from this screen; the analysis runs securely in the background.
             </p>
 
             <!-- Background trigger action -->
-            <div class="pt-4 flex gap-4 w-full max-w-md justify-center">
+            <div class="pt-4 flex gap-4 w-full max-w-md justify-center" x-show="!showConfirmationPrompt">
               <button type="button" @click="cancelPipeline()"
                       class="px-6 py-3 rounded-md border border-outline-variant/40 hover:bg-surface-container text-xs font-semibold font-body transition-all">
                 Cancel Analysis
@@ -922,6 +972,13 @@
         timerInterval: null,
         pollingInterval: null,
 
+        // Low confidence confirmation variables
+        showConfirmationPrompt: false,
+        candidates: [],
+        detectedLabel: '',
+        detectedConfidence: 0,
+        confirmedType: 'generic',
+
         setFile(file) {
           if (!file) return;
           const ext = '.' + file.name.split('.').pop().toLowerCase();
@@ -1050,9 +1107,36 @@
                   }, 1000);
                 } else if (status === 'retryable') {
                   this.progressPct = 100;
-                  this.progressText = 'INTERRUPTED';
-                  this.errorMsg = (data.error_message || 'Analysis was interrupted.') + ' Click Retry to resume.';
-                  this.showRetry = true;
+                  if (data.error_message === 'low_confidence') {
+                    this.progressText = 'CONFIRMATION REQUIRED';
+                    this.showConfirmationPrompt = true;
+                    this.candidates = data.candidates || [];
+                    this.detectedLabel = data.detected_label || '';
+                    this.detectedConfidence = data.detected_confidence || 0;
+                    
+                    const labelMapping = {
+                      'service agreement': 'service',
+                      'non-disclosure agreement': 'nda',
+                      'employment contract': 'employment',
+                      'software license': 'software'
+                    };
+                    
+                    let foundMatch = false;
+                    if (this.detectedLabel) {
+                      const val = labelMapping[this.detectedLabel.toLowerCase()];
+                      if (val) {
+                        this.confirmedType = val;
+                        foundMatch = true;
+                      }
+                    }
+                    if (!foundMatch) {
+                      this.confirmedType = 'generic';
+                    }
+                  } else {
+                    this.progressText = 'INTERRUPTED';
+                    this.errorMsg = (data.error_message || 'Analysis was interrupted.') + ' Click Retry to resume.';
+                    this.showRetry = true;
+                  }
                   this.stopTimers();
                 } else if (status === 'failed') {
                   this.progressPct = 100;
@@ -1078,6 +1162,35 @@
           } else {
             const err = await resp.json().catch(() => ({}));
             this.errorMsg = err.error || 'Retry failed.';
+          }
+        },
+
+        async confirmAndRetry() {
+          this.showConfirmationPrompt = false;
+          this.errorMsg = '';
+          this.progressPct = 0;
+          this.progressText = 'Re-analyzing with confirmed type…';
+          this.loading = true;
+          this.activeStage = 'uploading';
+          
+          this.elapsedSeconds = 0;
+          if (!this.timerInterval) {
+            this.timerInterval = setInterval(() => {
+              this.elapsedSeconds++;
+            }, 1000);
+          }
+
+          const resp = await fetch(`/api/v1/result/${this.analysisId}/retry`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: this.confirmedType })
+          });
+          if (resp.ok) {
+            this.pollStatus();
+          } else {
+            const err = await resp.json().catch(() => ({}));
+            this.errorMsg = err.error || 'Failed to submit confirmation.';
+            this.stopTimers();
           }
         },
 
