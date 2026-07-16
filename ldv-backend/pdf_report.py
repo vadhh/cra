@@ -8,7 +8,10 @@ Usage:
 from __future__ import annotations
 
 import io
+import logging
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -230,16 +233,22 @@ def generate_pdf(result: dict) -> bytes:
     profile_used = "N/A"
     profile_version = "N/A"
     validation_status = "N/A"
-    
+
     if doctype and doctype != "not detected":
         try:
-            from detector.detector_profiles import ProfileManager
-            manager = ProfileManager()
-            profile = manager.resolve_profile_by_name(doctype)
+            from detector import profile_registry
+            profile = profile_registry.detect_profile(doctype)
             if profile:
-                profile_used = profile["metadata"]["display_name"]
+                profile_used = profile["display_name"]
                 profile_version = profile["version"]
-                validation_status = profile["validation_status"]
+                # Legal clause-list approval is a separate, still-outstanding
+                # question from classifier tuning -- do not print "Validated"
+                # without a signed profile-by-profile matrix behind it (see
+                # docs/release-cra-1.0-rc1-baseline.md). classifier.status only
+                # tells us whether the NLI hypothesis is production-tuned.
+                clf_status = (profile.get("classifier") or {}).get("status")
+                tuning = {"validated": "tuned", "draft": "draft, unvalidated"}.get(clf_status, "unknown")
+                validation_status = f"Classifier: {tuning} — legal clause-list approval not yet established"
         except Exception as exc:
             logger.warning("PDF generator failed to resolve profile: %s", exc)
 
@@ -278,6 +287,31 @@ def generate_pdf(result: dict) -> bytes:
         ]),
     ))
     story.append(Spacer(1, 0.4 * cm))
+
+    # ── Score Breakdown ───────────────────────────────────────────────────────
+    breakdown = layer3.get("breakdown") or []
+    if breakdown:
+        story.append(Paragraph("Score Breakdown", h2))
+        rows = [["Reason", "Points"]]
+        for item in breakdown:
+            points = item.get("points")
+            points_str = f"{points:+g}" if isinstance(points, (int, float)) else (_clean(str(points)) if points is not None else "")
+            rows.append([_clean(item.get("reason", "")), points_str])
+        story.append(Table(
+            rows,
+            colWidths=[W * 0.80, W * 0.20],
+            style=TableStyle([
+                ("FONTSIZE",      (0, 0), (-1, -1), 9),
+                ("FONTNAME",      (0, 0), (-1, 0),  "Helvetica-Bold"),
+                ("BACKGROUND",    (0, 0), (-1, 0),  _LIGHT),
+                ("GRID",          (0, 0), (-1, -1), 0.5, colors.HexColor("#dee2e6")),
+                ("TOPPADDING",    (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("LEFTPADDING",   (0, 0), (-1, -1), 8),
+                ("ALIGN",         (1, 0), (1, -1),  "RIGHT"),
+            ]),
+        ))
+        story.append(Spacer(1, 0.4 * cm))
 
     # ── Dangerous Clauses ─────────────────────────────────────────────────────
     story.append(Paragraph("Dangerous Clauses", h2))
