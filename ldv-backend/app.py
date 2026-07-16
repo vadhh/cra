@@ -1393,9 +1393,12 @@ def health():
     except Exception:
         qwen_loaded = False
         
+    from translator_client import check_health as translator_health
+    translator_status = translator_health()
+
     healthy = db_ok and datasets_ok
     status_str = "healthy" if healthy else "degraded"
-    
+
     return jsonify({
         "status": status_str,
         "checks": {
@@ -1404,7 +1407,11 @@ def health():
             "model_cache": {
                 "distilbert": "available" if distilbert_cached else "missing",
                 "qwen3": "available" if qwen_cached else "missing"
-            }
+            },
+            # enabled=False when LDV_REMOTE_TRANSLATION isn't "local" or the
+            # microservice isn't configured; doesn't affect overall "healthy"
+            # status since remote translation is opt-in, not required.
+            "lightml_translator": translator_status,
         },
         "layer1": "ready",
         "layer2_distilbert": l2_available(),

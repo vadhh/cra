@@ -35,7 +35,12 @@ Accepts `.pdf`, `.docx`, `.txt` (max 10 MB). Response: `{language, jurisdiction,
 | `LDV_DB_PATH` | `ldv-backend/sydeco.db` | Overrides the SQLite database path (used by tests and deployments). |
 | `LDV_ADMIN_EMAIL` | unset | Email for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_PASSWORD`). |
 | `LDV_ADMIN_PASSWORD` | unset | Password for the first admin account. Consumed by `python manage.py seed-admin` (must be paired with `LDV_ADMIN_EMAIL`). |
-| `LDV_REMOTE_TRANSLATION` | `0` | `0` = no translation (default). `1` = Google Translate API. `local` = offline Helsinki-NLP Marian MT via transformers (downloads ~300 MB per language pair on first use; no Google). |
+| `LDV_REMOTE_TRANSLATION` | `0` | `0` = no translation (default). `1` = Google Translate API. `local` = calls the internal LightML translator microservice (`translator_client.py`) over HTTP(S) — **contract text leaves this process**, this is not offline/in-process despite the name; see the `LIGHTML_*`/`EXTERNAL_TRANSLATION_DISABLED` rows below. |
+| `EXTERNAL_TRANSLATION_DISABLED` | `1` | Hard kill-switch for the LightML microservice call, independent of `LDV_REMOTE_TRANSLATION=local`. Must be `0` for that path to actually call out. |
+| `LIGHTML_TRANSLATOR_URL` | unset | Base URL of the internal LightML translator microservice. Must resolve to a genuinely internal/protected host — `translator_client.py` cannot verify this from code alone. |
+| `LDV_LIGHTML_ALLOW_INSECURE` | `0` | `1` allows a non-`https://` `LIGHTML_TRANSLATOR_URL` (cleartext). Local dev only — never set in a real deployment. |
+| `LDV_LIGHTML_API_KEY` | unset | Sent as `Authorization: Bearer <key>` to the LightML microservice, if set. |
+| `LDV_LIGHTML_MAX_CHARS` | `50000` | Text longer than this skips external translation for that request (fails open, returns original text) instead of sending an unbounded payload. |
 | `LDV_USE_MLP_SCORER` | `0` | `1` uses the bootstrap MLP scorer (`data/risk_scorer.pkl`) instead of the deterministic formula. Generate pkl: `python3 scripts/train_risk_scorer.py`. Falls back to deterministic if pkl absent. |
 | `LDV_RISK_SCORER_PATH` | `data/risk_scorer.pkl` | Override path for the MLP risk scorer pickle (only used when `LDV_USE_MLP_SCORER=1`). |
 | `LDV_CORS_ORIGINS` | unset | Comma-separated origins. Unset = no CORS headers (same-origin only). |

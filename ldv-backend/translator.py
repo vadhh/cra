@@ -22,7 +22,9 @@ def translate_text(text, target_lang, src_lang: str = "auto"):
     if backend != "1":
         logger.warning(
             "Translation disabled — document text stays local "
-            "(set LDV_REMOTE_TRANSLATION=1 for Google, =local for offline Marian MT). "
+            "(set LDV_REMOTE_TRANSLATION=1 for Google, =local for the internal "
+            "LightML translator microservice — see translator_client.py; "
+            "contract text leaves this process for that path, it is not offline). "
             "Non-English ML layers will run on the original text."
         )
         return text
