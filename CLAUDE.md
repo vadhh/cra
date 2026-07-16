@@ -40,6 +40,9 @@ Accepts `.pdf`, `.docx`, `.txt` (max 10 MB). Response: `{language, jurisdiction,
 | `LDV_RISK_SCORER_PATH` | `data/risk_scorer.pkl` | Override path for the MLP risk scorer pickle (only used when `LDV_USE_MLP_SCORER=1`). |
 | `LDV_CORS_ORIGINS` | unset | Comma-separated origins. Unset = no CORS headers (same-origin only). |
 | `LDV_DEBUG` | `0` | `1` enables Flask debug mode (Werkzeug debugger — never in production). |
+| `LDV_CLASSIFIER_CONFIRMATION_THRESHOLD` | `0.70` | Layer 2 doc-type confidence below this always requires manual confirmation (`worker._needs_confirmation`). |
+| `LDV_CLASSIFIER_HIGH_CONFIDENCE_THRESHOLD` | `0.85` | Below this, a small top-2-candidate margin (see next var) also forces confirmation even if above the confirmation threshold. |
+| `LDV_CLASSIFIER_MINIMUM_MARGIN` | `0.15` | Minimum gap between the top two NLI candidates required to skip confirmation when confidence is under the high-confidence threshold (e.g. 76% vs 74% still requires confirmation). |
 
 **User provisioning:** The first admin account is created with:
 ```bash
