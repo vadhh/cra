@@ -226,64 +226,63 @@ def clear_classification_cache() -> None:
 
 
 def load_doc_type_specs() -> list[dict]:
+    """Hypotheses for every registry profile (registry_v1.json `classifier.hypothesis`),
+    plus the 4 non-contract labels (invoice/receipt/purchase order/non-contract) that
+    aren't contract profiles and stay statically defined. Falls back to the static
+    11-profile list if the registry can't be loaded."""
     global _CACHED_DOC_TYPE_SPECS
     if _CACHED_DOC_TYPE_SPECS is not None:
         return _CACHED_DOC_TYPE_SPECS
-    
+
     try:
-        from detector.detector_profiles import ProfileManager
-        manager = ProfileManager()
+        from detector import profile_registry
         specs = []
-        for pid in manager.list_profiles():
-            p = manager.get_profile(pid)
-            label = p["metadata"]["display_name"].lower()
-            specs.append({
-                "label": label,
-                "hypothesis": p["classification"]["nli_hypothesis"]
-            })
-        
-        # Append non-contract specs that aren't in the registry
+        for pid in profile_registry.all_profile_ids():
+            p = profile_registry.profile_for(pid)
+            clf = p.get("classifier")
+            if not clf or not clf.get("hypothesis"):
+                continue
+            specs.append({"label": p["display_name"].lower(), "hypothesis": clf["hypothesis"]})
+
         for spec in _STATIC_DOC_TYPE_SPECS:
             if spec["label"] in ["invoice", "receipt", "purchase order", "non-contract"]:
                 specs.append(spec)
-                
+
         _CACHED_DOC_TYPE_SPECS = specs
         return _CACHED_DOC_TYPE_SPECS
     except Exception as e:
-        logger.warning("Failed to load doc type specs dynamically, falling back to static: %s", e)
+        logger.warning("Failed to load doc type specs from registry, falling back to static: %s", e)
         return _STATIC_DOC_TYPE_SPECS
 
 
 def load_keyword_doc_types() -> dict[str, list[str]]:
+    """Keyword patterns for every registry profile (registry_v1.json
+    `classifier.positive_keywords`), plus the 4 static non-contract label sets."""
     global _CACHED_KEYWORD_DOC_TYPES
     if _CACHED_KEYWORD_DOC_TYPES is not None:
         return _CACHED_KEYWORD_DOC_TYPES
-    
-    try:
-        from detector.detector_profiles import ProfileManager
-        manager = ProfileManager()
-        kw_types = {}
-        for pid in manager.list_profiles():
-            p = manager.get_profile(pid)
-            label = p["metadata"]["display_name"].lower()
-            patterns = []
-            ko = p["classification"].get("keyword_overrides", {})
-            for lang, words in ko.items():
-                for word in words:
-                    escaped_word = re.escape(word)
-                    pattern = escaped_word.replace(r"\ ", r"\s+").replace(" ", r"\s+")
-                    patterns.append(rf"\b{pattern}\b")
-            kw_types[label] = patterns
 
-            
-        # Append non-contract types
+    try:
+        from detector import profile_registry
+        kw_types = {}
+        for pid in profile_registry.all_profile_ids():
+            p = profile_registry.profile_for(pid)
+            clf = p.get("classifier")
+            words = clf.get("positive_keywords", []) if clf else []
+            patterns = []
+            for word in words:
+                escaped_word = re.escape(word)
+                pattern = escaped_word.replace(r"\ ", r"\s+").replace(" ", r"\s+")
+                patterns.append(rf"\b{pattern}\b")
+            kw_types[p["display_name"].lower()] = patterns
+
         for k in ["invoice", "receipt", "purchase order", "non-contract"]:
             kw_types[k] = _STATIC_KEYWORD_DOC_TYPES[k]
-            
+
         _CACHED_KEYWORD_DOC_TYPES = kw_types
         return _CACHED_KEYWORD_DOC_TYPES
     except Exception as e:
-        logger.warning("Failed to load keyword doc types dynamically, falling back to static: %s", e)
+        logger.warning("Failed to load keyword doc types from registry, falling back to static: %s", e)
         return _STATIC_KEYWORD_DOC_TYPES
 
 
@@ -377,8 +376,39 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
         if any(_has_word(x, snippet) for x in ["consulting", "consultant", "advisory"]):
             return "consulting agreement", 5, False
         return "service agreement", 5, False
-        
+
+    # Registry fallback: the chain above only covers the long-tuned profiles.
+    # For the other registry profiles (see registry_v1.json `classifier.status`),
+    # match on their `positive_keywords` before giving up to "general contract".
+    reg_label, reg_hits = _registry_keyword_fallback(snippet)
+    if reg_label:
+        return reg_label, reg_hits, False
+
     return "general contract", 2, False
+
+
+def _registry_keyword_fallback(snippet: str) -> tuple[str | None, int]:
+    """Best-effort keyword match against registry_v1.json `classifier.positive_keywords`
+    for profiles not covered by the hardcoded chain in `_keyword_doc_type`."""
+    covered = {
+        "saas agreement", "it service agreement", "construction agreement",
+        "insurance agreement", "consulting agreement", "partnership agreement",
+        "non-disclosure agreement", "loan agreement", "employment contract",
+        "lease agreement", "software license", "purchase agreement",
+        "commercial agreement", "general contract", "service agreement",
+        "invoice", "receipt", "purchase order",
+    }
+    scores: dict[str, int] = {}
+    for label, patterns in load_keyword_doc_types().items():
+        if label in covered:
+            continue
+        count = sum(len(re.findall(p, snippet, re.I)) for p in patterns)
+        if count > 0:
+            scores[label] = count
+    if not scores:
+        return None, 0
+    best = max(scores, key=lambda k: scores[k])
+    return best, scores[best]
 
 
 # ── Clause risk hypotheses for zero-shot classification ───────────────────────
@@ -595,12 +625,14 @@ def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
 
 
 def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
-    """Score text against each doc-type spec; return sorted by confidence desc."""
-    pairs = [(text, spec["hypothesis"]) for spec in _DOC_TYPE_SPECS]
+    """Score text against each doc-type spec (registry-driven, all 56 profiles
+    plus the 4 non-contract labels); return sorted by confidence desc."""
+    specs = load_doc_type_specs()
+    pairs = [(text, spec["hypothesis"]) for spec in specs]
     scores = _batch_entailment_scores(model, tokenizer, pairs)
 
     results = []
-    for spec, score in zip(_DOC_TYPE_SPECS, scores):
+    for spec, score in zip(specs, scores):
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
 

@@ -90,6 +90,14 @@ def baseline_required() -> list[str]:
     return list(_load()["baseline_required"])
 
 
+def classifier_for(profile_id: str) -> Optional[dict]:
+    """Return the {hypothesis, positive_keywords, negative_keywords,
+    competing_profiles, confirmation_threshold, status} block for a profile,
+    or None if the profile has no classifier config yet."""
+    p = profile_for(profile_id)
+    return p.get("classifier") if p else None
+
+
 def registry_version() -> str:
     return _load()["registry_version"]
 
