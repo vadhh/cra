@@ -122,28 +122,6 @@ _STATIC_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
 }
 
 
-def _keyword_doc_type(text: str) -> tuple[str | None, int]:
-    """Return (best_label, hit_count) from keyword matching on text[:1200].
-
-    hit_count sums occurrences across all of a label's patterns, not just how
-    many distinct patterns matched at least once. Categories with few
-    surface-form synonyms (e.g. "non-disclosure agreement" has 6 patterns
-    spanning 4 languages, vs. 17 for "lease agreement") would otherwise be
-    structurally capped near _KEYWORD_MIN_HITS even when one strong,
-    repeated term is the only signal to survive translation.
-    """
-    snippet = text[:1200]
-    scores: dict[str, int] = {}
-    for label, patterns in _KEYWORD_DOC_TYPES.items():
-        count = sum(len(re.findall(p, snippet, re.I)) for p in patterns)
-        if count > 0:
-            scores[label] = count
-    if not scores:
-        return None, 0
-    best = max(scores, key=lambda k: scores[k])
-    return best, scores[best]
-
-
 # ── Document type labels with calibrated hypotheses ───────────────────────────
 # Each label has a specific hypothesis proven to discriminate well under
 # typeform/distilbert-base-uncased-mnli (MultiNLI-trained).
