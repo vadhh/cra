@@ -46,6 +46,33 @@ def test_needs_confirmation_high_confidence_wide_margin_passes():
     assert reason is None
 
 
+def test_needs_confirmation_draft_profile_gates_despite_high_confidence():
+    # High confidence alone isn't enough for a profile the registry hasn't
+    # empirically validated yet -- draft status must force confirmation.
+    dt = {"confidence": 0.97, "candidates": [{"confidence": 0.97}, {"confidence": 0.02}]}
+    profile = {"id": "mining_agreement", "classifier": {"status": "draft"}}
+    needs, reason = worker._needs_confirmation(dt, profile=profile)
+    assert needs is True
+    assert reason == "draft_profile"
+
+
+def test_needs_confirmation_validated_profile_not_gated_by_status():
+    dt = {"confidence": 0.97, "candidates": [{"confidence": 0.97}, {"confidence": 0.02}]}
+    profile = {"id": "employment_contract", "classifier": {"status": "validated"}}
+    needs, reason = worker._needs_confirmation(dt, profile=profile)
+    assert needs is False
+    assert reason is None
+
+
+def test_needs_confirmation_no_profile_resolved_falls_back_to_confidence_checks():
+    # profile=None (the default) preserves prior behavior -- unresolved
+    # profile shouldn't itself force a gate, confidence checks still apply.
+    dt = {"confidence": 0.92, "candidates": [{"confidence": 0.92}, {"confidence": 0.05}]}
+    needs, reason = worker._needs_confirmation(dt)
+    assert needs is False
+    assert reason is None
+
+
 def test_classifier_thresholds_env_overridable():
     os.environ["LDV_CLASSIFIER_CONFIRMATION_THRESHOLD"] = "0.60"
     try:
@@ -138,6 +165,9 @@ if __name__ == "__main__":
     test_needs_confirmation_ambiguous_margin()
     test_needs_confirmation_keyword_nli_disagreement()
     test_needs_confirmation_high_confidence_wide_margin_passes()
+    test_needs_confirmation_draft_profile_gates_despite_high_confidence()
+    test_needs_confirmation_validated_profile_not_gated_by_status()
+    test_needs_confirmation_no_profile_resolved_falls_back_to_confidence_checks()
     test_classifier_thresholds_env_overridable()
     test_worker_flow()
     print("test_worker OK")

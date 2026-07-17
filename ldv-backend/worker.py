@@ -23,7 +23,7 @@ def _classifier_thresholds() -> tuple[float, float, float]:
     return conf, high, margin
 
 
-def _needs_confirmation(dt: dict) -> tuple[bool, str | None]:
+def _needs_confirmation(dt: dict, profile: dict | None = None) -> tuple[bool, str | None]:
     """Whether a Layer-2 classifier result should be gated for manual confirmation.
 
     Per the 2026-07-16 management review (Priority 3), evaluates more than the
@@ -37,10 +37,25 @@ def _needs_confirmation(dt: dict) -> tuple[bool, str | None]:
       specific keyword match (classify_document_type's override_reason)
       -> "keyword_nli_disagreement"
 
+    Per a later review, also gates on registry status regardless of
+    confidence: an automatically-classified `draft` profile (or a resolved
+    profile with no classifier config at all) hasn't been empirically
+    validated yet, so a high-confidence NLI score doesn't mean the profile's
+    required-clause set or scoring behavior is trustworthy -> "draft_profile".
+    This check only runs when the caller passes a resolved `profile` --
+    the caller only does so for detection_source == "classifier", so a
+    manually-selected profile is never re-gated here: an explicit human
+    choice already satisfies "confirmation or manual selection".
+
     Manual selection is handled by the caller (only gates when
     detection_source == "classifier"); retry-budget exhaustion is already
     enforced by database._MAX_RETRIES in retry_analysis().
     """
+    if profile is not None:
+        status = (profile.get("classifier") or {}).get("status")
+        if status != "validated":
+            return True, "draft_profile"
+
     confidence = dt.get("confidence")
     if confidence is None:
         return False, None
@@ -134,6 +149,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         # Resolve profile_id and profile_version from registry
         _pid = None
         _pver = None
+        p = None
         try:
             from detector.profile_registry import detect_profile
             p = detect_profile(doc_type_str or "")
@@ -155,7 +171,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         final_status = "completed"
         final_error = None
         if detection_source == "classifier":
-            needs_confirmation, gate_reason = _needs_confirmation(dt if isinstance(dt, dict) else {})
+            needs_confirmation, gate_reason = _needs_confirmation(dt if isinstance(dt, dict) else {}, profile=p)
             if needs_confirmation:
                 final_status = "retryable"
                 # Kept as the stable "low_confidence" value: app.py's GET /result
