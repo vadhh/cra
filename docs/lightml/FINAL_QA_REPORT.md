@@ -30,8 +30,8 @@
 
 ### Informational Issues
 #### Detection Specifications Restricted to Incomplete Profiles
-- **Description**: Detection specifications exist under `detection_specifications/` for all 42 draft profiles, but are not generated for the 14 active profiles.
-- **Evidence**: 42 specifications found under `detection_specifications/` matching draft profile IDs. 14 active profiles have **Evidence Not Found** for specification files in this directory.
+- **Description**: Detection specifications exist under `detection_specifications/` for all 42 draft profiles, but are not generated for the 11 Technically Mature profiles.
+- **Evidence**: 42 specifications found under `detection_specifications/` matching draft profile IDs. 11 Technically Mature Profiles have **Evidence Not Found** for specification files in this directory.
 
 ## 3. Text Scanning Results
 - **TODO Markers**: 0 files

@@ -1,7 +1,7 @@
 # Contract Risk Analyzer (CRA) — Profile Legal Engineering Documentation
 
 > [!IMPORTANT]
-> **Legal Disclaimer & Status Notice:** All validation statuses and dates in this document reflect engineering metadata and system verification runs. No contract profiles in this document have been formally signed off as legally approved by a human legal reviewer unless explicitly noted. All legal reviewer fields are marked as Pending.
+> **Legal Disclaimer & Status Notice:** All validation statuses and dates in this document reflect engineering metadata and system verification runs. No contract profiles in this document have been formally signed off as legally Formal legal approval pending by a human legal reviewer unless explicitly noted. All legal reviewer fields are marked as Pending.
 
 ## Table of Contents
 - [Commercial Agreement (#commercial_agreement)](#commercial_agreement)

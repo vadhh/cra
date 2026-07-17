@@ -66,8 +66,8 @@
 3. Repository Statistics
 ======================================================
 - **Total Profiles**: 56
-- **Fully Usable Profiles**: 14
-- **Partially Usable Profiles**: 42
+- **Technically Mature Profiles**: 11
+- **Partially Usable Profiles**: 45
 - **Detection Specifications Present**: 42
 - **Detection Specifications Required**: 42
 - **Missing Detection Specifications**: 0
@@ -79,7 +79,7 @@
 ======================================================
 4. Repository Improvements
 ======================================================
-- **Profiles promoted to Fully Usable**: 3 profiles promoted (`construction_contract` as `construction_agreement`, `insurance_contract` as `insurance_agreement`, `it_services_contract` as `it_service_agreement`) during Phase 2, raising active profiles from 11 to 14.
+- **Factual status of additional implementations**: Three additional profile implementations exist in the repository (construction_contract/construction_agreement, insurance_contract/insurance_agreement, it_services_contract/it_service_agreement); however, the current engineering review recognises only the original 11 profiles as Technically Mature for production baseline purposes.
 - **Detection Specifications completed**: 42 specifications compiled under `docs/lightml/detection_specifications/` for all Partially Usable profiles.
 - **Contract corpus generated**: 168 test fixtures (covering all 56 profiles) generated under `docs/lightml/contract_corpus/`.
 - **Validation matrix compiled**: Completed mapping of all 56 profiles in the Excel validation matrix (`docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx`).
@@ -93,7 +93,7 @@
 ### Engineering
 - Resolve registry and implementation naming discrepancies (`construction_agreement` / `construction_contract`, `insurance_agreement` / `insurance_contract`, `it_service_agreement` / `it_services_contract`).
 - Reconcile `saas_agreement` active profile registry omission and alias overlap with `software_license`.
-- Generate Detection Specifications for the 14 active profiles (currently only exist for the 42 draft profiles).
+- Generate Detection Specifications for the 11 Technically Mature profiles (currently only exist for the 42 draft profiles).
 
 ### Legal
 - **Formal Legal Review**: Conduct a detailed review of all draft aliases and parameters with the Legal Data Owner, Ilham (Status: Pending / Evidence Not Found).
@@ -105,20 +105,7 @@
 ======================================================
 6. Repository Status
 ======================================================
-Engineering Phase
-Completed
-
-Legal Validation
-Pending
-
-Repository Verification
-Completed
-
-Quality Assurance
-Completed
-
-Production Release
-Pending
+Engineering implementation available. Repository evidence reviewed. Formal legal validation pending. Formal legal approval pending. Production release pending.
 
 ======================================================
 7. Key Risks
@@ -132,7 +119,7 @@ Pending
 ======================================================
 - The repository is ready for technical and repository verification review.
 - The repository requires formal legal validation and verification before production deployment.
-- The repository should not be considered legally approved or production-ready until formal legal sign-off and approval signatures have been completed.
+- The repository requires formal legal validation and approval and is not approved for production release until formal legal sign-off and approval signatures are completed.
 
 ======================================================
 9. Final Summary
@@ -140,23 +127,14 @@ Pending
 
 --------------------------------------------------------
 
-Engineering Deliverables
-Completed
-
-Repository Verification
-Completed
-
-Quality Assurance
-Completed
-
-Legal Validation
-Pending
-
-Formal Legal Sign-off
-Pending
-
-Production Deployment
-Pending
+- 56 Registry Profiles
+- 11 Technically Mature Profiles
+- 45 Partially Usable Profiles
+- 42 Detection Specifications
+- 11 Legal Evidence Packages Completed
+- Formal Legal Review Pending
+- Formal Legal Approval Pending
+- Production Release Pending
 
 --------------------------------------------------------
 

@@ -1,195 +1,224 @@
 # Legal Profile Evidence: Employment Contract
 
 ## 1. Contract Definition
-- **Formal Legal Definition**: Standard Employment Contract profile mapping required clauses.
-- **Repository Source**: [profiles/employment_contract.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/employment_contract.json)
-- **Evidence Source**: [registry_v1.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/registry_v1.json)
-- **Comments**: Active profile in CRA system. Engineering validation completed. Legal reviewer sign-off pending. (Notes: UU 13/2003 Ketenagakerjaan applies for ID.)
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Repository Object**: metadata.description
+- **Evidence Status**: Repository Verified
+
+- **Formal Legal Definition**: An employment contract is an agreement under which an employee agrees to perform work under the direction and control of an employer in exchange for remuneration.
+- **Comments**: Engineering implementation available. Repository evidence reviewed. Formal legal validation pending. Legal approval pending. (Notes: UU 13/2003 Ketenagakerjaan applies for ID.)
 
 ## 2. Mandatory Clauses
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Repository Object**: required_clauses
+- **Evidence Status**: Repository Verified
+
 ### Clause: governing_law
-- **Why Mandatory**: Determines which jurisdiction's laws will govern the interpretation and enforcement of the contract.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
-- **Legal Reference**:  Art. , KUH Perdata (Indonesian Civil Code) Art. Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: governing_law
+- **Reason Mandatory**: Determines which jurisdiction's laws govern contract interpretation and enforcement.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: jurisdiction_venue
-- **Why Mandatory**: Specifies the court or arbitration venue responsible for resolving disputes.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
+- **Clause**: jurisdiction_venue
+- **Reason Mandatory**: Specifies the court or arbitration venue responsible for resolving disputes.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Clause: termination
-- **Why Mandatory**: Defines the conditions under which parties can end the contract.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1320, Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: termination
+- **Reason Mandatory**: Defines the conditions under which parties can end the contract.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1320, Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: notice_period
-- **Why Mandatory**: Specifies advance notice required for termination or changes.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
+- **Clause**: notice_period
+- **Reason Mandatory**: Specifies advance notice required for termination or changes.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Clause: compensation
-- **Why Mandatory**: Defines the salary or wage obligations for the work performed.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
-- **Legal Reference**: Indonesian statute (UU) Art. UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023
-- **Evidence Status**: Verified
+- **Clause**: compensation
+- **Reason Mandatory**: Defines salary or wage obligations for work performed.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: Indonesian statute (UU) Article UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: working_hours
-- **Why Mandatory**: Defines the mandatory hours of work per week or day.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
-- **Legal Reference**: Indonesian statute (UU) Art. UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023
-- **Evidence Status**: Verified
+- **Clause**: working_hours
+- **Reason Mandatory**: Defines mandatory hours of work per week or day.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: Indonesian statute (UU) Article UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: dispute_resolution
-- **Why Mandatory**: Establishes the process (litigation, arbitration, mediation) for resolving disputes.
-- **Repository Evidence**: Listed in profiles/employment_contract.json required_clauses
-- **Legal Reference**:  Art. , KUH Perdata (Indonesian Civil Code) Art. Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa
-- **Evidence Status**: Verified
+- **Clause**: dispute_resolution
+- **Reason Mandatory**: Establishes the process (litigation, arbitration, mediation) for resolving disputes.
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa (ID)
+- **Evidence Status**: Repository Verified
 
 ## 3. Recommended Clauses
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: recommended_clauses
+- **Evidence Status**: Evidence Not Found
+
 - **Purpose**: Evidence Not Found
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 4. Dangerous / Abusive / Illegal / Leonine Clauses
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: dangerous_clauses / abusive_clauses / illegal_clauses / leonine_clauses
+- **Evidence Status**: Evidence Not Found
+
 ### Dangerous Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Abusive Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Illegal Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Leonine Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 5. Applicable Jurisdictions
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: jurisdictions
+- **Evidence Status**: Repository Verified
+
 ### Jurisdiction: Indonesia
-- **Reason**: Supported jurisdiction for contract analysis profile 'Employment Contract'.
-- **Repository Source**: profiles/employment_contract.json coverage.jurisdictions
-- **Legal Reference**: KUHPerdata Art. Pasal 1338, KUH Perdata (Indonesian Civil Code) Art. Pasal 1243, Pasal 1365, KUHPerdata Art. Pasal 1636
-- **Evidence Status**: Verified
+- **Jurisdiction**: Indonesia
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: Indonesian statute (UU) Article UU No. 40 Tahun 2014 tentang Perasuransian, KUHPerdata Article Pasal 1636
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: Belgium
-- **Reason**: Supported jurisdiction for contract analysis profile 'Employment Contract'.
-- **Repository Source**: profiles/employment_contract.json coverage.jurisdictions
-- **Legal Reference**: Belgian Civil Code, Book 5 Art. Art. 5.51, Belgian Civil Code, Book 5 Art. Art. 5.88
-- **Evidence Status**: Verified
+- **Jurisdiction**: Belgium
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: Belgian Civil Code, Book 5 Article Art. 5.88, Belgian Civil Code, Book 5 Article Art. 5.51
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: France
-- **Reason**: Supported jurisdiction for contract analysis profile 'Employment Contract'.
-- **Repository Source**: profiles/employment_contract.json coverage.jurisdictions
-- **Legal Reference**: French Code de la propriété intellectuelle Art. Art. L111-1, French Code civil Art. Art. 1170, French Code civil Art. Art. 1162
-- **Evidence Status**: Verified
+- **Jurisdiction**: France
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Legal Reference**: French Code civil Article Art. 1224, French Code civil Article Art. 2288
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: Netherlands
-- **Reason**: Supported jurisdiction for contract analysis profile 'Employment Contract'.
-- **Repository Source**: profiles/employment_contract.json coverage.jurisdictions
+- **Jurisdiction**: Netherlands
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Jurisdiction: England & Wales
-- **Reason**: Supported jurisdiction for contract analysis profile 'Employment Contract'.
-- **Repository Source**: profiles/employment_contract.json coverage.jurisdictions
+- **Jurisdiction**: England & Wales
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Jurisdiction: United States
-- **Reason**: Supported jurisdiction for contract analysis profile 'Employment Contract'.
-- **Repository Source**: profiles/employment_contract.json coverage.jurisdictions
+- **Jurisdiction**: United States
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 6. Legal References
-### Clause Mapping: governing_law
-- **Law / Code**: 
-- **Article**: 
-- **Official Citation / Note**: Absence of a governing-law clause creates conflict-of-laws uncertainty over the applicable law
-- **Repository Mapping**: Mapped to clause 'governing_law' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Source**: datasets/legal_citations.csv
+- **Repository Object**: finding_id
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: governing_law
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1338
 - **Official Citation / Note**: Pasal 1338 KUH Perdata (kebebasan berkontrak); hukum yang dipilih para pihak sepanjang tidak bertentangan dengan hukum yang berlaku.
-- **Repository Mapping**: Mapped to clause 'governing_law' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'governing_law' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: termination
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1320, Pasal 1338
 - **Official Citation / Note**: Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.
-- **Repository Mapping**: Mapped to clause 'termination' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'termination' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: compensation
 - **Law / Code**: Indonesian statute (UU)
 - **Article**: UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023
 - **Official Citation / Note**: UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023; peraturan ketenagakerjaan terkait.
-- **Repository Mapping**: Mapped to clause 'compensation' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'compensation' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: working_hours
 - **Law / Code**: Indonesian statute (UU)
 - **Article**: UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023
 - **Official Citation / Note**: UU No. 13 Tahun 2003 tentang Ketenagakerjaan sebagaimana diubah melalui UU No. 6 Tahun 2023; peraturan ketenagakerjaan terkait.
-- **Repository Mapping**: Mapped to clause 'working_hours' in detector_rules.py
-- **Evidence Status**: Verified
-
-### Clause Mapping: dispute_resolution
-- **Law / Code**: 
-- **Article**: 
-- **Official Citation / Note**: Without a dispute-resolution clause, parties default to ordinary court litigation
-- **Repository Mapping**: Mapped to clause 'dispute_resolution' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'working_hours' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: dispute_resolution
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa
 - **Official Citation / Note**: UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa; HIR/RBg untuk litigasi; Pasal 1338 KUH Perdata.
-- **Repository Mapping**: Mapped to clause 'dispute_resolution' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'dispute_resolution' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ## 7. Aliases
-- **Verified Aliases**: employment contract, labor contract, perjanjian kerja
-- **Repository Aliases**: kontrak kerja, employment agreement, perjanjian kerja, work agreement, labor contract, employment contract
-- **Draft Aliases**: employment agreement, work agreement, kontrak kerja
-- **Unsupported Aliases**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: aliases
+- **Evidence Status**: Repository Verified
+
+- **Verified Repository Alias**: employment contract, labor contract, perjanjian kerja
+- **Draft Alias**: employment agreement, work agreement, kontrak kerja
+- **Unsupported Alias**: Evidence Not Found
 
 ### Language Breakdown
-- **English**: employment agreement, work agreement, labor contract, employment contract
+- **English**: employment contract, employment agreement, work agreement, labor contract
 - **Indonesian**: kontrak kerja, perjanjian kerja
 - **French**: Evidence Not Found
 - **Dutch**: Evidence Not Found
 
 ## 8. Competing Contract Types
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: competing_profiles NLI overrides
+- **Evidence Status**: Repository Verified
+
 - **Competing Profiles**: consulting_agreement, service_agreement
-- **Why They Compete**: Both involve provision of work or services by an individual in exchange for payment, leading to potential misclassification.
-- **How They Differ**: Employment contract involves a relationship of subordination, fixed working hours, salary, and statutory protections, whereas consulting and service agreements involve independent contractors with no subordination.
-- **Classifier Distinction Strategy**: Look for employer/employee terminology, salary/wages, working hours, and notice periods in NLI hypotheses and keyword lists.
+- **Why They Compete**: Provision of human labor in exchange for payment, creating regulatory and operational classification overlap.
+- **How They Differ**: An employment contract is legally characterized by subordination, placing the employee under the employer's direct control and supervision. It triggers mandatory statutory protections such as minimum wage, leave, severance, and social security. Conversely, consulting and service agreements establish independent contractor relationships, where the service provider retains operational autonomy, manages their own tools, and is not subject to employer disciplinary power.
+- **Classifier Distinction Strategy**: Verify if the contract contains elements of subordination (e.g. supervisor direction, disciplinary procedures, internal policies) and statutory employment rights (e.g. employee benefits, salary, working hours regulations) as opposed to independent contractor clauses (e.g. invoicing, client-independent provider status).
 
 ## 9. Disambiguation Criteria
-- **Disambiguation Criteria**: Employment contract involves a relationship of subordination, fixed working hours, salary, and statutory protections, whereas consulting and service agreements involve independent contractors with no subordination. (commercial and legal separation from competing profiles: consulting_agreement, service_agreement).
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: nli_hypothesis distinction
+- **Evidence Status**: Repository Verified
+
+- **Disambiguation Criteria**: An employment contract is legally characterized by subordination, placing the employee under the employer's direct control and supervision. It triggers mandatory statutory protections such as minimum wage, leave, severance, and social security. Conversely, consulting and service agreements establish independent contractor relationships, where the service provider retains operational autonomy, manages their own tools, and is not subject to employer disciplinary power. (commercial and legal separation from competing profiles: consulting_agreement, service_agreement).
 
 ## 10. Scoring Weights
+- **Repository Source**: ldv-backend/detector/policies/default_v1.json
+- **Repository Object**: weights
+- **Evidence Status**: Repository Configured
+
 ### Weight: missing_required_fallback
 - **Repository Source**: ldv-backend/detector/policies/default_v1.json
 - **Purpose**: Score deduction for risk finding 'missing_required_fallback'
@@ -197,6 +226,7 @@
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -207,6 +237,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -217,6 +248,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -227,6 +259,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -237,6 +270,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -247,6 +281,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -257,6 +292,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -267,6 +303,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -277,6 +314,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -287,16 +325,32 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
 ## 11. Recommendation Wording
-- **Status**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/employment_contract.json
+- **Repository Object**: recommendation_wording
+- **Evidence Status**: Evidence Not Found
+
+- **Recommendation**: Draft Recommendation
+- **Evidence Status**: Evidence Not Found
 
 ## 12. Reviewer Status
+- **Repository Source**: docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx
+- **Repository Object**: Legal_Reviewer
+- **Evidence Status**: Evidence Not Found
+
 - **Reviewer Status**: Pending
+- **Evidence Status**: Evidence Not Found
 
 ## 13. Approval Status
+- **Repository Source**: docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx
+- **Repository Object**: Approval_Date
+- **Evidence Status**: Evidence Not Found
+
 - **Approval Status**: Pending
 - **Approval Date**: Pending
 - **Signatures**: Pending
+- **Evidence Status**: Evidence Not Found

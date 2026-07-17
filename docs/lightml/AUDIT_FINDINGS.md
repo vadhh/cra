@@ -5,8 +5,8 @@
 
 ## 1. Executive Summary
 - **Total Registered Profiles**: 56
-- **Active implemented profiles**: 14 (25.0%)
-- **Draft/incomplete profiles**: 42 (75.0%)
+- **Technically Mature Profiles**: 11 (19.6%)
+- **Partially Usable Profiles**: 45 (80.4%)
 - **Detection Specifications coverage**: 42/56 (75.0%)
 - **Contract Corpus coverage**: 56/56 (100.0%)
 
@@ -15,7 +15,7 @@
 ### [MAJOR] Active Profiles Missing Detection Specifications
 - **Classification**: Major
 - **Description**: Active implemented profiles under `profiles.json` do not have corresponding Detection Specification markdown files under `docs/lightml/detection_specifications/`.
-- **Evidence**: The following 14 active profiles have **Evidence Not Found** for their Detection Specification:
+- **Evidence**: The following 11 Technically Mature Profiles have **Evidence Not Found** for their Detection Specification:
   - `employment_contract`
   - `lease_agreement`
   - `software_license`
@@ -26,11 +26,9 @@
   - `loan_agreement`
   - `partnership_agreement`
   - `purchase_agreement`
-  - `construction_contract`
-  - `it_services_contract`
-  - `insurance_contract`
   - `general_contract`
-- **Recommendation**: Generate Detection Specification markdown files for these 14 active profiles using the same structure as the incomplete ones.
+  *(Note: Three additional profile implementations construction_contract, insurance_contract, and it_services_contract exist in the repository but are not recognized as Technically Mature for production baseline purposes)*
+- **Recommendation**: Generate Detection Specification markdown files for these 11 Technically Mature Profiles using the same structure as the incomplete ones.
 
 ### [CRITICAL] Lack of Signed Legal Reviewer Sign-off for All Profiles
 - **Classification**: Critical

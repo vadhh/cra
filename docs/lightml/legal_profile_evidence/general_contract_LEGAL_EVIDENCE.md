@@ -1,189 +1,217 @@
 # Legal Profile Evidence: General Contract
 
 ## 1. Contract Definition
-- **Formal Legal Definition**: Standard General Contract profile mapping required baseline clauses.
-- **Repository Source**: [profiles/general_contract.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/general_contract.json)
-- **Evidence Source**: [registry_v1.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/registry_v1.json)
-- **Comments**: Active profile in CRA system. Engineering validation completed. Legal reviewer sign-off pending. (Notes: Fallback profile.)
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Repository Object**: metadata.description
+- **Evidence Status**: Repository Verified
+
+- **Formal Legal Definition**: A general contract is a baseline legal agreement establishing mutual covenants and obligations between contracting parties, serving as a fallback for transactions not covered by specialized contract types.
+- **Comments**: Engineering implementation available. Repository evidence reviewed. Formal legal validation pending. Legal approval pending. (Notes: Fallback profile.)
 
 ## 2. Mandatory Clauses
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Repository Object**: required_clauses
+- **Evidence Status**: Repository Verified
+
 ### Clause: governing_law
-- **Why Mandatory**: Determines which jurisdiction's laws will govern the interpretation and enforcement of the contract.
-- **Repository Evidence**: Listed in profiles/general_contract.json required_clauses
-- **Legal Reference**:  Art. , KUH Perdata (Indonesian Civil Code) Art. Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: governing_law
+- **Reason Mandatory**: Determines which jurisdiction's laws govern contract interpretation and enforcement.
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: jurisdiction_venue
-- **Why Mandatory**: Specifies the court or arbitration venue responsible for resolving disputes.
-- **Repository Evidence**: Listed in profiles/general_contract.json required_clauses
+- **Clause**: jurisdiction_venue
+- **Reason Mandatory**: Specifies the court or arbitration venue responsible for resolving disputes.
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Clause: payment_terms
-- **Why Mandatory**: Establishes payment obligations, due dates, and invoicing details.
-- **Repository Evidence**: Listed in profiles/general_contract.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1234
-- **Evidence Status**: Verified
+- **Clause**: payment_terms
+- **Reason Mandatory**: Establishes payment obligations, due dates, and invoicing details.
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1234 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: termination
-- **Why Mandatory**: Defines the conditions under which parties can end the contract.
-- **Repository Evidence**: Listed in profiles/general_contract.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1320, Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: termination
+- **Reason Mandatory**: Defines the conditions under which parties can end the contract.
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1320, Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: dispute_resolution
-- **Why Mandatory**: Establishes the process (litigation, arbitration, mediation) for resolving disputes.
-- **Repository Evidence**: Listed in profiles/general_contract.json required_clauses
-- **Legal Reference**:  Art. , KUH Perdata (Indonesian Civil Code) Art. Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa
-- **Evidence Status**: Verified
+- **Clause**: dispute_resolution
+- **Reason Mandatory**: Establishes the process (litigation, arbitration, mediation) for resolving disputes.
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: limitation_liability
-- **Why Mandatory**: Caps financial liability to manage commercial risk.
-- **Repository Evidence**: Listed in profiles/general_contract.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1243, Pasal 1365
-- **Evidence Status**: Verified
+- **Clause**: limitation_liability
+- **Reason Mandatory**: Caps financial liability to manage commercial risk.
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1243, Pasal 1365 (ID)
+- **Evidence Status**: Repository Verified
 
 ## 3. Recommended Clauses
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: recommended_clauses
+- **Evidence Status**: Evidence Not Found
+
 - **Purpose**: Evidence Not Found
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 4. Dangerous / Abusive / Illegal / Leonine Clauses
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: dangerous_clauses / abusive_clauses / illegal_clauses / leonine_clauses
+- **Evidence Status**: Evidence Not Found
+
 ### Dangerous Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Abusive Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Illegal Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Leonine Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 5. Applicable Jurisdictions
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: jurisdictions
+- **Evidence Status**: Repository Verified
+
 ### Jurisdiction: Indonesia
-- **Reason**: Supported jurisdiction for contract analysis profile 'General Contract'.
-- **Repository Source**: profiles/general_contract.json coverage.jurisdictions
-- **Legal Reference**: KUHPerdata Art. Pasal 1338, KUH Perdata (Indonesian Civil Code) Art. Pasal 1243, Pasal 1365, KUHPerdata Art. Pasal 1636
-- **Evidence Status**: Verified
+- **Jurisdiction**: Indonesia
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: Indonesian statute (UU) Article UU No. 40 Tahun 2014 tentang Perasuransian, KUHPerdata Article Pasal 1636
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: Belgium
-- **Reason**: Supported jurisdiction for contract analysis profile 'General Contract'.
-- **Repository Source**: profiles/general_contract.json coverage.jurisdictions
-- **Legal Reference**: Belgian Civil Code, Book 5 Art. Art. 5.51, Belgian Civil Code, Book 5 Art. Art. 5.88
-- **Evidence Status**: Verified
+- **Jurisdiction**: Belgium
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: Belgian Civil Code, Book 5 Article Art. 5.88, Belgian Civil Code, Book 5 Article Art. 5.51
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: France
-- **Reason**: Supported jurisdiction for contract analysis profile 'General Contract'.
-- **Repository Source**: profiles/general_contract.json coverage.jurisdictions
-- **Legal Reference**: French Code de la propriété intellectuelle Art. Art. L111-1, French Code civil Art. Art. 1170, French Code civil Art. Art. 1162
-- **Evidence Status**: Verified
+- **Jurisdiction**: France
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Legal Reference**: French Code civil Article Art. 1224, French Code civil Article Art. 2288
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: Netherlands
-- **Reason**: Supported jurisdiction for contract analysis profile 'General Contract'.
-- **Repository Source**: profiles/general_contract.json coverage.jurisdictions
+- **Jurisdiction**: Netherlands
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Jurisdiction: England & Wales
-- **Reason**: Supported jurisdiction for contract analysis profile 'General Contract'.
-- **Repository Source**: profiles/general_contract.json coverage.jurisdictions
+- **Jurisdiction**: England & Wales
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Jurisdiction: United States
-- **Reason**: Supported jurisdiction for contract analysis profile 'General Contract'.
-- **Repository Source**: profiles/general_contract.json coverage.jurisdictions
+- **Jurisdiction**: United States
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 6. Legal References
-### Clause Mapping: governing_law
-- **Law / Code**: 
-- **Article**: 
-- **Official Citation / Note**: Absence of a governing-law clause creates conflict-of-laws uncertainty over the applicable law
-- **Repository Mapping**: Mapped to clause 'governing_law' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Source**: datasets/legal_citations.csv
+- **Repository Object**: finding_id
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: governing_law
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1338
 - **Official Citation / Note**: Pasal 1338 KUH Perdata (kebebasan berkontrak); hukum yang dipilih para pihak sepanjang tidak bertentangan dengan hukum yang berlaku.
-- **Repository Mapping**: Mapped to clause 'governing_law' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'governing_law' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: payment_terms
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1234
 - **Official Citation / Note**: KUH Perdata tentang perikatan dan pembayaran (termasuk Pasal 1234 dan seterusnya); regulasi sektor terkait jika berlaku.
-- **Repository Mapping**: Mapped to clause 'payment_terms' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'payment_terms' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: termination
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1320, Pasal 1338
 - **Official Citation / Note**: Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.
-- **Repository Mapping**: Mapped to clause 'termination' in detector_rules.py
-- **Evidence Status**: Verified
-
-### Clause Mapping: dispute_resolution
-- **Law / Code**: 
-- **Article**: 
-- **Official Citation / Note**: Without a dispute-resolution clause, parties default to ordinary court litigation
-- **Repository Mapping**: Mapped to clause 'dispute_resolution' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'termination' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: dispute_resolution
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa
 - **Official Citation / Note**: UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa; HIR/RBg untuk litigasi; Pasal 1338 KUH Perdata.
-- **Repository Mapping**: Mapped to clause 'dispute_resolution' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'dispute_resolution' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: limitation_liability
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1243, Pasal 1365
 - **Official Citation / Note**: KUH Perdata mengenai ganti rugi dan wanprestasi (Pasal 1243 dan seterusnya); Pasal 1365 KUH Perdata untuk perbuatan melawan hukum.
-- **Repository Mapping**: Mapped to clause 'limitation_liability' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'limitation_liability' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ## 7. Aliases
-- **Verified Aliases**: general contract, contract, agreement, perjanjian, kontrak
-- **Repository Aliases**: contract, kontrak, perjanjian umum, general agreement, perjanjian, agreement, general contract, kontrak umum
-- **Draft Aliases**: general agreement, perjanjian umum, kontrak umum
-- **Unsupported Aliases**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: aliases
+- **Evidence Status**: Repository Verified
+
+- **Verified Repository Alias**: general contract, contract, agreement, perjanjian, kontrak
+- **Draft Alias**: general agreement, perjanjian umum, kontrak umum
+- **Unsupported Alias**: Evidence Not Found
 
 ### Language Breakdown
-- **English**: contract, general agreement, agreement, general contract
-- **Indonesian**: kontrak, perjanjian umum, perjanjian, kontrak umum
+- **English**: general agreement, general contract, contract, agreement
+- **Indonesian**: kontrak, kontrak umum, perjanjian, perjanjian umum
 - **French**: Evidence Not Found
 - **Dutch**: Evidence Not Found
 
 ## 8. Competing Contract Types
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: competing_profiles NLI overrides
+- **Evidence Status**: Repository Verified
+
 - **Competing Profiles**: commercial_agreement, service_agreement
-- **Why They Compete**: Acts as the generic fallback for all contract types.
-- **How They Differ**: General contract is a baseline agreement used when the transaction does not fit into any specialized category.
-- **Classifier Distinction Strategy**: Serves as fallback when specialized indicators (e.g. lease, employment, NDA) are absent.
+- **Why They Compete**: Overlap in baseline legal covenants, disputes, or definitions.
+- **How They Differ**: A general contract is a baseline agreement that establishes mutual covenants without specializing in any trade, service, employment, or property lease category.
+- **Classifier Distinction Strategy**: Use as a fallback classification when specialized contract criteria are absent.
 
 ## 9. Disambiguation Criteria
-- **Disambiguation Criteria**: General contract is a baseline agreement used when the transaction does not fit into any specialized category. (commercial and legal separation from competing profiles: commercial_agreement, service_agreement).
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: nli_hypothesis distinction
+- **Evidence Status**: Repository Verified
+
+- **Disambiguation Criteria**: A general contract is a baseline agreement that establishes mutual covenants without specializing in any trade, service, employment, or property lease category. (commercial and legal separation from competing profiles: commercial_agreement, service_agreement).
 
 ## 10. Scoring Weights
+- **Repository Source**: ldv-backend/detector/policies/default_v1.json
+- **Repository Object**: weights
+- **Evidence Status**: Repository Configured
+
 ### Weight: missing_required_fallback
 - **Repository Source**: ldv-backend/detector/policies/default_v1.json
 - **Purpose**: Score deduction for risk finding 'missing_required_fallback'
@@ -191,6 +219,7 @@
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -201,6 +230,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -211,6 +241,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -221,6 +252,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -231,6 +263,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -241,6 +274,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -251,6 +285,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -261,6 +296,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -271,6 +307,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -281,16 +318,32 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
 ## 11. Recommendation Wording
-- **Status**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/general_contract.json
+- **Repository Object**: recommendation_wording
+- **Evidence Status**: Evidence Not Found
+
+- **Recommendation**: Draft Recommendation
+- **Evidence Status**: Evidence Not Found
 
 ## 12. Reviewer Status
+- **Repository Source**: docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx
+- **Repository Object**: Legal_Reviewer
+- **Evidence Status**: Evidence Not Found
+
 - **Reviewer Status**: Pending
+- **Evidence Status**: Evidence Not Found
 
 ## 13. Approval Status
+- **Repository Source**: docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx
+- **Repository Object**: Approval_Date
+- **Evidence Status**: Evidence Not Found
+
 - **Approval Status**: Pending
 - **Approval Date**: Pending
 - **Signatures**: Pending
+- **Evidence Status**: Evidence Not Found

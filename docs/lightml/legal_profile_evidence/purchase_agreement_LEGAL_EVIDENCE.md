@@ -1,243 +1,273 @@
 # Legal Profile Evidence: Purchase Agreement
 
 ## 1. Contract Definition
-- **Formal Legal Definition**: Standard Purchase Agreement profile mapping required clauses.
-- **Repository Source**: [profiles/purchase_agreement.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/purchase_agreement.json)
-- **Evidence Source**: [registry_v1.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/registry_v1.json)
-- **Comments**: Active profile in CRA system. Engineering validation completed. Legal reviewer sign-off pending. (Notes: )
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Repository Object**: metadata.description
+- **Evidence Status**: Repository Verified
+
+- **Formal Legal Definition**: A purchase agreement is a contract whereby a seller transfers or agrees to transfer the ownership of physical goods or assets to a buyer in exchange for a specified monetary payment.
+- **Comments**: Engineering implementation available. Repository evidence reviewed. Formal legal validation pending. Legal approval pending. (Notes: )
 
 ## 2. Mandatory Clauses
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Repository Object**: required_clauses
+- **Evidence Status**: Repository Verified
+
 ### Clause: governing_law
-- **Why Mandatory**: Determines which jurisdiction's laws will govern the interpretation and enforcement of the contract.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**:  Art. , KUH Perdata (Indonesian Civil Code) Art. Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: governing_law
+- **Reason Mandatory**: Determines which jurisdiction's laws govern contract interpretation and enforcement.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: jurisdiction_venue
-- **Why Mandatory**: Specifies the court or arbitration venue responsible for resolving disputes.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
+- **Clause**: jurisdiction_venue
+- **Reason Mandatory**: Specifies the court or arbitration venue responsible for resolving disputes.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Clause: goods_description
-- **Why Mandatory**: Identifies and describes the physical goods being sold.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**: Uniform Commercial Code Art. UCC 2-201, French Code civil Art. Art. 1583, KUHPerdata Art. Pasal 1457
-- **Evidence Status**: Verified
+- **Clause**: goods_description
+- **Reason Mandatory**: Identifies and describes the physical goods being sold.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: Uniform Commercial Code Article UCC 2-201 (generic), French Code civil Article Art. 1583 (FR), KUHPerdata Article Pasal 1457 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: payment_terms
-- **Why Mandatory**: Establishes payment obligations, due dates, and invoicing details.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1234
-- **Evidence Status**: Verified
+- **Clause**: payment_terms
+- **Reason Mandatory**: Establishes payment obligations, due dates, and invoicing details.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1234 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: delivery_terms
-- **Why Mandatory**: Defines shipping, delivery, and risk transfer terms (Incoterms).
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1320, Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: delivery_terms
+- **Reason Mandatory**: Defines shipping, delivery, and risk transfer terms (Incoterms).
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1320, Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: warranty
-- **Why Mandatory**: Provides performance or product quality warranties.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1320, Pasal 1338
-- **Evidence Status**: Verified
+- **Clause**: warranty
+- **Reason Mandatory**: Provides performance or product quality warranties.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1320, Pasal 1338 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: title_transfer
-- **Why Mandatory**: Specifies when ownership of goods transfers to the buyer.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**: Uniform Commercial Code Art. UCC 2-401, French Code civil Art. Art. 1583, KUHPerdata Art. Pasal 1459
-- **Evidence Status**: Verified
+- **Clause**: title_transfer
+- **Reason Mandatory**: Specifies when ownership of goods transfers to the buyer.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: Uniform Commercial Code Article UCC 2-401 (generic), French Code civil Article Art. 1583 (FR), KUHPerdata Article Pasal 1459 (ID)
+- **Evidence Status**: Repository Verified
 
 ### Clause: dispute_resolution
-- **Why Mandatory**: Establishes the process (litigation, arbitration, mediation) for resolving disputes.
-- **Repository Evidence**: Listed in profiles/purchase_agreement.json required_clauses
-- **Legal Reference**:  Art. , KUH Perdata (Indonesian Civil Code) Art. Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa
-- **Evidence Status**: Verified
+- **Clause**: dispute_resolution
+- **Reason Mandatory**: Establishes the process (litigation, arbitration, mediation) for resolving disputes.
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: KUH Perdata (Indonesian Civil Code) Article Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa (ID)
+- **Evidence Status**: Repository Verified
 
 ## 3. Recommended Clauses
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: recommended_clauses
+- **Evidence Status**: Evidence Not Found
+
 - **Purpose**: Evidence Not Found
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 4. Dangerous / Abusive / Illegal / Leonine Clauses
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: dangerous_clauses / abusive_clauses / illegal_clauses / leonine_clauses
+- **Evidence Status**: Evidence Not Found
+
 ### Dangerous Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Abusive Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Illegal Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Leonine Clauses
-- **Reason**: Evidence Not Found
-- **Repository Evidence**: Evidence Not Found
+- **Classification Reason**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 5. Applicable Jurisdictions
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: jurisdictions
+- **Evidence Status**: Repository Verified
+
 ### Jurisdiction: Indonesia
-- **Reason**: Supported jurisdiction for contract analysis profile 'Purchase Agreement'.
-- **Repository Source**: profiles/purchase_agreement.json coverage.jurisdictions
-- **Legal Reference**: KUHPerdata Art. Pasal 1338, KUH Perdata (Indonesian Civil Code) Art. Pasal 1243, Pasal 1365, KUHPerdata Art. Pasal 1636
-- **Evidence Status**: Verified
+- **Jurisdiction**: Indonesia
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: Indonesian statute (UU) Article UU No. 40 Tahun 2014 tentang Perasuransian, KUHPerdata Article Pasal 1636
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: Belgium
-- **Reason**: Supported jurisdiction for contract analysis profile 'Purchase Agreement'.
-- **Repository Source**: profiles/purchase_agreement.json coverage.jurisdictions
-- **Legal Reference**: Belgian Civil Code, Book 5 Art. Art. 5.51, Belgian Civil Code, Book 5 Art. Art. 5.88
-- **Evidence Status**: Verified
+- **Jurisdiction**: Belgium
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: Belgian Civil Code, Book 5 Article Art. 5.88, Belgian Civil Code, Book 5 Article Art. 5.51
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: France
-- **Reason**: Supported jurisdiction for contract analysis profile 'Purchase Agreement'.
-- **Repository Source**: profiles/purchase_agreement.json coverage.jurisdictions
-- **Legal Reference**: French Code de la propriété intellectuelle Art. Art. L111-1, French Code civil Art. Art. 1170, French Code civil Art. Art. 1162
-- **Evidence Status**: Verified
+- **Jurisdiction**: France
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Legal Reference**: French Code civil Article Art. 1224, French Code civil Article Art. 2288
+- **Evidence Status**: Repository Verified
 
 ### Jurisdiction: Netherlands
-- **Reason**: Supported jurisdiction for contract analysis profile 'Purchase Agreement'.
-- **Repository Source**: profiles/purchase_agreement.json coverage.jurisdictions
+- **Jurisdiction**: Netherlands
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Jurisdiction: England & Wales
-- **Reason**: Supported jurisdiction for contract analysis profile 'Purchase Agreement'.
-- **Repository Source**: profiles/purchase_agreement.json coverage.jurisdictions
+- **Jurisdiction**: England & Wales
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ### Jurisdiction: United States
-- **Reason**: Supported jurisdiction for contract analysis profile 'Purchase Agreement'.
-- **Repository Source**: profiles/purchase_agreement.json coverage.jurisdictions
+- **Jurisdiction**: United States
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
 - **Legal Reference**: Evidence Not Found
 - **Evidence Status**: Evidence Not Found
 
 ## 6. Legal References
-### Clause Mapping: governing_law
-- **Law / Code**: 
-- **Article**: 
-- **Official Citation / Note**: Absence of a governing-law clause creates conflict-of-laws uncertainty over the applicable law
-- **Repository Mapping**: Mapped to clause 'governing_law' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Source**: datasets/legal_citations.csv
+- **Repository Object**: finding_id
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: governing_law
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1338
 - **Official Citation / Note**: Pasal 1338 KUH Perdata (kebebasan berkontrak); hukum yang dipilih para pihak sepanjang tidak bertentangan dengan hukum yang berlaku.
-- **Repository Mapping**: Mapped to clause 'governing_law' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'governing_law' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: goods_description
 - **Law / Code**: Uniform Commercial Code
 - **Article**: UCC 2-201
 - **Official Citation / Note**: Description of goods is required for sale validity
-- **Repository Mapping**: Mapped to clause 'goods_description' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'goods_description' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: goods_description
 - **Law / Code**: French Code civil
 - **Article**: Art. 1583
 - **Official Citation / Note**: La vente est parfaite dès qu'on est convenu de la chose
-- **Repository Mapping**: Mapped to clause 'goods_description' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'goods_description' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: goods_description
 - **Law / Code**: KUHPerdata
 - **Article**: Pasal 1457
 - **Official Citation / Note**: Jual beli memerlukan penentuan barang yang dijual
-- **Repository Mapping**: Mapped to clause 'goods_description' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'goods_description' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: payment_terms
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1234
 - **Official Citation / Note**: KUH Perdata tentang perikatan dan pembayaran (termasuk Pasal 1234 dan seterusnya); regulasi sektor terkait jika berlaku.
-- **Repository Mapping**: Mapped to clause 'payment_terms' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'payment_terms' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: delivery_terms
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1320, Pasal 1338
 - **Official Citation / Note**: Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.
-- **Repository Mapping**: Mapped to clause 'delivery_terms' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'delivery_terms' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: warranty
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1320, Pasal 1338
 - **Official Citation / Note**: Pasal 1320 dan Pasal 1338 KUH Perdata tentang syarat sah perjanjian dan kebebasan berkontrak; prinsip umum hukum kontrak.
-- **Repository Mapping**: Mapped to clause 'warranty' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'warranty' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: title_transfer
 - **Law / Code**: Uniform Commercial Code
 - **Article**: UCC 2-401
 - **Official Citation / Note**: Title transfers upon physical delivery unless agreed
-- **Repository Mapping**: Mapped to clause 'title_transfer' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'title_transfer' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: title_transfer
 - **Law / Code**: French Code civil
 - **Article**: Art. 1583
 - **Official Citation / Note**: Le transfert de propriété s'opère par l'accord sur la chose
-- **Repository Mapping**: Mapped to clause 'title_transfer' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'title_transfer' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: title_transfer
 - **Law / Code**: KUHPerdata
 - **Article**: Pasal 1459
 - **Official Citation / Note**: Hak milik atas barang tidak pindah sebelum penyerahan
-- **Repository Mapping**: Mapped to clause 'title_transfer' in detector_rules.py
-- **Evidence Status**: Verified
-
-### Clause Mapping: dispute_resolution
-- **Law / Code**: 
-- **Article**: 
-- **Official Citation / Note**: Without a dispute-resolution clause, parties default to ordinary court litigation
-- **Repository Mapping**: Mapped to clause 'dispute_resolution' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'title_transfer' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ### Clause Mapping: dispute_resolution
 - **Law / Code**: KUH Perdata (Indonesian Civil Code)
 - **Article**: Pasal 1338, UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa
 - **Official Citation / Note**: UU No. 30 Tahun 1999 tentang Arbitrase dan Alternatif Penyelesaian Sengketa; HIR/RBg untuk litigasi; Pasal 1338 KUH Perdata.
-- **Repository Mapping**: Mapped to clause 'dispute_resolution' in detector_rules.py
-- **Evidence Status**: Verified
+- **Repository Mapping**: Mapped to clause 'dispute_resolution' in ldv-backend/detector/detector_rules.py
+- **Evidence Status**: Repository Verified
 
 ## 7. Aliases
-- **Verified Aliases**: purchase agreement, sale agreement, sales contract, perjanjian pembelian
-- **Repository Aliases**: sales contract, perjanjian pembelian, sale agreement, koopovereenkomst, perjanjian jual beli, contrat de vente, purchase agreement
-- **Draft Aliases**: perjanjian jual beli, contrat de vente, koopovereenkomst
-- **Unsupported Aliases**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: aliases
+- **Evidence Status**: Repository Verified
+
+- **Verified Repository Alias**: purchase agreement, sale agreement, sales contract, perjanjian pembelian
+- **Draft Alias**: perjanjian jual beli, contrat de vente, koopovereenkomst
+- **Unsupported Alias**: Evidence Not Found
 
 ### Language Breakdown
-- **English**: sales contract, sale agreement, purchase agreement
-- **Indonesian**: perjanjian pembelian, perjanjian jual beli
+- **English**: purchase agreement, sales contract, sale agreement
+- **Indonesian**: perjanjian jual beli, perjanjian pembelian
 - **French**: contrat de vente
 - **Dutch**: koopovereenkomst
 
 ## 8. Competing Contract Types
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: competing_profiles NLI overrides
+- **Evidence Status**: Repository Verified
+
 - **Competing Profiles**: commercial_agreement, general_contract
-- **Why They Compete**: Governs transactional transfers which can overlap with general commercial supply agreements.
-- **How They Differ**: Purchase agreement governs the transfer of ownership of physical goods or assets in exchange for payment, including delivery terms and product warranties.
-- **Classifier Distinction Strategy**: Identify description of goods, delivery terms, and title transfer clauses.
+- **Why They Compete**: Overlap in transactional transfers of property or supply arrangements.
+- **How They Differ**: A purchase agreement is legally defined by the transfer of title and ownership of specific tangible goods or assets in exchange for price. A service agreement transfers the utility of labor, and a commercial agreement covers broader distribution or trade partnerships.
+- **Classifier Distinction Strategy**: Verify if the core obligation is the transfer of title to physical goods (purchase agreement) as opposed to the execution of services or ongoing commercial relations.
 
 ## 9. Disambiguation Criteria
-- **Disambiguation Criteria**: Purchase agreement governs the transfer of ownership of physical goods or assets in exchange for payment, including delivery terms and product warranties. (commercial and legal separation from competing profiles: commercial_agreement, general_contract).
+- **Repository Source**: ldv-backend/detector/profiles/registry_v1.json
+- **Repository Object**: nli_hypothesis distinction
+- **Evidence Status**: Repository Verified
+
+- **Disambiguation Criteria**: A purchase agreement is legally defined by the transfer of title and ownership of specific tangible goods or assets in exchange for price. A service agreement transfers the utility of labor, and a commercial agreement covers broader distribution or trade partnerships. (commercial and legal separation from competing profiles: commercial_agreement, general_contract).
 
 ## 10. Scoring Weights
+- **Repository Source**: ldv-backend/detector/policies/default_v1.json
+- **Repository Object**: weights
+- **Evidence Status**: Repository Configured
+
 ### Weight: missing_required_fallback
 - **Repository Source**: ldv-backend/detector/policies/default_v1.json
 - **Purpose**: Score deduction for risk finding 'missing_required_fallback'
@@ -245,6 +275,7 @@
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -255,6 +286,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -265,6 +297,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -275,6 +308,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -285,6 +319,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -295,6 +330,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -305,6 +341,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -315,6 +352,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -325,6 +363,7 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
@@ -335,16 +374,32 @@ Not Yet Legally Calibrated
 - **Calibration Status**: 
 ```
 Engineering Default
+Repository Configured
 Not Yet Legally Calibrated
 ```
 
 ## 11. Recommendation Wording
-- **Status**: Evidence Not Found
+- **Repository Source**: ldv-backend/detector/profiles/purchase_agreement.json
+- **Repository Object**: recommendation_wording
+- **Evidence Status**: Evidence Not Found
+
+- **Recommendation**: Draft Recommendation
+- **Evidence Status**: Evidence Not Found
 
 ## 12. Reviewer Status
+- **Repository Source**: docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx
+- **Repository Object**: Legal_Reviewer
+- **Evidence Status**: Evidence Not Found
+
 - **Reviewer Status**: Pending
+- **Evidence Status**: Evidence Not Found
 
 ## 13. Approval Status
+- **Repository Source**: docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx
+- **Repository Object**: Approval_Date
+- **Evidence Status**: Evidence Not Found
+
 - **Approval Status**: Pending
 - **Approval Date**: Pending
 - **Signatures**: Pending
+- **Evidence Status**: Evidence Not Found
