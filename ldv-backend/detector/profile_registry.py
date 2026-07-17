@@ -67,7 +67,7 @@ def detect_profile(label: str) -> Optional[dict]:
     if not norm:
         return None
     for p in _load()["profiles"]:
-        if norm == p["id"] or norm in [a.lower() for a in p["aliases"]]:
+        if norm == p["id"] or norm == p["display_name"].lower() or norm in [a.lower() for a in p["aliases"]]:
             return p
     return None
 
