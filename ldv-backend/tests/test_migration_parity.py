@@ -26,6 +26,21 @@ Both checks found real drift on the first run: required_clauses matched
 everywhere, but software_license's legacy aliases didn't include "software
 license agreement", the exact label the new registry's display_name produces
 (fixed alongside this test).
+
+  3. NLI hypothesis parity -- P2 ("make classifier config registry-driven")
+     migrated the 11 profiles' hand-tuned NLI hypotheses out of the hardcoded
+     `_DOC_TYPE_SPECS` list in detector_distilbert.py and into registry_v1.json.
+     This is the ground truth that actually drove classification before P2 --
+     a wording change here is the single highest-risk thing that could have
+     silently degraded doc-type classification accuracy for the 11 already-
+     trusted profiles. Checked byte-for-byte: no drift found.
+  4. Keyword-detection path is untouched for the 11 -- _keyword_doc_type()'s
+     hardcoded if/elif chain (not `load_keyword_doc_types()`) still drives
+     keyword-based classification for these profiles; the registry's
+     `positive_keywords` only feed an *additive* fallback for profiles outside
+     the original 11, so this test just confirms that division of labor
+     rather than diffing pattern lists (different keyword *sources* by design,
+     not drift).
 """
 import os
 import sys
@@ -33,7 +48,27 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from detector.detector_profiles import ProfileManager
+from detector.detector_distilbert import _DOC_TYPE_SPECS, _keyword_doc_type
 from detector import profile_registry
+
+# Maps each of the 11 profile ids to the label _DOC_TYPE_SPECS used for it
+# pre-P2 (detector_distilbert.py's hardcoded hypothesis list). Not always the
+# same string as the new registry's display_name.lower() -- e.g. software
+# license's legacy label is "software license", the registry's is "software
+# license agreement" (see test_dual_label_still_resolves_same_profile below).
+PID_TO_LEGACY_LABEL = {
+    "employment_contract": "employment contract",
+    "lease_agreement": "lease agreement",
+    "software_license": "software license",
+    "service_agreement": "service agreement",
+    "consulting_agreement": "consulting agreement",
+    "commercial_agreement": "commercial agreement",
+    "non_disclosure_agreement": "non-disclosure agreement",
+    "loan_agreement": "loan agreement",
+    "partnership_agreement": "partnership agreement",
+    "purchase_agreement": "purchase agreement",
+    "general_contract": "general contract",
+}
 
 # The 11 profiles present in both the legacy registry and the new registry's
 # "validated" tier -- the ones the 2026-07-16 review calls "already mature".
@@ -90,8 +125,56 @@ def test_legacy_weight_override_lookup_resolves_for_registry_labels():
     )
 
 
+def test_nli_hypothesis_matches_pre_migration_hardcoded_spec():
+    """The single highest-risk change P2 could have made: silently altering
+    the hand-tuned NLI hypothesis wording for an already-trusted profile,
+    degrading classification accuracy without any structural signal (no
+    missing field, no exception -- just a worse prompt). Diffed byte-for-byte
+    against the pre-P2 ground truth (_DOC_TYPE_SPECS, kept in the file as the
+    static fallback)."""
+    legacy_hyp = {s["label"]: s["hypothesis"] for s in _DOC_TYPE_SPECS}
+    mismatches = {}
+    for pid, legacy_label in PID_TO_LEGACY_LABEL.items():
+        old_hyp = legacy_hyp.get(legacy_label)
+        new_hyp = (profile_registry.profile_for(pid).get("classifier") or {}).get("hypothesis")
+        if old_hyp != new_hyp:
+            mismatches[pid] = {"legacy": old_hyp, "registry": new_hyp}
+    assert not mismatches, f"NLI hypothesis drifted from pre-P2 baseline for: {mismatches}"
+
+
+def test_keyword_chain_untouched_for_original_11():
+    """P2's commit message claims _keyword_doc_type()'s hardcoded chain for
+    the 11 tuned profiles was left untouched (registry keywords only feed an
+    *additive* fallback for profiles outside the 11). Spot-check with real
+    trigger phrases for two profiles known to have hardcoded keyword checks
+    (software_license, lease_agreement) -- confirms the chain still returns
+    its original label, not a registry-fallback label, i.e. the hardcoded
+    branch is still being hit first."""
+    label, hits, is_override = _keyword_doc_type("This EULA grants a software license to licensee.")
+    assert label == "software license", f"expected hardcoded chain label, got {label!r}"
+
+    label, hits, is_override = _keyword_doc_type("The landlord and tenant agree to this lease for the premises.")
+    assert label == "lease agreement", f"expected hardcoded chain label, got {label!r}"
+
+
+def test_dual_label_still_resolves_same_profile():
+    """software_license is the one profile where the keyword path's label
+    ("software license") and the registry/NLI path's label ("software license
+    agreement") diverge -- confirmed non-breaking because detect_profile()
+    resolves both to the same profile (both are in registry_v1.json's own
+    aliases list)."""
+    from detector import profile_registry as reg
+    keyword_path = reg.detect_profile("software license")
+    nli_path = reg.detect_profile("software license agreement")
+    assert keyword_path is not None and nli_path is not None
+    assert keyword_path["id"] == nli_path["id"] == "software_license"
+
+
 if __name__ == "__main__":
     test_original_11_present_in_both_systems()
     test_required_clauses_match_between_legacy_and_registry()
     test_legacy_weight_override_lookup_resolves_for_registry_labels()
+    test_nli_hypothesis_matches_pre_migration_hardcoded_spec()
+    test_keyword_chain_untouched_for_original_11()
+    test_dual_label_still_resolves_same_profile()
     print("All migration parity checks passed.")
