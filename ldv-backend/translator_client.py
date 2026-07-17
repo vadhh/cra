@@ -85,6 +85,10 @@ def check_health(timeout: float = 3.0) -> dict:
     url = _base_url()
     if not url:
         return {"enabled": False, "reachable": None}
+    if not url.lower().startswith("https://") and os.getenv("LDV_LIGHTML_ALLOW_INSECURE", "0") != "1":
+        # Same HTTPS-only gate as translate_via_microservice() -- otherwise
+        # the bearer token in _auth_headers() would go out in cleartext.
+        return {"enabled": True, "reachable": None}
     parsed = urlparse(url)
     health_url = f"{parsed.scheme}://{parsed.netloc}/health"
     try:

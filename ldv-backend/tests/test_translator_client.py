@@ -106,6 +106,18 @@ def test_check_health_disabled_or_unconfigured():
     _clear_env()
 
 
+def test_check_health_refuses_plaintext_http_without_explicit_opt_in():
+    _clear_env()
+    os.environ["EXTERNAL_TRANSLATION_DISABLED"] = "0"
+    os.environ["LIGHTML_TRANSLATOR_URL"] = "http://lightml.internal/translate"
+    os.environ["LDV_LIGHTML_API_KEY"] = "secret-key-123"
+    with patch("translator_client.requests.get") as mock_get:
+        result = translator_client.check_health()
+        assert result == {"enabled": True, "reachable": None}
+        mock_get.assert_not_called()  # bearer token must never go out in cleartext
+    _clear_env()
+
+
 def test_check_health_probes_health_path_derived_from_base_url():
     _clear_env()
     os.environ["EXTERNAL_TRANSLATION_DISABLED"] = "0"
@@ -128,5 +140,6 @@ if __name__ == "__main__":
     test_sends_bearer_auth_header_when_api_key_set()
     test_failure_falls_back_to_original_text_without_retry()
     test_check_health_disabled_or_unconfigured()
+    test_check_health_refuses_plaintext_http_without_explicit_opt_in()
     test_check_health_probes_health_path_derived_from_base_url()
     print("test_translator_client OK")
