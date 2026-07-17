@@ -126,7 +126,6 @@ _KEYWORD_MIN_HITS = 2
 # NLI confidence below this → apply keyword override when keyword is strong
 _NLI_OVERRIDE_THRESHOLD = 0.40
 
-
 def _keyword_doc_type(text: str) -> tuple[str | None, int]:
     """Return (best_label, hit_count) from keyword matching on text[:1200]."""
     snippet = text[:1200]
@@ -208,6 +207,8 @@ _DOC_TYPE_SPECS: list[dict] = [
         "hypothesis": "This document is a resume, curriculum vitae (CV), article, advertisement, letter, or other non-contract text.",
     },
 ]
+
+_STATIC_DOC_TYPE_SPECS = _DOC_TYPE_SPECS
 
 _CACHED_DOC_TYPE_SPECS: Optional[list[dict]] = None
 _CACHED_KEYWORD_DOC_TYPES: Optional[dict[str, list[str]]] = None
@@ -595,8 +596,7 @@ def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
     scores = _batch_entailment_scores(model, tokenizer, pairs)
 
     results = []
-    for spec in _DOC_TYPE_SPECS:
-        score = _entailment_score(model, tokenizer, text, spec["hypothesis"])
+    for spec, score in zip(_DOC_TYPE_SPECS, scores):
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
 

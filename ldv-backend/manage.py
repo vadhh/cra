@@ -174,7 +174,6 @@ def ensure_pilot_admin_cmd() -> None:
     database.update_user_mfa_exempt(user["id"], 1)
     print(f"MFA exemption ensured for {email}.")
 
-
 def set_mfa_exempt_cmd(email: str, exempt: bool) -> None:
     user = database.get_user_by_email(email)
     if user is None:

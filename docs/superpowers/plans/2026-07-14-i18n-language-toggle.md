@@ -14,7 +14,7 @@
 - `localStorage` key is exactly `ldv_lang`; values `"en"` or `"id"`; unrecognized/missing → default `"en"`.
 - Missing translation key → keep the literal English text already in the DOM (never blank, never `undefined`).
 - Only static UI chrome is tagged (`data-i18n`) or routed through `i18n.t()` (Alpine-bound dynamic strings). Content sourced from the API at request time (analysis results, red flags, clause guidance, user/org records) is never touched.
-- Key naming convention: `<page>.<section>.<element>`, e.g. `index.nav.new_analysis`, `login.form.email_label`. Shared chrome (the admin/citations sidebar, which is byte-for-byte identical markup) uses a shared `nav.sidebar.*` namespace instead of per-page duplicates.
+- Key naming convention: `<page>.<section>.<element>` for strings that belong to one page, e.g. `login.form.email_label`. Strings that are genuinely repeated verbatim across multiple pages (top-nav links, the brand name, the admin/citations sidebar) use an unprefixed shared namespace instead — `nav.*`/`brand.name` (seeded in Task 1) and `nav.sidebar.*` (added in Task 6, reused verbatim by Task 7) — so the translation is written once and reused, not duplicated per page.
 - No backend/API changes of any kind.
 
 ---
