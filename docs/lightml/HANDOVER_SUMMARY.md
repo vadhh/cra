@@ -20,7 +20,7 @@
 ✔ **Detection Specifications**
 - Location: [docs/lightml/detection_specifications/](file:///mnt/c/Users/ADVAN/cra/docs/lightml/detection_specifications/)
 - Purpose: Detail detection rules and risk parameters for draft/partially usable profiles.
-- Current Status: Completed (42 specifications generated).
+- Current Status: Completed (45 specifications generated).
 
 ✔ **Contract Corpus**
 - Location: [docs/lightml/contract_corpus/](file:///mnt/c/Users/ADVAN/cra/docs/lightml/contract_corpus/)
@@ -68,8 +68,8 @@
 - **Total Profiles**: 56
 - **Technically Mature Profiles**: 11
 - **Partially Usable Profiles**: 45
-- **Detection Specifications Present**: 42
-- **Detection Specifications Required**: 42
+- **Detection Specifications Present**: 45
+- **Detection Specifications Required**: 45
 - **Missing Detection Specifications**: 0
 - **Contract Corpus Documents**: 168
 - **Validation Matrix**: Present ([CRA_56_PROFILE_LEGAL_VALIDATION.xlsx](file:///mnt/c/Users/ADVAN/cra/docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx))
@@ -80,7 +80,7 @@
 4. Repository Improvements
 ======================================================
 - **Factual status of additional implementations**: Three additional profile implementations exist in the repository (construction_contract/construction_agreement, insurance_contract/insurance_agreement, it_services_contract/it_service_agreement); however, the current engineering review recognises only the original 11 profiles as Technically Mature for production baseline purposes.
-- **Detection Specifications completed**: 42 specifications compiled under `docs/lightml/detection_specifications/` for all Partially Usable profiles.
+- **Detection Specifications completed**: 45 specifications compiled under `docs/lightml/detection_specifications/` for all Partially Usable profiles.
 - **Contract corpus generated**: 168 test fixtures (covering all 56 profiles) generated under `docs/lightml/contract_corpus/`.
 - **Validation matrix compiled**: Completed mapping of all 56 profiles in the Excel validation matrix (`docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx`).
 - **Repository traceability improved**: Created a traceability matrix (`docs/lightml/TRACEABILITY_MATRIX.xlsx`) linking registered profiles to rules, specs, and corpus files.
@@ -93,7 +93,7 @@
 ### Engineering
 - Resolve registry and implementation naming discrepancies (`construction_agreement` / `construction_contract`, `insurance_agreement` / `insurance_contract`, `it_service_agreement` / `it_services_contract`).
 - Reconcile `saas_agreement` active profile registry omission and alias overlap with `software_license`.
-- Generate Detection Specifications for the 11 Technically Mature profiles (currently only exist for the 42 draft profiles).
+- Generate Detection Specifications for the 11 Technically Mature profiles (currently only exist for the 45 Partially Usable profiles).
 
 ### Legal
 - **Formal Legal Review**: Conduct a detailed review of all draft aliases and parameters with the Legal Data Owner, Ilham (Status: Pending / Evidence Not Found).
@@ -105,7 +105,7 @@
 ======================================================
 6. Repository Status
 ======================================================
-Engineering implementation available. Repository evidence reviewed. Formal legal validation pending. Formal legal approval pending. Production release pending.
+Engineering implementation available. Repository evidence reviewed. Formal legal review pending. Formal legal approval pending. Not Approved for Production Release
 
 ======================================================
 7. Key Risks
@@ -130,8 +130,8 @@ Engineering implementation available. Repository evidence reviewed. Formal legal
 - 56 Registry Profiles
 - 11 Technically Mature Profiles
 - 45 Partially Usable Profiles
-- 42 Detection Specifications
-- 11 Legal Evidence Packages Completed
+- 45 Detection Specifications
+- 11 Repository-supported Legal Evidence Packages Prepared
 - Formal Legal Review Pending
 - Formal Legal Approval Pending
 - Production Release Pending

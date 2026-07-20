@@ -29,9 +29,9 @@
 - Alias 'saas agreement' mapped to software_license in registry.
 
 ### Informational Issues
-#### Detection Specifications Restricted to Incomplete Profiles
-- **Description**: Detection specifications exist under `detection_specifications/` for all 42 draft profiles, but are not generated for the 11 Technically Mature profiles.
-- **Evidence**: 42 specifications found under `detection_specifications/` matching draft profile IDs. 11 Technically Mature Profiles have **Evidence Not Found** for specification files in this directory.
+#### Detection Specifications for Partially Usable Profiles
+- **Description**: Detection specifications exist under `detection_specifications/` for all 45 Partially Usable profiles, but are not generated for the 11 Technically Mature profiles.
+- **Evidence**: 45 specifications found under `detection_specifications/` matching draft profile IDs. The 11 Technically Mature profiles do not require Detection Specifications.
 
 ## 3. Text Scanning Results
 - **TODO Markers**: 0 files

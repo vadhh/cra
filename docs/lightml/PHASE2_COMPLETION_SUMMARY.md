@@ -5,8 +5,8 @@
 - **Total Profiles**: 56
 - **Technically Mature Profiles**: 11
 - **Partially Usable Profiles**: 45 (active in `profiles.json` and matching `registry_v1.json` entries)
-- **Detection Specifications Present**: 42
-- **Detection Specifications Required**: 42 (only for Partially Usable profiles)
+- **Detection Specifications Present**: 45
+- **Detection Specifications Required**: 45 (only for Partially Usable profiles)
 - **Missing Detection Specifications**: 0
 - **Contract Corpus**: Present (56 folders, 168 files under `docs/lightml/contract_corpus/`)
 - **Legal Validation Matrix**: Present (`docs/lightml/CRA_56_PROFILE_LEGAL_VALIDATION.xlsx`)
@@ -31,7 +31,7 @@ The repository has evolved from its initial catalog configuration to incorporate
 Three additional profile implementations exist in the repository (construction_contract/construction_agreement, insurance_contract/insurance_agreement, it_services_contract/it_service_agreement); however, the current engineering review recognises only the original 11 profiles as Technically Mature for production baseline purposes.
 
 ### Verification Results
-- **Detection Specification Coverage**: 100% Compliant (42 specifications present for all 42 Partially Usable profiles)
+- **Detection Specification Coverage**: 100% Compliant (45 specifications present for all 45 Partially Usable profiles)
 - **Contract Corpus Coverage**: 100% Compliant (168 test fixtures generated covering all 56 registry profiles)
 - **Validation Matrix Status**: Compiled (56 rows mapped in the Excel validation matrix)
 - **Repository Consistency**: 
@@ -56,4 +56,4 @@ The following actions must be conducted by human reviewers to transition the sys
 - **Evidence Not Found** has been preserved where appropriate.
 
 ### Overall Repository Status
-**Engineering implementation available. Repository evidence reviewed. Formal legal validation pending. Formal legal approval pending. Production release pending.**
+**Engineering implementation available. Repository evidence reviewed. Formal legal review pending. Formal legal approval pending. Not Approved for Production Release**

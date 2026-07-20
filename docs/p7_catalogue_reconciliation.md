@@ -120,7 +120,7 @@ These profiles exist in the registry with correct metadata but require **additio
 
 | Category | Count | Action |
 |----------|-------|--------|
-| ✅ Fully usable | 11 | Ready for production |
+| ✅ Fully usable | 11 | Engineering Readiness Verified; Legal Approval Pending |
 | 🟡 Partially usable | 45 | Add NLI hypotheses + keyword patterns to `detector_distilbert.py`; Ilham to confirm legal accuracy of required-clause lists |
 | 🔴 Name-only | 0 | — |
 | **Total in registry** | **56** | |

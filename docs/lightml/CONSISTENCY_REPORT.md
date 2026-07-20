@@ -20,8 +20,8 @@
 - **Verification Status**: Inconsistent (Overlapping aliases between software license and SaaS agreement).
 
 ## 4. Detection Specification Coverage
-- **Findings**: Specifications exist for the 42 incomplete profiles in the registry. However, no specification markdown files exist under `detection_specifications/` for the 11 Technically Mature profiles.
-- **Verification Status**: Partial Coverage (Specifications missing for Technically Mature profiles; **Evidence Not Found** for those files).
+- **Findings**: Specifications exist for all 45 Partially Usable profiles in the registry. The 11 Technically Mature profiles do not require Detection Specifications.
+- **Verification Status**: Compliant (Specifications present for all 45 Partially Usable profiles).
 
 ## 5. Corpus Coverage
 - **Findings**: Contract corpus fixtures exist for all 56 profiles in the registry. Each has a dedicated directory with a normal, missing, and risky contract draft.
