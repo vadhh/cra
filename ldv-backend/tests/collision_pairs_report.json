@@ -1,0 +1,293 @@
+{
+  "total_pairs": 13,
+  "a_pass": 7,
+  "b_pass": 11,
+  "rows": [
+    {
+      "pair": 1,
+      "profile_a": "distribution_agreement",
+      "profile_b": "service_agreement",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "distribution_agreement",
+        "label": "distribution agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "service_agreement",
+        "label": "service agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "service agreement with an ancillary product-resale clause",
+        "resolved_id": "consulting_agreement",
+        "label": "consulting agreement"
+      }
+    },
+    {
+      "pair": 2,
+      "profile_a": "purchase_agreement",
+      "profile_b": "supply_agreement",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "purchase_agreement",
+        "label": "purchase agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": false,
+        "resolved_id": "purchase_agreement",
+        "label": "purchase agreement",
+        "collided_with_a": true
+      },
+      "borderline": {
+        "note": "purchase agreement with installment deliveries (ongoing/one-off boundary)",
+        "resolved_id": "purchase_agreement",
+        "label": "purchase agreement"
+      }
+    },
+    {
+      "pair": 3,
+      "profile_a": "agency_agreement",
+      "profile_b": "service_agreement",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "agency_agreement",
+        "label": "agency agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "service_agreement",
+        "label": "service agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "service contract with loose 'represent' language",
+        "resolved_id": "service_agreement",
+        "label": "service agreement"
+      }
+    },
+    {
+      "pair": 4,
+      "profile_a": "maintenance_contract",
+      "profile_b": "service_agreement",
+      "a_result": {
+        "pass": false,
+        "resolved_id": "employment_contract",
+        "label": "employment contract",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "service_agreement",
+        "label": "service agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "IT support contract using 'maintain' loosely (not equipment/repair)",
+        "resolved_id": null,
+        "label": "it service agreement"
+      }
+    },
+    {
+      "pair": 5,
+      "profile_a": "it_services_contract",
+      "profile_b": "service_agreement",
+      "a_result": {
+        "pass": false,
+        "resolved_id": null,
+        "label": "it service agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "service_agreement",
+        "label": "service agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "generic advisory service mentioning software incidentally",
+        "resolved_id": "consulting_agreement",
+        "label": "consulting agreement"
+      }
+    },
+    {
+      "pair": 6,
+      "profile_a": "licensing_agreement",
+      "profile_b": "software_license",
+      "a_result": {
+        "pass": false,
+        "resolved_id": "software_license",
+        "label": "software license",
+        "collided_with_b": true
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "software_license",
+        "label": "saas agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "combined patent + software licensing deal",
+        "resolved_id": "software_license",
+        "label": "software license agreement"
+      }
+    },
+    {
+      "pair": 7,
+      "profile_a": "joint_venture_agreement",
+      "profile_b": "partnership_agreement",
+      "a_result": {
+        "pass": false,
+        "resolved_id": "partnership_agreement",
+        "label": "partnership agreement",
+        "collided_with_b": true
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "partnership_agreement",
+        "label": "partnership agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "partnership agreement referencing a possible future subsidiary",
+        "resolved_id": "partnership_agreement",
+        "label": "partnership agreement"
+      }
+    },
+    {
+      "pair": 8,
+      "profile_a": "outsourcing_agreement",
+      "profile_b": "service_agreement",
+      "a_result": {
+        "pass": false,
+        "resolved_id": "employment_contract",
+        "label": "employment contract",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "service_agreement",
+        "label": "service agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "large-scope service contract with partial staff transition",
+        "resolved_id": "service_agreement",
+        "label": "service agreement"
+      }
+    },
+    {
+      "pair": 9,
+      "profile_a": "employment_contract",
+      "profile_b": "employment_termination_agreement",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "employment_contract",
+        "label": "employment contract",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": false,
+        "resolved_id": "employment_contract",
+        "label": "employment contract",
+        "collided_with_a": true
+      },
+      "borderline": {
+        "note": "ongoing employment contract with a routine termination-for-cause clause",
+        "resolved_id": "non_disclosure_agreement",
+        "label": "non-disclosure agreement"
+      }
+    },
+    {
+      "pair": 10,
+      "profile_a": "agency_agreement",
+      "profile_b": "sales_representative_agreement",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "agency_agreement",
+        "label": "agency agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "sales_representative_agreement",
+        "label": "sales representative agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "commission sales rep with limited negotiation authority",
+        "resolved_id": "sales_representative_agreement",
+        "label": "sales representative agreement"
+      }
+    },
+    {
+      "pair": 11,
+      "profile_a": "consulting_agreement",
+      "profile_b": "freelance_contract",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "consulting_agreement",
+        "label": "consulting agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "freelance_contract",
+        "label": "freelance / independent contractor agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "freelance deliverable framed as a consulting engagement",
+        "resolved_id": "consulting_agreement",
+        "label": "consulting agreement"
+      }
+    },
+    {
+      "pair": 12,
+      "profile_a": "cooperation_agreement",
+      "profile_b": "partnership_agreement",
+      "a_result": {
+        "pass": true,
+        "resolved_id": "cooperation_agreement",
+        "label": "cooperation agreement",
+        "collided_with_b": false
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "partnership_agreement",
+        "label": "partnership agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "cooperation agreement with a limited profit-sharing clause",
+        "resolved_id": "cooperation_agreement",
+        "label": "cooperation agreement"
+      }
+    },
+    {
+      "pair": 13,
+      "profile_a": "banking_facility_agreement",
+      "profile_b": "loan_agreement",
+      "a_result": {
+        "pass": false,
+        "resolved_id": "loan_agreement",
+        "label": "loan agreement",
+        "collided_with_b": true
+      },
+      "b_result": {
+        "pass": true,
+        "resolved_id": "loan_agreement",
+        "label": "loan agreement",
+        "collided_with_a": false
+      },
+      "borderline": {
+        "note": "bank-issued single-disbursement term loan (bank vs. facility-structure boundary)",
+        "resolved_id": "loan_agreement",
+        "label": "loan agreement"
+      }
+    }
+  ]
+}
