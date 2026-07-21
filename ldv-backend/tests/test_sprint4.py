@@ -5,7 +5,7 @@ import os
 import sys
 import tempfile
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
@@ -211,7 +211,7 @@ def test_sprint4_workflow():
             "review_status": "confirmed",
             "reviewer_email": "reviewer@org1.com",
             "review_comment": "Legally sound contract.",
-            "reviewed_at": datetime.utcnow().isoformat()
+            "reviewed_at": datetime.now(timezone.utc).isoformat()
         }
         resp = client.post("/api/v1/report", json=mock_pdf_payload)
         assert resp.status_code == 200
