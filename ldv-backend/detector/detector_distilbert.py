@@ -287,13 +287,13 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
         return "consulting agreement", 5, True
     if any(x in header for x in ["partnership", "kemitraan"]):
         return "partnership agreement", 5, True
-    if any(x in header for x in ["non-disclosure", "confidentiality", "nda", "kerahasiaan"]):
+    if any(x in header for x in ["non-disclosure", "confidentiality", "nda", "kerahasiaan", "geheimhouding"]):
         return "non-disclosure agreement", 5, True
     if any(x in header for x in ["loan", "lender", "borrower", "pinjaman"]):
         return "loan agreement", 5, True
-    if any(x in header for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja"]):
+    if any(x in header for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja", "contrat de travail", "employeur"]):
         return "employment contract", 5, True
-    if any(x in header for x in ["lease", "rental", "sewa", "bail"]):
+    if any(x in header for x in ["lease", "rental", "sewa", "bail", "huur"]):
         return "lease agreement", 5, True
     if any(x in header for x in ["software license", "lisensi", "eula"]):
         return "software license", 5, True
@@ -644,6 +644,19 @@ def _split_paragraphs(text: str, min_len: int = 60, max_len: int = 500) -> list[
     return result
 
 
+def _profile_status(label: str | None) -> str | None:
+    """classifier.status ("validated"/"draft") for the profile a doc-type label
+    resolves to, or None if it doesn't resolve to a registry profile."""
+    if not label:
+        return None
+    try:
+        from detector import profile_registry
+        p = profile_registry.detect_profile(label)
+        return (p.get("classifier") or {}).get("status") if p else None
+    except Exception:
+        return None
+
+
 # ── Public functions ───────────────────────────────────────────────────────────
 
 def classify_document_type(text: str) -> dict:
@@ -695,12 +708,23 @@ def classify_document_type(text: str) -> dict:
     if kw_label:
         is_generic_nli = top["label"] in ["service agreement", "general contract"]
         is_specific_kw = kw_label not in ["service agreement", "general contract"]
-        
+
+        # NLI confidently (but wrongly) lands on a draft/unvalidated profile
+        # while a strong keyword match (hit_count>=5, i.e. the hardcoded
+        # tuned chain, not a weak registry fallback) points to a validated
+        # one. Seen on adversarial input (injected abusive-clause text
+        # shifting the NLI embedding toward an unrelated draft hypothesis).
+        # Scoped to draft-vs-validated only -- doesn't second-guess NLI when
+        # both candidates are validated, so it can't regress the tuned 11.
+        nli_is_draft = _profile_status(top["label"]) == "draft"
+        kw_is_validated = kw_hits >= 5 and _profile_status(kw_label) == "validated"
+
         # Override conditions:
         # 1. Ground truth title matched explicitly
         # 2. NLI confidence is below threshold
         # 3. NLI output is generic (e.g. services) but keywords found a highly specific subtype (e.g. saas, IT service)
-        if is_title_match or top["confidence"] < _NLI_OVERRIDE_THRESHOLD or (is_generic_nli and is_specific_kw):
+        # 4. NLI picked an unvalidated (draft) profile over a validated keyword match
+        if is_title_match or top["confidence"] < _NLI_OVERRIDE_THRESHOLD or (is_generic_nli and is_specific_kw) or (nli_is_draft and kw_is_validated):
             override_applied = True
             source = "keyword_override"
             keyword_override_conf = 0.85

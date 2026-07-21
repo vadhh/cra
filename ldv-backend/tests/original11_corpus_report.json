@@ -1,0 +1,325 @@
+{
+  "total_fixtures": 31,
+  "target_fixtures": 33,
+  "identification_pass": 31,
+  "dangerous_clause_pass": 31,
+  "recommendation_pass": 31,
+  "pdf_pass": 31,
+  "rows": [
+    {
+      "profile_id": "employment_contract",
+      "fixture": "pdf/01_employment_id.pdf",
+      "identification": "PASS",
+      "mandatory_clauses": "3/7 present (missing: ['governing_law', 'jurisdiction_venue', 'notice_period', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 45 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "employment_contract",
+      "fixture": "txt/01_employment_id.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "2/7 present (missing: ['governing_law', 'jurisdiction_venue', 'termination', 'notice_period', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 60 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "employment_contract",
+      "fixture": "txt/11_low_risk_employment_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "4/7 present (missing: ['jurisdiction_venue', 'termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 46 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "lease_agreement",
+      "fixture": "pdf/02_lease_be.pdf",
+      "identification": "PASS",
+      "mandatory_clauses": "5/8 present (missing: ['jurisdiction_venue', 'maintenance_responsibility', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 41 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "lease_agreement",
+      "fixture": "txt/02_lease_be.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "4/8 present (missing: ['jurisdiction_venue', 'lease_term', 'maintenance_responsibility', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 51 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "lease_agreement",
+      "fixture": "txt/13_medium_risk_lease_nl.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "2/8 present (missing: ['jurisdiction_venue', 'lease_term', 'security_deposit', 'maintenance_responsibility', 'termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 76 (HIGH)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "software_license",
+      "fixture": "txt/bench_software_license_pos.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/8 present (missing: ['termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 30 (LOW)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "software_license",
+      "fixture": "txt/bench_software_license_neg.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/8 present (missing: ['termination', 'dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 63 (HIGH)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "software_license",
+      "fixture": "txt/08_medium_risk_partial_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "4/8 present (missing: ['jurisdiction_venue', 'warranty_disclaimer', 'termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 53 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "service_agreement",
+      "fixture": "docx/01_service_agreement_en.docx",
+      "identification": "PASS",
+      "mandatory_clauses": "5/7 present (missing: ['jurisdiction_venue', 'termination'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 31 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "service_agreement",
+      "fixture": "txt/06_high_risk_leonine_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "5/7 present (missing: ['jurisdiction_venue', 'dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 99 (CRITICAL)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "service_agreement",
+      "fixture": "txt/15_critical_risk_no_law_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/7 present (missing: ['scope_of_services'])",
+      "dangerous_clauses": "informational: 3 fired",
+      "risk_score": "PENDING ground truth -- actual: 100 (CRITICAL)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "consulting_agreement",
+      "fixture": "txt/bench_consulting_agreement_pos.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/7 present (missing: ['dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 31 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "consulting_agreement",
+      "fixture": "txt/bench_consulting_agreement_neg.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/7 present (missing: ['dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 64 (HIGH)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "consulting_agreement",
+      "fixture": "txt/07_high_risk_missing_clauses_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "5/7 present (missing: ['jurisdiction_venue', 'confidentiality'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 23 (LOW)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "commercial_agreement",
+      "fixture": "txt/bench_commercial_agreement_pos.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "4/6 present (missing: ['limitation_liability', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 51 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "commercial_agreement",
+      "fixture": "txt/bench_commercial_agreement_neg.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "5/6 present (missing: ['dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 56 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "non_disclosure_agreement",
+      "fixture": "pdf/03_nda_en.pdf",
+      "identification": "PASS",
+      "mandatory_clauses": "3/6 present (missing: ['jurisdiction_venue', 'return_of_materials', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 41 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "non_disclosure_agreement",
+      "fixture": "txt/14_low_risk_nda_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "3/6 present (missing: ['termination', 'return_of_materials', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 48 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "non_disclosure_agreement",
+      "fixture": "docx/03_nda_nl.docx",
+      "identification": "PASS",
+      "mandatory_clauses": "2/6 present (missing: ['jurisdiction_venue', 'termination', 'return_of_materials', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 48 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "loan_agreement",
+      "fixture": "txt/bench_loan_agreement_pos.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/8 present (missing: ['termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 30 (LOW)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "loan_agreement",
+      "fixture": "txt/bench_loan_agreement_neg.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/8 present (missing: ['termination', 'dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 63 (HIGH)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "loan_agreement",
+      "fixture": "txt/09_medium_risk_no_venue_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "5/8 present (missing: ['jurisdiction_venue', 'termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 38 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "partnership_agreement",
+      "fixture": "txt/bench_partnership_agreement_pos.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/7 present (missing: ['dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 15 (LOW)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "partnership_agreement",
+      "fixture": "txt/bench_partnership_agreement_neg.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/7 present (missing: ['dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 48 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "purchase_agreement",
+      "fixture": "txt/bench_purchase_agreement_pos.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/8 present (missing: ['warranty', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 1 fired",
+      "risk_score": "PENDING ground truth -- actual: 60 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "purchase_agreement",
+      "fixture": "txt/bench_purchase_agreement_neg.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "6/8 present (missing: ['warranty', 'dispute_resolution'])",
+      "dangerous_clauses": "PASS",
+      "risk_score": "PENDING ground truth -- actual: 93 (CRITICAL)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "purchase_agreement",
+      "fixture": "pdf/bench_purchase_agreement_pos.pdf",
+      "identification": "PASS",
+      "mandatory_clauses": "5/8 present (missing: ['jurisdiction_venue', 'warranty', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 1 fired",
+      "risk_score": "PENDING ground truth -- actual: 68 (HIGH)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "general_contract",
+      "fixture": "docx/04_legal_memo_en.docx",
+      "identification": "PASS",
+      "mandatory_clauses": "1/6 present (missing: ['governing_law', 'jurisdiction_venue', 'payment_terms', 'termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 70 (HIGH)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "general_contract",
+      "fixture": "docx/06_memo_fr.docx",
+      "identification": "PASS",
+      "mandatory_clauses": "2/6 present (missing: ['jurisdiction_venue', 'payment_terms', 'termination', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 58 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
+      "profile_id": "general_contract",
+      "fixture": "txt/04_long_agreement_en.txt",
+      "identification": "PASS",
+      "mandatory_clauses": "5/6 present (missing: ['jurisdiction_venue'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 40 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    }
+  ],
+  "fixture_gaps": {
+    "commercial_agreement": "2/3 -- no 3rd distinct commercial_agreement fixture exists in the corpus.",
+    "partnership_agreement": "2/3 -- no 3rd distinct partnership_agreement fixture exists in the corpus."
+  },
+  "bugs_found": []
+}
