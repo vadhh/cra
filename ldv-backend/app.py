@@ -22,6 +22,7 @@ from flask_limiter.util import get_remote_address
 import fitz
 from langdetect import detect
 
+from detector import profile_registry
 from detector.detector_jurisdiction import detect_jurisdiction
 from detector.detector_rules import layer1_analyze, required_clauses_for, clause_title, reconcile_required_flags
 from detector.citation_db import annotate_layer1
@@ -240,6 +241,38 @@ def _validate_and_extract(file) -> tuple[bytes, str, str]:
     return data, ext, text
 
 
+# Short frontend select values -> classifier label, restricted to the 11
+# original profiles (2026-07-17 review pilot mandate: "the other 45 profiles
+# are disabled in the customer interface"). Kept in sync with the registry by
+# construction -- see _resolve_pilot_type(), which double-checks each label
+# still resolves to a classifier.status == "validated" profile before use.
+PILOT_TYPE_MAPPING = {
+    "service": "service agreement",
+    "nda": "non-disclosure agreement",
+    "employment": "employment contract",
+    "software": "software license",
+    "generic": "general contract",
+    "lease": "lease agreement",
+    "consulting": "consulting agreement",
+    "commercial": "commercial agreement",
+    "loan": "loan agreement",
+    "partnership": "partnership agreement",
+    "purchase": "purchase agreement",
+}
+
+
+def _resolve_pilot_type(value: str) -> str | None:
+    """Map a manual contract-type selection to its classifier label, restricted
+    to pilot-available (registry classifier.status == "validated") profiles.
+    Returns None if `value` doesn't resolve to one -- callers must treat that
+    as rejection, not silently fall through to an arbitrary label."""
+    label = PILOT_TYPE_MAPPING.get(value.lower(), value.lower())
+    profile = profile_registry.detect_profile(label)
+    if profile and (profile.get("classifier") or {}).get("status") == "validated":
+        return label
+    return None
+
+
 def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | None = None, override_type: str | None = None) -> dict:
     """Run L1–L3 analysis and return result dict.
 
@@ -260,26 +293,25 @@ def _run_analysis(text: str, jurisdiction: str, lang: str, policy_name: str | No
     layer2 = layer2_analyze(analysis_text)
 
     if override_type:
-        # Normalize frontend select values to match classifier labels
-        mapping = {
-            "service": "service agreement",
-            "nda": "non-disclosure agreement",
-            "employment": "employment contract",
-            "software": "software license",
-            "generic": "general contract"
-        }
-        mapped_label = mapping.get(override_type.lower(), override_type.lower())
-        original_model_conf = (layer2.get("document_type") or {}).get("model_confidence") or (layer2.get("document_type") or {}).get("confidence") or 0.0
-        layer2["document_type"] = {
-            "label": mapped_label,
-            "confidence": 1.0,
-            "model_confidence": original_model_conf,
-            "keyword_override_confidence": 0.0,
-            "override_applied": True,
-            "override_reason": "user_selected",
-            "source": "user_selected",
-            "candidates": [{"label": mapped_label, "confidence": 1.0}]
-        }
+        mapped_label = _resolve_pilot_type(override_type)
+        if mapped_label is None:
+            # Route handlers validate override_type before reaching here and
+            # should never pass an invalid one -- this is a fail-safe: ignore
+            # it and keep the classifier's own result rather than silently
+            # scoring under an unvalidated/unresolvable profile.
+            logger.warning("Ignoring non-pilot override_type=%r; keeping classifier result", override_type)
+        else:
+            original_model_conf = (layer2.get("document_type") or {}).get("model_confidence") or (layer2.get("document_type") or {}).get("confidence") or 0.0
+            layer2["document_type"] = {
+                "label": mapped_label,
+                "confidence": 1.0,
+                "model_confidence": original_model_conf,
+                "keyword_override_confidence": 0.0,
+                "override_applied": True,
+                "override_reason": "user_selected",
+                "source": "user_selected",
+                "candidates": [{"label": mapped_label, "confidence": 1.0}]
+            }
 
     doc_type_label = ((layer2.get("document_type") or {}).get("label") or "").lower()
     reconcile_required_flags(layer1.get("clause_presence") or [], doc_type_label)
@@ -606,7 +638,14 @@ def upload():
         return jsonify({"error": "Forbidden: viewers cannot upload documents"}), 403
     if os.getenv("LDV_PRODUCTION") == "1" and not crypto.is_enabled():
         return jsonify({"error": "Service configuration error: encryption is disabled or not configured in production"}), 500
-        
+
+    requested_type = request.args.get("type")
+    if requested_type and requested_type != "auto" and _resolve_pilot_type(requested_type) is None:
+        return jsonify({
+            "error": f"Contract type '{requested_type}' is not available in this pilot.",
+            "available_types": sorted(PILOT_TYPE_MAPPING.keys()),
+        }), 400
+
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -824,6 +863,12 @@ def api_retry_result(analysis_id: str):
     data = request.get_json(silent=True) or {}
     override_type = data.get("type")
     override_jurisdiction = data.get("jurisdiction")
+
+    if override_type and override_type != "auto" and _resolve_pilot_type(override_type) is None:
+        return jsonify({
+            "error": f"Contract type '{override_type}' is not available in this pilot.",
+            "available_types": sorted(PILOT_TYPE_MAPPING.keys()),
+        }), 400
 
     new_status = database.retry_analysis(analysis_id)
     if new_status is None:
