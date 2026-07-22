@@ -163,9 +163,9 @@
       "profile_b": "service_agreement",
       "a_result": {
         "pass": false,
-        "resolved_id": "employment_contract",
-        "label": "employment contract",
-        "collided_with_b": false
+        "resolved_id": "service_agreement",
+        "label": "service agreement",
+        "collided_with_b": true
       },
       "b_result": {
         "pass": true,

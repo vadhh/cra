@@ -291,7 +291,11 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
         return "non-disclosure agreement", 5, True
     if any(x in header for x in ["loan", "lender", "borrower", "pinjaman"]):
         return "loan agreement", 5, True
-    if any(x in header for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja", "contrat de travail", "employeur"]):
+    # word-boundary matched (not substring): "employee"/"employer" as plain
+    # substrings false-fire inside "employees" (e.g. an outsourcing contract
+    # mentioning transferred employees incidentally), forcing an unconditional
+    # title-match override even when NLI's real answer was correct.
+    if any(_has_word(x, header) for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja", "contrat de travail", "employeur"]):
         return "employment contract", 5, True
     if any(x in header for x in ["lease", "rental", "sewa", "bail", "huur"]):
         return "lease agreement", 5, True
