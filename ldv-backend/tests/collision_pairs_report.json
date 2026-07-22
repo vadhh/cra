@@ -1,6 +1,6 @@
 {
   "total_pairs": 13,
-  "a_pass": 7,
+  "a_pass": 8,
   "b_pass": 11,
   "rows": [
     {
@@ -87,8 +87,8 @@
       },
       "borderline": {
         "note": "IT support contract using 'maintain' loosely (not equipment/repair)",
-        "resolved_id": null,
-        "label": "it service agreement"
+        "resolved_id": "it_services_contract",
+        "label": "it services contract"
       }
     },
     {
@@ -96,9 +96,9 @@
       "profile_a": "it_services_contract",
       "profile_b": "service_agreement",
       "a_result": {
-        "pass": false,
-        "resolved_id": null,
-        "label": "it service agreement",
+        "pass": true,
+        "resolved_id": "it_services_contract",
+        "label": "it services contract",
         "collided_with_b": false
       },
       "b_result": {

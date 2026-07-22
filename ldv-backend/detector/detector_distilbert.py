@@ -278,7 +278,7 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
     if any(x in header for x in ["saas", "software as a service"]):
         return "saas agreement", 5, True
     if any(x in header for x in ["it service", "it support", "information technology"]):
-        return "it service agreement", 5, True
+        return "it services contract", 5, True
     if any(x in header for x in ["construction"]):
         return "construction agreement", 5, True
     if any(x in header for x in ["insurance"]):
@@ -318,7 +318,7 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
     if any(_has_word(x, snippet) for x in ["saas", "software as a service"]):
         return "saas agreement", 5, False
     if any(_has_word(x, snippet) for x in ["it service", "it support", "information technology services"]):
-        return "it service agreement", 5, False
+        return "it services contract", 5, False
     if any(_has_word(x, snippet) for x in ["construction", "building contract"]):
         return "construction agreement", 5, False
     if any(_has_word(x, snippet) for x in ["insurance policy", "insurer"]):
@@ -369,7 +369,7 @@ def _registry_keyword_fallback(snippet: str) -> tuple[str | None, int]:
     """Best-effort keyword match against registry_v1.json `classifier.positive_keywords`
     for profiles not covered by the hardcoded chain in `_keyword_doc_type`."""
     covered = {
-        "saas agreement", "it service agreement", "construction agreement",
+        "saas agreement", "it services contract", "construction agreement",
         "insurance agreement", "consulting agreement", "partnership agreement",
         "non-disclosure agreement", "loan agreement", "employment contract",
         "lease agreement", "software license", "purchase agreement",
