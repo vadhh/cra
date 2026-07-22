@@ -280,9 +280,15 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
     if any(x in header for x in ["it service", "it support", "information technology"]):
         return "it services contract", 5, True
     if any(x in header for x in ["construction"]):
-        return "construction agreement", 5, True
+        return "construction contract", 5, True
     if any(x in header for x in ["insurance"]):
-        return "insurance agreement", 5, True
+        return "insurance contract", 5, True
+    # phrase + word-boundary matched (not bare "maintenance"): a bare substring
+    # false-fired on unrelated service-agreement text incidentally mentioning
+    # "maintenance agreement ... services" as filler wording. Scoped to the
+    # registry's own alias ("maintenance contract", not "agreement").
+    if _has_word("maintenance contract", header):
+        return "maintenance contract", 5, True
     if any(x in header for x in ["consulting", "consultant"]):
         return "consulting agreement", 5, True
     if any(x in header for x in ["partnership", "kemitraan"]):
@@ -324,9 +330,11 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
     if any(_has_word(x, snippet) for x in ["it service", "it support", "information technology services"]):
         return "it services contract", 5, False
     if any(_has_word(x, snippet) for x in ["construction", "building contract"]):
-        return "construction agreement", 5, False
+        return "construction contract", 5, False
     if any(_has_word(x, snippet) for x in ["insurance policy", "insurer"]):
-        return "insurance agreement", 5, False
+        return "insurance contract", 5, False
+    if _has_word("maintenance contract", snippet):
+        return "maintenance contract", 5, False
     if any(_has_word(x, snippet) for x in ["software license", "licensor", "licensee", "eula"]):
         return "software license", 5, False
         

@@ -1,6 +1,6 @@
 {
   "total_pairs": 13,
-  "a_pass": 8,
+  "a_pass": 9,
   "b_pass": 11,
   "rows": [
     {
@@ -74,9 +74,9 @@
       "profile_a": "maintenance_contract",
       "profile_b": "service_agreement",
       "a_result": {
-        "pass": false,
-        "resolved_id": "employment_contract",
-        "label": "employment contract",
+        "pass": true,
+        "resolved_id": "maintenance_contract",
+        "label": "maintenance contract",
         "collided_with_b": false
       },
       "b_result": {
