@@ -77,6 +77,7 @@ FIXTURE_MAP = {
     "commercial_agreement": [
         {"path": "txt/bench_commercial_agreement_pos.txt", "expect_red_flags": False},
         {"path": "txt/bench_commercial_agreement_neg.txt", "expect_red_flags": True},
+        {"path": "docx/bench_commercial_agreement_pos.docx", "expect_red_flags": False},
     ],
     "non_disclosure_agreement": [
         {"path": "pdf/03_nda_en.pdf", "expect_red_flags": False},
@@ -91,6 +92,7 @@ FIXTURE_MAP = {
     "partnership_agreement": [
         {"path": "txt/bench_partnership_agreement_pos.txt", "expect_red_flags": False},
         {"path": "txt/bench_partnership_agreement_neg.txt", "expect_red_flags": True},
+        {"path": "docx/bench_partnership_agreement_pos.docx", "expect_red_flags": False},
     ],
     "purchase_agreement": [
         {"path": "txt/bench_purchase_agreement_pos.txt", "expect_red_flags": False},
@@ -132,10 +134,10 @@ FIXTURE_MAP = {
 BUGS_FOUND = []
 
 # Profiles below 3 verified fixtures -- explicit gap, not silently padded.
-FIXTURE_GAPS = {
-    "commercial_agreement": "2/3 -- no 3rd distinct commercial_agreement fixture exists in the corpus.",
-    "partnership_agreement": "2/3 -- no 3rd distinct partnership_agreement fixture exists in the corpus.",
-}
+# (2026-07-22: commercial_agreement/partnership_agreement closed -- both already
+# had an unused docx/pos variant sitting in the corpus, format-duplicate of the
+# existing txt/pos fixture, same pattern as purchase_agreement's pdf 3rd slot.)
+FIXTURE_GAPS = {}
 
 
 def _clause_check(profile_id, layer1):

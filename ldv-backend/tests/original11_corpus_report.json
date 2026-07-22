@@ -1,10 +1,10 @@
 {
-  "total_fixtures": 31,
+  "total_fixtures": 33,
   "target_fixtures": 33,
-  "identification_pass": 31,
-  "dangerous_clause_pass": 31,
-  "recommendation_pass": 31,
-  "pdf_pass": 31,
+  "identification_pass": 33,
+  "dangerous_clause_pass": 33,
+  "recommendation_pass": 33,
+  "pdf_pass": 33,
   "rows": [
     {
       "profile_id": "employment_contract",
@@ -177,6 +177,16 @@
       "pdf_output": "PASS"
     },
     {
+      "profile_id": "commercial_agreement",
+      "fixture": "docx/bench_commercial_agreement_pos.docx",
+      "identification": "PASS",
+      "mandatory_clauses": "4/6 present (missing: ['limitation_liability', 'dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 51 (MEDIUM)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
       "profile_id": "non_disclosure_agreement",
       "fixture": "pdf/03_nda_en.pdf",
       "identification": "PASS",
@@ -257,6 +267,16 @@
       "pdf_output": "PASS"
     },
     {
+      "profile_id": "partnership_agreement",
+      "fixture": "docx/bench_partnership_agreement_pos.docx",
+      "identification": "PASS",
+      "mandatory_clauses": "6/7 present (missing: ['dispute_resolution'])",
+      "dangerous_clauses": "informational: 0 fired",
+      "risk_score": "PENDING ground truth -- actual: 15 (LOW)",
+      "recommendations": "PASS",
+      "pdf_output": "PASS"
+    },
+    {
       "profile_id": "purchase_agreement",
       "fixture": "txt/bench_purchase_agreement_pos.txt",
       "identification": "PASS",
@@ -317,9 +337,6 @@
       "pdf_output": "PASS"
     }
   ],
-  "fixture_gaps": {
-    "commercial_agreement": "2/3 -- no 3rd distinct commercial_agreement fixture exists in the corpus.",
-    "partnership_agreement": "2/3 -- no 3rd distinct partnership_agreement fixture exists in the corpus."
-  },
+  "fixture_gaps": {},
   "bugs_found": []
 }
