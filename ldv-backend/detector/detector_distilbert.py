@@ -121,11 +121,6 @@ _STATIC_KEYWORD_DOC_TYPES: dict[str, list[str]] = {
     ],
 }
 
-# Minimum keyword hits to trust a keyword result over NLI
-_KEYWORD_MIN_HITS = 2
-# NLI confidence below this → apply keyword override when keyword is strong
-_NLI_OVERRIDE_THRESHOLD = 0.40
-
 # ── Document type labels with calibrated hypotheses ───────────────────────────
 # Each label has a specific hypothesis proven to discriminate well under
 # typeform/distilbert-base-uncased-mnli (MultiNLI-trained).
