@@ -1,0 +1,961 @@
+{
+  "generated_at": "2026-07-17T07:28:59Z",
+  "total_profiles": 56,
+  "total_checks": 168,
+  "passed": 168,
+  "elapsed_seconds": 19.4,
+  "results": [
+    {
+      "profile_id": "employment_contract",
+      "display_name": "Employment Contract",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "lease_agreement",
+      "display_name": "Lease Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "software_license",
+      "display_name": "Software License Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "service_agreement",
+      "display_name": "Service Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "consulting_agreement",
+      "display_name": "Consulting Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "commercial_agreement",
+      "display_name": "Commercial Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "non_disclosure_agreement",
+      "display_name": "Non-Disclosure Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "loan_agreement",
+      "display_name": "Loan Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "partnership_agreement",
+      "display_name": "Partnership Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "purchase_agreement",
+      "display_name": "Purchase Agreement",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "distribution_agreement",
+      "display_name": "Distribution Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "franchise_agreement",
+      "display_name": "Franchise Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "supply_agreement",
+      "display_name": "Supply Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "agency_agreement",
+      "display_name": "Agency Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "shareholder_agreement",
+      "display_name": "Shareholder Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "investment_agreement",
+      "display_name": "Investment Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "construction_contract",
+      "display_name": "Construction Contract",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "maintenance_contract",
+      "display_name": "Maintenance Contract",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "it_services_contract",
+      "display_name": "IT Services Contract",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "data_processing_agreement",
+      "display_name": "Data Processing Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "intellectual_property_assignment",
+      "display_name": "Intellectual Property Assignment",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "licensing_agreement",
+      "display_name": "Licensing Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "joint_venture_agreement",
+      "display_name": "Joint Venture Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "memorandum_of_understanding",
+      "display_name": "Memorandum of Understanding",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "subcontract_agreement",
+      "display_name": "Subcontract Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "grant_agreement",
+      "display_name": "Grant Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "settlement_agreement",
+      "display_name": "Settlement Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "sponsorship_agreement",
+      "display_name": "Sponsorship Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "event_contract",
+      "display_name": "Event Contract",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "property_management_agreement",
+      "display_name": "Property Management Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "insurance_contract",
+      "display_name": "Insurance Contract / Policy",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "escrow_agreement",
+      "display_name": "Escrow Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "outsourcing_agreement",
+      "display_name": "Outsourcing Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "employment_termination_agreement",
+      "display_name": "Employment Termination Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "sales_representative_agreement",
+      "display_name": "Sales Representative Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "freelance_contract",
+      "display_name": "Freelance / Independent Contractor Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "internship_agreement",
+      "display_name": "Internship Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "facilities_management_agreement",
+      "display_name": "Facilities Management Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "logistics_agreement",
+      "display_name": "Logistics / Freight Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "media_production_agreement",
+      "display_name": "Media Production Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "advertising_agreement",
+      "display_name": "Advertising Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "cooperation_agreement",
+      "display_name": "Cooperation Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "export_import_agreement",
+      "display_name": "Export / Import Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "land_acquisition_agreement",
+      "display_name": "Land Acquisition Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "hotel_management_agreement",
+      "display_name": "Hotel Management Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "healthcare_services_agreement",
+      "display_name": "Healthcare Services Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "education_services_agreement",
+      "display_name": "Education Services Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "energy_supply_agreement",
+      "display_name": "Energy Supply Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "mining_agreement",
+      "display_name": "Mining / Natural Resources Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "telecommunications_agreement",
+      "display_name": "Telecommunications Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "banking_facility_agreement",
+      "display_name": "Banking Facility Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "factoring_agreement",
+      "display_name": "Factoring Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "storage_agreement",
+      "display_name": "Storage / Warehousing Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "research_collaboration_agreement",
+      "display_name": "Research Collaboration Agreement",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "government_procurement_contract",
+      "display_name": "Government Procurement Contract",
+      "classifier_status": "draft",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    },
+    {
+      "profile_id": "general_contract",
+      "display_name": "General Contract",
+      "classifier_status": "validated",
+      "manual": {
+        "pass": true,
+        "error": ""
+      },
+      "auto": {
+        "pass": true,
+        "error": ""
+      },
+      "pdf": {
+        "pass": true,
+        "error": ""
+      }
+    }
+  ]
+}

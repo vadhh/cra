@@ -102,7 +102,7 @@ def backup_cmd(dry_run: bool) -> None:
     remote = os.getenv("LDV_BACKUP_REMOTE", "")
     keep_days = int(os.getenv("LDV_BACKUP_KEEP_DAYS", "30"))
 
-    stamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     dest = os.path.join(backup_dir, stamp)
     db_src = database.get_db_path()
     uploads_src = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
@@ -129,7 +129,9 @@ def backup_cmd(dry_run: bool) -> None:
         print(f"Synced to {remote}")
 
     # prune old backups
-    cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=keep_days)
+    cutoff = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - datetime.timedelta(
+        days=keep_days
+    )
     pruned = 0
     for entry in os.scandir(backup_dir):
         if not entry.is_dir():

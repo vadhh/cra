@@ -2,12 +2,81 @@
 from __future__ import annotations
 
 import logging
+import os
 from concurrent.futures import ThreadPoolExecutor
 
 logger = logging.getLogger(__name__)
 
 # Single worker thread to avoid concurrent PyTorch/LLM execution thrashing CPU
 _executor = ThreadPoolExecutor(max_workers=1)
+
+
+def _classifier_thresholds() -> tuple[float, float, float]:
+    """(confirmation_threshold, high_confidence_threshold, minimum_margin), env-overridable.
+
+    Defaults match the original 0.70 gate; read fresh (not cached) so tests
+    can override os.environ per-case.
+    """
+    conf = float(os.getenv("LDV_CLASSIFIER_CONFIRMATION_THRESHOLD", "0.70"))
+    high = float(os.getenv("LDV_CLASSIFIER_HIGH_CONFIDENCE_THRESHOLD", "0.85"))
+    margin = float(os.getenv("LDV_CLASSIFIER_MINIMUM_MARGIN", "0.15"))
+    return conf, high, margin
+
+
+def _needs_confirmation(dt: dict, profile: dict | None = None) -> tuple[bool, str | None]:
+    """Whether a Layer-2 classifier result should be gated for manual confirmation.
+
+    Per the 2026-07-16 management review (Priority 3), evaluates more than the
+    single absolute-confidence check:
+    - confidence below LDV_CLASSIFIER_CONFIRMATION_THRESHOLD -> "low_confidence"
+    - confidence below LDV_CLASSIFIER_HIGH_CONFIDENCE_THRESHOLD *and* the top
+      two NLI candidates are within LDV_CLASSIFIER_MINIMUM_MARGIN of each other
+      -> "ambiguous_margin" (e.g. 76% vs 74%: 76% clears the confirmation
+      threshold alone, but the result is still ambiguous)
+    - the keyword pass disagreed with NLI, or a generic label lost to a more
+      specific keyword match (classify_document_type's override_reason)
+      -> "keyword_nli_disagreement"
+
+    Per a later review, also gates on registry status regardless of
+    confidence: an automatically-classified `draft` profile (or a resolved
+    profile with no classifier config at all) hasn't been empirically
+    validated yet, so a high-confidence NLI score doesn't mean the profile's
+    required-clause set or scoring behavior is trustworthy -> "draft_profile".
+    This check only runs when the caller passes a resolved `profile` --
+    the caller only does so for detection_source == "classifier", so a
+    manually-selected profile is never re-gated here: an explicit human
+    choice already satisfies "confirmation or manual selection".
+
+    Manual selection is handled by the caller (only gates when
+    detection_source == "classifier"); retry-budget exhaustion is already
+    enforced by database._MAX_RETRIES in retry_analysis().
+    """
+    if profile is not None:
+        status = (profile.get("classifier") or {}).get("status")
+        if status != "validated":
+            return True, "draft_profile"
+
+    confidence = dt.get("confidence")
+    if confidence is None:
+        return False, None
+
+    conf_threshold, high_threshold, min_margin = _classifier_thresholds()
+
+    if confidence < conf_threshold:
+        return True, "low_confidence"
+
+    if confidence < high_threshold:
+        candidates = dt.get("candidates") or []
+        if len(candidates) >= 2:
+            top_conf = candidates[0].get("confidence", confidence)
+            second_conf = candidates[1].get("confidence", 0.0)
+            if (top_conf - second_conf) < min_margin:
+                return True, "ambiguous_margin"
+
+    if dt.get("override_applied") and dt.get("override_reason") in ("keyword_match", "generic_to_specific"):
+        return True, "keyword_nli_disagreement"
+
+    return False, None
 
 
 def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: str | None = None, override_jurisdiction: str | None = None, override_type: str | None = None) -> None:
@@ -80,6 +149,7 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
         # Resolve profile_id and profile_version from registry
         _pid = None
         _pver = None
+        p = None
         try:
             from detector.profile_registry import detect_profile
             p = detect_profile(doc_type_str or "")
@@ -100,9 +170,18 @@ def _run_job(public_id: str, text: str, lang: str, explain: bool, policy_name: s
 
         final_status = "completed"
         final_error = None
-        if detection_source == "classifier" and detection_confidence is not None and detection_confidence < 0.70:
-            final_status = "retryable"
-            final_error = "low_confidence"
+        if detection_source == "classifier":
+            needs_confirmation, gate_reason = _needs_confirmation(dt if isinstance(dt, dict) else {}, profile=p)
+            if needs_confirmation:
+                final_status = "retryable"
+                # Kept as the stable "low_confidence" value: app.py's GET /result
+                # and index.html's frontend gate the candidate-selection UI on
+                # this exact string regardless of which check actually tripped.
+                final_error = "low_confidence"
+                app_logger.info(
+                    "ASYNC WORKER: confirmation gate triggered id=%s reason=%s confidence=%s",
+                    public_id, gate_reason, detection_confidence,
+                )
 
         database.update_analysis(
             public_id=public_id,

@@ -67,7 +67,7 @@ def detect_profile(label: str) -> Optional[dict]:
     if not norm:
         return None
     for p in _load()["profiles"]:
-        if norm == p["id"] or norm in [a.lower() for a in p["aliases"]]:
+        if norm == p["id"] or norm == p["display_name"].lower() or norm in [a.lower() for a in p["aliases"]]:
             return p
     return None
 
@@ -88,6 +88,14 @@ def required_clauses_for(label: str) -> tuple[list[str], Optional[str]]:
 
 def baseline_required() -> list[str]:
     return list(_load()["baseline_required"])
+
+
+def classifier_for(profile_id: str) -> Optional[dict]:
+    """Return the {hypothesis, positive_keywords, negative_keywords,
+    competing_profiles, confirmation_threshold, status} block for a profile,
+    or None if the profile has no classifier config yet."""
+    p = profile_for(profile_id)
+    return p.get("classifier") if p else None
 
 
 def registry_version() -> str:

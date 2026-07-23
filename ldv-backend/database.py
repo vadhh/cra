@@ -8,7 +8,7 @@ import os
 import sqlite3
 import uuid
 from contextlib import contextmanager
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import crypto
 
@@ -365,9 +365,9 @@ def save_document(
     case_folder: str | None = None,
 ) -> int:
     enc_text = crypto.enc_str(extracted_text) if extracted_text is not None else None
-    expires_at = (datetime.utcnow() + timedelta(days=org_retention_days(org_id))).strftime(
-        "%Y-%m-%d %H:%M:%S"
-    )
+    expires_at = (
+        datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=org_retention_days(org_id))
+    ).strftime("%Y-%m-%d %H:%M:%S")
     with _conn() as db:
         cur = db.execute(
             """INSERT INTO documents
@@ -692,7 +692,7 @@ def purge_expired(dry_run: bool = False) -> list[dict]:
     Caller unlinks the returned file_paths. ponytail: row+file delete + VACUUM
     is the secure-erase ceiling — SSD overwrite-in-place is unreliable; rely on
     full-disk/volume encryption for the rest."""
-    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+    now = datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S")
     with _conn() as db:
         rows = db.execute(
             """SELECT id AS document_id, file_path, expires_at FROM documents
@@ -732,7 +732,7 @@ def write_audit(
         try:
             durable_path = os.path.join(os.path.dirname(get_db_path()), "audit_durable.log")
             log_line = json.dumps({
-                "ts": datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"),
+                "ts": datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S"),
                 "action": action,
                 "user_id": user_id,
                 "org_id": org_id,

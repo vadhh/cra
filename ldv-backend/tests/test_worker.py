@@ -8,6 +8,80 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(HERE))
 
+import worker
+
+
+def test_needs_confirmation_below_absolute_threshold():
+    dt = {"confidence": 0.50, "candidates": [{"confidence": 0.50}, {"confidence": 0.10}]}
+    needs, reason = worker._needs_confirmation(dt)
+    assert needs is True
+    assert reason == "low_confidence"
+
+
+def test_needs_confirmation_ambiguous_margin():
+    # 76% vs 74%: clears the 0.70 confirmation threshold alone, but under the
+    # 0.85 high-confidence threshold with only a 2% margin -- still ambiguous.
+    dt = {"confidence": 0.76, "candidates": [{"confidence": 0.76}, {"confidence": 0.74}]}
+    needs, reason = worker._needs_confirmation(dt)
+    assert needs is True
+    assert reason == "ambiguous_margin"
+
+
+def test_needs_confirmation_keyword_nli_disagreement():
+    dt = {
+        "confidence": 0.90,
+        "candidates": [{"confidence": 0.90}, {"confidence": 0.05}],
+        "override_applied": True,
+        "override_reason": "generic_to_specific",
+    }
+    needs, reason = worker._needs_confirmation(dt)
+    assert needs is True
+    assert reason == "keyword_nli_disagreement"
+
+
+def test_needs_confirmation_high_confidence_wide_margin_passes():
+    dt = {"confidence": 0.92, "candidates": [{"confidence": 0.92}, {"confidence": 0.05}]}
+    needs, reason = worker._needs_confirmation(dt)
+    assert needs is False
+    assert reason is None
+
+
+def test_needs_confirmation_draft_profile_gates_despite_high_confidence():
+    # High confidence alone isn't enough for a profile the registry hasn't
+    # empirically validated yet -- draft status must force confirmation.
+    dt = {"confidence": 0.97, "candidates": [{"confidence": 0.97}, {"confidence": 0.02}]}
+    profile = {"id": "mining_agreement", "classifier": {"status": "draft"}}
+    needs, reason = worker._needs_confirmation(dt, profile=profile)
+    assert needs is True
+    assert reason == "draft_profile"
+
+
+def test_needs_confirmation_validated_profile_not_gated_by_status():
+    dt = {"confidence": 0.97, "candidates": [{"confidence": 0.97}, {"confidence": 0.02}]}
+    profile = {"id": "employment_contract", "classifier": {"status": "validated"}}
+    needs, reason = worker._needs_confirmation(dt, profile=profile)
+    assert needs is False
+    assert reason is None
+
+
+def test_needs_confirmation_no_profile_resolved_falls_back_to_confidence_checks():
+    # profile=None (the default) preserves prior behavior -- unresolved
+    # profile shouldn't itself force a gate, confidence checks still apply.
+    dt = {"confidence": 0.92, "candidates": [{"confidence": 0.92}, {"confidence": 0.05}]}
+    needs, reason = worker._needs_confirmation(dt)
+    assert needs is False
+    assert reason is None
+
+
+def test_classifier_thresholds_env_overridable():
+    os.environ["LDV_CLASSIFIER_CONFIRMATION_THRESHOLD"] = "0.60"
+    try:
+        conf, high, margin = worker._classifier_thresholds()
+        assert conf == 0.60
+    finally:
+        os.environ.pop("LDV_CLASSIFIER_CONFIRMATION_THRESHOLD", None)
+
+
 def test_worker_flow():
     fd, db_path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
@@ -87,5 +161,13 @@ def test_worker_flow():
         os.remove(db_path)
 
 if __name__ == "__main__":
+    test_needs_confirmation_below_absolute_threshold()
+    test_needs_confirmation_ambiguous_margin()
+    test_needs_confirmation_keyword_nli_disagreement()
+    test_needs_confirmation_high_confidence_wide_margin_passes()
+    test_needs_confirmation_draft_profile_gates_despite_high_confidence()
+    test_needs_confirmation_validated_profile_not_gated_by_status()
+    test_needs_confirmation_no_profile_resolved_falls_back_to_confidence_checks()
+    test_classifier_thresholds_env_overridable()
     test_worker_flow()
     print("test_worker OK")

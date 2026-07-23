@@ -126,20 +126,6 @@ _KEYWORD_MIN_HITS = 2
 # NLI confidence below this → apply keyword override when keyword is strong
 _NLI_OVERRIDE_THRESHOLD = 0.40
 
-def _keyword_doc_type(text: str) -> tuple[str | None, int]:
-    """Return (best_label, hit_count) from keyword matching on text[:1200]."""
-    snippet = text[:1200]
-    scores: dict[str, int] = {}
-    for label, patterns in _KEYWORD_DOC_TYPES.items():
-        count = sum(1 for p in patterns if re.search(p, snippet, re.I))
-        if count > 0:
-            scores[label] = count
-    if not scores:
-        return None, 0
-    best = max(scores, key=lambda k: scores[k])
-    return best, scores[best]
-
-
 # ── Document type labels with calibrated hypotheses ───────────────────────────
 # Each label has a specific hypothesis proven to discriminate well under
 # typeform/distilbert-base-uncased-mnli (MultiNLI-trained).
@@ -222,64 +208,63 @@ def clear_classification_cache() -> None:
 
 
 def load_doc_type_specs() -> list[dict]:
+    """Hypotheses for every registry profile (registry_v1.json `classifier.hypothesis`),
+    plus the 4 non-contract labels (invoice/receipt/purchase order/non-contract) that
+    aren't contract profiles and stay statically defined. Falls back to the static
+    11-profile list if the registry can't be loaded."""
     global _CACHED_DOC_TYPE_SPECS
     if _CACHED_DOC_TYPE_SPECS is not None:
         return _CACHED_DOC_TYPE_SPECS
-    
+
     try:
-        from detector.detector_profiles import ProfileManager
-        manager = ProfileManager()
+        from detector import profile_registry
         specs = []
-        for pid in manager.list_profiles():
-            p = manager.get_profile(pid)
-            label = p["metadata"]["display_name"].lower()
-            specs.append({
-                "label": label,
-                "hypothesis": p["classification"]["nli_hypothesis"]
-            })
-        
-        # Append non-contract specs that aren't in the registry
+        for pid in profile_registry.all_profile_ids():
+            p = profile_registry.profile_for(pid)
+            clf = p.get("classifier")
+            if not clf or not clf.get("hypothesis"):
+                continue
+            specs.append({"label": p["display_name"].lower(), "hypothesis": clf["hypothesis"]})
+
         for spec in _STATIC_DOC_TYPE_SPECS:
             if spec["label"] in ["invoice", "receipt", "purchase order", "non-contract"]:
                 specs.append(spec)
-                
+
         _CACHED_DOC_TYPE_SPECS = specs
         return _CACHED_DOC_TYPE_SPECS
     except Exception as e:
-        logger.warning("Failed to load doc type specs dynamically, falling back to static: %s", e)
+        logger.warning("Failed to load doc type specs from registry, falling back to static: %s", e)
         return _STATIC_DOC_TYPE_SPECS
 
 
 def load_keyword_doc_types() -> dict[str, list[str]]:
+    """Keyword patterns for every registry profile (registry_v1.json
+    `classifier.positive_keywords`), plus the 4 static non-contract label sets."""
     global _CACHED_KEYWORD_DOC_TYPES
     if _CACHED_KEYWORD_DOC_TYPES is not None:
         return _CACHED_KEYWORD_DOC_TYPES
-    
-    try:
-        from detector.detector_profiles import ProfileManager
-        manager = ProfileManager()
-        kw_types = {}
-        for pid in manager.list_profiles():
-            p = manager.get_profile(pid)
-            label = p["metadata"]["display_name"].lower()
-            patterns = []
-            ko = p["classification"].get("keyword_overrides", {})
-            for lang, words in ko.items():
-                for word in words:
-                    escaped_word = re.escape(word)
-                    pattern = escaped_word.replace(r"\ ", r"\s+").replace(" ", r"\s+")
-                    patterns.append(rf"\b{pattern}\b")
-            kw_types[label] = patterns
 
-            
-        # Append non-contract types
+    try:
+        from detector import profile_registry
+        kw_types = {}
+        for pid in profile_registry.all_profile_ids():
+            p = profile_registry.profile_for(pid)
+            clf = p.get("classifier")
+            words = clf.get("positive_keywords", []) if clf else []
+            patterns = []
+            for word in words:
+                escaped_word = re.escape(word)
+                pattern = escaped_word.replace(r"\ ", r"\s+").replace(" ", r"\s+")
+                patterns.append(rf"\b{pattern}\b")
+            kw_types[p["display_name"].lower()] = patterns
+
         for k in ["invoice", "receipt", "purchase order", "non-contract"]:
             kw_types[k] = _STATIC_KEYWORD_DOC_TYPES[k]
-            
+
         _CACHED_KEYWORD_DOC_TYPES = kw_types
         return _CACHED_KEYWORD_DOC_TYPES
     except Exception as e:
-        logger.warning("Failed to load keyword doc types dynamically, falling back to static: %s", e)
+        logger.warning("Failed to load keyword doc types from registry, falling back to static: %s", e)
         return _STATIC_KEYWORD_DOC_TYPES
 
 
@@ -297,22 +282,32 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
     if any(x in header for x in ["saas", "software as a service"]):
         return "saas agreement", 5, True
     if any(x in header for x in ["it service", "it support", "information technology"]):
-        return "it service agreement", 5, True
+        return "it services contract", 5, True
     if any(x in header for x in ["construction"]):
-        return "construction agreement", 5, True
+        return "construction contract", 5, True
     if any(x in header for x in ["insurance"]):
-        return "insurance agreement", 5, True
+        return "insurance contract", 5, True
+    # phrase + word-boundary matched (not bare "maintenance"): a bare substring
+    # false-fired on unrelated service-agreement text incidentally mentioning
+    # "maintenance agreement ... services" as filler wording. Scoped to the
+    # registry's own alias ("maintenance contract", not "agreement").
+    if _has_word("maintenance contract", header):
+        return "maintenance contract", 5, True
     if any(x in header for x in ["consulting", "consultant"]):
         return "consulting agreement", 5, True
     if any(x in header for x in ["partnership", "kemitraan"]):
         return "partnership agreement", 5, True
-    if any(x in header for x in ["non-disclosure", "confidentiality", "nda", "kerahasiaan"]):
+    if any(x in header for x in ["non-disclosure", "confidentiality", "nda", "kerahasiaan", "geheimhouding"]):
         return "non-disclosure agreement", 5, True
     if any(x in header for x in ["loan", "lender", "borrower", "pinjaman"]):
         return "loan agreement", 5, True
-    if any(x in header for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja"]):
+    # word-boundary matched (not substring): "employee"/"employer" as plain
+    # substrings false-fire inside "employees" (e.g. an outsourcing contract
+    # mentioning transferred employees incidentally), forcing an unconditional
+    # title-match override even when NLI's real answer was correct.
+    if any(_has_word(x, header) for x in ["employment", "employee", "employer", "pekerjaan", "pekerja", "pemberi kerja", "perjanjian kerja", "contrat de travail", "employeur"]):
         return "employment contract", 5, True
-    if any(x in header for x in ["lease", "rental", "sewa", "bail"]):
+    if any(x in header for x in ["lease", "rental", "sewa", "bail", "huur"]):
         return "lease agreement", 5, True
     if any(x in header for x in ["software license", "lisensi", "eula"]):
         return "software license", 5, True
@@ -337,11 +332,13 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
     if any(_has_word(x, snippet) for x in ["saas", "software as a service"]):
         return "saas agreement", 5, False
     if any(_has_word(x, snippet) for x in ["it service", "it support", "information technology services"]):
-        return "it service agreement", 5, False
+        return "it services contract", 5, False
     if any(_has_word(x, snippet) for x in ["construction", "building contract"]):
-        return "construction agreement", 5, False
+        return "construction contract", 5, False
     if any(_has_word(x, snippet) for x in ["insurance policy", "insurer"]):
-        return "insurance agreement", 5, False
+        return "insurance contract", 5, False
+    if _has_word("maintenance contract", snippet):
+        return "maintenance contract", 5, False
     if any(_has_word(x, snippet) for x in ["software license", "licensor", "licensee", "eula"]):
         return "software license", 5, False
         
@@ -373,8 +370,39 @@ def _keyword_doc_type(text: str) -> tuple[str | None, int, bool]:
         if any(_has_word(x, snippet) for x in ["consulting", "consultant", "advisory"]):
             return "consulting agreement", 5, False
         return "service agreement", 5, False
-        
+
+    # Registry fallback: the chain above only covers the long-tuned profiles.
+    # For the other registry profiles (see registry_v1.json `classifier.status`),
+    # match on their `positive_keywords` before giving up to "general contract".
+    reg_label, reg_hits = _registry_keyword_fallback(snippet)
+    if reg_label:
+        return reg_label, reg_hits, False
+
     return "general contract", 2, False
+
+
+def _registry_keyword_fallback(snippet: str) -> tuple[str | None, int]:
+    """Best-effort keyword match against registry_v1.json `classifier.positive_keywords`
+    for profiles not covered by the hardcoded chain in `_keyword_doc_type`."""
+    covered = {
+        "saas agreement", "it services contract", "construction agreement",
+        "insurance agreement", "consulting agreement", "partnership agreement",
+        "non-disclosure agreement", "loan agreement", "employment contract",
+        "lease agreement", "software license", "purchase agreement",
+        "commercial agreement", "general contract", "service agreement",
+        "invoice", "receipt", "purchase order",
+    }
+    scores: dict[str, int] = {}
+    for label, patterns in load_keyword_doc_types().items():
+        if label in covered:
+            continue
+        count = sum(len(re.findall(p, snippet, re.I)) for p in patterns)
+        if count > 0:
+            scores[label] = count
+    if not scores:
+        return None, 0
+    best = max(scores, key=lambda k: scores[k])
+    return best, scores[best]
 
 
 # ── Clause risk hypotheses for zero-shot classification ───────────────────────
@@ -591,12 +619,14 @@ def _entailment_score(model, tokenizer, premise: str, hypothesis: str) -> float:
 
 
 def _classify_doc_type(model, tokenizer, text: str) -> list[dict]:
-    """Score text against each doc-type spec; return sorted by confidence desc."""
-    pairs = [(text, spec["hypothesis"]) for spec in _DOC_TYPE_SPECS]
+    """Score text against each doc-type spec (registry-driven, all 56 profiles
+    plus the 4 non-contract labels); return sorted by confidence desc."""
+    specs = load_doc_type_specs()
+    pairs = [(text, spec["hypothesis"]) for spec in specs]
     scores = _batch_entailment_scores(model, tokenizer, pairs)
 
     results = []
-    for spec, score in zip(_DOC_TYPE_SPECS, scores):
+    for spec, score in zip(specs, scores):
         results.append({"label": spec["label"], "confidence": round(score, 4)})
     return sorted(results, key=lambda x: x["confidence"], reverse=True)
 
@@ -628,6 +658,19 @@ def _split_paragraphs(text: str, min_len: int = 60, max_len: int = 500) -> list[
         else:
             result.append(chunk)
     return result
+
+
+def _profile_status(label: str | None) -> str | None:
+    """classifier.status ("validated"/"draft") for the profile a doc-type label
+    resolves to, or None if it doesn't resolve to a registry profile."""
+    if not label:
+        return None
+    try:
+        from detector import profile_registry
+        p = profile_registry.detect_profile(label)
+        return (p.get("classifier") or {}).get("status") if p else None
+    except Exception:
+        return None
 
 
 # ── Public functions ───────────────────────────────────────────────────────────
@@ -681,12 +724,23 @@ def classify_document_type(text: str) -> dict:
     if kw_label:
         is_generic_nli = top["label"] in ["service agreement", "general contract"]
         is_specific_kw = kw_label not in ["service agreement", "general contract"]
-        
+
+        # NLI confidently (but wrongly) lands on a draft/unvalidated profile
+        # while a strong keyword match (hit_count>=5, i.e. the hardcoded
+        # tuned chain, not a weak registry fallback) points to a validated
+        # one. Seen on adversarial input (injected abusive-clause text
+        # shifting the NLI embedding toward an unrelated draft hypothesis).
+        # Scoped to draft-vs-validated only -- doesn't second-guess NLI when
+        # both candidates are validated, so it can't regress the tuned 11.
+        nli_is_draft = _profile_status(top["label"]) == "draft"
+        kw_is_validated = kw_hits >= 5 and _profile_status(kw_label) == "validated"
+
         # Override conditions:
         # 1. Ground truth title matched explicitly
         # 2. NLI confidence is below threshold
         # 3. NLI output is generic (e.g. services) but keywords found a highly specific subtype (e.g. saas, IT service)
-        if is_title_match or top["confidence"] < _NLI_OVERRIDE_THRESHOLD or (is_generic_nli and is_specific_kw):
+        # 4. NLI picked an unvalidated (draft) profile over a validated keyword match
+        if is_title_match or top["confidence"] < _NLI_OVERRIDE_THRESHOLD or (is_generic_nli and is_specific_kw) or (nli_is_draft and kw_is_validated):
             override_applied = True
             source = "keyword_override"
             keyword_override_conf = 0.85
