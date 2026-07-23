@@ -31,10 +31,12 @@
 | Recommendation wiring | ✅ 33/33 |
 | PDF generation | ✅ 33/33 |
 | **Risk-score ground truth** | ⛔ PENDING — 0/33 lawyer-reviewed; `docs/legal_review_packet.md` §D has actual scores staged for review, unreviewed |
-| **13 collision pairs — resolved** | ⛔ 7/13 unresolved (A-signal 9/13 correct as of 07-22 bugfixes; 6 pairs need Ilham's keyword-ownership call, `docs/legal_review_packet.md` §B) |
-| **45-vs-42 detection-spec discrepancy** | ⛔ UNRECONCILED — see `docs/detection_spec_reconciliation_45_vs_42.md` (created today; registry shows 45/45 have a hypothesis+keyword spec, contradicting the "42" figure — needs Ilham's confirmation of his counting method) |
+| **13 collision pairs — resolved** | 🟡 1/6 remaining pairs closed by Ilham's `docs/ALIAS_REVIEW.md` (`joint_venture_agreement` vs `partnership_agreement` — matches our proposed fix); **5 pairs still need Ilham's keyword-ownership call** (maintenance/service, licensing/software_license, outsourcing/service, employment_termination/employment, banking_facility/loan), `docs/legal_review_packet.md` §B |
+| **45-vs-42 detection-spec discrepancy** | ✅ RESOLVED — see `docs/detection_spec_reconciliation_45_vs_42.md`. Ilham's `GOLD_STANDARD_VALIDATION_SUMMARY.md` confirms 42 "Partial" + 3 "Pending Engineering Sync" (`construction_contract`/`insurance_contract`/`it_services_contract`, registry-vs-legacy-JSON `required_clauses` mismatch) = 45; all 45/45 have a detection spec. Follow-up clause-sync work is still open, tracked below. |
 
-Evidence: `ldv-backend/tests/original11_corpus_report.json`, `ldv-backend/tests/collision_pairs_report.json`, `docs/legal_review_packet.md`.
+**New follow-up from the 45-vs-42 resolution:** sync `required_clauses` between the 3 legacy per-file JSON profiles (`construction_agreement.json`, `insurance_agreement.json`, `it_service_agreement.json`) and their registry entries, per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s per-clause recommendations, and resolve the `saas_agreement` registry gap (currently unmapped; Ilham recommends treating it as a `software_license` variant). Not yet done.
+
+Evidence: `ldv-backend/tests/original11_corpus_report.json`, `ldv-backend/tests/collision_pairs_report.json`, `docs/legal_review_packet.md`, `docs/GOLD_STANDARD_VALIDATION_SUMMARY.md`, `docs/REQUIRED_CLAUSE_RECONCILIATION.md`.
 
 ---
 
@@ -73,7 +75,7 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 | Gate | Status |
 |---|---|
 | 1. Engineering regression | ✅ Passed |
-| 2. Corpus validation | 🟡 Partial — 3 open items (risk-score review, 6 collision pairs, 45v42 reconciliation) |
+| 2. Corpus validation | 🟡 Partial — 2 open items (risk-score review, 5 collision pairs). 45v42 reconciliation ✅ resolved; clause-sync follow-up open. |
 | 3. Security validation | 🟡 Partial — hardening done, no formal audit |
 | 4. Legal review | ⛔ Not started |
 | 5. Controlled pilot acceptance | ⛔ Not started — blocked on 2–4 |
@@ -84,6 +86,6 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 
 ## Owners for Remaining Work
 
-- **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`), collision-pair keyword-ownership decisions (§B), 45-vs-42 reconciliation confirmation, formal legal reviewer sign-off (Gate 4).
-- **Afridho:** arrange/perform Gate 3 formal security validation; keep this matrix updated as each item closes.
+- **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`), 5 remaining collision-pair keyword-ownership decisions (§B), formal legal reviewer sign-off (Gate 4).
+- **Afridho:** sync `required_clauses` for the 3 pending-engineering-sync profiles + resolve `saas_agreement` registry gap; arrange/perform Gate 3 formal security validation; keep this matrix updated as each item closes.
 - **Joint:** Gate 5 pilot-acceptance criteria and test plan, once Gates 2–4 close.

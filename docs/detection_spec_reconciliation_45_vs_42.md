@@ -1,10 +1,35 @@
 # Reconciliation: "45 partially usable profiles" vs "42 detection specifications"
 
-**Date:** 2026-07-23
-**Author:** Engineering (Afridho)
-**Status:** ENGINEERING-SIDE INPUT ONLY — not a resolution. The "42" figure originates in Ilham's report, which is not in this repository; engineering cannot reconstruct his counting method or confirm which 3 profiles he excluded. This document supplies the objective data his reconciliation needs.
+**Date:** 2026-07-23 (opened) → 2026-07-23 (resolved)
+**Author:** Engineering (Afridho), resolved using Ilham's `docs/GOLD_STANDARD_VALIDATION_SUMMARY.md` (merged into `staging`/`release/cra-1.0-rc1` same day)
+**Status:** ✅ RESOLVED — see §"Resolution" below. Engineering follow-up (registry/JSON clause sync for 3 profiles) remains open, tracked separately.
 
 ---
+
+## Resolution
+
+Ilham's `docs/GOLD_STANDARD_VALIDATION_SUMMARY.md` §2 and §5 supply the exact math, independently of the registry-side audit below:
+
+> | Complete Validation Records | 11 | 19.6% |
+> | Partial Validation Records | 42 | 75.0% | Detection Spec available, pending active JSON & legal evidence MD. |
+> | Profiles Pending Engineering Sync | 3 | 5.4% | Registry profiles (`construction_contract`, `insurance_contract`, `it_services_contract`) with engineering mismatches. |
+> ...
+> **Detection Specifications Verified**: 45 / 45 present
+
+**11 + 42 + 3 = 56.** The "42" is not a subset lacking a detection spec — §6 confirms all **45/45** draft profiles have one, matching this document's own registry audit below. Instead, Ilham's workbook splits the 45 non-mature profiles into two buckets:
+
+- **42 "Partial"** — have a detection spec, just missing the downstream active-JSON/legal-evidence artifacts (i.e., normal draft-profile status).
+- **3 "Pending Engineering Sync"** — `construction_contract`, `insurance_contract`, `it_services_contract` — held out of the "Partial" bucket specifically because their legacy per-file JSON profile (`construction_agreement.json`, `insurance_agreement.json`, `it_service_agreement.json`) has a **different `required_clauses` list than the registry entry**. Full clause-level detail already existed in `docs/REQUIRED_CLAUSE_RECONCILIATION.md` (merged same batch): e.g. `construction_agreement.json` has `insurance`/`limitation_liability` that the registry lacks, while the registry has `delivery_terms` that the JSON lacks — same pattern for the other two.
+
+This is the identical trio our own 07-22 engineering work (`report_2026-07-22.md` §2c) already found and partially fixed — those are the 3 profiles whose title-matching keyword branches (`_keyword_doc_type()`) were orphaned/misaligned with the registry's display names. **That fix resolved the classifier-routing symptom (a document titled "MAINTENANCE CONTRACT" now resolves correctly); it did not touch the underlying `required_clauses` schema mismatch Ilham is flagging**, which is a separate, still-open reconciliation between the legacy JSON profile files and `registry_v1.json`.
+
+A 4th artifact, `saas_agreement.json`, is called out in the same table but doesn't affect the 45/42/3 math — Ilham maps it as an implementation variant under the already-mature `software_license` profile, not a 57th profile or a member of the 45.
+
+**Follow-up (separate from this reconciliation, not yet done):** synchronize `required_clauses` between the 3 legacy JSON files and `registry_v1.json` per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s per-clause recommendations, and add a `saas_agreement` registry entry (or confirm the `software_license` variant mapping) as recommended there.
+
+---
+
+## Original engineering-side audit (superseded by the resolution above, kept for reference)
 
 ## What the registry actually shows today
 
@@ -74,11 +99,6 @@ This means one of two things is true, and only Ilham can say which:
 | research_collaboration_agreement | Research Collaboration Agreement | Y | Y | N | N |
 | government_procurement_contract | Government Procurement Contract | Y | Y | N | N |
 
-## Ask for Ilham
+## Status
 
-Given the registry data above, please confirm:
-1. What definition of "detection specification" produced your 42 figure?
-2. Which 3 (of the 45) did you exclude, and why?
-3. Does your 42 need updating to reflect the current registry state, or does engineering need to add a stricter field (e.g. `negative_keywords`) before a profile should count as "spec complete"?
-
-Until this is answered, **the CRA Release Gate Matrix (`docs/CRA_RELEASE_GATE_MATRIX.md`) records Gate 2 as not fully closed** — this reconciliation is one of its listed blockers, not a resolved item.
+The 45-vs-42 counting discrepancy itself is closed (see Resolution above). The one item still open is engineering, not a reconciliation question: sync `required_clauses` for `construction_contract`/`insurance_contract`/`it_services_contract` between the legacy JSON files and the registry, plus resolve the `saas_agreement` registry gap. Tracked in `docs/CRA_RELEASE_GATE_MATRIX.md` Gate 2.
