@@ -25,7 +25,7 @@ This is the identical trio our own 07-22 engineering work (`report_2026-07-22.md
 
 A 4th artifact, `saas_agreement.json`, is called out in the same table but doesn't affect the 45/42/3 math — Ilham maps it as an implementation variant under the already-mature `software_license` profile, not a 57th profile or a member of the 45.
 
-**Follow-up (separate from this reconciliation, not yet done):** synchronize `required_clauses` between the 3 legacy JSON files and `registry_v1.json` per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s per-clause recommendations, and add a `saas_agreement` registry entry (or confirm the `software_license` variant mapping) as recommended there.
+**Follow-up (separate from this reconciliation):** ✅ DONE (2026-07-23) — `required_clauses` synchronized between the 3 legacy JSON files and `registry_v1.json` per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s per-clause recommendations (union applied to both sides; `validate_profiles.py` clean, full suite 108/108). Still open: add a `saas_agreement` registry entry (or confirm the `software_license` variant mapping) as recommended there.
 
 ---
 
@@ -101,4 +101,4 @@ This means one of two things is true, and only Ilham can say which:
 
 ## Status
 
-The 45-vs-42 counting discrepancy itself is closed (see Resolution above). The one item still open is engineering, not a reconciliation question: sync `required_clauses` for `construction_contract`/`insurance_contract`/`it_services_contract` between the legacy JSON files and the registry, plus resolve the `saas_agreement` registry gap. Tracked in `docs/CRA_RELEASE_GATE_MATRIX.md` Gate 2.
+The 45-vs-42 counting discrepancy is closed (see Resolution above), and its clause-sync follow-up is also done (see above). Only remaining open item: the `saas_agreement` registry gap. Tracked in `docs/CRA_RELEASE_GATE_MATRIX.md` Gate 2.

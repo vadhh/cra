@@ -78,6 +78,9 @@
     },
     {
       "clause_id": "insurance"
+    },
+    {
+      "clause_id": "delivery_terms"
     }
   ]
 }

@@ -69,6 +69,12 @@
     },
     {
       "clause_id": "confidentiality"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "warranty_disclaimer"
     }
   ]
 }
