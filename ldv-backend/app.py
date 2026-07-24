@@ -386,12 +386,25 @@ def _article(word: str) -> str:
 _DL_TTL = int(os.getenv("LDV_DOWNLOAD_LINK_TTL", "900"))  # seconds (default 15 minutes)
 
 
+def _derive_download_key(base: bytes) -> bytes:
+    # HMAC-based KDF (domain separation, not entropy stretching — base is
+    # already a high-entropy secret). Fixes F-03: previously reused
+    # LDV_SECRET_KEY with a naive `+b":download"` suffix, so leaking the
+    # session secret also handed over the download-link signing key.
+    return _hmac.new(base, b"ldv-download-link-v1", hashlib.sha256).digest()
+
+
 def _dl_keys() -> list[bytes]:
+    override = os.getenv("LDV_DOWNLOAD_LINK_SECRET", "")
+    if override:
+        return [override.strip().encode()]
     keys_str = os.getenv("LDV_SECRET_KEY", "")
     if not keys_str:
         k = app.secret_key
-        return [(k if isinstance(k, bytes) else k.encode()) + b":download"]
-    return [(k.strip().encode() if isinstance(k, str) else k) + b":download" for k in keys_str.split(",")]
+        base_keys = [k if isinstance(k, bytes) else k.encode()]
+    else:
+        base_keys = [k.strip().encode() if isinstance(k, str) else k for k in keys_str.split(",")]
+    return [_derive_download_key(k) for k in base_keys]
 
 
 def _make_download_token(analysis_id: str) -> tuple[str, int]:
@@ -987,7 +1000,13 @@ def api_admin_create_user():
     else:
         if not org_id:
             return jsonify({"error": "Organization ID required"}), 400
-            
+
+    if role == "admin" and not auth.is_operator_org(org_id):
+        return jsonify({
+            "error": f"Forbidden: 'admin' may only be granted in the operator org "
+                     f"('{auth.operator_org_name()}')"
+        }), 403
+
     if database.get_user_by_email(email):
         return jsonify({"error": "User already exists"}), 400
         
@@ -1050,7 +1069,13 @@ def api_admin_user_role(target_id: int):
             return jsonify({"error": "Forbidden"}), 403
         if target["role"] == "admin" or new_role == "admin":
             return jsonify({"error": "Forbidden: managers cannot manage administrator roles"}), 403
-            
+
+    if new_role == "admin" and not auth.is_operator_org(target["org_id"]):
+        return jsonify({
+            "error": f"Forbidden: 'admin' may only be granted in the operator org "
+                     f"('{auth.operator_org_name()}')"
+        }), 403
+
     if target_id == user["id"]:
         return jsonify({"error": "Forbidden: you cannot change your own role"}), 403
         

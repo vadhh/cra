@@ -110,6 +110,22 @@ def normalize_role(role: str) -> str:
     return "analyst" if role == "user" else role
 
 
+def operator_org_name() -> str:
+    return os.getenv("LDV_OPERATOR_ORG", "Sydeco")
+
+
+def is_operator_org(org_id: int) -> bool:
+    """True if org_id belongs to the Sydeco-operator org.
+
+    `admin` is a global, cross-tenant role (F-02): it must only ever be granted
+    to accounts in the operator org, never a customer/pilot-tenant org — one
+    compromised or misprovisioned admin account would otherwise have
+    unrestricted access to every tenant's contract data.
+    """
+    org = database.get_org_by_id(org_id)
+    return bool(org and org["name"] == operator_org_name())
+
+
 def role_required(*roles: str):
     def decorator(view):
         @wraps(view)

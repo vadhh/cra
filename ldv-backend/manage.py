@@ -59,6 +59,12 @@ def create_user_cmd(email: str, org_name: str, role: str) -> None:
     org = database.get_org_by_name(org_name)
     if not org:
         sys.exit(f"Org '{org_name}' not found. Create it first with create-org.")
+    if role == "admin" and not auth.is_operator_org(org["id"]):
+        sys.exit(
+            f"Refusing: 'admin' is a global, cross-tenant role and may only be granted in the "
+            f"operator org ('{auth.operator_org_name()}'), not '{org_name}'. "
+            f"Set LDV_OPERATOR_ORG to change the operator org name."
+        )
     password = secrets.token_urlsafe(12)
     token = _gen_token()
     database.create_user(org["id"], email, auth.hash_password(password), role, token)

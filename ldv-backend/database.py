@@ -583,6 +583,14 @@ def get_org_by_name(name: str) -> dict | None:
         return dict(row) if row else None
 
 
+def get_org_by_id(org_id: int) -> dict | None:
+    with _conn() as db:
+        row = db.execute(
+            "SELECT * FROM organizations WHERE id = ?", (org_id,)
+        ).fetchone()
+        return dict(row) if row else None
+
+
 def create_user(org_id: int, email: str, password_hash: str,
                 role: str, api_token: str) -> int:
     with _conn() as db:
