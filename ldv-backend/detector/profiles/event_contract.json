@@ -1,0 +1,75 @@
+{
+  "profile_id": "event_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Event Contract",
+    "family": "commercial_agreements",
+    "description": "Standard Event Contract profile mapping required clauses.",
+    "aliases": [
+      "event contract",
+      "event services agreement",
+      "perjanjian acara",
+      "perjanjian event"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an event contract for the planning, staging, or provision of services at an event.",
+    "keyword_overrides": {
+      "EN": [
+        "event contract",
+        "event services agreement",
+        "acara"
+      ],
+      "ID": [
+        "perjanjian acara",
+        "perjanjian event"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "force_majeure"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

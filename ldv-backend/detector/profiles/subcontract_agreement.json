@@ -1,0 +1,74 @@
+{
+  "profile_id": "subcontract_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Subcontract Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Subcontract Agreement profile mapping required clauses.",
+    "aliases": [
+      "subcontract agreement",
+      "subcontractor agreement",
+      "perjanjian subkontraktor"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a subcontract agreement in which a subcontractor performs part of a main contractor's obligations.",
+    "keyword_overrides": {
+      "EN": [
+        "subcontract agreement",
+        "subcontractor agreement",
+        "sous-traitance"
+      ],
+      "ID": [
+        "perjanjian subkontraktor",
+        "subkontraktor"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "indemnification"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

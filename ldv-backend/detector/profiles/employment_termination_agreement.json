@@ -1,0 +1,76 @@
+{
+  "profile_id": "employment_termination_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Employment Termination Agreement",
+    "family": "employment_agreements",
+    "description": "Standard Employment Termination Agreement profile mapping required clauses.",
+    "aliases": [
+      "employment termination agreement",
+      "separation agreement",
+      "termination agreement",
+      "perjanjian pemutusan hubungan kerja",
+      "phk",
+      "perjanjian phk"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an employment termination or separation agreement setting the terms on which an employment relationship ends.",
+    "keyword_overrides": {
+      "EN": [
+        "employment termination agreement",
+        "separation agreement",
+        "termination agreement",
+        "phk"
+      ],
+      "ID": [
+        "perjanjian pemutusan hubungan kerja",
+        "perjanjian phk",
+        "pemutusan hubungan kerja"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "compensation"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "entire_agreement"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

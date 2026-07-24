@@ -1,0 +1,76 @@
+{
+  "profile_id": "storage_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Storage / Warehousing Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Storage / Warehousing Agreement profile mapping required clauses.",
+    "aliases": [
+      "storage agreement",
+      "warehousing agreement",
+      "perjanjian pergudangan",
+      "perjanjian penyimpanan"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a storage or warehousing agreement for the safekeeping of goods on behalf of a depositor.",
+    "keyword_overrides": {
+      "EN": [
+        "storage agreement",
+        "warehousing agreement",
+        "pergudangan",
+        "penyimpanan"
+      ],
+      "ID": [
+        "perjanjian pergudangan",
+        "perjanjian penyimpanan"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

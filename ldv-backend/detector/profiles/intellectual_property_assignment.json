@@ -1,0 +1,74 @@
+{
+  "profile_id": "intellectual_property_assignment",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Intellectual Property Assignment",
+    "family": "corporate_agreements",
+    "description": "Standard Intellectual Property Assignment profile mapping required clauses.",
+    "aliases": [
+      "ip assignment",
+      "intellectual property assignment",
+      "copyright assignment",
+      "patent assignment",
+      "perjanjian pengalihan hak cipta"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an intellectual property assignment transferring ownership of IP rights from one party to another.",
+    "keyword_overrides": {
+      "EN": [
+        "ip assignment",
+        "intellectual property assignment",
+        "copyright assignment",
+        "patent assignment",
+        "hak cipta"
+      ],
+      "ID": [
+        "perjanjian pengalihan hak cipta"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "compensation"
+    },
+    {
+      "clause_id": "warranty"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,75 @@
+{
+  "profile_id": "distribution_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Distribution Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Distribution Agreement profile mapping required clauses.",
+    "aliases": [
+      "distribution agreement",
+      "distributor agreement",
+      "perjanjian distribusi",
+      "contrat de distribution"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a distribution agreement in which a distributor resells the supplier's products within an assigned territory.",
+    "keyword_overrides": {
+      "EN": [
+        "distribution agreement",
+        "distributor agreement",
+        "contrat de distribution",
+        "distributor"
+      ],
+      "ID": [
+        "perjanjian distribusi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

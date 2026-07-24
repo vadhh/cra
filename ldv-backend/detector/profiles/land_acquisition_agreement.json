@@ -1,0 +1,76 @@
+{
+  "profile_id": "land_acquisition_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Land Acquisition Agreement",
+    "family": "property_agreements",
+    "description": "Standard Land Acquisition Agreement profile mapping required clauses.",
+    "aliases": [
+      "land acquisition agreement",
+      "land purchase agreement",
+      "perjanjian pengadaan tanah",
+      "perjanjian jual beli tanah"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a land acquisition agreement for the purchase or transfer of land or real property.",
+    "keyword_overrides": {
+      "EN": [
+        "land acquisition agreement",
+        "land purchase agreement",
+        "tanah",
+        "ppat"
+      ],
+      "ID": [
+        "perjanjian pengadaan tanah",
+        "perjanjian jual beli tanah"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "goods_description"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "title_transfer"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

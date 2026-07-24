@@ -1,0 +1,68 @@
+{
+  "profile_id": "memorandum_of_understanding",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Memorandum of Understanding",
+    "family": "corporate_agreements",
+    "description": "Standard Memorandum of Understanding profile mapping required clauses.",
+    "aliases": [
+      "memorandum of understanding",
+      "mou",
+      "letter of intent",
+      "loi",
+      "nota kesepahaman"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a memorandum of understanding recording a preliminary, often non-binding, agreement between parties.",
+    "keyword_overrides": {
+      "EN": [
+        "memorandum of understanding",
+        "mou",
+        "letter of intent",
+        "loi",
+        "nota kesepahaman"
+      ],
+      "ID": [
+        "memorandum of understanding"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,76 @@
+{
+  "profile_id": "telecommunications_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Telecommunications Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Telecommunications Agreement profile mapping required clauses.",
+    "aliases": [
+      "telecommunications agreement",
+      "telco agreement",
+      "network services agreement",
+      "perjanjian telekomunikasi"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a telecommunications agreement for the provision of network, telephony, or communications services.",
+    "keyword_overrides": {
+      "EN": [
+        "telecommunications agreement",
+        "telco agreement",
+        "network services agreement",
+        "telekomunikasi",
+        "kominfo"
+      ],
+      "ID": [
+        "perjanjian telekomunikasi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

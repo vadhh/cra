@@ -1,0 +1,81 @@
+{
+  "profile_id": "supply_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Supply Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Supply Agreement profile mapping required clauses.",
+    "aliases": [
+      "supply agreement",
+      "supplier agreement",
+      "procurement agreement",
+      "perjanjian pengadaan",
+      "perjanjian pasokan"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a supply agreement for the ongoing delivery of goods from a supplier to a buyer.",
+    "keyword_overrides": {
+      "EN": [
+        "supply agreement",
+        "supplier agreement",
+        "procurement agreement",
+        "supplier",
+        "pasokan"
+      ],
+      "ID": [
+        "perjanjian pengadaan",
+        "perjanjian pasokan"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "goods_description"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "delivery_terms"
+    },
+    {
+      "clause_id": "warranty"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,74 @@
+{
+  "profile_id": "media_production_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Media Production Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Media Production Agreement profile mapping required clauses.",
+    "aliases": [
+      "media production agreement",
+      "film production agreement",
+      "perjanjian produksi media"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a media production agreement for the creation of film, video, or other media content.",
+    "keyword_overrides": {
+      "EN": [
+        "media production agreement",
+        "film production agreement",
+        "produksi media",
+        "film"
+      ],
+      "ID": [
+        "perjanjian produksi media"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

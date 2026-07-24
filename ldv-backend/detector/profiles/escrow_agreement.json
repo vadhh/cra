@@ -1,0 +1,65 @@
+{
+  "profile_id": "escrow_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Escrow Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Escrow Agreement profile mapping required clauses.",
+    "aliases": [
+      "escrow agreement",
+      "perjanjian escrow"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an escrow agreement in which a neutral third party holds funds or assets until agreed conditions are met.",
+    "keyword_overrides": {
+      "EN": [
+        "escrow agreement",
+        "escrow"
+      ],
+      "ID": [
+        "perjanjian escrow"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "principal_amount"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

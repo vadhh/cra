@@ -2,7 +2,7 @@
   "profile_id": "lease_agreement",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "Lease Agreement",
     "family": "property_agreements",
@@ -10,8 +10,11 @@
     "aliases": [
       "lease agreement",
       "rental agreement",
-      "tenancy agreement",
-      "perjanjian sewa"
+      "property lease",
+      "perjanjian sewa",
+      "perjanjian sewa menyewa",
+      "bail immobilier",
+      "huurovereenkomst"
     ],
     "release_stage": "stable"
   },
@@ -34,23 +37,15 @@
     "nli_hypothesis": "This document is a lease or rental agreement for property.",
     "keyword_overrides": {
       "EN": [
-        "lease",
-        "tenant",
-        "landlord",
-        "rent",
-        "rental"
+        "lease agreement",
+        "rental agreement",
+        "property lease",
+        "bail immobilier",
+        "huurovereenkomst"
       ],
       "ID": [
-        "sewa",
-        "penyewa",
-        "pemilik",
-        "uang sewa"
-      ],
-      "FR": [
-        "bail",
-        "locataire",
-        "bailleur",
-        "loyer"
+        "perjanjian sewa",
+        "perjanjian sewa menyewa"
       ]
     }
   },
@@ -79,5 +74,10 @@
     {
       "clause_id": "dispute_resolution"
     }
-  ]
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
 }

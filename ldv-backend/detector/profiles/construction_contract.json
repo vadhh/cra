@@ -1,0 +1,91 @@
+{
+  "profile_id": "construction_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Construction Contract",
+    "family": "property_agreements",
+    "description": "Standard Construction Contract profile mapping required clauses.",
+    "aliases": [
+      "construction contract",
+      "construction agreement",
+      "building contract",
+      "engineering contract",
+      "perjanjian konstruksi",
+      "kontrak konstruksi"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a construction contract for the design, building, or engineering of a physical structure.",
+    "keyword_overrides": {
+      "EN": [
+        "construction contract",
+        "building contract",
+        "engineering contract",
+        "konstruksi",
+        "bangunan"
+      ],
+      "ID": [
+        "perjanjian konstruksi",
+        "kontrak konstruksi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "delivery_terms"
+    },
+    {
+      "clause_id": "warranty"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "indemnification"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "insurance"
+    },
+    {
+      "clause_id": "limitation_liability"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

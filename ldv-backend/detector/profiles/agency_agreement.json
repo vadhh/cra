@@ -1,0 +1,75 @@
+{
+  "profile_id": "agency_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Agency Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Agency Agreement profile mapping required clauses.",
+    "aliases": [
+      "agency agreement",
+      "commercial agency",
+      "perjanjian agen",
+      "contrat d'agence",
+      "agentuurovereenkomst"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a commercial agency agreement in which an agent acts on behalf of a principal to negotiate or conclude transactions.",
+    "keyword_overrides": {
+      "EN": [
+        "agency agreement",
+        "commercial agency",
+        "contrat d'agence",
+        "agentuurovereenkomst",
+        "agent",
+        "agentuur"
+      ],
+      "ID": [
+        "perjanjian agen"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "compensation"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

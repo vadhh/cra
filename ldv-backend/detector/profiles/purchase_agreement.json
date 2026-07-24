@@ -2,7 +2,7 @@
   "profile_id": "purchase_agreement",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "Purchase Agreement",
     "family": "commercial_agreements",
@@ -11,7 +11,9 @@
       "purchase agreement",
       "sale agreement",
       "sales contract",
-      "perjanjian pembelian"
+      "perjanjian jual beli",
+      "contrat de vente",
+      "koopovereenkomst"
     ],
     "release_stage": "stable"
   },
@@ -34,25 +36,14 @@
     "nli_hypothesis": "This document covers the purchase or sale of goods or assets.",
     "keyword_overrides": {
       "EN": [
-        "purchase",
-        "sale",
-        "buyer",
-        "seller",
-        "goods"
+        "purchase agreement",
+        "sale agreement",
+        "sales contract",
+        "contrat de vente",
+        "koopovereenkomst"
       ],
       "ID": [
-        "pembelian",
-        "penjualan",
-        "pembeli",
-        "penjual",
-        "barang"
-      ],
-      "FR": [
-        "achat",
-        "vente",
-        "acheteur",
-        "vendeur",
-        "marchandises"
+        "perjanjian jual beli"
       ]
     }
   },

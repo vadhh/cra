@@ -1,0 +1,75 @@
+{
+  "profile_id": "joint_venture_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Joint Venture Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Joint Venture Agreement profile mapping required clauses.",
+    "aliases": [
+      "joint venture agreement",
+      "jv agreement",
+      "perjanjian usaha patungan",
+      "perjanjian joint venture"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a joint venture agreement establishing a jointly owned business between two or more parties.",
+    "keyword_overrides": {
+      "EN": [
+        "joint venture agreement",
+        "jv agreement",
+        "usaha patungan"
+      ],
+      "ID": [
+        "perjanjian usaha patungan",
+        "perjanjian joint venture"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "capital_contribution"
+    },
+    {
+      "clause_id": "profit_sharing"
+    },
+    {
+      "clause_id": "management_rights"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

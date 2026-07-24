@@ -1,0 +1,70 @@
+{
+  "profile_id": "data_processing_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Data Processing Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Data Processing Agreement profile mapping required clauses.",
+    "aliases": [
+      "data processing agreement",
+      "dpa",
+      "data processing addendum",
+      "perjanjian pemrosesan data"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a data processing agreement governing how a processor handles personal data on behalf of a controller.",
+    "keyword_overrides": {
+      "EN": [
+        "data processing agreement",
+        "dpa",
+        "data processing addendum",
+        "gdpr",
+        "pemrosesan data"
+      ],
+      "ID": [
+        "perjanjian pemrosesan data"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "confidentiality"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

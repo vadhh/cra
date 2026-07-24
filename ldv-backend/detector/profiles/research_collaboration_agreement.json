@@ -1,0 +1,73 @@
+{
+  "profile_id": "research_collaboration_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Research Collaboration Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Research Collaboration Agreement profile mapping required clauses.",
+    "aliases": [
+      "research collaboration agreement",
+      "research agreement",
+      "perjanjian penelitian",
+      "accord de recherche"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a research collaboration agreement between parties jointly conducting research.",
+    "keyword_overrides": {
+      "EN": [
+        "research collaboration agreement",
+        "research agreement",
+        "accord de recherche",
+        "penelitian",
+        "recherche"
+      ],
+      "ID": [
+        "perjanjian penelitian"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "confidentiality"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

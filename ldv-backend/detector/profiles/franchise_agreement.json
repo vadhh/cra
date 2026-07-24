@@ -1,0 +1,73 @@
+{
+  "profile_id": "franchise_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Franchise Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Franchise Agreement profile mapping required clauses.",
+    "aliases": [
+      "franchise agreement",
+      "perjanjian waralaba",
+      "contrat de franchise"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a franchise agreement granting a franchisee the right to operate under the franchisor's brand and business system.",
+    "keyword_overrides": {
+      "EN": [
+        "franchise agreement",
+        "contrat de franchise",
+        "waralaba"
+      ],
+      "ID": [
+        "perjanjian waralaba"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "license_grant"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

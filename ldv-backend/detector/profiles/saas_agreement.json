@@ -1,31 +1,34 @@
 {
   "profile_id": "saas_agreement",
   "version": "1.0.0",
-  "validation_status": "preparation",
+  "validation_status": "Validated",
   "review_date": "2026-07-24",
   "metadata": {
     "display_name": "SaaS Agreement",
-    "family": "commercial_agreements",
-    "description": "Standard Software-as-a-Service profile.",
-    "release_stage": "stable",
+    "family": "baseline_agreements",
+    "description": "Standard SaaS Agreement profile mapping required clauses.",
     "aliases": [
       "saas agreement",
       "software as a service agreement",
-      "cloud service agreement"
-    ]
+      "cloud service agreement",
+      "layanan awan",
+      "berlangganan perangkat lunak"
+    ],
+    "release_stage": "stable"
   },
   "coverage": {
     "languages": [
       "EN",
       "ID",
-      "NL",
       "FR"
     ],
     "jurisdictions": [
-      "Global",
       "Indonesia",
+      "Belgium",
+      "France",
       "Netherlands",
-      "France"
+      "England & Wales",
+      "United States"
     ]
   },
   "classification": {
@@ -36,12 +39,12 @@
         "software as a service",
         "cloud service",
         "subscription fee",
-        "cloud agreement"
-      ],
-      "ID": [
-        "saas",
+        "cloud agreement",
         "layanan awan",
         "berlangganan perangkat lunak"
+      ],
+      "ID": [
+        "saas agreement"
       ]
     }
   },
@@ -56,22 +59,27 @@
       "clause_id": "payment_terms"
     },
     {
-      "clause_id": "termination"
-    },
-    {
-      "clause_id": "dispute_resolution"
-    },
-    {
-      "clause_id": "limitation_liability"
-    },
-    {
       "clause_id": "license_grant"
     },
     {
       "clause_id": "ip_ownership"
     },
     {
+      "clause_id": "limitation_liability"
+    },
+    {
       "clause_id": "warranty_disclaimer"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
     }
-  ]
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
 }

@@ -2,15 +2,15 @@
   "profile_id": "partnership_agreement",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "Partnership Agreement",
     "family": "corporate_agreements",
     "description": "Standard Partnership Agreement profile mapping required clauses.",
     "aliases": [
       "partnership agreement",
-      "partnership contract",
-      "joint venture"
+      "perjanjian kemitraan",
+      "contrat de partenariat"
     ],
     "release_stage": "stable"
   },
@@ -33,22 +33,11 @@
     "nli_hypothesis": "This document establishes a business partnership between parties.",
     "keyword_overrides": {
       "EN": [
-        "partnership",
-        "partner",
-        "contribution",
-        "capital"
+        "partnership agreement",
+        "contrat de partenariat"
       ],
       "ID": [
-        "kemitraan",
-        "mitra",
-        "sekutu",
-        "modal"
-      ],
-      "FR": [
-        "partenariat",
-        "associ\u00e9",
-        "apport",
-        "capital"
+        "perjanjian kemitraan"
       ]
     }
   },

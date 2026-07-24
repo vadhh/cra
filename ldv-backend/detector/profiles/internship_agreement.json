@@ -1,0 +1,70 @@
+{
+  "profile_id": "internship_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Internship Agreement",
+    "family": "employment_agreements",
+    "description": "Standard Internship Agreement profile mapping required clauses.",
+    "aliases": [
+      "internship agreement",
+      "internship contract",
+      "perjanjian magang",
+      "contrat de stage"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an internship agreement setting the terms of a temporary work-learning placement for a student or trainee.",
+    "keyword_overrides": {
+      "EN": [
+        "internship agreement",
+        "internship contract",
+        "contrat de stage",
+        "magang",
+        "stage"
+      ],
+      "ID": [
+        "perjanjian magang"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "working_hours"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,76 @@
+{
+  "profile_id": "licensing_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Licensing Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Licensing Agreement profile mapping required clauses.",
+    "aliases": [
+      "licensing agreement",
+      "license agreement",
+      "perjanjian lisensi",
+      "contrat de licence"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a licensing agreement granting rights to use intellectual property in exchange for royalties or fees.",
+    "keyword_overrides": {
+      "EN": [
+        "licensing agreement",
+        "license agreement",
+        "contrat de licence",
+        "lisensi",
+        "licence"
+      ],
+      "ID": [
+        "perjanjian lisensi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "license_grant"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,87 @@
+{
+  "profile_id": "it_services_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "IT Services Contract",
+    "family": "commercial_agreements",
+    "description": "Standard IT Services Contract profile mapping required clauses.",
+    "aliases": [
+      "it services contract",
+      "it service agreement",
+      "it services agreement",
+      "technology services agreement",
+      "managed services agreement",
+      "perjanjian layanan it"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an IT services contract for the provision of information technology support or managed services.",
+    "keyword_overrides": {
+      "EN": [
+        "it services contract",
+        "technology services agreement",
+        "managed services agreement",
+        "managed services",
+        "layanan it"
+      ],
+      "ID": [
+        "perjanjian layanan it"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "warranty_disclaimer"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "confidentiality"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

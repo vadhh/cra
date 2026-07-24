@@ -1,0 +1,71 @@
+{
+  "profile_id": "property_management_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Property Management Agreement",
+    "family": "property_agreements",
+    "description": "Standard Property Management Agreement profile mapping required clauses.",
+    "aliases": [
+      "property management agreement",
+      "perjanjian manajemen properti"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a property management agreement appointing a manager to operate and maintain real property on the owner's behalf.",
+    "keyword_overrides": {
+      "EN": [
+        "property management agreement",
+        "manajemen properti"
+      ],
+      "ID": [
+        "perjanjian manajemen properti"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "compensation"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "indemnification"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

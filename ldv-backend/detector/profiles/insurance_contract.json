@@ -1,0 +1,86 @@
+{
+  "profile_id": "insurance_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Insurance Contract / Policy",
+    "family": "property_agreements",
+    "description": "Standard Insurance Contract / Policy profile mapping required clauses.",
+    "aliases": [
+      "insurance contract",
+      "insurance agreement",
+      "insurance policy",
+      "perjanjian asuransi",
+      "polis asuransi",
+      "contrat d'assurance"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an insurance contract or policy under which an insurer agrees to cover specified risks in exchange for premiums.",
+    "keyword_overrides": {
+      "EN": [
+        "insurance contract",
+        "insurance policy",
+        "polis asuransi",
+        "contrat d'assurance",
+        "asuransi",
+        "polis",
+        "assurance"
+      ],
+      "ID": [
+        "perjanjian asuransi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "insurance"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "default_provisions"
+    },
+    {
+      "clause_id": "notice_period"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

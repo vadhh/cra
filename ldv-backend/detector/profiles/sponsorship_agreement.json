@@ -1,0 +1,70 @@
+{
+  "profile_id": "sponsorship_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Sponsorship Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Sponsorship Agreement profile mapping required clauses.",
+    "aliases": [
+      "sponsorship agreement",
+      "sponsorship contract",
+      "perjanjian sponsor"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a sponsorship agreement in which a sponsor provides funding or support in exchange for promotional benefits.",
+    "keyword_overrides": {
+      "EN": [
+        "sponsorship agreement",
+        "sponsorship contract",
+        "sponsor"
+      ],
+      "ID": [
+        "perjanjian sponsor"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "ip_ownership"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

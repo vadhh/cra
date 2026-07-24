@@ -1,0 +1,81 @@
+{
+  "profile_id": "government_procurement_contract",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Government Procurement Contract",
+    "family": "corporate_agreements",
+    "description": "Standard Government Procurement Contract profile mapping required clauses.",
+    "aliases": [
+      "government contract",
+      "government procurement",
+      "pengadaan pemerintah",
+      "kontrak pengadaan barang jasa pemerintah"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a government procurement contract for the supply of goods, services, or works to a government entity.",
+    "keyword_overrides": {
+      "EN": [
+        "government contract",
+        "government procurement",
+        "pengadaan pemerintah",
+        "perpres"
+      ],
+      "ID": [
+        "kontrak pengadaan barang jasa pemerintah"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "delivery_terms"
+    },
+    {
+      "clause_id": "warranty"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "indemnification"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

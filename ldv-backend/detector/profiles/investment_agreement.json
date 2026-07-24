@@ -1,0 +1,73 @@
+{
+  "profile_id": "investment_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Investment Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Investment Agreement profile mapping required clauses.",
+    "aliases": [
+      "investment agreement",
+      "subscription agreement",
+      "perjanjian investasi",
+      "contrat d'investissement"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is an investment agreement setting the terms under which an investor provides capital in exchange for equity or returns.",
+    "keyword_overrides": {
+      "EN": [
+        "investment agreement",
+        "subscription agreement",
+        "contrat d'investissement",
+        "investasi",
+        "investissement"
+      ],
+      "ID": [
+        "perjanjian investasi"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "principal_amount"
+    },
+    {
+      "clause_id": "profit_sharing"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

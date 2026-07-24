@@ -1,0 +1,68 @@
+{
+  "profile_id": "grant_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Grant Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Grant Agreement profile mapping required clauses.",
+    "aliases": [
+      "grant agreement",
+      "perjanjian hibah",
+      "convention de subvention"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a grant agreement under which funds are given to a recipient for a specified purpose without repayment.",
+    "keyword_overrides": {
+      "EN": [
+        "grant agreement",
+        "convention de subvention",
+        "hibah",
+        "subvention"
+      ],
+      "ID": [
+        "perjanjian hibah"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "principal_amount"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

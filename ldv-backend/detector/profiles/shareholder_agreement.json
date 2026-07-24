@@ -1,0 +1,78 @@
+{
+  "profile_id": "shareholder_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Shareholder Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Shareholder Agreement profile mapping required clauses.",
+    "aliases": [
+      "shareholder agreement",
+      "shareholders agreement",
+      "perjanjian pemegang saham",
+      "pacte d'actionnaires",
+      "aandeelhoudersovereenkomst"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a shareholder agreement governing the rights and obligations of shareholders in a company.",
+    "keyword_overrides": {
+      "EN": [
+        "shareholder agreement",
+        "shareholders agreement",
+        "pacte d'actionnaires",
+        "aandeelhoudersovereenkomst",
+        "saham",
+        "aandeelhouder"
+      ],
+      "ID": [
+        "perjanjian pemegang saham"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "capital_contribution"
+    },
+    {
+      "clause_id": "profit_sharing"
+    },
+    {
+      "clause_id": "management_rights"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

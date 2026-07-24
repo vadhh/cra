@@ -1,0 +1,81 @@
+{
+  "profile_id": "logistics_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Logistics / Freight Agreement",
+    "family": "commercial_agreements",
+    "description": "Standard Logistics / Freight Agreement profile mapping required clauses.",
+    "aliases": [
+      "logistics agreement",
+      "freight agreement",
+      "transportation agreement",
+      "perjanjian logistik",
+      "perjanjian pengangkutan"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a logistics or freight agreement for the transportation and handling of goods.",
+    "keyword_overrides": {
+      "EN": [
+        "logistics agreement",
+        "freight agreement",
+        "transportation agreement",
+        "logistik",
+        "pengangkutan"
+      ],
+      "ID": [
+        "perjanjian logistik",
+        "perjanjian pengangkutan"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "scope_of_services"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "delivery_terms"
+    },
+    {
+      "clause_id": "limitation_liability"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

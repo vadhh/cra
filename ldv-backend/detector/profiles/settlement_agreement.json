@@ -1,0 +1,69 @@
+{
+  "profile_id": "settlement_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Settlement Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Settlement Agreement profile mapping required clauses.",
+    "aliases": [
+      "settlement agreement",
+      "deed of settlement",
+      "perjanjian penyelesaian",
+      "accord transactionnel"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a settlement agreement resolving a dispute between parties, often in exchange for a payment or release of claims.",
+    "keyword_overrides": {
+      "EN": [
+        "settlement agreement",
+        "deed of settlement",
+        "accord transactionnel",
+        "penyelesaian"
+      ],
+      "ID": [
+        "perjanjian penyelesaian"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "entire_agreement"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

@@ -1,0 +1,79 @@
+{
+  "profile_id": "banking_facility_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Banking Facility Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Banking Facility Agreement profile mapping required clauses.",
+    "aliases": [
+      "banking facility agreement",
+      "credit facility agreement",
+      "perjanjian fasilitas kredit",
+      "perjanjian pinjaman bank"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a banking facility agreement under which a bank provides a credit facility to a borrower.",
+    "keyword_overrides": {
+      "EN": [
+        "banking facility agreement",
+        "credit facility agreement",
+        "fasilitas kredit",
+        "ojk"
+      ],
+      "ID": [
+        "perjanjian fasilitas kredit",
+        "perjanjian pinjaman bank"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "principal_amount"
+    },
+    {
+      "clause_id": "interest_rate"
+    },
+    {
+      "clause_id": "repayment_schedule"
+    },
+    {
+      "clause_id": "default_provisions"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

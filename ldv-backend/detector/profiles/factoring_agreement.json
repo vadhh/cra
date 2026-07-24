@@ -1,0 +1,73 @@
+{
+  "profile_id": "factoring_agreement",
+  "version": "1.0.0",
+  "validation_status": "Validated",
+  "review_date": "2026-07-24",
+  "metadata": {
+    "display_name": "Factoring Agreement",
+    "family": "corporate_agreements",
+    "description": "Standard Factoring Agreement profile mapping required clauses.",
+    "aliases": [
+      "factoring agreement",
+      "invoice factoring agreement",
+      "perjanjian anjak piutang"
+    ],
+    "release_stage": "stable"
+  },
+  "coverage": {
+    "languages": [
+      "EN",
+      "ID",
+      "FR"
+    ],
+    "jurisdictions": [
+      "Indonesia",
+      "Belgium",
+      "France",
+      "Netherlands",
+      "England & Wales",
+      "United States"
+    ]
+  },
+  "classification": {
+    "nli_hypothesis": "This document is a factoring agreement in which a business sells its invoices or receivables to a factor for immediate cash.",
+    "keyword_overrides": {
+      "EN": [
+        "factoring agreement",
+        "invoice factoring agreement",
+        "anjak piutang"
+      ],
+      "ID": [
+        "perjanjian anjak piutang"
+      ]
+    }
+  },
+  "required_clauses": [
+    {
+      "clause_id": "governing_law"
+    },
+    {
+      "clause_id": "jurisdiction_venue"
+    },
+    {
+      "clause_id": "principal_amount"
+    },
+    {
+      "clause_id": "payment_terms"
+    },
+    {
+      "clause_id": "default_provisions"
+    },
+    {
+      "clause_id": "termination"
+    },
+    {
+      "clause_id": "dispute_resolution"
+    }
+  ],
+  "recommended_clauses": [],
+  "dangerous_clauses": [],
+  "abusive_clauses": [],
+  "leonine_clauses": [],
+  "legal_references": []
+}

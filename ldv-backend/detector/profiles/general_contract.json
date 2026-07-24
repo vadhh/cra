@@ -2,17 +2,16 @@
   "profile_id": "general_contract",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "General Contract",
     "family": "baseline_agreements",
-    "description": "Standard General Contract profile mapping required baseline clauses.",
+    "description": "Standard General Contract profile mapping required clauses.",
     "aliases": [
       "general contract",
-      "contract",
-      "agreement",
-      "perjanjian",
-      "kontrak"
+      "general agreement",
+      "perjanjian umum",
+      "kontrak umum"
     ],
     "release_stage": "stable"
   },
@@ -33,7 +32,16 @@
   },
   "classification": {
     "nli_hypothesis": "This is a general legal agreement between two or more parties.",
-    "keyword_overrides": {}
+    "keyword_overrides": {
+      "EN": [
+        "general contract",
+        "general agreement"
+      ],
+      "ID": [
+        "perjanjian umum",
+        "kontrak umum"
+      ]
+    }
   },
   "required_clauses": [
     {

@@ -2,7 +2,7 @@
   "profile_id": "consulting_agreement",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "Consulting Agreement",
     "family": "commercial_agreements",
@@ -10,7 +10,9 @@
     "aliases": [
       "consulting agreement",
       "consultancy agreement",
-      "advisory agreement"
+      "advisory agreement",
+      "perjanjian konsultan",
+      "contrat de conseil"
     ],
     "release_stage": "stable"
   },
@@ -33,22 +35,13 @@
     "nli_hypothesis": "This document covers consulting or advisory services.",
     "keyword_overrides": {
       "EN": [
-        "consulting",
-        "consultant",
-        "advisory",
-        "services"
+        "consulting agreement",
+        "consultancy agreement",
+        "advisory agreement",
+        "contrat de conseil"
       ],
       "ID": [
-        "konsultan",
-        "konsultasi",
-        "penasihat",
-        "jasa"
-      ],
-      "FR": [
-        "consultant",
-        "conseil",
-        "prestations",
-        "accord de conseil"
+        "perjanjian konsultan"
       ]
     }
   },

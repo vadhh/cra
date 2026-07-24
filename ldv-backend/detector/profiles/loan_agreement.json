@@ -2,16 +2,18 @@
   "profile_id": "loan_agreement",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "Loan Agreement",
     "family": "corporate_agreements",
     "description": "Standard Loan Agreement profile mapping required clauses.",
     "aliases": [
       "loan agreement",
-      "loan contract",
-      "creditor agreement",
-      "perjanjian pinjaman"
+      "credit agreement",
+      "perjanjian pinjaman",
+      "perjanjian kredit",
+      "contrat de pr\u00eat",
+      "leningsovereenkomst"
     ],
     "release_stage": "stable"
   },
@@ -34,24 +36,14 @@
     "nli_hypothesis": "This document covers a loan of money between lender and borrower.",
     "keyword_overrides": {
       "EN": [
-        "loan",
-        "lender",
-        "borrower",
-        "principal",
-        "interest"
+        "loan agreement",
+        "credit agreement",
+        "contrat de pr\u00eat",
+        "leningsovereenkomst"
       ],
       "ID": [
-        "pinjaman",
-        "pemberi pinjaman",
-        "penerima pinjaman",
-        "bunga"
-      ],
-      "FR": [
-        "pr\u00eat",
-        "pr\u00eateur",
-        "emprunteur",
-        "principal",
-        "int\u00e9r\u00eat"
+        "perjanjian pinjaman",
+        "perjanjian kredit"
       ]
     }
   },

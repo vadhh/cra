@@ -2,17 +2,17 @@
   "profile_id": "software_license",
   "version": "1.0.0",
   "validation_status": "Validated",
-  "review_date": "2026-07-13",
+  "review_date": "2026-07-24",
   "metadata": {
-    "display_name": "Software License",
-    "family": "commercial_agreements",
+    "display_name": "Software License Agreement",
+    "family": "baseline_agreements",
     "description": "Standard Software License Agreement profile mapping required clauses.",
     "aliases": [
       "software license",
+      "software licence",
       "software license agreement",
-      "license agreement",
-      "EULA",
-      "softwarelicentie"
+      "eula",
+      "end user license agreement"
     ],
     "release_stage": "stable"
   },
@@ -35,23 +35,14 @@
     "nli_hypothesis": "This document grants a license to use software between licensor and licensee.",
     "keyword_overrides": {
       "EN": [
-        "software",
-        "license",
-        "licensor",
-        "licensee",
-        "EULA"
+        "software license",
+        "software licence",
+        "software license agreement",
+        "eula",
+        "end user license agreement"
       ],
       "ID": [
-        "perangkat lunak",
-        "lisensi",
-        "lisensor",
-        "penerima lisensi"
-      ],
-      "FR": [
-        "logiciel",
-        "licence",
-        "conc\u00e9dant",
-        "licenci\u00e9"
+        "software license agreement"
       ]
     }
   },
