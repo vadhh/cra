@@ -34,6 +34,6 @@ For Party B: _________________________
 **Expected Missing Clauses**: ['governing_law']
 **Expected Detected Risks**: Missing required clause 'governing_law'
 **Expected Severity**: Medium / High
-**Expected Score Range**: 70 - 89
+**Expected Score Range**: 31 - 80
 **Expected Legal References**: KUH Perdata (Indonesian Civil Code) Art. Pasal 1338
 **Fixture Status**: Proposed Test Fixture

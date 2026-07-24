@@ -34,7 +34,7 @@ For Party B: _________________________
 **Expected Contract Type**: non_disclosure_agreement
 **Expected Missing Clauses**: None
 **Expected Detected Risks**: None
-**Expected Severity**: Informational / Safe
-**Expected Score Range**: 90 - 100
+**Expected Severity**: LOW (Safe / Informational)
+**Expected Score Range**: 0 - 30
 **Expected Legal References**: None
 **Fixture Status**: Proposed Test Fixture

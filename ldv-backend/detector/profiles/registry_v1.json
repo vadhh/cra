@@ -859,6 +859,7 @@
       "display_name": "Construction Contract",
       "aliases": [
         "construction contract",
+        "construction agreement",
         "building contract",
         "engineering contract",
         "perjanjian konstruksi",
@@ -955,6 +956,8 @@
       "display_name": "IT Services Contract",
       "aliases": [
         "it services contract",
+        "it service agreement",
+        "it services agreement",
         "technology services agreement",
         "managed services agreement",
         "perjanjian layanan it"
@@ -1495,6 +1498,7 @@
       "display_name": "Insurance Contract / Policy",
       "aliases": [
         "insurance contract",
+        "insurance agreement",
         "insurance policy",
         "perjanjian asuransi",
         "polis asuransi",

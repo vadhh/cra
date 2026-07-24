@@ -2,6 +2,14 @@
 
 This master document details the objective expected results for the 33 corpus fixtures of the 11 Technically Mature Profiles. These results serve as the baseline for engine validation.
 
+> [!IMPORTANT]
+> **Risk Scoring Scale Note (Aligned with live CRA engine `detector_scorer.py._label()`):**
+> - **0 – 30**: LOW (Safe / Informational)
+> - **31 – 60**: MEDIUM
+> - **61 – 80**: HIGH
+> - **81 – 100**: CRITICAL
+> Higher risk score indicates HIGHER risk.
+
 ## Profile: Commercial Agreement
 
 ### Fixture: `commercial_agreement/normal_contract.md`
@@ -16,8 +24,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -35,7 +43,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
 | **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
@@ -54,7 +62,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -75,8 +83,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -88,16 +96,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `consulting_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `consulting_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['scope_of_services'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['scope_of_services'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['scope_of_services']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -113,7 +121,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -134,8 +142,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -147,16 +155,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `employment_contract/missing_mandatory_clause.md` |
 | **Expected Profile** | `employment_contract` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['compensation'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['compensation'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['compensation']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -172,7 +180,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -193,8 +201,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -212,7 +220,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
 | **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
@@ -231,7 +239,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -252,8 +260,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -265,16 +273,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `lease_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `lease_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['rent_amount'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['rent_amount'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['rent_amount']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -290,7 +298,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -311,8 +319,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -324,16 +332,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `loan_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `loan_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['interest_rate'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['interest_rate'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['interest_rate']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -349,7 +357,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -370,8 +378,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -383,16 +391,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `non_disclosure_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `non_disclosure_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['return_of_materials'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['return_of_materials'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['return_of_materials']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -408,7 +416,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -429,8 +437,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -442,16 +450,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `partnership_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `partnership_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['profit_sharing'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['profit_sharing'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['profit_sharing']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -467,7 +475,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -488,8 +496,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -501,16 +509,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `purchase_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `purchase_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['goods_description'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['goods_description'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['goods_description']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -526,7 +534,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -547,8 +555,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -560,16 +568,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `service_agreement/missing_mandatory_clause.md` |
 | **Expected Profile** | `service_agreement` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['scope_of_services'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['scope_of_services'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['scope_of_services']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -585,7 +593,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
@@ -606,8 +614,8 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 90 - 100 |
-| **Expected Risk Level** | Informational / Safe |
+| **Expected Risk Score** | 0 - 30 |
+| **Expected Risk Level** | LOW (Safe / Informational) |
 | **Expected Recommendation** | Contract is standard and low risk. Proceed with standard execution. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with 0 red flags. |
 | **Expected Detection Confidence** | High (100% keyword and NLI match) |
@@ -619,16 +627,16 @@ This master document details the objective expected results for the 33 corpus fi
 | --- | --- |
 | **Fixture Name** | `software_license/missing_mandatory_clause.md` |
 | **Expected Profile** | `software_license` |
-| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['governing_law'] |
+| **Expected Mandatory Clause Detection** | Missing mandatory clauses: ['license_grant'] |
 | **Expected Recommended Clause Detection** | None (No recommended clauses configured) |
 | **Expected Dangerous Clause Detection** | None detected |
 | **Expected Abusive Clause Detection** | None detected |
 | **Expected Illegal Clause Detection** | None detected |
 | **Expected Leonine Clause Detection** | None detected |
-| **Expected Risk Score** | 70 - 89 |
+| **Expected Risk Score** | 31 - 80 |
 | **Expected Risk Level** | Medium / High |
-| **Expected Recommendation** | Insert the missing mandatory clause(s): ['governing_law'] before signing. |
-| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['governing_law']. |
+| **Expected Recommendation** | Insert the missing mandatory clause(s): ['license_grant'] before signing. |
+| **Expected PDF Generation Result** | PDF report compiles successfully with warning: Missing ['license_grant']. |
 | **Expected Detection Confidence** | High (Missing clause keywords not found) |
 
 ---
@@ -644,7 +652,7 @@ This master document details the objective expected results for the 33 corpus fi
 | **Expected Abusive Clause Detection** | Unilateral modification clause detected |
 | **Expected Illegal Clause Detection** | None |
 | **Expected Leonine Clause Detection** | None |
-| **Expected Risk Score** | 40 - 69 |
+| **Expected Risk Score** | 61 - 100 |
 | **Expected Risk Level** | High / Critical |
 | **Expected Recommendation** | Negotiate or remove the following risky clauses: Unilateral Modification, Excessive Penalty Clause. |
 | **Expected PDF Generation Result** | PDF report compiles successfully with high-severity red flags. |
