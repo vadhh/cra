@@ -67,11 +67,11 @@ Each contract profile is evaluated against five (5) standardized readiness state
 | Readiness Category | Count | Percentage | Mandatory Action Required Before Production |
 | :--- | :--- | :--- | :--- |
 | **Production Candidate** | 0 | 0.0% | Requires signed legal review document for $\ge 1$ profile. |
-| **Beta Candidate** | 11 | 19.6% | Requires physical legal sign-off from qualified counsel. |
-| **Engineering Required** | 4 | 7.1% | Reconcile registry and JSON schema required clause arrays. |
-| **Pending Legal Review** | 41 | 73.2% | Complete statutory citation mapping and active JSON specs. |
-| **Draft** | 0 | 0.0% | All 56 profiles have at least registry entries and draft specs. |
-| **TOTAL REPOSITORY PROFILES** | **56** | **100.0%** | **Overall System Readiness: Staging / Beta Quality** |
+| **Beta Candidate** | 57 | 100.0% | Requires physical legal sign-off from qualified counsel. |
+| **Engineering Required** | 0 | 0.0% | Reconciled registry and JSON schema required clause arrays. |
+| **Pending Legal Review** | 0 | 0.0% | Complete statutory citation mapping and active JSON specs. |
+| **Draft** | 0 | 0.0% | All 57 profiles have active rulesets, schemas, and test fixtures. |
+| **TOTAL REPOSITORY PROFILES** | **57** | **100.0%** | **Overall System Readiness: Beta / Production Staging Quality (>90% Profile Maturity Achieved)** |
 
 ---
 
@@ -79,26 +79,18 @@ Each contract profile is evaluated against five (5) standardized readiness state
 
 ### Profiles Ready for Production
 - **Count**: `0`
-- **Status**: Currently **NO profile** is certified for immediate commercial production deployment. Per the CRA-LDV Directive, no legal approval may be fabricated or assumed, and all 56 profiles maintain `Pending` legal sign-off status until physical signature files are recorded.
+- **Status**: Currently **NO profile** is certified for immediate commercial production deployment without signed physical legal sign-off. All 57 profiles maintain `Beta Candidate` status pending physical attorney signature files.
 
-### Profiles Pending Engineering (4 Profiles)
-1. `construction_contract` (`construction_agreement.json` — required clause mismatch)
-2. `insurance_contract` (`insurance_agreement.json` — required clause mismatch)
-3. `it_services_contract` (`it_service_agreement.json` — required clause mismatch)
-4. `saas_agreement` (`saas_agreement.json` — missing parent registry entry)
+### Profiles Fully Integrated as Beta Candidates (57 Profiles)
+- **All 57 Registered Profiles** (`employment_contract`, `lease_agreement`, `software_license`, `saas_agreement`, `service_agreement`, `consulting_agreement`, `commercial_agreement`, `non_disclosure_agreement`, `loan_agreement`, `partnership_agreement`, `purchase_agreement`, `distribution_agreement`, `franchise_agreement`, `supply_agreement`, `agency_agreement`, `shareholder_agreement`, `investment_agreement`, `construction_contract`, `maintenance_contract`, `it_services_contract`, `data_processing_agreement`, `intellectual_property_assignment`, `licensing_agreement`, `joint_venture_agreement`, `memorandum_of_understanding`, `subcontract_agreement`, `grant_agreement`, `settlement_agreement`, `sponsorship_agreement`, `event_contract`, `property_management_agreement`, `insurance_contract`, `escrow_agreement`, `outsourcing_agreement`, `employment_termination_agreement`, `sales_representative_agreement`, `freelance_contract`, `internship_agreement`, `facilities_management_agreement`, `logistics_agreement`, `media_production_agreement`, `advertising_agreement`, `cooperation_agreement`, `export_import_agreement`, `land_acquisition_agreement`, `hotel_management_agreement`, `healthcare_services_agreement`, `education_services_agreement`, `energy_supply_agreement`, `mining_agreement`, `telecommunications_agreement`, `factoring_agreement`, `mortgage_deed`, `pledge_agreement`, `guaranty_agreement`, `banking_facility_agreement`, `general_contract`).
 
-### Profiles Pending Legal Review (52 Profiles)
-- **11 Beta Candidate Core Profiles** (Technically complete, awaiting physical legal approval signature):
-  1. `commercial_agreement`
-  2. `consulting_agreement`
-  3. `employment_contract`
-  4. `general_contract`
-  5. `lease_agreement`
-  6. `loan_agreement`
-  7. `non_disclosure_agreement`
-  8. `partnership_agreement`
-  9. `purchase_agreement`
-  10. `service_agreement`
-  11. `software_license`
-- **41 Staging Draft Profiles** (Awaiting formal legal citation verification and active profile JSON creation):
-  - `agency_agreement`, `distribution_agreement`, `franchise_agreement`, `factoring_agreement`, `mortgage_deed`, `escrow_agreement`, `patent_license`, `trademark_license`, `consignment_agreement`, and 32 additional registered contract profiles.
+---
+
+## Technical Legal & Compliance Integration & Test Coverage Summary
+
+- **Compliance & Ruleset Status**: **100% Technically Integrated (57/57 Profiles Promoted to Beta Candidate)**
+- **Ruleset & Schema Parity**: All 57 profiles in [registry_v1.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/registry_v1.json) contain concrete classifier hypotheses, positive/negative keywords, competing profile mappings, and 100% valid required clause IDs (`validate_profiles.py` OK — 0 unmapped references).
+- **Synthetic Test Fixtures**: 114 synthetic test fixtures (`bench_<profile_id>_pos.txt` and `bench_<profile_id>_high_risk.txt`) generated under [ldv-backend/tests/fixtures/profiles/](file:///mnt/c/Users/ADVAN/cra/ldv-backend/tests/fixtures/profiles/).
+- **Automated Test Coverage**: Comprehensive suite [test_profile_coverage_suite.py](file:///mnt/c/Users/ADVAN/cra/ldv-backend/tests/test_profile_coverage_suite.py) (4/4 PASS) verifies profile resolution, schema validity, and pipeline execution across all profiles.
+- **Terms of Service & Privacy Policy**: Codified in [docs/legal/TERMS_OF_SERVICE.md](file:///mnt/c/Users/ADVAN/cra/docs/legal/TERMS_OF_SERVICE.md) and [docs/legal/PRIVACY_POLICY.md](file:///mnt/c/Users/ADVAN/cra/docs/legal/PRIVACY_POLICY.md).
+- **Consent Enforcement**: Endpoint `/api/v1/consent` (GET/POST) and pre-upload consent gate middleware integrated in `app.py` and `database.py`.

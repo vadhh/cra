@@ -92,6 +92,17 @@ CREATE TABLE IF NOT EXISTS download_links (
     revoked     INTEGER DEFAULT 0,
     used        INTEGER DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS user_consents (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id          INTEGER NOT NULL REFERENCES users(id),
+    tos_accepted     INTEGER NOT NULL DEFAULT 0,
+    privacy_accepted INTEGER NOT NULL DEFAULT 0,
+    version          TEXT NOT NULL DEFAULT '1.0',
+    ip_address       TEXT,
+    accepted_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_user_consents_user ON user_consents(user_id);
 """
 
 
@@ -1060,3 +1071,39 @@ def search_history(org_id: int | None, params: dict) -> list[dict]:
     with _conn() as db:
         rows = db.execute(query, tuple(args)).fetchall()
         return [dict(r) for r in rows]
+
+
+def record_user_consent(user_id: int, tos_accepted: bool, privacy_accepted: bool, version: str = "1.0", ip_address: str | None = None) -> dict:
+    with _conn() as db:
+        db.execute(
+            """
+            INSERT INTO user_consents (user_id, tos_accepted, privacy_accepted, version, ip_address)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (user_id, 1 if tos_accepted else 0, 1 if privacy_accepted else 0, version, ip_address),
+        )
+    return {
+        "status": "recorded",
+        "user_id": user_id,
+        "tos_accepted": tos_accepted,
+        "privacy_accepted": privacy_accepted,
+        "version": version,
+        "accepted_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def has_user_consented(user_id: int, version: str = "1.0") -> bool:
+    try:
+        with _conn() as db:
+            row = db.execute(
+                """
+                SELECT tos_accepted, privacy_accepted FROM user_consents
+                WHERE user_id = ? AND version = ? AND tos_accepted = 1 AND privacy_accepted = 1
+                ORDER BY accepted_at DESC LIMIT 1
+                """,
+                (user_id, version),
+            ).fetchone()
+            return bool(row)
+    except Exception:
+        return False
+

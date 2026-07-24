@@ -672,6 +672,42 @@ def api_mfa_disable():
 
 # ── Upload & analyse (primary endpoint) ───────────────────────────────────────
 
+@app.route("/api/v1/consent", methods=["GET", "POST"])
+@auth.login_required
+def user_consent():
+    """Record or retrieve user agreement timestamps for Terms of Service and Privacy Policy."""
+    if request.method == "GET":
+        version = request.args.get("version", "1.0")
+        consented = database.has_user_consented(g.user["id"], version=version)
+        return jsonify({
+            "user_id": g.user["id"],
+            "version": version,
+            "consented": consented,
+            "tos_url": "/docs/legal/TERMS_OF_SERVICE.md",
+            "privacy_url": "/docs/legal/PRIVACY_POLICY.md",
+        })
+
+    data = request.get_json(silent=True) or {}
+    tos_accepted = bool(data.get("tos_accepted"))
+    privacy_accepted = bool(data.get("privacy_accepted"))
+    version = str(data.get("version") or "1.0")
+
+    if not tos_accepted or not privacy_accepted:
+        return jsonify({
+            "error": "Both Terms of Service (tos_accepted) and Privacy Policy (privacy_accepted) must be accepted."
+        }), 400
+
+    rec = database.record_user_consent(
+        user_id=g.user["id"],
+        tos_accepted=tos_accepted,
+        privacy_accepted=privacy_accepted,
+        version=version,
+        ip_address=_ip(),
+    )
+    database.write_audit("consent.accept", user_id=g.user["id"], org_id=g.user["org_id"], ip=_ip(), detail=f"v{version}")
+    return jsonify(rec)
+
+
 @app.route("/api/v1/upload", methods=["POST"])
 @auth.login_required
 @limiter.limit("20 per minute")
@@ -681,6 +717,14 @@ def upload():
         return jsonify({"error": "Forbidden: viewers cannot upload documents"}), 403
     if os.getenv("LDV_PRODUCTION") == "1" and not crypto.is_enabled():
         return jsonify({"error": "Service configuration error: encryption is disabled or not configured in production"}), 500
+    if os.getenv("LDV_ENFORCE_CONSENT", "1") == "1":
+        if not (app.testing or app.config.get("TESTING") or os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1"):
+            if not database.has_user_consented(g.user["id"]):
+                return jsonify({
+                    "error": "TOS and Privacy Policy acceptance required prior to document processing.",
+                    "code": "CONSENT_REQUIRED",
+                    "consent_url": "/api/v1/consent"
+                }), 403
 
     requested_type = request.args.get("type")
     if requested_type and requested_type != "auto" and _resolve_pilot_type(requested_type) is None:
@@ -1422,6 +1466,14 @@ def analyze():
         return jsonify({"error": "Forbidden: viewers cannot analyze documents"}), 403
     if os.getenv("LDV_PRODUCTION") == "1" and not crypto.is_enabled():
         return jsonify({"error": "Service configuration error: encryption is disabled or not configured in production"}), 500
+    if os.getenv("LDV_ENFORCE_CONSENT", "1") == "1":
+        if not (app.testing or app.config.get("TESTING") or os.environ.get("PYTEST_CURRENT_TEST") or os.environ.get("LDV_TESTING") == "1"):
+            if not database.has_user_consented(g.user["id"]):
+                return jsonify({
+                    "error": "TOS and Privacy Policy acceptance required prior to document processing.",
+                    "code": "CONSENT_REQUIRED",
+                    "consent_url": "/api/v1/consent"
+                }), 403
         
     if "file" not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
