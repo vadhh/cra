@@ -9,7 +9,10 @@
 
 ## 1. Executive Summary
 
-The **Gold Standard Validation Dataset** has undergone full repository consistency certification in compliance with the **CRA–LDV Completion Directive**.
+> [!IMPORTANT]
+> **Scope & Terminology Classification Note**: This package is accepted as a **valid list of findings / initial legal evidence package**, NOT a "Gold Standard" or completed Phase 2 deliverable. Formal legal validation and approval remain pending.
+
+The **Validation Dataset** has undergone full repository consistency certification in compliance with the **CRA–LDV Completion Directive**.
 
 The **Contract Profile Registry ([registry_v1.json](file:///mnt/c/Users/ADVAN/cra/ldv-backend/detector/profiles/registry_v1.json))** serves as the sole authoritative source of truth. Every attribute inside the dataset originates directly from repository evidence or is explicitly marked `Repository Evidence Not Available`. Active JSON profile variants (`construction_agreement.json`, `insurance_agreement.json`, `it_service_agreement.json`, `saas_agreement.json`) are recognized as **Engineering Implementation Artifacts** and are **NOT** counted as separate Contract Profiles.
 

@@ -34,9 +34,11 @@ OUT_CSV      = Path(__file__).parent.parent / "data" / "clause_training_data.csv
 # Files that have a header row
 _HAS_HEADER = {
     "dangerous_clauses.csv",
+    "dangerous_clauses_MASTERv2.csv",
     "contract_logic_master_sorted.csv",
     "contract_logic_master .csv",
     "required_clauses.csv",
+    "required_clauses_MASTER.csv",
 }
 
 # Column indices (0-based)
