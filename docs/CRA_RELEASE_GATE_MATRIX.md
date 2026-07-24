@@ -20,7 +20,7 @@
 
 ## Gate 2 — Corpus Validation
 
-**Status: 🟡 PARTIAL — objectively-checkable dimensions pass; 3 sub-items unresolved.**
+**Status: 🟡 PARTIAL — objectively-checkable dimensions pass; 2 sub-items unresolved.**
 
 | Sub-item | Status |
 |---|---|
@@ -91,7 +91,7 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 | Gate | Status |
 |---|---|
 | 1. Engineering regression | ✅ Passed |
-| 2. Corpus validation | 🟡 Partial — 2 open items (risk-score review, 5 collision pairs). 45v42 reconciliation and clause sync ✅ resolved. |
+| 2. Corpus validation | 🟡 Partial — risk-score review and all 13 collision pairs ✅ resolved 2026-07-24. 2 low-priority open items remain (Phase 2 "Gold Standard" scope, legacy `profiles.json` saas_agreement divergence). 45v42 reconciliation and clause sync ✅ resolved. |
 | 3. Security validation | 🟡 Partial — internal audit done 2026-07-24; 1 critical risk-accepted, 2 high fixed, 4/6 medium fixed + 1 acknowledged + 1 partial (3 CVEs need owner decision), 6 low open |
 | 4. Product wording, disclaimer & scope compliance | 🟡 Partial — wording audit in progress |
 | 5. Controlled pilot acceptance | ⛔ Not started — blocked on 2–4 |
