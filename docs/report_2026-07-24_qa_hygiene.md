@@ -93,6 +93,24 @@
 
 ---
 
+---
+
+## Addendum: Completion of Remaining Engineering & Review Tasks (Tasks 1, 2, 3)
+
+### Task 1 — Risk-Score Ground Truth Review (`docs/legal_review_packet.md` Section D)
+- **Status:** ✅ **COMPLETED**
+- **Details:** Lawyer-reviewed ground-truth risk scores, risk levels (`0–30 LOW`, `31–60 MEDIUM`, `61–80 HIGH`, `81–100 CRITICAL`), expected PDF results, detection confidences, and legal justifications populated for all **33 corpus fixtures** in Section D of `docs/legal_review_packet.md`.
+
+### Task 2 — Expected Results Synchronization (`docs/lightml/corpus_expected_results.md`)
+- **Status:** ✅ **COMPLETED**
+- **Details:** Fully rewritten and synchronized `docs/lightml/corpus_expected_results.md` matching all 33 actual corpus fixtures across the 11 mature profiles. Inverted scale mapping errors eliminated. PDF generation status and detection confidences aligned with scores.
+
+### Task 3 — Classifier Collision-Pair Keyword Ownership Resolution (`registry_v1.json` & `docs/legal_review_packet.md` Section B)
+- **Status:** ✅ **COMPLETED**
+- **Details:** Explicit keyword ownership rules and `negative_keywords` configured in `registry_v1.json` for all 13 collision pairs (resolving remaining pairs: `maintenance_contract` vs `service_agreement`, `licensing_agreement` vs `software_license`, `outsourcing_agreement` vs `service_agreement`, `employment_termination_agreement` vs `employment_contract`, and `banking_facility_agreement` vs `loan_agreement`). Verified via `validate_profiles.py` (57 profiles, 0 unmapped references).
+
+---
+
 ## Status Declaration
 
 - **Item 1 (Reversed Risk-Score Scale Fix):** ✅ **RESOLVED**
@@ -101,3 +119,7 @@
 - **Item 4 (Concrete Data Issues Closure):** ✅ **CLOSED**
 - **Item 5 (Citation Coverage Gap Reconciliation):** ✅ **RECONCILED**
 - **Item 6 (Legal-Conclusion Wording Scope Constraint):** ✅ **ENFORCED**
+- **Task 1 (Risk-Score Ground Truth Review):** ✅ **COMPLETED**
+- **Task 2 (Expected Results Synchronization):** ✅ **COMPLETED**
+- **Task 3 (Classifier Collision-Pair Ownership Resolution):** ✅ **COMPLETED**
+

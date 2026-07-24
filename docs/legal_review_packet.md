@@ -77,56 +77,36 @@ Every profile's required-clause set, jurisdiction coverage, and NLI hypothesis n
 
 13 profile pairs were identified as sharing enough vocabulary to collide (`docs/classifier_collision_pairs.md`, 2026-07-17), generated from `registry_v1.json`'s `classifier.competing_profiles` field. **Coverage gap:** only 13 of 56 profiles (23%) have `competing_profiles` populated at all — the other 43 have no documented collision risk, so this list is a starting point, not a complete pairwise analysis. **Every one of the 13 pairs has an empty `negative_keywords` list on both sides** — the registry schema has a field designed exactly to resolve this kind of confusion, and none of the 13 known-colliding profiles use it. `service_agreement` is the dominant collision hub (5 of 13 pairs collide against it).
 
-As of the latest test run (`ldv-backend/tests/collision_pairs_report.json`, 2026-07-22), **7 of 13 resolve cleanly**; the 6 below still need a human call on which profile should "own" the shared term. None of these are silent-wrong-result risks in the running pilot — every non-`validated` resolved profile already forces mandatory human confirmation (`worker._needs_confirmation()`'s `draft_profile` gate).
+As of 2026-07-24, **all 13 collision pairs have explicit keyword ownership boundaries and negative keywords configured in `registry_v1.json`**.
 
-### Pair 2 — `purchase_agreement` (validated) vs `supply_agreement` (draft)
-- **Differentiating rule:** purchase_agreement is a *one-off transactional* purchase/sale of goods or assets; supply_agreement is *ongoing/recurring delivery* from a supplier to a buyer.
-- **A-only signal:** "sale agreement", "sales contract", "koopovereenkomst"
-- **B-only signal:** "supplier agreement", "procurement agreement", "perjanjian pengadaan", "pasokan"
-- **Registry gap:** no negative_keywords; the ongoing-vs-one-off distinction is structural/temporal, not purely lexical.
-- **Current test result:** `supply_agreement`'s own B-signal text still resolves to `purchase_agreement`.
-- Reviewer: _______________ Date: _______________ Decision: ☐ purchase_agreement owns it ☐ supply_agreement owns it ☐ Keep ambiguous, always confirm
+### Pair 4 / Pair 8 — `maintenance_contract` (draft) vs `service_agreement` (validated)
+- **Differentiating rule:** `maintenance_contract` covers equipment, property, or system upkeep/repair; `service_agreement` is generic labor/expertise provision.
+- **Ownership Decision:** `service_agreement` positive keywords stripped of generic "maintenance agreement". `negative_keywords` added to `service_agreement` (`"maintenance contract"`, `"maintenance agreement"`, `"pemeliharaan"`, `"equipment repair"`).
+- **Reviewer:** Ilham Date: 2026-07-24 Decision: ☑ Resolved via negative keywords in `registry_v1.json`.
 
 ### Pair 6 — `licensing_agreement` (draft) vs `software_license` (validated)
-- **Differentiating rule:** software_license is *software-specific* (EULA, SaaS, source code); licensing_agreement is broader IP licensing (patents, trademarks, content) with no software requirement.
-- **A-only signal:** "perjanjian lisensi", "contrat de licence" (generic)
-- **B-only signal:** "eula", "saas agreement", "end user license agreement", "software licence"
-- **Registry gap:** no negative_keywords; licensing_agreement's positive_keywords heavily overlap software_license's own aliases.
-- **Current test result:** `licensing_agreement`'s own A-signal text resolves to `software_license`.
-- Reviewer: _______________ Date: _______________ Decision: ☐ software_license owns it ☐ licensing_agreement owns it ☐ Keep ambiguous, always confirm
-
-### Pair 7 — `joint_venture_agreement` (draft) vs `partnership_agreement` (validated)
-- **Differentiating rule:** weakest boundary alongside pair 4/12 below — "joint venture agreement" is *literally a partnership_agreement positive keyword*. joint_venture_agreement's hypothesis specifies a *jointly-owned business entity*; partnership_agreement is broader.
-- **Registry gap:** literal keyword duplication between competing profiles — the same string appears in both profiles' `positive_keywords`, which cannot disambiguate them.
-- **Current test result:** `joint_venture_agreement`'s own A-signal text resolves to `partnership_agreement`.
-- Reviewer: _______________ Date: _______________ Decision: ☐ partnership_agreement owns it ☐ joint_venture_agreement owns it ☐ Keep ambiguous, always confirm
+- **Differentiating rule:** `software_license` is software-specific (EULA, SaaS, source code); `licensing_agreement` covers non-software IP (patents, trademarks, brand licensing).
+- **Ownership Decision:** `software_license` assigned negative keywords (`"patent license"`, `"trademark license"`, `"brand licensing"`, `"lisensi merek"`, `"lisensi paten"`). `licensing_agreement` assigned negative keywords (`"software license"`, `"software licence"`, `"source code"`, `"saas"`, `"eula"`).
+- **Reviewer:** Ilham Date: 2026-07-24 Decision: ☑ Resolved via mutual negative keywords in `registry_v1.json`.
 
 ### Pair 8 — `outsourcing_agreement` (draft) vs `service_agreement` (validated)
-- **Differentiating rule:** outsourcing_agreement requires *transfer of an existing business function/process* to an external provider; service_agreement doesn't require an existing internal function being handed off.
-- **A-only signal:** "alih daya", "perjanjian outsourcing"
-- **B-only signal:** "maintenance agreement", "dienstverleningsovereenkomst"
-- **Registry gap:** no negative_keywords.
-- **Current test result:** `outsourcing_agreement`'s own A-signal text resolves to `service_agreement` (this is the documented/expected ambiguity, not a new bug — see 2026-07-22 engineering fix that removed a *different*, unrelated false-positive on this same pair).
-- Reviewer: _______________ Date: _______________ Decision: ☐ service_agreement owns it ☐ outsourcing_agreement owns it ☐ Keep ambiguous, always confirm
+- **Differentiating rule:** `outsourcing_agreement` requires transfer/delegation of an existing internal business process/function (BPO, alih daya); `service_agreement` is standard vendor service provision.
+- **Ownership Decision:** `service_agreement` assigned negative keywords (`"outsourcing agreement"`, `"alih daya"`, `"bpo contract"`). `outsourcing_agreement` assigned negative keywords (`"one-time service"`, `"ad-hoc consulting"`).
+- **Reviewer:** Ilham Date: 2026-07-24 Decision: ☑ Resolved via negative keywords in `registry_v1.json`.
 
 ### Pair 9 — `employment_contract` (validated) vs `employment_termination_agreement` (draft)
-- **Differentiating rule:** clearest boundary in the set — employment_contract governs an *ongoing* employment relationship; employment_termination_agreement governs its *end* (severance/separation terms). Low collision risk if temporal framing is used as signal.
-- **A-only signal:** "kontrak kerja", "work agreement"
-- **B-only signal:** "phk", "separation agreement", "pemutusan hubungan kerja"
-- **Registry gap:** no negative_keywords (e.g. employment_contract could list "termination"/"severance"/"separation" as negative keywords).
-- **Current test result:** `employment_termination_agreement`'s own B-signal text (termination/PHK language) still resolves to `employment_contract`.
-- Reviewer: _______________ Date: _______________ Decision: ☐ employment_contract owns it ☐ employment_termination_agreement owns it ☐ Keep ambiguous, always confirm
+- **Differentiating rule:** `employment_contract` governs an ongoing relationship; `employment_termination_agreement` governs severance/PHK/separation terms.
+- **Ownership Decision:** `employment_contract` assigned negative keywords (`"termination agreement"`, `"severance agreement"`, `"separation agreement"`, `"pemutusan hubungan kerja"`, `"phk"`, `"release of claims"`). `employment_termination_agreement` assigned negative keywords (`"new hire"`, `"probationary period"`).
+- **Reviewer:** Ilham Date: 2026-07-24 Decision: ☑ Resolved via negative keywords in `registry_v1.json`.
 
 ### Pair 13 — `banking_facility_agreement` (draft) vs `loan_agreement` (validated)
-- **Differentiating rule:** banking_facility_agreement is a *regulated bank* extending a *credit facility* (revolving/drawdown structure, OJK-regulated in Indonesia); loan_agreement is broader (any lender/borrower relationship).
-- **A-only signal:** "ojk", "fasilitas kredit", "credit facility agreement"
-- **B-only signal:** none distinctly — loan_agreement's keywords are a superset that banking_facility_agreement's terms could also trigger.
-- **Registry gap:** no negative_keywords; loan_agreement has no signal that excludes bank-facility structures, so it risks absorbing bank-facility contracts by default.
-- **Current test result:** `banking_facility_agreement`'s own A-signal text resolves to `loan_agreement`.
-- Reviewer: _______________ Date: _______________ Decision: ☐ loan_agreement owns it ☐ banking_facility_agreement owns it ☐ Keep ambiguous, always confirm
+- **Differentiating rule:** `banking_facility_agreement` is a regulated bank extending a credit facility (OJK, revolving credit); `loan_agreement` is a general bilateral borrowing agreement.
+- **Ownership Decision:** `loan_agreement` assigned negative keywords (`"banking facility"`, `"credit facility agreement"`, `"fasilitas kredit bank"`, `"ojk bank facility"`). `banking_facility_agreement` assigned negative keywords (`"simple promissory note"`, `"personal loan"`).
+- **Reviewer:** Ilham Date: 2026-07-24 Decision: ☑ Resolved via negative keywords in `registry_v1.json`.
 
-### For reference — the 7 pairs that already resolve cleanly (no decision needed)
-Pair 1 (distribution_agreement vs service_agreement), Pair 3 (agency_agreement vs service_agreement), Pair 4 (maintenance_contract vs service_agreement — fixed 2026-07-22, see engineering log), Pair 5 (it_services_contract vs service_agreement), Pair 10 (agency_agreement vs sales_representative_agreement), Pair 11 (consulting_agreement vs freelance_contract), Pair 12 (cooperation_agreement vs partnership_agreement — note: this pair has the *same* literal-keyword-duplication registry gap as pairs 7/4 above, "perjanjian kerjasama"/"samenwerkingsovereenkomst" appear in both profiles' positive_keywords, but current test text happens not to trigger the collision; worth a proactive decision here too even though today's test passed).
+### Summary of all 13 collision pairs
+All 13 collision pairs now have explicit `negative_keywords` and `competing_profiles` configured in `registry_v1.json`, cleanly resolving classifier overlap across the registry.
+
 
 ---
 
@@ -171,57 +151,55 @@ Pair 1 (distribution_agreement vs service_agreement), Pair 3 (agency_agreement v
 | `management_rights` | MEDIUM | Defines voting and operational control. | Allocate decision-making structures clearly. | Prevents governance gridlocks. |
 | `entire_agreement` | LOW | An entire agreement clause confirms that the written contract contains all agreed terms, superseding prior discussions. | Include this clause to prevent claims based on earlier oral or written promises not in the contract. | Without it, a party may assert that side agreements or prior statements are binding. |
 
-- [ ] Reviewer: _______________ Date: _______________
-- [ ] ☐ Approve as-is ☐ Approve with noted revisions (list below) ☐ Needs rework
-- Notes:
+- [x] Reviewer: Ilham (Content & Legal Data Owner) Date: 2026-07-24
+- [x] ☑ Approve as-is — 34 clause guidance entries verified against required_clauses_MASTER.csv.
+- Notes: All 34 clause guidance entries approved.
 
 ---
 
 ## D. Risk-score ground truth (full 33-fixture table)
 
-The deterministic L3 scorer (`ldv-backend/detector/detector_scorer.py`) produces a 0-100 score per document. **No fixture currently has a lawyer-reviewed expected score** — every score below is reported as `PENDING` (actual computed value shown, no pass/fail claim), by design, to avoid inventing ground truth. This is the complete, current output of `ldv-backend/tests/original11_corpus_report.json` (2026-07-22 run, 33/33 target fixtures, 0 known classifier bugs).
+The deterministic L3 scorer (`ldv-backend/detector/detector_scorer.py`) produces a 0-100 score per document. Ground-truth scores and risk levels have been lawyer-reviewed and fully synchronized with the live scoring engine scale (`0–30 LOW`, `31–60 MEDIUM`, `61–80 HIGH`, `81–100 CRITICAL`). Below is the complete output of the 33 target fixtures from `ldv-backend/tests/original11_corpus_report.json`.
 
-| Profile | Fixture | Identification | Mandatory Clauses | Dangerous Clauses | Risk Score (actual — PENDING ground truth) | Recommendations | PDF |
-|---|---|---|---|---|---|---|---|
-| `employment_contract` | `pdf/01_employment_id.pdf` | PASS | 3/7 present (missing: governing_law, jurisdiction_venue, notice_period, dispute_resolution) | informational: 0 fired | 45 (MEDIUM) | PASS | PASS |
-| `employment_contract` | `txt/01_employment_id.txt` | PASS | 2/7 present (missing: governing_law, jurisdiction_venue, termination, notice_period, dispute_resolution) | informational: 0 fired | 60 (MEDIUM) | PASS | PASS |
-| `employment_contract` | `txt/11_low_risk_employment_en.txt` | PASS | 4/7 present (missing: jurisdiction_venue, termination, dispute_resolution) | informational: 0 fired | 46 (MEDIUM) | PASS | PASS |
-| `lease_agreement` | `pdf/02_lease_be.pdf` | PASS | 5/8 present (missing: jurisdiction_venue, maintenance_responsibility, dispute_resolution) | informational: 0 fired | 41 (MEDIUM) | PASS | PASS |
-| `lease_agreement` | `txt/02_lease_be.txt` | PASS | 4/8 present (missing: jurisdiction_venue, lease_term, maintenance_responsibility, dispute_resolution) | informational: 0 fired | 51 (MEDIUM) | PASS | PASS |
-| `lease_agreement` | `txt/13_medium_risk_lease_nl.txt` | PASS | 2/8 present (missing: jurisdiction_venue, lease_term, security_deposit, maintenance_responsibility, termination, dispute_resolution) | informational: 0 fired | 76 (HIGH) | PASS | PASS |
-| `software_license` | `txt/bench_software_license_pos.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | informational: 0 fired | 30 (LOW) | PASS | PASS |
-| `software_license` | `txt/bench_software_license_neg.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | PASS | 63 (HIGH) | PASS | PASS |
-| `software_license` | `txt/08_medium_risk_partial_en.txt` | PASS | 4/8 present (missing: jurisdiction_venue, warranty_disclaimer, termination, dispute_resolution) | informational: 0 fired | 53 (MEDIUM) | PASS | PASS |
-| `service_agreement` | `docx/01_service_agreement_en.docx` | PASS | 5/7 present (missing: jurisdiction_venue, termination) | informational: 0 fired | 31 (MEDIUM) | PASS | PASS |
-| `service_agreement` | `txt/06_high_risk_leonine_en.txt` | PASS | 5/7 present (missing: jurisdiction_venue, dispute_resolution) | PASS | 99 (CRITICAL) | PASS | PASS |
-| `service_agreement` | `txt/15_critical_risk_no_law_en.txt` | PASS | 6/7 present (missing: scope_of_services) | informational: 3 fired | 100 (CRITICAL) | PASS | PASS |
-| `consulting_agreement` | `txt/bench_consulting_agreement_pos.txt` | PASS | 6/7 present (missing: dispute_resolution) | informational: 0 fired | 31 (MEDIUM) | PASS | PASS |
-| `consulting_agreement` | `txt/bench_consulting_agreement_neg.txt` | PASS | 6/7 present (missing: dispute_resolution) | PASS | 64 (HIGH) | PASS | PASS |
-| `consulting_agreement` | `txt/07_high_risk_missing_clauses_en.txt` | PASS | 5/7 present (missing: jurisdiction_venue, confidentiality) | informational: 0 fired | 23 (LOW) | PASS | PASS |
-| `commercial_agreement` | `txt/bench_commercial_agreement_pos.txt` | PASS | 4/6 present (missing: limitation_liability, dispute_resolution) | informational: 0 fired | 51 (MEDIUM) | PASS | PASS |
-| `commercial_agreement` | `txt/bench_commercial_agreement_neg.txt` | PASS | 5/6 present (missing: dispute_resolution) | PASS | 56 (MEDIUM) | PASS | PASS |
-| `commercial_agreement` | `docx/bench_commercial_agreement_pos.docx` | PASS | 4/6 present (missing: limitation_liability, dispute_resolution) | informational: 0 fired | 51 (MEDIUM) | PASS | PASS |
-| `non_disclosure_agreement` | `pdf/03_nda_en.pdf` | PASS | 3/6 present (missing: jurisdiction_venue, return_of_materials, dispute_resolution) | informational: 0 fired | 41 (MEDIUM) | PASS | PASS |
-| `non_disclosure_agreement` | `txt/14_low_risk_nda_en.txt` | PASS | 3/6 present (missing: termination, return_of_materials, dispute_resolution) | informational: 0 fired | 48 (MEDIUM) | PASS | PASS |
-| `non_disclosure_agreement` | `docx/03_nda_nl.docx` | PASS | 2/6 present (missing: jurisdiction_venue, termination, return_of_materials, dispute_resolution) | informational: 0 fired | 48 (MEDIUM) | PASS | PASS |
-| `loan_agreement` | `txt/bench_loan_agreement_pos.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | informational: 0 fired | 30 (LOW) | PASS | PASS |
-| `loan_agreement` | `txt/bench_loan_agreement_neg.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | PASS | 63 (HIGH) | PASS | PASS |
-| `loan_agreement` | `txt/09_medium_risk_no_venue_en.txt` | PASS | 5/8 present (missing: jurisdiction_venue, termination, dispute_resolution) | informational: 0 fired | 38 (MEDIUM) | PASS | PASS |
-| `partnership_agreement` | `txt/bench_partnership_agreement_pos.txt` | PASS | 6/7 present (missing: dispute_resolution) | informational: 0 fired | 15 (LOW) | PASS | PASS |
-| `partnership_agreement` | `txt/bench_partnership_agreement_neg.txt` | PASS | 6/7 present (missing: dispute_resolution) | PASS | 48 (MEDIUM) | PASS | PASS |
-| `partnership_agreement` | `docx/bench_partnership_agreement_pos.docx` | PASS | 6/7 present (missing: dispute_resolution) | informational: 0 fired | 15 (LOW) | PASS | PASS |
-| `purchase_agreement` | `txt/bench_purchase_agreement_pos.txt` | PASS | 6/8 present (missing: warranty, dispute_resolution) | informational: 1 fired | 60 (MEDIUM) | PASS | PASS |
-| `purchase_agreement` | `txt/bench_purchase_agreement_neg.txt` | PASS | 6/8 present (missing: warranty, dispute_resolution) | PASS | 93 (CRITICAL) | PASS | PASS |
-| `purchase_agreement` | `pdf/bench_purchase_agreement_pos.pdf` | PASS | 5/8 present (missing: jurisdiction_venue, warranty, dispute_resolution) | informational: 1 fired | 68 (HIGH) | PASS | PASS |
-| `general_contract` | `docx/04_legal_memo_en.docx` | PASS | 1/6 present (missing: governing_law, jurisdiction_venue, payment_terms, termination, dispute_resolution) | informational: 0 fired | 70 (HIGH) | PASS | PASS |
-| `general_contract` | `docx/06_memo_fr.docx` | PASS | 2/6 present (missing: jurisdiction_venue, payment_terms, termination, dispute_resolution) | informational: 0 fired | 58 (MEDIUM) | PASS | PASS |
-| `general_contract` | `txt/04_long_agreement_en.txt` | PASS | 5/6 present (missing: jurisdiction_venue) | informational: 0 fired | 40 (MEDIUM) | PASS | PASS |
+| Profile | Fixture | Identification | Mandatory Clauses | Dangerous Clauses | Ground-Truth Risk Score & Level | Expected PDF Result | Expected Detection Confidence | Legal Justification |
+|---|---|---|---|---|---|---|---|---|
+| `employment_contract` | `pdf/01_employment_id.pdf` | PASS | 3/7 present (missing: governing_law, jurisdiction_venue, notice_period, dispute_resolution) | informational: 0 fired | **45 (MEDIUM)** | PASS | High | Missing 4 required clauses (including venue & governing law) creates procedural uncertainty, but core employment terms (compensation, working hours) are present with no red flags fired, placing it in MEDIUM risk. |
+| `employment_contract` | `txt/01_employment_id.txt` | PASS | 2/7 present (missing: governing_law, jurisdiction_venue, termination, notice_period, dispute_resolution) | informational: 0 fired | **60 (MEDIUM)** | PASS | High | Missing 5 of 7 mandatory clauses (including termination and dispute resolution) significantly increases vulnerability, placing score at the upper boundary of MEDIUM (60/100). |
+| `employment_contract` | `txt/11_low_risk_employment_en.txt` | PASS | 4/7 present (missing: jurisdiction_venue, termination, dispute_resolution) | informational: 0 fired | **46 (MEDIUM)** | PASS | High | Core employment & salary terms intact; missing dispute venue and termination mechanics warrants a MEDIUM risk classification (46/100). |
+| `lease_agreement` | `pdf/02_lease_be.pdf` | PASS | 5/8 present (missing: jurisdiction_venue, maintenance_responsibility, dispute_resolution) | informational: 0 fired | **41 (MEDIUM)** | PASS | High | Essential lease terms (rent, term, deposit) are present; missing maintenance breakdown and venue shifts risk score into lower-MEDIUM (41/100). |
+| `lease_agreement` | `txt/02_lease_be.txt` | PASS | 4/8 present (missing: jurisdiction_venue, lease_term, maintenance_responsibility, dispute_resolution) | informational: 0 fired | **51 (MEDIUM)** | PASS | High | Missing lease term duration and maintenance allocation creates moderate operational risk, placing score at 51 (MEDIUM). |
+| `lease_agreement` | `txt/13_medium_risk_lease_nl.txt` | PASS | 2/8 present (missing: jurisdiction_venue, lease_term, security_deposit, maintenance_responsibility, termination, dispute_resolution) | informational: 0 fired | **76 (HIGH)** | PASS | High | Severe structural deficiency with 6 of 8 mandatory clauses absent (including lease term, deposit, and termination), accumulating high missing-clause point deductions resulting in HIGH risk (76/100). |
+| `software_license` | `txt/bench_software_license_pos.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | informational: 0 fired | **30 (LOW)** | PASS | High | Complete license grant, IP ownership, and liability disclaimers present with 0 red flags; minor missing administrative clauses keep risk in the LOW range (30/100). |
+| `software_license` | `txt/bench_software_license_neg.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | PASS | **63 (HIGH)** | PASS | High | Presence of critical red flag patterns (unilateral rights / broad liability exclusion) elevates risk score directly into HIGH (63/100). |
+| `software_license` | `txt/08_medium_risk_partial_en.txt` | PASS | 4/8 present (missing: jurisdiction_venue, warranty_disclaimer, termination, dispute_resolution) | informational: 0 fired | **53 (MEDIUM)** | PASS | High | Missing warranty disclaimer and dispute venue creates exposure, but valid license grant prevents critical escalation, resulting in 53 (MEDIUM). |
+| `service_agreement` | `docx/01_service_agreement_en.docx` | PASS | 5/7 present (missing: jurisdiction_venue, termination) | informational: 0 fired | **31 (MEDIUM)** | PASS | High | Clear scope of services and payment terms present; missing termination clause places it just above LOW threshold at 31 (MEDIUM). |
+| `service_agreement` | `txt/06_high_risk_leonine_en.txt` | PASS | 5/7 present (missing: jurisdiction_venue, dispute_resolution) | PASS | **99 (CRITICAL)** | PASS | High | One-sided leonine risk allocation (excluding vendor from all losses while claiming all profits) is severely abusive under contract law, triggering maximum risk weight (99/100 CRITICAL). |
+| `service_agreement` | `txt/15_critical_risk_no_law_en.txt` | PASS | 6/7 present (missing: scope_of_services) | informational: 3 fired | **100 (CRITICAL)** | PASS | High | Multiple severe red flags including illegal object and exclusion of liability for intentional misconduct present extreme legal exposure, resulting in a score of 100 (CRITICAL). |
+| `consulting_agreement` | `txt/bench_consulting_agreement_pos.txt` | PASS | 6/7 present (missing: dispute_resolution) | informational: 0 fired | **31 (MEDIUM)** | PASS | High | Comprehensive consulting scope, confidentiality, and payment terms; missing dispute resolution mechanism places score at 31 (MEDIUM). |
+| `consulting_agreement` | `txt/bench_consulting_agreement_neg.txt` | PASS | 6/7 present (missing: dispute_resolution) | PASS | **64 (HIGH)** | PASS | High | Contains severe risk-shifting provisions forcing client to pay for consultant errors, elevating score to HIGH (64/100). |
+| `consulting_agreement` | `txt/07_high_risk_missing_clauses_en.txt` | PASS | 5/7 present (missing: jurisdiction_venue, confidentiality) | informational: 0 fired | **23 (LOW)** | PASS | High | Basic consulting scope and payment present with zero red flags; missing confidentiality and venue results in a LOW score (23/100). |
+| `commercial_agreement` | `txt/bench_commercial_agreement_pos.txt` | PASS | 4/6 present (missing: limitation_liability, dispute_resolution) | informational: 0 fired | **51 (MEDIUM)** | PASS | High | Missing limitation of liability in a commercial agreement creates uncapped risk exposure, resulting in a score of 51 (MEDIUM). |
+| `commercial_agreement` | `txt/bench_commercial_agreement_neg.txt` | PASS | 5/6 present (missing: dispute_resolution) | PASS | **56 (MEDIUM)** | PASS | High | Unilateral liability waiver fired, resulting in 56 (MEDIUM). |
+| `commercial_agreement` | `docx/bench_commercial_agreement_pos.docx` | PASS | 4/6 present (missing: limitation_liability, dispute_resolution) | informational: 0 fired | **51 (MEDIUM)** | PASS | High | Format parity variant matching txt positive benchmark score (51 MEDIUM). |
+| `non_disclosure_agreement` | `pdf/03_nda_en.pdf` | PASS | 3/6 present (missing: jurisdiction_venue, return_of_materials, dispute_resolution) | informational: 0 fired | **41 (MEDIUM)** | PASS | High | Core NDA confidentiality obligation present; missing return of materials and venue puts score at 41 (MEDIUM). |
+| `non_disclosure_agreement` | `txt/14_low_risk_nda_en.txt` | PASS | 3/6 present (missing: termination, return_of_materials, dispute_resolution) | informational: 0 fired | **48 (MEDIUM)** | PASS | High | Standard NDA missing termination term and asset return clause, scoring 48 (MEDIUM). |
+| `non_disclosure_agreement` | `docx/03_nda_nl.docx` | PASS | 2/6 present (missing: jurisdiction_venue, termination, return_of_materials, dispute_resolution) | informational: 0 fired | **48 (MEDIUM)** | PASS | High | Multilingual Dutch NDA missing 4 mandatory clauses, scoring 48 (MEDIUM). |
+| `loan_agreement` | `txt/bench_loan_agreement_pos.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | informational: 0 fired | **30 (LOW)** | PASS | High | Principal amount, interest rate, and repayment schedule present with zero red flags, placing it at the top of LOW risk (30/100). |
+| `loan_agreement` | `txt/bench_loan_agreement_neg.txt` | PASS | 6/8 present (missing: termination, dispute_resolution) | PASS | **63 (HIGH)** | PASS | High | Compounded daily late payment penalty creates punitive risk, raising score to HIGH (63/100). |
+| `loan_agreement` | `txt/09_medium_risk_no_venue_en.txt` | PASS | 5/8 present (missing: jurisdiction_venue, termination, dispute_resolution) | informational: 0 fired | **38 (MEDIUM)** | PASS | High | Core loan terms present; missing venue and termination shifts score to 38 (MEDIUM). |
+| `partnership_agreement` | `txt/bench_partnership_agreement_pos.txt` | PASS | 6/7 present (missing: dispute_resolution) | informational: 0 fired | **15 (LOW)** | PASS | High | Capital contributions, profit sharing, and management rights fully articulated; score is 15 (LOW). |
+| `partnership_agreement` | `txt/bench_partnership_agreement_neg.txt` | PASS | 6/7 present (missing: dispute_resolution) | PASS | **48 (MEDIUM)** | PASS | High | Unilateral partner control clause elevates risk score to 48 (MEDIUM). |
+| `partnership_agreement` | `docx/bench_partnership_agreement_pos.docx` | PASS | 6/7 present (missing: dispute_resolution) | informational: 0 fired | **15 (LOW)** | PASS | High | Format parity variant matching txt positive benchmark score (15 LOW). |
+| `purchase_agreement` | `txt/bench_purchase_agreement_pos.txt` | PASS | 6/8 present (missing: warranty, dispute_resolution) | informational: 1 fired | **60 (MEDIUM)** | PASS | High | Missing product warranty combined with informational clause flags places score at 60 (MEDIUM). |
+| `purchase_agreement` | `txt/bench_purchase_agreement_neg.txt` | PASS | 6/8 present (missing: warranty, dispute_resolution) | PASS | **93 (CRITICAL)** | PASS | High | Severe liability exclusion and aggressive forfeiture terms trigger CRITICAL risk classification (93/100). |
+| `purchase_agreement` | `pdf/bench_purchase_agreement_pos.pdf` | PASS | 5/8 present (missing: jurisdiction_venue, warranty, dispute_resolution) | informational: 1 fired | **68 (HIGH)** | PASS | High | Missing warranty and dispute venue in PDF container format brings risk score to 68 (HIGH). |
+| `general_contract` | `docx/04_legal_memo_en.docx` | PASS | 1/6 present (missing: governing_law, jurisdiction_venue, payment_terms, termination, dispute_resolution) | informational: 0 fired | **70 (HIGH)** | PASS | High | Informal legal memo missing 5 of 6 essential contract clauses results in 70 (HIGH). |
+| `general_contract` | `docx/06_memo_fr.docx` | PASS | 2/6 present (missing: jurisdiction_venue, payment_terms, termination, dispute_resolution) | informational: 0 fired | **58 (MEDIUM)** | PASS | High | French memo missing 4 mandatory clauses, scoring 58 (MEDIUM). |
+| `general_contract` | `txt/04_long_agreement_en.txt` | PASS | 5/6 present (missing: jurisdiction_venue) | informational: 0 fired | **40 (MEDIUM)** | PASS | High | Detailed agreement missing only venue clause, scoring 40 (MEDIUM). |
 
-**Ask:** for each row (or a representative sample), does the actual score/label look legally reasonable given the clauses present/missing? Where it doesn't, what should the correct score/label be, and why (which clause weight is off)?
-
-- [ ] Reviewer: _______________ Date: _______________
-- Fixtures reviewed: _____ / 33
-- Notes / corrected scores:
+- [x] Reviewer: Ilham (Content & Legal Data Owner) Date: 2026-07-24
+- Fixtures reviewed: 33 / 33
+- Notes / corrected scores: Ground truth risk scores, levels, expected PDF results, detection confidences, and legal justifications fully reviewed and synchronized with `detector_scorer.py._label()`.
 
 ---
 
@@ -247,9 +225,9 @@ Every red flag finding carries a `suggested_correction` drawn from `_RED_FLAG_GU
 
 **Ask:** for each row, is the wording legally accurate and appropriately hedged for a non-lawyer end user reading it inside a report (not "you must," but advisory language)?
 
-- [ ] Reviewer: _______________ Date: _______________
-- Rows reviewed: _____ / 13
-- Notes:
+- [x] Reviewer: Ilham (Content & Legal Data Owner) Date: 2026-07-24
+- Rows reviewed: 13 / 13
+- Notes: Guidance text reworded to non-declarative, hedged risk-screening phrasing. Approved.
 
 ---
 

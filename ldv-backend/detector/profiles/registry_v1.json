@@ -53,8 +53,18 @@
           "kontrak kerja",
           "perjanjian kerja"
         ],
-        "negative_keywords": [],
-        "competing_profiles": [],
+        "negative_keywords": [
+          "termination agreement",
+          "severance agreement",
+          "separation agreement",
+          "pemutusan hubungan kerja",
+          "phk",
+          "perjanjian phk",
+          "release of claims"
+        ],
+        "competing_profiles": [
+          "employment_termination_agreement"
+        ],
         "confirmation_threshold": 0.7,
         "status": "validated"
       }
@@ -155,9 +165,16 @@
           "eula",
           "end user license agreement"
         ],
-        "negative_keywords": [],
+        "negative_keywords": [
+          "patent license",
+          "trademark license",
+          "brand licensing",
+          "lisensi merek",
+          "lisensi paten"
+        ],
         "competing_profiles": [
-          "saas_agreement"
+          "saas_agreement",
+          "licensing_agreement"
         ],
         "confirmation_threshold": 0.7,
         "status": "validated"
@@ -256,13 +273,27 @@
         "positive_keywords": [
           "service agreement",
           "service contract",
-          "maintenance agreement",
           "perjanjian jasa",
           "contrat de services",
           "dienstverleningsovereenkomst"
         ],
-        "negative_keywords": [],
-        "competing_profiles": [],
+        "negative_keywords": [
+          "maintenance contract",
+          "maintenance agreement",
+          "equipment repair",
+          "pemeliharaan",
+          "contrat de maintenance",
+          "onderhoudsovereenkomst",
+          "outsourcing agreement",
+          "alih daya"
+        ],
+        "competing_profiles": [
+          "maintenance_contract",
+          "outsourcing_agreement",
+          "it_services_contract",
+          "distribution_agreement",
+          "agency_agreement"
+        ],
         "confirmation_threshold": 0.7,
         "status": "validated"
       }
@@ -454,8 +485,16 @@
           "contrat de prêt",
           "leningsovereenkomst"
         ],
-        "negative_keywords": [],
-        "competing_profiles": [],
+        "negative_keywords": [
+          "banking facility",
+          "credit facility agreement",
+          "fasilitas kredit bank",
+          "revolving credit facility",
+          "ojk bank facility"
+        ],
+        "competing_profiles": [
+          "banking_facility_agreement"
+        ],
         "confirmation_threshold": 0.7,
         "status": "validated"
       }
@@ -942,7 +981,11 @@
           "perjanjian pemeliharaan",
           "contrat de maintenance"
         ],
-        "negative_keywords": [],
+        "negative_keywords": [
+          "general consulting",
+          "marketing services",
+          "distribution agreement"
+        ],
         "competing_profiles": [
           "service_agreement"
         ],
@@ -1139,7 +1182,14 @@
           "lisensi",
           "licence"
         ],
-        "negative_keywords": [],
+        "negative_keywords": [
+          "software license",
+          "software licence",
+          "source code",
+          "saas",
+          "eula",
+          "end user license"
+        ],
         "competing_profiles": [
           "software_license"
         ],
@@ -1617,7 +1667,11 @@
           "perjanjian alih daya",
           "alih daya"
         ],
-        "negative_keywords": [],
+        "negative_keywords": [
+          "one-time service",
+          "ad-hoc consulting",
+          "simple repair"
+        ],
         "competing_profiles": [
           "service_agreement"
         ],
@@ -1664,7 +1718,11 @@
           "perjanjian phk",
           "pemutusan hubungan kerja"
         ],
-        "negative_keywords": [],
+        "negative_keywords": [
+          "new hire",
+          "probationary period",
+          "commencement of employment"
+        ],
         "competing_profiles": [
           "employment_contract"
         ],
@@ -2434,7 +2492,11 @@
           "fasilitas kredit",
           "ojk"
         ],
-        "negative_keywords": [],
+        "negative_keywords": [
+          "simple promissory note",
+          "personal loan",
+          "peer-to-peer loan"
+        ],
         "competing_profiles": [
           "loan_agreement"
         ],
