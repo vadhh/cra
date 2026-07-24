@@ -71,9 +71,15 @@ curl http://127.0.0.1:5000/health
 
 ```bash
 python3 tests/create_fixtures.py          # generate fixtures once
+LDV_TEST_RUNNER_BYPASS=1 python3 -m flask run --port 5000 &  # server needs this env var set (F-11)
 python3 tests/run_validation.py           # quick regression
 python3 tests/run_full_validation.py      # full checklist (300s timeout)
 ```
+
+`LDV_TEST_RUNNER_BYPASS=1` must be set on the *server* process — these scripts hit a live server
+over HTTP as the `test-runner@ldv.internal` account, which is only exempted from rate limiting
+when both the email match and this flag are present (Gate 3 F-11 fix; prevents the bypass from
+silently applying if that account is ever created against a real database).
 
 Results saved to `tests/validation_report.json` and `tests/validation_report.md`.
 

@@ -35,5 +35,6 @@ ENV HOME=/home/ldv
 # Expose server port
 EXPOSE 5000
 
-# Executing gunicorn
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+# F-13: -w 1 --threads keeps the in-memory rate-limit store correct when run
+# without docker-compose's LDV_RATELIMIT_STORAGE_URL=redis override.
+CMD ["gunicorn", "-w", "1", "--threads", "4", "--worker-class", "gthread", "-b", "0.0.0.0:5000", "app:app"]

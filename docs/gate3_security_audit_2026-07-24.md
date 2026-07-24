@@ -17,23 +17,25 @@ This is audit-only. No application code was modified.
 
 ## Summary verdict
 
-**Gate 3 cannot be marked Passed as-is, but nearly all actionable findings are now closed.**
-F-01 was originally raised as CRITICAL; **owner (Afridho) reviewed and risk-accepted it
-2026-07-24**. **Both HIGH findings (F-02, F-03) are fixed.** **4 of 6 MEDIUM findings are fixed**
-(F-04 token hashing, F-05 parse-cost DoS bound, F-06 non-root container, F-09 account lockout);
-**F-08 is acknowledged/no-code-change-needed**; **F-07 is partial** — 2 dependency CVEs patched
-(Flask, cryptography), 3 remain open pending an owner decision (torch/transformers need a
+**Gate 3 cannot be marked Passed as-is, but every actionable finding except 3 dependency CVEs is
+now closed.** F-01 was originally raised as CRITICAL; **owner (Afridho) reviewed and risk-accepted
+it 2026-07-24**. **Both HIGH findings (F-02, F-03) are fixed.** **4 of 6 MEDIUM findings are
+fixed** (F-04 token hashing, F-05 parse-cost DoS bound, F-06 non-root container, F-09 account
+lockout); **F-08 is acknowledged/no-code-change-needed**; **F-07 is partial** — 2 dependency CVEs
+patched (Flask, cryptography), 3 remain open pending an owner decision (torch/transformers need a
 scheduled major-version bump + full regression pass, not a same-session change; deep-translator
-has no available fix but the affected code path is disabled by default). Full test suite 108/108
-passing throughout. Only the 6 LOW findings remain fully untouched — see below — plus the F-07
-torch/transformers/deep-translator/setuptools decisions.
+has no available fix but the affected code path is disabled by default). **All 6 LOW findings are
+now fixed** (F-10 proxy-trust gating, F-11 test-bypass flag, F-12 filename sanitization, F-13
+single-worker/threaded gunicorn, F-14 `.env.example`). Full test suite 114/114 passing throughout
+(108 at the time of the High/Medium fixes; other merged work added 6 more since). The only
+remaining open items are the 3 F-07 dependency-CVE decisions.
 
 | Severity | Count | Status |
 |---|---|---|
 | CRITICAL | 1 | Risk-accepted (F-01, 2026-07-24) |
 | HIGH | 2 | ✅ Both fixed 2026-07-24 (F-02, F-03) |
 | MEDIUM | 6 | ✅ F-04/F-05/F-06/F-09 fixed; F-07 partial (2 patched, 3 need owner decision on major-version bumps/risk-accept); F-08 acknowledged, no code change needed |
-| LOW | 6 | Open |
+| LOW | 6 | ✅ All fixed 2026-07-24 (F-10, F-11, F-12, F-13, F-14) |
 | INFO | 4 | N/A |
 
 ---
@@ -398,7 +400,11 @@ right now, with `LDV_RATELIMIT_STORAGE_URL` defaulting to `memory://` and gunico
 (4 worker processes, not sharing in-memory rate-limit state — see F-13), the deployment already
 has multi-process consistency gaps worth addressing together.
 
-**Status:** OPEN.
+**Status:** ✅ FIXED 2026-07-24. `_ip()` now returns `request.remote_addr` only. Added
+`LDV_TRUST_PROXY_HOPS` (default 0): when >0, wraps `app.wsgi_app` with Werkzeug's `ProxyFix`
+(`x_for`/`x_proto` set to the configured hop count), which is the standard, correctly-scoped way
+to trust `X-Forwarded-For` only from a known number of reverse-proxy hops. Documented in
+`.env.example`.
 
 ### F-11 — Hardcoded test-runner rate-limit bypass identity
 **File:** `app.py:90-100` (`bypass_rate_limits`).
@@ -418,7 +424,12 @@ defaulting off) in addition to the email check, or drop the hardcoded email chec
 have the test suite provision its bypass via `LDV_TESTING=1` (which is already checked at the top
 of the same function and is the correct mechanism).
 
-**Status:** OPEN.
+**Status:** ✅ FIXED 2026-07-24. The `test-runner@ldv.internal` email check now additionally
+requires `LDV_TEST_RUNNER_BYPASS=1` (default off). `CLAUDE.md`'s validation-suite instructions
+updated to set this on the server process when running the standalone HTTP-based validator
+scripts (`tests/run_full_validation.py` etc.) against a live server. In-process pytest runs are
+unaffected (already covered by `app.testing`/`LDV_TESTING`/`PYTEST_CURRENT_TEST`, checked earlier
+in the same function). 114/114 tests passing.
 
 ### F-12 — Content-Disposition filename not sanitized
 **File:** `app.py:910-947` (`download_file`), uses `info["original_filename"]` (user-supplied at
@@ -438,7 +449,11 @@ already handles this correctly (used elsewhere in the codebase's `send_from_dire
 static assets, just not here since this is a raw `Response`, not a real file on the served
 directory).
 
-**Status:** OPEN.
+**Status:** ✅ FIXED 2026-07-24. `download_file()` now runs `secure_filename()` on
+`original_filename` before interpolating it into the `Content-Disposition` header, falling back
+to `contract{ext}` if that produces an empty string (e.g. a fully non-ASCII original filename —
+`secure_filename` is ASCII-only; this is a minor cosmetic regression for non-Latin filenames,
+traded for eliminating the header-injection-adjacent risk).
 
 ### F-13 — In-memory rate-limit storage is not shared across gunicorn workers
 **File:** `app.py:81-87` (`limiter = Limiter(..., storage_uri=os.getenv("LDV_RATELIMIT_STORAGE_URL", "memory://"))`),
@@ -458,7 +473,15 @@ silently under-delivers on the documented rate limits.
 config change, not a code change) before relying on the documented per-minute limits in
 production with `-w 4`.
 
-**Status:** OPEN.
+**Status:** ✅ FIXED 2026-07-24. `docker-compose.yml`'s `app` service already overrode the
+Dockerfile's `CMD` with `-w 1 --threads 4 --worker-class gthread` *and* set
+`LDV_RATELIMIT_STORAGE_URL=redis://redis:6379` — that path was already correct. The gap was the
+two paths that don't go through compose: the HF Spaces `start.sh` (`exec gunicorn -w 4 ...`, no
+Redis available on that single-container deployment) and `ldv-backend/Dockerfile`'s own fallback
+`CMD` (used if the image is run directly without compose). Both changed to
+`-w 1 --threads 4 --worker-class gthread`, matching the compose service's already-correct
+approach — single process means the in-memory rate-limit store is authoritative, no Redis
+dependency needed on Spaces.
 
 ### F-14 — `.env.example` does not exist
 **Description:** Per this audit's own checklist: no `.env` file should be committed (see F-01),
@@ -472,7 +495,14 @@ to generate from that table and should replace the committed `.env`.
 listing every variable from the CLAUDE.md table with placeholder values (`YOUR_SECRET_KEY_HERE`,
 `0`, etc.) and commit *that* instead. Confirm `.env` is added to `.gitignore` (currently absent).
 
-**Status:** OPEN.
+**Status:** ✅ FIXED (partial) 2026-07-24. Added `.env.example` at repo root covering every
+variable from the `CLAUDE.md` table plus the new ones introduced by this audit's fixes
+(`LDV_OPERATOR_ORG`, `LDV_DOWNLOAD_LINK_SECRET`, `LDV_MAX_PDF_PAGES`,
+`LDV_MAX_DOCX_UNCOMPRESSED_MB`, `LDV_TRUST_PROXY_HOPS`, `LDV_TEST_RUNNER_BYPASS`). Did **not**
+remove the real `.env` or add it to `.gitignore` — per the F-01 risk-acceptance note, this repo
+intentionally keeps `.env` tracked so the HF Spaces pilot deployment picks up its values, so
+doing so would contradict that explicit decision. If that decision ever changes, revisit `.env`
+removal + `.gitignore` together with `.env`'s rotation (see F-01).
 
 ---
 

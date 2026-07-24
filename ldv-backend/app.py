@@ -15,6 +15,7 @@ import base64
 import chardet
 import magic
 from flask import Flask, request, jsonify, send_from_directory, Response, redirect, g, session
+from werkzeug.utils import secure_filename
 from urllib.parse import urlparse
 from flask_cors import CORS
 from flask_limiter import Limiter
@@ -72,6 +73,14 @@ os.makedirs(UPLOADS_DIR, exist_ok=True)
 app = Flask(__name__)
 auth.configure_secret_key(app)
 
+# F-10: only trust X-Forwarded-For/X-Real-IP when explicitly told this app sits
+# behind N trusted reverse proxy hops (LDV_TRUST_PROXY_HOPS). Otherwise a direct
+# caller could forge the audit-log IP by sending that header themselves.
+_trust_proxy_hops = int(os.getenv("LDV_TRUST_PROXY_HOPS", "0"))
+if _trust_proxy_hops > 0:
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=_trust_proxy_hops, x_proto=_trust_proxy_hops)
+
 # Same-origin by default (the frontend is served by this app). Cross-origin
 # access must be explicitly granted: LDV_CORS_ORIGINS="https://a.example,https://b.example"
 _cors_origins = os.getenv("LDV_CORS_ORIGINS", "")
@@ -95,7 +104,17 @@ def bypass_rate_limits():
     if auth_header.startswith("Bearer "):
         token = auth_header[7:].strip()
         user = database.get_user_by_token(token)
-        if user and (user["email"] == "test-runner@ldv.internal" or auth.normalize_role(user["role"]) == "admin"):
+        if user and auth.normalize_role(user["role"]) == "admin":
+            return True
+        # F-11: the test-runner bypass identity only applies if explicitly
+        # enabled — a hardcoded email check alone would silently grant
+        # unlimited rate limits forever if that account were ever created
+        # against a real/production database.
+        if (
+            user
+            and user["email"] == "test-runner@ldv.internal"
+            and os.environ.get("LDV_TEST_RUNNER_BYPASS") == "1"
+        ):
             return True
     return False
 
@@ -129,7 +148,7 @@ def _csrf_check():
 # ── Error handlers ─────────────────────────────────────────────────────────────
 
 def _ip() -> str:
-    return request.headers.get("X-Forwarded-For", request.remote_addr or "")
+    return request.remote_addr or ""
 
 
 @app.errorhandler(413)
@@ -1027,7 +1046,9 @@ def download_file(token: str):
         ".txt":  "text/plain",
     }
     mime = mime_map.get(ext, "application/octet-stream")
-    filename = info["original_filename"] or f"contract{ext}"
+    # F-12: sanitize before quoting — an unescaped `"` in a user-supplied
+    # filename could break out of the quoted Content-Disposition parameter.
+    filename = secure_filename(info["original_filename"] or "") or f"contract{ext}"
     return Response(
         raw, mimetype=mime,
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
