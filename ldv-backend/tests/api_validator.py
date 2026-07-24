@@ -24,7 +24,7 @@ def get_token():
     email = "test-runner@ldv.internal"
     user = _database.get_user_by_email(email)
     if user:
-        return user["api_token"]
+        return _database.rotate_api_token(user["id"])
     else:
         token = _secrets.token_urlsafe(32)
         _database.create_user(org["id"], email, _auth.hash_password(_secrets.token_urlsafe(16)), "analyst", token)

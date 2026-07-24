@@ -4,7 +4,8 @@ FROM python:3.10-slim
 RUN apt-get update && apt-get install -y \
     libmagic1 \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 1000 ldv
 
 WORKDIR /app
 
@@ -19,6 +20,11 @@ COPY datasets/ /app/datasets/
 
 WORKDIR /app/ldv-backend
 RUN chmod +x start.sh
+
+# F-06: this process parses untrusted PDF/DOCX uploads; run it unprivileged.
+RUN chown -R ldv:ldv /app
+USER ldv
+ENV HOME=/home/ldv
 
 # Expose server port (HF Spaces defaults to 7860)
 EXPOSE 7860

@@ -17,19 +17,22 @@ This is audit-only. No application code was modified.
 
 ## Summary verdict
 
-**Gate 3 cannot be marked Passed as-is.** F-01 was originally raised as CRITICAL; **owner
-(Afridho) reviewed and risk-accepted it 2026-07-24** — see note under F-01 below — so it no longer
-independently blocks Gate 3. **Both HIGH findings (F-02, F-03) are fixed as of 2026-07-24** — see
-their Status notes below. Beyond that, the auth/authz, CSRF, upload validation, and crypto code is
-generally well-built and mostly matches the CLAUDE.md hardening claims — but 6 MEDIUM and 6 LOW
-gaps remain (plaintext API tokens, DoS surface on file parsing, container running as root, etc.)
-that should be fixed or explicitly risk-accepted before Gate 3 is closed.
+**Gate 3 cannot be marked Passed as-is, but nearly all actionable findings are now closed.**
+F-01 was originally raised as CRITICAL; **owner (Afridho) reviewed and risk-accepted it
+2026-07-24**. **Both HIGH findings (F-02, F-03) are fixed.** **4 of 6 MEDIUM findings are fixed**
+(F-04 token hashing, F-05 parse-cost DoS bound, F-06 non-root container, F-09 account lockout);
+**F-08 is acknowledged/no-code-change-needed**; **F-07 is partial** — 2 dependency CVEs patched
+(Flask, cryptography), 3 remain open pending an owner decision (torch/transformers need a
+scheduled major-version bump + full regression pass, not a same-session change; deep-translator
+has no available fix but the affected code path is disabled by default). Full test suite 108/108
+passing throughout. Only the 6 LOW findings remain fully untouched — see below — plus the F-07
+torch/transformers/deep-translator/setuptools decisions.
 
 | Severity | Count | Status |
 |---|---|---|
 | CRITICAL | 1 | Risk-accepted (F-01, 2026-07-24) |
 | HIGH | 2 | ✅ Both fixed 2026-07-24 (F-02, F-03) |
-| MEDIUM | 6 | Open |
+| MEDIUM | 6 | ✅ F-04/F-05/F-06/F-09 fixed; F-07 partial (2 patched, 3 need owner decision on major-version bumps/risk-accept); F-08 acknowledged, no code change needed |
 | LOW | 6 | Open |
 | INFO | 4 | N/A |
 
@@ -209,7 +212,17 @@ are already high-entropy random values, unlike passwords) and compare against th
 alternatively route tokens through `crypto.enc_str`/`dec_str` like the MFA secret. Provide a
 `manage.py rotate-token <email>` command.
 
-**Status:** OPEN.
+**Status:** ✅ FIXED 2026-07-24. `database.py` now stores `sha256(token)` in `users.api_token`
+(`_hash_token()`); `create_user()` hashes before insert, `get_user_by_token()` hashes the
+presented bearer token before lookup. A migration in `init_db()` hashes any legacy plaintext
+tokens in place (heuristic: a 64-lowercase-hex-char value is already a hash, anything else gets
+hashed — idempotent, and the plaintext bearer value a client already holds is unchanged). Added
+`database.rotate_api_token(user_id)` and `manage.py rotate-token <email>`. The 7 test-tooling
+scripts (`api_validator.py`, `security_validator.py`, `perf_benchmarker.py`, `e2e_validator.py`,
+`test_llm_quality.py`, `run_validation.py`, `run_full_validation.py`) that reused
+`user["api_token"]` for a persistent test-runner account were updated to call
+`rotate_api_token()` instead, since the stored value is no longer the usable bearer token. 108/108
+tests passing; end-to-end hash/rotate/lookup verified manually.
 
 ### F-05 — No decompression/size bound on parsed DOCX/PDF content beyond the 10 MB upload cap
 **File:** `app.py:206-241` (`_validate_and_extract`), `_extract_docx`/`_extract_pdf` (not shown
@@ -232,7 +245,14 @@ around `_extract_docx`/`_extract_pdf` (the `_extract_pdf` path already computes 
 above a sane page count before running full text extraction / L1–L4). `worker.py`'s single-thread
 executor should also have a per-job timeout so one bad file can't wedge the queue indefinitely.
 
-**Status:** OPEN.
+**Status:** ✅ FIXED (partial) 2026-07-24. `_extract_pdf()` now rejects PDFs over
+`LDV_MAX_PDF_PAGES` (default 500) before running full text extraction; `_extract_docx()` now
+inspects the zip's `infolist()` and rejects if total uncompressed size exceeds
+`LDV_MAX_DOCX_UNCOMPRESSED_MB` (default 200MB) before calling `python-docx`. Not done: a
+wall-clock timeout around extraction / a per-job timeout in `worker.py`'s executor — the
+page/size ceilings address the concrete zip-bomb/pathological-object-stream vector this finding
+described, but don't bound a merely-slow-but-within-limits file. Follow-up if that proves
+necessary in practice.
 
 ### F-06 — Container runs as root
 **File:** `Dockerfile`.
@@ -252,7 +272,17 @@ USER ldv
 Ensure `/app/uploads`, `/app/data`, and the SQLite DB path are writable by that user (may need a
 `chown` before the `USER` switch, or a mounted volume with correct ownership).
 
-**Status:** OPEN.
+**Status:** ✅ FIXED 2026-07-24. Both Dockerfiles (`/Dockerfile`, the HF Spaces artifact this
+pilot actually deploys, and `ldv-backend/Dockerfile`, used by `docker-compose.yml`) now
+`useradd -m -u 1000 ldv`, `chown -R` the app directory, and `USER ldv` before `CMD`.
+`docker-compose.yml`'s Hugging Face cache volume mount updated from `/root/.cache/huggingface` to
+`/home/ldv/.cache/huggingface` to match. Caveat noted inline in `ldv-backend/Dockerfile`: the
+compose file also bind-mounts `./ldv-backend/data` and `./uploads` from the host, and a
+bind-mounted host directory's ownership overrides the image's `chown` at runtime — operators using
+docker-compose need to `chown -R 1000:1000` those host dirs (or let Docker create them fresh, which
+inherits the right ownership). The actual HF Spaces deployment has no such bind mounts, so it's
+unaffected by that caveat. Not independently verified with a live `docker build` (heavy/slow in
+this environment) — reviewed by inspection only.
 
 ### F-07 — Dependency versions not independently verified against CVE databases
 **File:** `requirements.txt`.
@@ -271,7 +301,20 @@ Gate 3 sign-off, and periodically thereafter (e.g. weekly cron or on every depen
 any CRITICAL/HIGH CVE with no available patched pin as a Gate 3 blocker requiring a documented
 risk acceptance.
 
-**Status:** REQUIRES_USER_ACTION (needs a tool/network access this audit didn't have).
+**Status:** 🟡 PARTIAL 2026-07-24. `pip-audit -r requirements.txt` run (network access was
+available this pass). 7 known vulnerabilities in 6 packages found:
+
+| Package | Installed | Advisory | Fix available | Action |
+|---|---|---|---|---|
+| Flask | 3.1.2 | PYSEC-2026-2151 | 3.1.3 | ✅ Bumped to 3.1.3, patch-level, 108/108 tests pass |
+| cryptography | 48.0.0 | GHSA-537c-gmf6-5ccf (statically-linked OpenSSL) | 48.0.1 | ✅ Bumped to 48.0.1, patch-level, 108/108 tests pass |
+| setuptools | 81.0.0 | PYSEC-2026-3447 (MANIFEST.in exclude bypass, sdist build-time) | 83.0.0 | Not pinned in `requirements.txt` (transitive/build-tool); low relevance to a running deployment. Owner decision: pin explicitly or accept. |
+| torch | 2.11.0 | PYSEC-2025-194 (`torch.jit.script` memory corruption) | 2.13.0 | ⛔ Not bumped — multi-GB reinstall, minor-version jump against a pinned ML stack (CLAUDE.md's fine-tuned DistilBERT + Qwen setup depends on exact versions); needs a scheduled bump + full model-inference regression pass, not a same-session change. Owner decision required. |
+| transformers | 5.4.0 | PYSEC-2026-2290 (LightGlue model-loading RCE via attacker-controlled repo) | 5.5.0 | ⛔ Not bumped — same reasoning as torch; also note the RCE vector requires loading an attacker-controlled model repo, which this app doesn't do (models are pinned to known repos/local fine-tuned paths). Lower urgency than the CVE severity alone suggests, but still needs a scheduled, tested bump. Owner decision required. |
+| deep-translator | 1.11.4 | PYSEC-2022-252 (2022 supply-chain account-takeover incident) | none listed | ⛔ No patched version exists in the advisory. Exposure is bounded: `LDV_REMOTE_TRANSLATION` defaults to `0` (disabled) per CLAUDE.md, so this code path isn't reachable in the default/pilot configuration. Owner decision: risk-accept given the flag default, or evaluate replacing the library. |
+
+Re-run `pip-audit` periodically (CI gate or scheduled) rather than treating this as a one-time
+check — new CVEs get published against unchanged pins.
 
 ### F-08 — SSRF / data-exfiltration surface in the LightML translator microservice call is real but *config-gated*, not code-gated
 **File:** `translator_client.py`.
@@ -294,7 +337,12 @@ once HTTPS is satisfied, and (b) keeping `EXTERNAL_TRANSLATION_DISABLED=1` in ev
 until that allowlist exists. Document this explicitly as a Gate 3 condition if `LDV_REMOTE_TRANSLATION=local`
 is ever turned on for the pilot.
 
-**Status:** OPEN (config/process control, not purely code).
+**Status:** 🟡 ACKNOWLEDGED 2026-07-24, no code change made (matches the audit's own
+recommendation — none was strictly required). Documented as an explicit Gate 3 condition: keep
+`EXTERNAL_TRANSLATION_DISABLED=1` (the default) in every environment until an allowlist for
+`LIGHTML_TRANSLATOR_URL` exists. If `LDV_REMOTE_TRANSLATION=local` is ever turned on for the
+pilot, this needs the hostname/CIDR allowlist built first — treat that as a precondition, not a
+follow-up.
 
 ### F-09 — No account lockout / backoff beyond per-IP rate limiting on login and MFA verification
 **File:** `app.py:423-483` (`login`), `552-595` (`api_mfa_enable`).
@@ -314,7 +362,16 @@ backoff or temporary lock, logged via the existing `write_audit("login.fail", ..
 `mfa` audit events (the audit trail already exists — just needs to feed a decision, not only a log
 line).
 
-**Status:** OPEN.
+**Status:** ✅ FIXED (primary vector) 2026-07-24. Added `users.failed_login_attempts` /
+`users.locked_until` columns and `database.record_login_failure()` /
+`record_login_success()` / `is_account_locked()`. `/login` now checks the lock before verifying
+the password, increments the counter on both a bad password and a bad MFA code, locks the account
+for 15 minutes after 10 consecutive failures (`_LOGIN_LOCKOUT_THRESHOLD`/`_LOGIN_LOCKOUT_MINUTES`
+in `database.py`), and resets the counter on successful login. Verified end-to-end (10 failures →
+locked; success → reset). Not covered: `api_mfa_enable` (the MFA *setup*/enrollment endpoint) has
+its own TOTP-guessing surface, but it requires an already-authenticated or
+pending-enrollment session to reach — a materially smaller attack surface than the unauthenticated
+`/login` brute-force vector this fix targets. Left open as a lower-priority follow-up.
 
 ---
 

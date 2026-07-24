@@ -73,6 +73,15 @@ def create_user_cmd(email: str, org_name: str, role: str) -> None:
     print(f"  api token: {token}")
 
 
+def rotate_token_cmd(email: str) -> None:
+    user = database.get_user_by_email(email.strip().lower())
+    if not user:
+        sys.exit(f"User {email} not found.")
+    token = database.rotate_api_token(user["id"])
+    print(f"Rotated API token for {email}.")
+    print(f"  api token: {token}")
+
+
 def purge_cmd(dry_run: bool) -> None:
     victims = database.purge_expired(dry_run=dry_run)
     for v in victims:
@@ -202,6 +211,8 @@ def main() -> None:
     pu.add_argument("email")
     pu.add_argument("org")
     pu.add_argument("--role", default="user", choices=["user", "admin", "analyst", "reviewer", "manager"])
+    prt = sub.add_parser("rotate-token", help="Issue a new API token for a user, invalidating the old one")
+    prt.add_argument("email")
     pp = sub.add_parser("purge")
     pp.add_argument("--dry-run", action="store_true")
     pd = sub.add_parser("purge-doc")
@@ -227,6 +238,8 @@ def main() -> None:
         create_org_cmd(args.name)
     elif args.cmd == "create-user":
         create_user_cmd(args.email, args.org, args.role)
+    elif args.cmd == "rotate-token":
+        rotate_token_cmd(args.email)
     elif args.cmd == "purge":
         purge_cmd(args.dry_run)
     elif args.cmd == "purge-doc":

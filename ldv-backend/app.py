@@ -151,8 +151,19 @@ def handle_exception(e):
 
 # ── Text extraction ────────────────────────────────────────────────────────────
 
+# F-05: a compressed-well-under-10MB file can still decompress/expand into a
+# document expensive enough to stall the single-worker analysis queue
+# (worker.py ThreadPoolExecutor(max_workers=1)). Reject before full parsing.
+_MAX_PDF_PAGES = int(os.getenv("LDV_MAX_PDF_PAGES", "500"))
+_MAX_DOCX_UNCOMPRESSED_BYTES = int(os.getenv("LDV_MAX_DOCX_UNCOMPRESSED_MB", "200")) * 1024 * 1024
+
+
 def _extract_pdf(data: bytes) -> str:
     doc = fitz.open(stream=data, filetype="pdf")
+    if doc.page_count > _MAX_PDF_PAGES:
+        raise ValueError(
+            f"PDF has {doc.page_count} pages, exceeding the {_MAX_PDF_PAGES}-page limit"
+        )
     text = "\n".join(page.get_text() for page in doc)
     if not text.strip():
         text = _ocr_pdf(doc)
@@ -183,7 +194,15 @@ def _ocr_pdf(doc) -> str:
 
 def _extract_docx(data: bytes) -> str:
     import docx
+    import zipfile
     from io import BytesIO
+    with zipfile.ZipFile(BytesIO(data)) as zf:
+        uncompressed = sum(zi.file_size for zi in zf.infolist())
+    if uncompressed > _MAX_DOCX_UNCOMPRESSED_BYTES:
+        raise ValueError(
+            f"DOCX decompresses to {uncompressed // (1024*1024)} MB, exceeding the "
+            f"{_MAX_DOCX_UNCOMPRESSED_BYTES // (1024*1024)} MB limit"
+        )
     document = docx.Document(BytesIO(data))
     parts = []
     for para in document.paragraphs:
@@ -443,8 +462,17 @@ def login():
     password = data.get("password") or ""
     mfa_code = (data.get("mfa_code") or data.get("otp") or "").strip()
 
+    # F-09: per-account lockout, independent of the per-IP rate limit above —
+    # a distributed attacker isn't slowed by a per-IP-only limit.
+    existing = database.get_user_by_email(email)
+    if existing and database.is_account_locked(existing):
+        database.write_audit("login.fail", ip=_ip(), detail=f"{email} (locked)")
+        return jsonify({"error": "Account temporarily locked due to repeated failed attempts. Try again later."}), 423
+
     user = auth.verify_login(email, password)
     if user is None:
+        if existing:
+            database.record_login_failure(existing["id"])
         database.write_audit("login.fail", ip=_ip(), detail=email)
         return jsonify({"error": "Invalid credentials"}), 401
 
@@ -479,6 +507,7 @@ def login():
                 database.write_audit("mfa.recovery_used", user_id=user["id"], org_id=user["org_id"], ip=_ip())
 
         if not verified:
+            database.record_login_failure(user["id"])
             database.write_audit("login.fail", ip=_ip(), detail=f"{email} (invalid MFA)")
             return jsonify({"error": "Invalid MFA code"}), 401
 
@@ -491,6 +520,7 @@ def login():
     session.pop("mfa_pending_uid", None)
     session.pop("mfa_enroll_pending_uid", None)
     session["uid"] = user["id"]
+    database.record_login_success(user["id"])
     database.write_audit("login.success", user_id=user["id"], org_id=user["org_id"], ip=_ip())
     return jsonify({"ok": True, "role": user["role"]})
 

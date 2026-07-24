@@ -58,7 +58,7 @@ def _token() -> str:
     email = "test-runner@ldv.internal"
     user = _db.get_user_by_email(email)
     if user:
-        return user["api_token"]
+        return _db.rotate_api_token(user["id"])
     tok = f"tok-{_s.token_urlsafe(16)}"
     _db.create_user(org["id"], email, _auth.hash_password(_s.token_urlsafe(16)), "analyst", tok)
     return tok

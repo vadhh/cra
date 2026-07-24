@@ -3,14 +3,23 @@ database.py — SQLite persistence for Sydeco LightML Contract Risk Analyzer.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
+import secrets
 import sqlite3
 import uuid
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 
 import crypto
+
+
+def _hash_token(token: str) -> str:
+    # SHA-256 with no per-token salt: tokens are already high-entropy random
+    # values (secrets.token_urlsafe(32)), unlike passwords, so a rainbow-table
+    # attack isn't a meaningful threat model here (F-04).
+    return hashlib.sha256(token.encode()).hexdigest()
 
 def get_db_path() -> str:
     return os.getenv("LDV_DB_PATH", os.path.join(os.path.dirname(__file__), "sydeco.db"))
@@ -249,6 +258,24 @@ def init_db() -> None:
                 conn.execute("ALTER TABLE users ADD COLUMN download_disabled INTEGER DEFAULT 0")
             if "mfa_exempt" not in user_cols:
                 conn.execute("ALTER TABLE users ADD COLUMN mfa_exempt INTEGER DEFAULT 0")
+            if "failed_login_attempts" not in user_cols:
+                conn.execute("ALTER TABLE users ADD COLUMN failed_login_attempts INTEGER DEFAULT 0")
+            if "locked_until" not in user_cols:
+                conn.execute("ALTER TABLE users ADD COLUMN locked_until TEXT")
+
+            # F-04: hash any legacy plaintext api_token values in place. A stored
+            # SHA-256 hex digest is 64 lowercase hex chars; real tokens
+            # (`tok-<urlsafe-b64>` / bare urlsafe-b64) never match that shape, so
+            # this is a safe, idempotent heuristic — the plaintext bearer value a
+            # client already holds is unchanged, only its at-rest storage form is.
+            for row_id, tok in conn.execute(
+                "SELECT id, api_token FROM users WHERE api_token IS NOT NULL"
+            ).fetchall():
+                if not (len(tok) == 64 and all(c in "0123456789abcdef" for c in tok)):
+                    conn.execute(
+                        "UPDATE users SET api_token = ? WHERE id = ?",
+                        (_hash_token(tok), row_id),
+                    )
 
             # Sprint 4: Subscription usage tracking, case history, and professional review workflow
             for col, default_val in [
@@ -309,14 +336,13 @@ def init_db() -> None:
                     org_id = org_row[0]
                         
                     from werkzeug.security import generate_password_hash
-                    import secrets
                     hashed = generate_password_hash(admin_password)
                     token = secrets.token_urlsafe(32)
-                    
+
                     conn.execute(
                         """INSERT OR IGNORE INTO users (org_id, email, password_hash, role, api_token)
                            VALUES (?, ?, ?, ?, ?)""",
-                        (org_id, admin_email, hashed, "admin", token)
+                        (org_id, admin_email, hashed, "admin", _hash_token(token))
                     )
                     print(f"Auto-seeded default admin user: {admin_email} (password: {admin_password})")
                 except sqlite3.Error as e:
@@ -597,9 +623,17 @@ def create_user(org_id: int, email: str, password_hash: str,
         cur = db.execute(
             """INSERT INTO users (org_id, email, password_hash, role, api_token)
                VALUES (?, ?, ?, ?, ?)""",
-            (org_id, email.strip().lower(), password_hash, role, api_token),
+            (org_id, email.strip().lower(), password_hash, role, _hash_token(api_token)),
         )
         return cur.lastrowid
+
+
+def rotate_api_token(user_id: int) -> str:
+    """Generate a new bearer token, store only its hash, return the plaintext once."""
+    token = f"tok-{secrets.token_urlsafe(32)}"
+    with _conn() as db:
+        db.execute("UPDATE users SET api_token = ? WHERE id = ?", (_hash_token(token), user_id))
+    return token
 
 
 def get_user_by_email(email: str) -> dict | None:
@@ -616,12 +650,53 @@ def get_user_by_id(user_id: int) -> dict | None:
         return dict(row) if row else None
 
 
+_LOGIN_LOCKOUT_THRESHOLD = 10
+_LOGIN_LOCKOUT_MINUTES = 15
+
+
+def record_login_failure(user_id: int) -> None:
+    """F-09: per-account failed-attempt counter, independent of per-IP rate
+    limiting — a distributed attacker spreading a password/TOTP-guessing
+    attack across many IPs isn't slowed by the per-IP limits alone."""
+    with _conn() as db:
+        row = db.execute(
+            "SELECT failed_login_attempts FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+        count = (row[0] or 0) + 1 if row else 1
+        locked_until = None
+        if count >= _LOGIN_LOCKOUT_THRESHOLD:
+            locked_until = (
+                datetime.now(timezone.utc).replace(tzinfo=None)
+                + timedelta(minutes=_LOGIN_LOCKOUT_MINUTES)
+            ).strftime("%Y-%m-%d %H:%M:%S")
+        db.execute(
+            "UPDATE users SET failed_login_attempts = ?, locked_until = ? WHERE id = ?",
+            (count, locked_until, user_id),
+        )
+
+
+def record_login_success(user_id: int) -> None:
+    with _conn() as db:
+        db.execute(
+            "UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = ?",
+            (user_id,),
+        )
+
+
+def is_account_locked(user: dict) -> bool:
+    locked_until = user.get("locked_until")
+    if not locked_until:
+        return False
+    now = datetime.now(timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S")
+    return locked_until > now
+
+
 def get_user_by_token(token: str) -> dict | None:
     if not token:
         return None
     with _conn() as db:
         row = db.execute(
-            "SELECT * FROM users WHERE api_token = ?", (token,)
+            "SELECT * FROM users WHERE api_token = ?", (_hash_token(token),)
         ).fetchone()
         return dict(row) if row else None
 

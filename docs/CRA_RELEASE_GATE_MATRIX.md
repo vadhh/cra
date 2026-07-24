@@ -43,7 +43,7 @@ Evidence: `ldv-backend/tests/original11_corpus_report.json`, `ldv-backend/tests/
 
 ## Gate 3 — Security Validation
 
-**Status: 🟡 PARTIAL — internal code-level audit performed 2026-07-24; findings open.**
+**Status: 🟡 PARTIAL — internal code-level audit performed 2026-07-24; critical/high/most-medium findings closed, low findings + 3 dependency CVEs remain.**
 
 Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org document ownership, 5-role matrix, MFA (self-service + org-enforced), signed/expiring download links, audit log, rate limiting (flask-limiter), CSRF Origin check, encryption at rest (Fernet, key rotation), retention/purge, pinned dependencies, Docker.
 
@@ -53,10 +53,10 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 |---|---|---|
 | Critical (F-01: `.env` w/ real `LDV_SECRET_KEY`/`LDV_ENCRYPTION_KEY` tracked in git) | 1 | 🟡 Risk-accepted by Afridho 2026-07-24 — repo is private, `.env` intentionally tracked for HF Spaces pilot deploy pickup. Residual risk (collaborator/space-access expansion) documented in the audit doc; rotate + move to a secrets manager if that changes. |
 | High (F-02 global-admin cross-tenant model; F-03 download-link HMAC key derived from session secret) | 2 | ✅ Both fixed 2026-07-24 — `auth.is_operator_org()` guard on all 3 admin-provisioning paths (F-02); independent HMAC-derived download-link key + `LDV_DOWNLOAD_LINK_SECRET` override (F-03). 108/108 tests passing. |
-| Medium (plaintext API tokens; unbounded upload-parse DoS surface; Dockerfile runs as root; unchecked dependency CVEs; unverified translator SSRF gating; no per-account login/MFA lockout) | 6 | ⛔ Open |
+| Medium (F-04 plaintext API tokens; F-05 unbounded upload-parse DoS surface; F-06 Dockerfile runs as root; F-07 unchecked dependency CVEs; F-08 unverified translator SSRF gating; F-09 no per-account login/MFA lockout) | 6 | ✅ 4 fixed 2026-07-24 (F-04 tokens now sha256-hashed at rest + `manage.py rotate-token`; F-05 PDF page-count + DOCX decompressed-size ceilings; F-06 both Dockerfiles + compose now run non-root uid 1000; F-09 10-strikes/15-min per-account lockout on `/login`). F-08 acknowledged, no code change needed (translator SSRF risk is config-gated; documented as a Gate 3 condition to keep `EXTERNAL_TRANSLATION_DISABLED=1` until a URL allowlist exists). F-07 partial: `pip-audit` run, Flask/cryptography patched; torch/transformers/deep-translator CVEs need an owner decision (scheduled major-version bump + regression pass, or risk-accept) — see audit doc table. 108/108 tests passing throughout. |
 | Low (spoofable audit-log IP; hardcoded rate-limit-bypass test email; unsanitized filename in Content-Disposition; per-worker rate-limit storage not shared; no `.env.example`) | 6 | ⛔ Open |
 
-**Not done:** no independent third-party security audit or penetration test. This gate cannot move to `Passed` until the Medium-severity items are fixed or explicitly risk-accepted (same treatment as F-01/F-02/F-03).
+**Not done:** no independent third-party security audit or penetration test. This gate cannot move to `Passed` until the 3 open F-07 dependency-CVE decisions and the 6 Low-severity items are fixed or explicitly risk-accepted (same treatment as F-01/F-02/F-03).
 
 ---
 
@@ -91,7 +91,7 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 |---|---|
 | 1. Engineering regression | ✅ Passed |
 | 2. Corpus validation | 🟡 Partial — 2 open items (risk-score review, 5 collision pairs). 45v42 reconciliation and clause sync ✅ resolved. |
-| 3. Security validation | 🟡 Partial — internal audit done 2026-07-24; 1 critical risk-accepted, 2 high fixed, 6 medium + 6 low open |
+| 3. Security validation | 🟡 Partial — internal audit done 2026-07-24; 1 critical risk-accepted, 2 high fixed, 4/6 medium fixed + 1 acknowledged + 1 partial (3 CVEs need owner decision), 6 low open |
 | 4. Product wording, disclaimer & scope compliance | 🟡 Partial — wording audit in progress |
 | 5. Controlled pilot acceptance | ⛔ Not started — blocked on 2–4 |
 
@@ -102,5 +102,5 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 ## Owners for Remaining Work
 
 - **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`) and corresponding fix to the reversed scale in `docs/lightml/corpus_expected_results.md`; 5 remaining collision-pair keyword-ownership decisions (§B); reconcile citation coverage gap (12 profiles) against the 87/87-verified claim.
-- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4); triage and close the 6 Medium findings in `docs/gate3_security_audit_2026-07-24.md` (fix or explicit risk-accept, same treatment as F-01); keep this matrix updated as each item closes. `saas_agreement` registry gap ✅ closed 2026-07-24. Gate 3 High findings (F-02, F-03) ✅ fixed 2026-07-24.
+- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4); decide on the 3 open F-07 dependency CVEs (torch/transformers scheduled bump + regression pass, or risk-accept; deep-translator risk-accept given it's disabled by default) and triage the 6 Low findings in `docs/gate3_security_audit_2026-07-24.md`; keep this matrix updated as each item closes. `saas_agreement` registry gap ✅ closed 2026-07-24. Gate 3 High findings (F-02, F-03) and 4/6 Medium findings (F-04, F-05, F-06, F-09) ✅ fixed 2026-07-24; F-08 acknowledged, no action needed unless `LDV_REMOTE_TRANSLATION=local` is turned on.
 - **Joint:** Gate 5 pilot-acceptance criteria and test plan, once Gates 2–4 close.
