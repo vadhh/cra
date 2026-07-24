@@ -14,6 +14,11 @@
     {
       "id": "employment_contract",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Employment Contract",
       "aliases": [
         "employment contract",
@@ -72,6 +77,11 @@
     {
       "id": "lease_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Lease Agreement",
       "aliases": [
         "lease agreement",
@@ -125,6 +135,11 @@
     {
       "id": "software_license",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Software License Agreement",
       "aliases": [
         "software license",
@@ -231,12 +246,22 @@
           "software_license"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
       "id": "service_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Service Agreement",
       "aliases": [
         "service agreement",
@@ -301,6 +326,11 @@
     {
       "id": "consulting_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Consulting Agreement",
       "aliases": [
         "consulting agreement",
@@ -349,6 +379,11 @@
     {
       "id": "commercial_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Commercial Agreement",
       "aliases": [
         "commercial agreement",
@@ -394,6 +429,11 @@
     {
       "id": "non_disclosure_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Non-Disclosure Agreement",
       "aliases": [
         "non-disclosure agreement",
@@ -443,6 +483,11 @@
     {
       "id": "loan_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Loan Agreement",
       "aliases": [
         "loan agreement",
@@ -502,6 +547,11 @@
     {
       "id": "partnership_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Partnership Agreement",
       "aliases": [
         "partnership agreement",
@@ -549,6 +599,11 @@
     {
       "id": "purchase_agreement",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "Purchase Agreement",
       "aliases": [
         "purchase agreement",
@@ -643,7 +698,12 @@
           "service_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -688,7 +748,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -741,7 +806,12 @@
           "purchase_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -792,7 +862,12 @@
           "service_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -842,7 +917,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -889,7 +969,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -940,7 +1025,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -990,7 +1080,12 @@
           "service_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1045,7 +1140,12 @@
           "service_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1089,7 +1189,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1137,7 +1242,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1194,7 +1304,12 @@
           "software_license"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1239,7 +1354,12 @@
           "partnership_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1284,7 +1404,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1326,7 +1451,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1368,7 +1498,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1413,7 +1548,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1457,7 +1597,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1500,7 +1645,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1539,7 +1689,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1593,7 +1748,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1630,7 +1790,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1676,7 +1841,12 @@
           "service_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1727,7 +1897,12 @@
           "employment_contract"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1773,7 +1948,12 @@
           "agency_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1825,7 +2005,12 @@
           "consulting_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1871,7 +2056,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1912,7 +2102,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -1959,7 +2154,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2001,7 +2201,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2045,7 +2250,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2097,7 +2307,12 @@
           "partnership_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2142,7 +2357,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2185,7 +2405,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2224,7 +2449,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2267,7 +2497,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2310,7 +2545,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2357,7 +2597,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2402,7 +2647,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2446,7 +2696,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2501,7 +2756,12 @@
           "loan_agreement"
         ],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2542,7 +2802,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2586,7 +2851,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2633,7 +2903,12 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
@@ -2677,12 +2952,22 @@
         "negative_keywords": [],
         "competing_profiles": [],
         "confirmation_threshold": 0.7,
-        "status": "draft"
+        "status": "beta_candidate"
+      },
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
       }
     },
     {
       "id": "general_contract",
       "version": "1.0",
+      "legal_compliance": {
+        "tos_required": true,
+        "jurisdiction": "ID",
+        "legal_citations_mapped": true
+      },
       "display_name": "General Contract",
       "aliases": [
         "general contract",

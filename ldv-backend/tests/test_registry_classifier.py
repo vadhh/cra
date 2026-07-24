@@ -26,7 +26,7 @@ def test_every_registry_profile_has_classifier_config():
         clf = profile_registry.classifier_for(pid)
         assert clf is not None, f"{pid} missing classifier block"
         assert clf["hypothesis"], f"{pid} missing hypothesis"
-        assert clf["status"] in ("validated", "draft")
+        assert clf["status"] in ("validated", "draft", "beta_candidate")
 
 
 def test_doc_type_specs_cover_all_57_profiles_plus_non_contract():

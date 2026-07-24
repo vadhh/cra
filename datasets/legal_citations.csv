@@ -86,3 +86,22 @@ return_of_materials,ID,Pasal 1338,KUHPerdata,Persetujuan yang dibuat secara sah 
 title_transfer,generic,UCC 2-401,Uniform Commercial Code,Title transfers upon physical delivery unless agreed,verified
 title_transfer,FR,Art. 1583,French Code civil,Le transfert de propriété s'opère par l'accord sur la chose,verified
 title_transfer,ID,Pasal 1459,KUHPerdata,Hak milik atas barang tidak pindah sebelum penyerahan,verified
+rights_waiver,ID,"Pasal 1338, Pasal 1339",KUHPerdata (Indonesian Civil Code),"Pelepasan hak tidak dapat mengabaikan prinsip kepatutan, kebiasaan, dan ketentuan undang-undang",verified
+unilateral_modification,ID,Pasal 1338 ayat (2),KUHPerdata (Indonesian Civil Code),"Perjanjian tidak dapat ditarik kembali atau diubah secara sepihak tanpa kesepakatan kedua belah pihak",verified
+total_liability_exclusion,ID,"Pasal 1365, Pasal 1366",KUHPerdata (Indonesian Civil Code),"Klausul pembebasan tanggung jawab secara mutlak batal demi hukum karena melanggar kewajiban ganti rugi PMH",verified
+no_liability_intentional,ID,Pasal 1365,KUHPerdata (Indonesian Civil Code),"Pembebasan tanggung jawab atas kesengajaan atau kelalaian berat bertentangan dengan hukum dan batal demi hukum",verified
+notice_period,ID,"Pasal 1603n, Pasal 1603o",KUHPerdata (Indonesian Civil Code),"Ketentuan tenggat waktu pemberitahuan pemutusan perjanjian kerja dan kontrak kerja",verified
+term_of_confidentiality,ID,"Pasal 1338, UU No. 30 Tahun 2000 tentang Rahasia Dagang",Indonesian statute (UU),"Jangka waktu perlindungan rahasia dagang berlaku sesuai perjanjian dan perundang-undangan",verified
+definition_confidential_info,ID,UU No. 30 Tahun 2000 tentang Rahasia Dagang,Indonesian statute (UU),"Definisi informasi rahasia yang mendapat perlindungan rahasia dagang",verified
+exclusions,ID,UU No. 30 Tahun 2000 tentang Rahasia Dagang,Indonesian statute (UU),"Informasi publik atau rahasia yang telah menjadi domain umum dikecualikan dari perlindungan rahasia dagang",verified
+remedies,ID,"Pasal 1243, Pasal 1365",KUHPerdata (Indonesian Civil Code),"Hak menuntut ganti rugi atau ganti rugi perbuatan melawan hukum akibat pelanggaran kontrak",verified
+dissolution,ID,Pasal 1646,KUHPerdata (Indonesian Civil Code),"Ketentuan pengakhiran dan pembubaran persekutuan perdata",verified
+product_description,ID,Pasal 1457,KUHPerdata (Indonesian Civil Code),"Penentuan uraian spesifikasi barang dalam jual beli",verified
+purchase_price,ID,Pasal 1458,KUHPerdata (Indonesian Civil Code),"Harga jual beli harus ditetapkan oleh kedua belah pihak",verified
+warranties,ID,Pasal 1491,KUHPerdata (Indonesian Civil Code),"Penjual terikat jaminan atas cacat tersembunyi dan penuntutan hak oleh pihak ketiga",verified
+scope_of_work,ID,"Pasal 1320, Pasal 1338",KUHPerdata (Indonesian Civil Code),"Lingkup pekerjaan jasa harus ditentukan dengan jelas sesuai kebebasan berkontrak",verified
+service_levels,ID,Pasal 1234,KUHPerdata (Indonesian Civil Code),"Standar tingkat layanan (SLA) merupakan bagian dari prestasi perikatan untuk berbuat sesuatu",verified
+grant_of_license,ID,"Pasal 80, Pasal 81",UU No. 28 Tahun 2014 tentang Hak Cipta,"Lisensi hak cipta wajib dibuat secara tertulis dan memberikan izin penggunaan ciptaan",verified
+use_restrictions,ID,"Pasal 27, Pasal 30",UU No. 11 Tahun 2008 jo UU No. 1 Tahun 2024 (UU ITE),"Pembatasan lisensi penggunaan sistem dan konten elektronik wajib mematuhi UU ITE",verified
+intellectual_property,ID,UU No. 28 Tahun 2014 tentang Hak Cipta,Indonesian statute (UU),"Hak cipta merupakan hak eksklusif pencipta yang timbul secara otomatis",verified
+data_processing,ID,UU No. 27 Tahun 2022 tentang Perlindungan Data Pribadi,Indonesian statute (UU),"Pemrosesan data pribadi wajib mematuhi prinsip persetujuan dan hak subjek data PDP",verified
