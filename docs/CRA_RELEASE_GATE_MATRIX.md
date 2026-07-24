@@ -20,7 +20,7 @@
 
 ## Gate 2 — Corpus Validation
 
-**Status: 🟡 PARTIAL — objectively-checkable dimensions pass; 2 sub-items unresolved.**
+**Status: 🟡 PARTIAL — objectively-checkable dimensions pass; 1 sub-item unresolved.**
 
 | Sub-item | Status |
 |---|---|
@@ -36,7 +36,7 @@
 | **45-vs-42 detection-spec discrepancy** | ✅ RESOLVED — see `docs/detection_spec_reconciliation_45_vs_42.md`. Ilham's `GOLD_STANDARD_VALIDATION_SUMMARY.md` confirms 42 "Partial" + 3 "Pending Engineering Sync" (`construction_contract`/`insurance_contract`/`it_services_contract`, registry-vs-legacy-JSON `required_clauses` mismatch) = 45; all 45/45 have a detection spec. |
 | **required_clauses sync for the 3 pending-sync profiles** | ✅ DONE — `construction_contract`/`insurance_contract`/`it_services_contract` registry entries and their legacy JSON files (`construction_agreement.json`/`insurance_agreement.json`/`it_service_agreement.json`) now carry the same clause set (union of both sides, per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s recommendations). |
 | **`saas_agreement` registry gap** | ✅ RESOLVED 2026-07-24 — **correction to an earlier entry in this doc:** initial fix folded `"saas agreement"` into `software_license` as an alias, which turned out to contradict Ilham's own `docs/ALIAS_REVIEW.md` (canonical assignment: standalone `saas_agreement` profile). Reverted and redone per `ALIAS_REVIEW.md`: `"saas agreement"` alias removed from `software_license`; new `saas_agreement` profile added to `registry_v1.json` (promoted from the legacy `detector/profiles/saas_agreement.json` content), `classifier.status: "draft"` (not yet corpus-validated), `competing_profiles` cross-referenced both ways. `profile_registry.detect_profile("saas agreement")` now resolves to `saas_agreement`, not `software_license`. `validate_profiles.py` clean (57 profiles, 43 approved clause IDs, 0 unmapped), full suite 108/108 (1 test's hardcoded profile-count assertion updated 56→57). |
-| **Legacy `profiles.json`/`ProfileManager` `saas_agreement` divergence** | 🟡 OPEN, low priority — `profiles.json`'s standalone legacy `saas_agreement` entry (used only by the registry-load fallback path + admin CRUD screens, not live `/analyze`) still has a slightly different clause set than the new registry profile. Owner: Afridho/Ilham joint call on reconciling or retiring it. Not a release blocker. |
+| **Legacy `profiles.json`/`ProfileManager` `saas_agreement` divergence** | ✅ RESOLVED 2026-07-24 — `required_clauses` were already the same 9-clause set (just different order); the real divergence was `coverage.languages`/`coverage.jurisdictions` and `validation_status`. Legacy `detector/profiles/saas_agreement.json` now follows the registry's canonical status: `validation_status: "preparation"` (legacy schema's closest equivalent to the registry's `classifier.status: "draft"` — not yet corpus-validated), `languages: [EN, ID, NL, FR]`, `jurisdictions: [Global, Indonesia, Netherlands, France]` (legacy schema uses `"Global"` where the registry uses `"INT"`). 108/108 tests passing after fix. |
 
 Evidence: `ldv-backend/tests/original11_corpus_report.json`, `ldv-backend/tests/collision_pairs_report.json`, `docs/legal_review_packet.md`, `docs/GOLD_STANDARD_VALIDATION_SUMMARY.md`, `docs/REQUIRED_CLAUSE_RECONCILIATION.md`.
 
@@ -91,7 +91,7 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 | Gate | Status |
 |---|---|
 | 1. Engineering regression | ✅ Passed |
-| 2. Corpus validation | 🟡 Partial — risk-score review and all 13 collision pairs ✅ resolved 2026-07-24. 2 low-priority open items remain (Phase 2 "Gold Standard" scope, legacy `profiles.json` saas_agreement divergence). 45v42 reconciliation and clause sync ✅ resolved. |
+| 2. Corpus validation | 🟡 Partial — risk-score review, all 13 collision pairs, and legacy `profiles.json` saas_agreement divergence ✅ resolved 2026-07-24. 1 open item remains: Phase 2 "Gold Standard" formal validation (owned by Ilham). 45v42 reconciliation and clause sync ✅ resolved. |
 | 3. Security validation | 🟡 Partial — internal audit done 2026-07-24; 1 critical risk-accepted, 2 high fixed, 4/6 medium fixed + 1 acknowledged + 1 partial (3 CVEs need owner decision), 6 low open |
 | 4. Product wording, disclaimer & scope compliance | 🟡 Partial — wording audit in progress |
 | 5. Controlled pilot acceptance | ⛔ Not started — blocked on 2–4 |

@@ -1,8 +1,8 @@
 {
   "profile_id": "saas_agreement",
   "version": "1.0.0",
-  "validation_status": "Validated",
-  "review_date": "2026-07-14",
+  "validation_status": "preparation",
+  "review_date": "2026-07-24",
   "metadata": {
     "display_name": "SaaS Agreement",
     "family": "commercial_agreements",
@@ -18,15 +18,14 @@
     "languages": [
       "EN",
       "ID",
+      "NL",
       "FR"
     ],
     "jurisdictions": [
+      "Global",
       "Indonesia",
-      "Belgium",
-      "France",
       "Netherlands",
-      "England & Wales",
-      "United States"
+      "France"
     ]
   },
   "classification": {
