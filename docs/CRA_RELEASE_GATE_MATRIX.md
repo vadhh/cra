@@ -31,11 +31,11 @@
 | Recommendation wiring | ✅ 33/33 |
 | PDF generation | ✅ 33/33 |
 | **Risk-score ground truth** | ⛔ PENDING — 0/33 lawyer-reviewed; `docs/legal_review_packet.md` §D has actual scores staged for review, unreviewed |
-| **13 collision pairs — resolved** | 🟡 1/6 remaining pairs closed by Ilham's `docs/ALIAS_REVIEW.md` (`joint_venture_agreement` vs `partnership_agreement` — matches our proposed fix); **5 pairs still need Ilham's keyword-ownership call** (maintenance/service, licensing/software_license, outsourcing/service, employment_termination/employment, banking_facility/loan), `docs/legal_review_packet.md` §B |
+| **13 collision pairs — resolved** | 🟡 `docs/ALIAS_REVIEW.md`'s 4 alias-collision renames (`saas agreement`, `joint venture agreement`, `perjanjian kerjasama`, `samenwerkingsovereenkomst`) applied to `registry_v1.json` 2026-07-24 — see `saas_agreement` row below; `joint_venture_agreement` vs `partnership_agreement` and `cooperation_agreement` vs `partnership_agreement` (pairs #7, #12) now cleanly disambiguated. **5 pairs still need Ilham's keyword-ownership call** (maintenance/service, licensing/software_license, outsourcing/service, employment_termination/employment, banking_facility/loan), `docs/legal_review_packet.md` §B / `docs/classifier_collision_pairs.md` |
 | **45-vs-42 detection-spec discrepancy** | ✅ RESOLVED — see `docs/detection_spec_reconciliation_45_vs_42.md`. Ilham's `GOLD_STANDARD_VALIDATION_SUMMARY.md` confirms 42 "Partial" + 3 "Pending Engineering Sync" (`construction_contract`/`insurance_contract`/`it_services_contract`, registry-vs-legacy-JSON `required_clauses` mismatch) = 45; all 45/45 have a detection spec. |
-| **required_clauses sync for the 3 pending-sync profiles** | ✅ DONE — `construction_contract`/`insurance_contract`/`it_services_contract` registry entries and their legacy JSON files (`construction_agreement.json`/`insurance_agreement.json`/`it_service_agreement.json`) now carry the same clause set (union of both sides, per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s recommendations). `validate_profiles.py` clean (56 profiles, 43 approved clause IDs, 0 unmapped), full suite 108/108. |
-
-**Still open, not part of this batch:** the `saas_agreement` registry gap (currently unmapped; Ilham recommends treating it as a `software_license` variant) — separate from the 3-profile clause sync just closed.
+| **required_clauses sync for the 3 pending-sync profiles** | ✅ DONE — `construction_contract`/`insurance_contract`/`it_services_contract` registry entries and their legacy JSON files (`construction_agreement.json`/`insurance_agreement.json`/`it_service_agreement.json`) now carry the same clause set (union of both sides, per `docs/REQUIRED_CLAUSE_RECONCILIATION.md`'s recommendations). |
+| **`saas_agreement` registry gap** | ✅ RESOLVED 2026-07-24 — **correction to an earlier entry in this doc:** initial fix folded `"saas agreement"` into `software_license` as an alias, which turned out to contradict Ilham's own `docs/ALIAS_REVIEW.md` (canonical assignment: standalone `saas_agreement` profile). Reverted and redone per `ALIAS_REVIEW.md`: `"saas agreement"` alias removed from `software_license`; new `saas_agreement` profile added to `registry_v1.json` (promoted from the legacy `detector/profiles/saas_agreement.json` content), `classifier.status: "draft"` (not yet corpus-validated), `competing_profiles` cross-referenced both ways. `profile_registry.detect_profile("saas agreement")` now resolves to `saas_agreement`, not `software_license`. `validate_profiles.py` clean (57 profiles, 43 approved clause IDs, 0 unmapped), full suite 108/108 (1 test's hardcoded profile-count assertion updated 56→57). |
+| **Legacy `profiles.json`/`ProfileManager` `saas_agreement` divergence** | 🟡 OPEN, low priority — `profiles.json`'s standalone legacy `saas_agreement` entry (used only by the registry-load fallback path + admin CRUD screens, not live `/analyze`) still has a slightly different clause set than the new registry profile. Owner: Afridho/Ilham joint call on reconciling or retiring it. Not a release blocker. |
 
 Evidence: `ldv-backend/tests/original11_corpus_report.json`, `ldv-backend/tests/collision_pairs_report.json`, `docs/legal_review_packet.md`, `docs/GOLD_STANDARD_VALIDATION_SUMMARY.md`, `docs/REQUIRED_CLAUSE_RECONCILIATION.md`.
 
@@ -51,14 +51,19 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 
 ---
 
-## Gate 4 — Legal Review
+## Gate 4 — Product Wording, Disclaimer & Scope Compliance
 
-**Status: ⛔ NOT STARTED**
+**Status: 🟡 PARTIAL — scope clarified 2026-07-24; wording fixes in progress.**
 
-- `docs/legal_review_packet.md` created 07-22 as the single lawyer sign-off entry point (6 sections: profile validation, collision-pair ownership, clause-severity sign-off, risk-score ground truth, recommendation-wording spot-check, citations).
-- Citations: 87/87 already `verified` — no action needed there.
-- Everything else in the packet: sign-off checkbox unchecked, reviewer field blank, 0/56 profiles formally approved.
-- **Formal legal approval: 0/56. Repository-supported evidence package prepared: 11/56 (the validated profiles) — evidence prepared is not approval.**
+CRA is a contract risk-screening tool, not a legal-opinion engine. It identifies missing, dangerous, abusive, or unbalanced clauses and calculates risk scores — it does not certify enforceability, and its recommendations do not replace legal counsel. Formal per-profile legal sign-off (0/56) is **not** a release blocker; this gate instead checks that the product doesn't claim to be something it isn't.
+
+| Sub-item | Status |
+|---|---|
+| No legal-conclusion wording in product output (e.g. declarative "void"/"unenforceable"/"safe to execute") | 🟡 2 declarative instances in `risk_explainer.py` reworded to hedged ("commonly held void") 2026-07-24; remaining `_RED_FLAG_GUIDANCE`/`pdf_report.py` strings already hedged ("may be", "typically", "frequently") — needs a full pass, not yet audited end-to-end |
+| Disclaimer present and correctly scoped ("does not constitute legal advice") | ✅ present in PDF report footer (`pdf_report.py`) |
+| Citations traceability | ✅ 87 rows `verified`; Ilham's data-quality package reports coverage gaps for 12 profiles — needs reconciling before "87/87" is repeated as a clean number |
+
+Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer sign-off entry point under the prior Gate 4 mandate (07-17 review). Its non-legal sections (collision-pair ownership §B, risk-score ground truth §D, recommendation-wording spot-check) remain useful engineering/product inputs; its sign-off checkbox/reviewer-field mechanism is no longer a release requirement.
 
 ---
 
@@ -78,7 +83,7 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 | 1. Engineering regression | ✅ Passed |
 | 2. Corpus validation | 🟡 Partial — 2 open items (risk-score review, 5 collision pairs). 45v42 reconciliation and clause sync ✅ resolved. |
 | 3. Security validation | 🟡 Partial — hardening done, no formal audit |
-| 4. Legal review | ⛔ Not started |
+| 4. Product wording, disclaimer & scope compliance | 🟡 Partial — wording audit in progress |
 | 5. Controlled pilot acceptance | ⛔ Not started — blocked on 2–4 |
 
 **`release/cra-1.0-rc1` remains unmerged to `master`.** No profile status changes in the registry until this matrix shows all 5 gates `Passed`/`Approved`.
@@ -87,6 +92,6 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 
 ## Owners for Remaining Work
 
-- **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`), 5 remaining collision-pair keyword-ownership decisions (§B), formal legal reviewer sign-off (Gate 4).
-- **Afridho:** resolve `saas_agreement` registry gap; arrange/perform Gate 3 formal security validation; keep this matrix updated as each item closes.
+- **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`) and corresponding fix to the reversed scale in `docs/lightml/corpus_expected_results.md`; 5 remaining collision-pair keyword-ownership decisions (§B); reconcile citation coverage gap (12 profiles) against the 87/87-verified claim.
+- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4); arrange/perform Gate 3 formal security validation; keep this matrix updated as each item closes. `saas_agreement` registry gap ✅ closed 2026-07-24.
 - **Joint:** Gate 5 pilot-acceptance criteria and test plan, once Gates 2–4 close.

@@ -29,11 +29,11 @@ def test_every_registry_profile_has_classifier_config():
         assert clf["status"] in ("validated", "draft")
 
 
-def test_doc_type_specs_cover_all_56_profiles_plus_non_contract():
+def test_doc_type_specs_cover_all_57_profiles_plus_non_contract():
     clear_classification_cache()
     specs = load_doc_type_specs()
     labels = {s["label"] for s in specs}
-    assert len(specs) == 56 + 4  # registry profiles + invoice/receipt/purchase order/non-contract
+    assert len(specs) == 57 + 4  # registry profiles (57, incl. saas_agreement split off software_license 2026-07-24) + invoice/receipt/purchase order/non-contract
     assert "distribution agreement" in labels  # a "partial" (draft) profile, not one of the original 11
     assert "government procurement contract" in labels
 

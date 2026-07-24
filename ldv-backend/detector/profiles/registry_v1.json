@@ -120,7 +120,6 @@
         "software license",
         "software licence",
         "software license agreement",
-        "saas agreement",
         "eula",
         "end user license agreement"
       ],
@@ -153,14 +152,69 @@
           "software license",
           "software licence",
           "software license agreement",
-          "saas agreement",
           "eula",
           "end user license agreement"
         ],
         "negative_keywords": [],
-        "competing_profiles": [],
+        "competing_profiles": [
+          "saas_agreement"
+        ],
         "confirmation_threshold": 0.7,
         "status": "validated"
+      }
+    },
+    {
+      "id": "saas_agreement",
+      "version": "1.0",
+      "display_name": "SaaS Agreement",
+      "aliases": [
+        "saas agreement",
+        "software as a service agreement",
+        "cloud service agreement",
+        "layanan awan",
+        "berlangganan perangkat lunak"
+      ],
+      "jurisdictions": [
+        "INT",
+        "ID",
+        "NL",
+        "FR"
+      ],
+      "languages": [
+        "en",
+        "id",
+        "nl",
+        "fr"
+      ],
+      "required_clauses": [
+        "governing_law",
+        "jurisdiction_venue",
+        "payment_terms",
+        "license_grant",
+        "ip_ownership",
+        "limitation_liability",
+        "warranty_disclaimer",
+        "termination",
+        "dispute_resolution"
+      ],
+      "notes": "Per ALIAS_REVIEW.md: canonical assignment for 'saas agreement' moved off software_license onto its own profile; promoted from the legacy detector/profiles/saas_agreement.json content 2026-07-24.",
+      "classifier": {
+        "hypothesis": "This document involves software-as-a-service (SaaS) subscriptions and cloud service terms.",
+        "positive_keywords": [
+          "saas",
+          "software as a service",
+          "cloud service",
+          "subscription fee",
+          "cloud agreement",
+          "layanan awan",
+          "berlangganan perangkat lunak"
+        ],
+        "negative_keywords": [],
+        "competing_profiles": [
+          "software_license"
+        ],
+        "confirmation_threshold": 0.7,
+        "status": "draft"
       }
     },
     {
@@ -412,11 +466,8 @@
       "display_name": "Partnership Agreement",
       "aliases": [
         "partnership agreement",
-        "joint venture agreement",
         "perjanjian kemitraan",
-        "perjanjian kerjasama",
-        "contrat de partenariat",
-        "samenwerkingsovereenkomst"
+        "contrat de partenariat"
       ],
       "jurisdictions": [
         "ID",
@@ -444,14 +495,14 @@
         "hypothesis": "This document establishes a business partnership between parties.",
         "positive_keywords": [
           "partnership agreement",
-          "joint venture agreement",
           "perjanjian kemitraan",
-          "perjanjian kerjasama",
-          "contrat de partenariat",
-          "samenwerkingsovereenkomst"
+          "contrat de partenariat"
         ],
         "negative_keywords": [],
-        "competing_profiles": [],
+        "competing_profiles": [
+          "joint_venture_agreement",
+          "cooperation_agreement"
+        ],
         "confirmation_threshold": 0.7,
         "status": "validated"
       }

@@ -80,11 +80,11 @@ _RED_FLAG_GUIDANCE: dict[str, dict[str, str]] = {
         "recommendation": "Either party may raise a dispute under this agreement without payment of any fee. Dispute-resolution costs shall be allocated as set out in the Dispute Resolution clause.",
     },
     "no_liability_intentional": {
-        "reason": "Excluding liability for intentional or grossly negligent conduct is void as against public policy in most legal systems -- a party cannot contract out of liability for its own bad faith.",
+        "reason": "Excluding liability for intentional or grossly negligent conduct is commonly held void as against public policy -- courts in many jurisdictions do not let a party contract out of liability for its own bad faith.",
         "recommendation": "Nothing in this agreement excludes or limits either party's liability for intentional misconduct, fraud, or gross negligence; the liability limits in this agreement apply only to ordinary negligence.",
     },
     "illegal_object": {
-        "reason": "The contract references activity that is criminal or otherwise illegal; an agreement with an illegal object is void and unenforceable in its entirety.",
+        "reason": "The contract references activity that is criminal or otherwise illegal; agreements with an illegal object are commonly held void and unenforceable in their entirety.",
         "recommendation": "Remove the illegal subject matter immediately and have counsel review whether the remainder of the contract is severable.",
     },
 }
