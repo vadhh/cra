@@ -59,11 +59,13 @@ The following required clauses lack statutory citations in the repository:
 - **Reviewer Required**: Yes (Qualified Legal Reviewer)
 - **Next Action**: Identify and add verified statutory citations for dispute resolution venue and court jurisdiction (specifically for ID, FR, NL, and INT) to [legal_citations.csv](file:///mnt/c/Users/ADVAN/cra/datasets/legal_citations.csv).
 
-## Summary
-- A total of 5 required clauses across the 11 Technically Mature Profiles are missing legal citations.
+## Summary & Reconciliation Note
+- A total of 5 required clauses across the 11 Technically Mature Profiles (and coverage gaps across 12 profiles overall) are missing legal citations.
 - The internal clause IDs `jurisdiction_venue` and `notice_period` are not mapped in [legal_citations.csv](file:///mnt/c/Users/ADVAN/cra/datasets/legal_citations.csv) or [required_clauses_MASTER.csv](file:///mnt/c/Users/ADVAN/cra/datasets/required_clauses_MASTER.csv).
-- No statutory references exist in the repository to resolve these gaps. Consequently, all 5 entries have been preserved as **Evidence Not Found**.
+- No statutory references exist in the repository to resolve these gaps. Consequently, all entries have been preserved as **Evidence Not Found**.
+- **Reconciliation of "87/87 Verified" Claim:** All 87 rows currently present in `datasets/legal_citations.csv` carry `status=verified`. However, this 87/87 metric measures internal database row verification, NOT total profile statutory coverage. The 12 profiles with missing required-clause citations remain unmapped until new verified citation rows are added to `legal_citations.csv`.
 
-## Remaining Reviewer Actions
-- A Qualified Legal Reviewer must research and supply the appropriate statutory articles for the `jurisdiction_venue` and `notice_period` clauses under all applicable jurisdictions (Indonesia, France, Netherlands, and International).
-- The resolved citations must be appended to the master database [legal_citations.csv](file:///mnt/c/Users/ADVAN/cra/datasets/legal_citations.csv) to transition the system to a production-ready status.
+## Remaining Actions (Data Hygiene & Citation Additions)
+- Research and supply appropriate statutory articles for `jurisdiction_venue` and `notice_period` clauses under all applicable jurisdictions (ID, FR, NL, INT).
+- Appending these resolved citations to [legal_citations.csv](file:///mnt/c/Users/ADVAN/cra/datasets/legal_citations.csv) with `status=verified` will close the 12-profile coverage gap without inflating or misrepresenting database metrics.
+

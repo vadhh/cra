@@ -255,7 +255,9 @@ Every red flag finding carries a `suggested_correction` drawn from `_RED_FLAG_GU
 
 ## F. Legal citations — full table, already complete, no action needed
 
-`datasets/legal_citations.csv`: **87/87 rows `status=verified`.** No open item here as of 2026-07-22 — included in full for transparency/completeness, not because it needs review. New citations added in future will need the same verification before `citation_db.py` will surface them to end users (it fails closed to `verified`-only by default).
+`datasets/legal_citations.csv`: **87/87 rows `status=verified`.**
+> **Reconciliation Caveat on Citation Coverage:** While 100% of the 87 existing rows in `datasets/legal_citations.csv` are marked `verified`, this figure reflects row integrity within the active citation database, **not 100% overall profile coverage**. As documented in `docs/lightml/CONSISTENCY_REPORT.md` and `docs/LEGAL_CITATION_VERIFICATION.md`, 12 profiles in the registry still have required clauses (such as `jurisdiction_venue` and `notice_period`) lacking statutory citations, logged as "Evidence Not Found" in the gap tracker. The "87/87 verified" claim applies strictly to existing DB rows.
+
 
 | Finding ID | Jurisdiction | Article/Reference | Source | Note |
 |---|---|---|---|---|
@@ -347,7 +349,7 @@ Every red flag finding carries a `suggested_correction` drawn from `_RED_FLAG_GU
 | `title_transfer` | FR | Art. 1583 | French Code civil | Le transfert de propriété s'opère par l'accord sur la chose |
 | `title_transfer` | ID | Pasal 1459 | KUHPerdata | Hak milik atas barang tidak pindah sebelum penyerahan |
 
-All 87 rows: `status=verified`. No further action needed unless new citations are added later.
+All 87 existing database rows: `status=verified` (caveat: 12 registry profiles still have coverage gaps for required clauses, logged as Evidence Not Found). No further DB row action needed unless new citations are added.
 
 ---
 

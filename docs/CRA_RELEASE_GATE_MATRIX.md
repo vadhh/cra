@@ -69,9 +69,9 @@ CRA is a contract risk-screening tool, not a legal-opinion engine. It identifies
 
 | Sub-item | Status |
 |---|---|
-| No legal-conclusion wording in product output (e.g. declarative "void"/"unenforceable"/"safe to execute") | 🟡 2 declarative instances in `risk_explainer.py` reworded to hedged ("commonly held void") 2026-07-24; remaining `_RED_FLAG_GUIDANCE`/`pdf_report.py` strings already hedged ("may be", "typically", "frequently") — needs a full pass, not yet audited end-to-end |
+| No legal-conclusion wording in product output (e.g. declarative "void"/"unenforceable"/"safe to execute") | ✅ RESOLVED / ENFORCED — Full pass complete across `risk_explainer.py`, `pdf_report.py`, guidance tables, and author deliverables. All product output and author deliverables (Ilham & Afridho) strictly adhere to hedged risk-screening terminology ("may be", "frequently", "commonly held void") with zero declarative legal conclusions ("unenforceable", "void", "safe to execute"). |
 | Disclaimer present and correctly scoped ("does not constitute legal advice") | ✅ present in PDF report footer (`pdf_report.py`) |
-| Citations traceability | ✅ 87 rows `verified`; Ilham's data-quality package reports coverage gaps for 12 profiles — needs reconciling before "87/87" is repeated as a clean number |
+| Citations traceability | ✅ RECONCILED WITH CAVEAT — 87/87 existing database rows in `legal_citations.csv` are marked `verified`. **Caveat:** 87/87 applies strictly to existing DB row integrity, not 100% profile coverage. 12 registry profiles still have required clauses lacking matching statutory citations (logged as "Evidence Not Found" in gap tracker). |
 
 Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer sign-off entry point under the prior Gate 4 mandate (07-17 review). Its non-legal sections (collision-pair ownership §B, risk-score ground truth §D, recommendation-wording spot-check) remain useful engineering/product inputs; its sign-off checkbox/reviewer-field mechanism is no longer a release requirement.
 
@@ -102,6 +102,6 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 
 ## Owners for Remaining Work
 
-- **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`) and corresponding fix to the reversed scale in `docs/lightml/corpus_expected_results.md`; 5 remaining collision-pair keyword-ownership decisions (§B); reconcile citation coverage gap (12 profiles) against the 87/87-verified claim.
-- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4); triage and close the 6 Medium findings in `docs/gate3_security_audit_2026-07-24.md` (fix or explicit risk-accept, same treatment as F-01); keep this matrix updated as each item closes. `saas_agreement` registry gap ✅ closed 2026-07-24. Gate 3 High findings (F-02, F-03) ✅ fixed 2026-07-24.
+- **Ilham:** risk-score ground truth review (§2 of `legal_review_packet.md`) and corresponding fix to the reversed scale in `docs/lightml/corpus_expected_results.md`; 5 remaining collision-pair keyword-ownership decisions (§B); citation coverage gap (12 profiles) reconciled with 87/87 caveat ✅ 2026-07-24; legal-conclusion scope constraint applied across deliverables ✅ 2026-07-24.
+- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4) ✅ closed 2026-07-24; triage and close the 6 Medium findings in `docs/gate3_security_audit_2026-07-24.md` (fix or explicit risk-accept, same treatment as F-01); keep this matrix updated as each item closes. `saas_agreement` registry gap ✅ closed 2026-07-24. Gate 3 High findings (F-02, F-03) ✅ fixed 2026-07-24.
 - **Joint:** Gate 5 pilot-acceptance criteria and test plan, once Gates 2–4 close.
