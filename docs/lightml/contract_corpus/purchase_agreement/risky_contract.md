@@ -39,6 +39,6 @@ For Party B: _________________________
 **Expected Missing Clauses**: None
 **Expected Detected Risks**: Unilateral Modification, Excessive Penalty Clause
 **Expected Severity**: High / Critical
-**Expected Score Range**: 40 - 69
+**Expected Score Range**: 61 - 100
 **Expected Legal References**: KUHPerdata Pasal 1309 / French Code civil Art. 1231-5 (Excessive Penalty); Art. 1171 (Unilateral Change)
 **Fixture Status**: Proposed Test Fixture
