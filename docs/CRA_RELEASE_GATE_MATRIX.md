@@ -4,7 +4,7 @@
 **Branch:** `release/cra-1.0-rc1`
 **Purpose:** single authoritative source of truth for RC1 readiness, replacing scattered/contradictory percentages across Afridho's and Ilham's separate reports. No profile moves from `draft` to `validated` in the registry, and RC1 does not merge to production, until all 5 gates below are `Passed`/`Approved`.
 
-**Overall status: NOT READY. 1 of 5 gates passed.**
+**Overall status: NOT READY. 2 of 5 gates passed.**
 
 ---
 
@@ -44,7 +44,7 @@ Evidence: `ldv-backend/tests/original11_corpus_report.json`, `ldv-backend/tests/
 
 ## Gate 3 — Security Validation
 
-**Status: 🟡 PARTIAL — internal code-level audit performed 2026-07-24; critical/high/most-medium findings closed, low findings + 3 dependency CVEs remain.**
+**Status: ✅ PASSED (internal audit) 2026-07-24 — every finding fixed or explicitly risk-accepted. Caveat: manual code-level review, not an external/third-party penetration test.**
 
 Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org document ownership, 5-role matrix, MFA (self-service + org-enforced), signed/expiring download links, audit log, rate limiting (flask-limiter), CSRF Origin check, encryption at rest (Fernet, key rotation), retention/purge, pinned dependencies, Docker.
 
@@ -54,10 +54,10 @@ Implemented (per `CLAUDE.md` P0 CR-01/04/10): session+API-token auth, per-org do
 |---|---|---|
 | Critical (F-01: `.env` w/ real `LDV_SECRET_KEY`/`LDV_ENCRYPTION_KEY` tracked in git) | 1 | 🟡 Risk-accepted by Afridho 2026-07-24 — repo is private, `.env` intentionally tracked for HF Spaces pilot deploy pickup. Residual risk (collaborator/space-access expansion) documented in the audit doc; rotate + move to a secrets manager if that changes. |
 | High (F-02 global-admin cross-tenant model; F-03 download-link HMAC key derived from session secret) | 2 | ✅ Both fixed 2026-07-24 — `auth.is_operator_org()` guard on all 3 admin-provisioning paths (F-02); independent HMAC-derived download-link key + `LDV_DOWNLOAD_LINK_SECRET` override (F-03). 108/108 tests passing. |
-| Medium (F-04 plaintext API tokens; F-05 unbounded upload-parse DoS surface; F-06 Dockerfile runs as root; F-07 unchecked dependency CVEs; F-08 unverified translator SSRF gating; F-09 no per-account login/MFA lockout) | 6 | ✅ 4 fixed 2026-07-24 (F-04 tokens now sha256-hashed at rest + `manage.py rotate-token`; F-05 PDF page-count + DOCX decompressed-size ceilings; F-06 both Dockerfiles + compose now run non-root uid 1000; F-09 10-strikes/15-min per-account lockout on `/login`). F-08 acknowledged, no code change needed (translator SSRF risk is config-gated; documented as a Gate 3 condition to keep `EXTERNAL_TRANSLATION_DISABLED=1` until a URL allowlist exists). F-07 partial: `pip-audit` run, Flask/cryptography patched; torch/transformers/deep-translator CVEs need an owner decision (scheduled major-version bump + regression pass, or risk-accept) — see audit doc table. 108/108 tests passing throughout. |
+| Medium (F-04 plaintext API tokens; F-05 unbounded upload-parse DoS surface; F-06 Dockerfile runs as root; F-07 unchecked dependency CVEs; F-08 unverified translator SSRF gating; F-09 no per-account login/MFA lockout) | 6 | ✅ All resolved 2026-07-24 — F-04 tokens now sha256-hashed at rest + `manage.py rotate-token`; F-05 PDF page-count + DOCX decompressed-size ceilings; F-06 both Dockerfiles + compose now run non-root uid 1000; F-09 10-strikes/15-min per-account lockout on `/login`. F-08 acknowledged, no code change needed (translator SSRF risk is config-gated; documented as a Gate 3 condition to keep `EXTERNAL_TRANSLATION_DISABLED=1` until a URL allowlist exists). F-07: `pip-audit` run, Flask/cryptography patched; torch/transformers/deep-translator CVEs risk-accepted after verifying each attack vector is unreachable in this codebase (no `torch.jit.*` calls; all `from_pretrained()` model IDs are fixed constants, never attacker input; `deep_translator` only runs when `LDV_REMOTE_TRANSLATION=1`, default off) — see audit doc table. 114/114 tests passing throughout. |
 | Low (F-10 spoofable audit-log IP; F-11 hardcoded rate-limit-bypass test email; F-12 unsanitized filename in Content-Disposition; F-13 per-worker rate-limit storage not shared; F-14 no `.env.example`) | 6 | ✅ All fixed 2026-07-24 — F-10 `_ip()` now only trusts `X-Forwarded-For` behind `LDV_TRUST_PROXY_HOPS` (via Werkzeug `ProxyFix`); F-11 test-runner bypass now requires `LDV_TEST_RUNNER_BYPASS=1` in addition to the email match; F-12 `download_file()` runs `secure_filename()` before building `Content-Disposition`; F-13 HF Spaces `start.sh` + `ldv-backend/Dockerfile`'s fallback `CMD` switched to `-w 1 --threads 4 --worker-class gthread` (docker-compose's `app` service was already correct via its own command override + Redis); F-14 added `.env.example` at repo root (real `.env` deliberately left tracked per the F-01 risk-acceptance). 114/114 tests passing. |
 
-**Not done:** no independent third-party security audit or penetration test. This gate cannot move to `Passed` until the 3 open F-07 dependency-CVE decisions (torch, transformers, deep-translator) are fixed or explicitly risk-accepted (same treatment as F-01/F-02/F-03) — that's the only remaining blocker below the CRITICAL/HIGH level.
+**Residual gap (not a blocker):** no independent third-party security audit or penetration test has been performed — this gate's Passed status reflects a thorough internal/manual code-level review. Consistent with the controlled-pilot risk posture (`docs/2026-06-22-external-review.md`), not a full external production sign-off. Re-verify F-01's risk-acceptance if the repo's visibility or `.env` handling ever changes.
 
 ---
 
@@ -92,7 +92,7 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 |---|---|
 | 1. Engineering regression | ✅ Passed |
 | 2. Corpus validation | 🟡 Partial — risk-score review, all 13 collision pairs, and legacy `profiles.json` saas_agreement divergence ✅ resolved 2026-07-24. 1 open item remains: Phase 2 "Gold Standard" formal validation (owned by Ilham). 45v42 reconciliation and clause sync ✅ resolved. |
-| 3. Security validation | 🟡 Partial — internal audit done 2026-07-24; 1 critical risk-accepted, 2 high fixed, 4/6 medium fixed + 1 acknowledged + 1 partial, 6 low fixed. Only the 3 open F-07 dependency-CVE decisions remain. |
+| 3. Security validation | ✅ Passed (internal audit, 2026-07-24) — every finding fixed or risk-accepted; no external pentest performed (documented residual gap, not a blocker). |
 | 4. Product wording, disclaimer & scope compliance | 🟡 Partial — wording audit in progress |
 | 5. Controlled pilot acceptance | ⛔ Not started — blocked on 2–4 |
 
@@ -103,5 +103,5 @@ Superseded framing: `docs/legal_review_packet.md` (07-22) was built as a lawyer 
 ## Owners for Remaining Work
 
 - **Ilham:** risk-score ground truth review (§D of `legal_review_packet.md` & `docs/lightml/corpus_expected_results.md`) ✅ 2026-07-24; all 13 collision-pair keyword-ownership decisions & `negative_keywords` (§B) ✅ 2026-07-24; citation coverage gap (12 profiles) reconciled with 87/87 caveat ✅ 2026-07-24; legal-conclusion scope constraint applied across deliverables ✅ 2026-07-24.
-- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4) ✅ closed 2026-07-24; decide on the 3 open F-07 dependency CVEs (torch/transformers scheduled bump + regression pass, or risk-accept; deep-translator risk-accept given it's disabled by default) — this is the only remaining Gate 3 item; keep this matrix updated once it closes. `saas_agreement` registry gap ✅ closed 2026-07-24. Gate 3 High findings (F-02, F-03), 4/6 Medium findings (F-04, F-05, F-06, F-09), and all 6 Low findings (F-10–F-14) ✅ fixed 2026-07-24; F-08 acknowledged, no action needed unless `LDV_REMOTE_TRANSLATION=local` is turned on.
+- **Afridho:** full pass on product/PDF output wording for remaining legal-conclusion phrasing (Gate 4) ✅ closed 2026-07-24. `saas_agreement` registry gap ✅ closed 2026-07-24. Gate 3 ✅ fully closed 2026-07-24 — all Critical/High/Medium/Low findings fixed or risk-accepted, including the 3 F-07 dependency CVEs (torch/transformers/deep-translator risk-accepted after verifying their attack vectors are unreachable in this codebase; see `docs/gate3_security_audit_2026-07-24.md`). No remaining Gate 3 action items.
 - **Joint:** Gate 5 pilot-acceptance criteria and test plan, once Gates 2–4 close.

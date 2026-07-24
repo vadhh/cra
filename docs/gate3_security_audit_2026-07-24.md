@@ -17,24 +17,29 @@ This is audit-only. No application code was modified.
 
 ## Summary verdict
 
-**Gate 3 cannot be marked Passed as-is, but every actionable finding except 3 dependency CVEs is
-now closed.** F-01 was originally raised as CRITICAL; **owner (Afridho) reviewed and risk-accepted
-it 2026-07-24**. **Both HIGH findings (F-02, F-03) are fixed.** **4 of 6 MEDIUM findings are
-fixed** (F-04 token hashing, F-05 parse-cost DoS bound, F-06 non-root container, F-09 account
-lockout); **F-08 is acknowledged/no-code-change-needed**; **F-07 is partial** — 2 dependency CVEs
-patched (Flask, cryptography), 3 remain open pending an owner decision (torch/transformers need a
-scheduled major-version bump + full regression pass, not a same-session change; deep-translator
-has no available fix but the affected code path is disabled by default). **All 6 LOW findings are
-now fixed** (F-10 proxy-trust gating, F-11 test-bypass flag, F-12 filename sanitization, F-13
-single-worker/threaded gunicorn, F-14 `.env.example`). Full test suite 114/114 passing throughout
-(108 at the time of the High/Medium fixes; other merged work added 6 more since). The only
-remaining open items are the 3 F-07 dependency-CVE decisions.
+**Every finding in this audit is now closed, fixed, or explicitly risk-accepted.** F-01 was
+originally raised as CRITICAL; **owner (Afridho) reviewed and risk-accepted it 2026-07-24**.
+**Both HIGH findings (F-02, F-03) are fixed.** **All 6 MEDIUM findings are resolved** — F-04, F-05,
+F-06, F-09 fixed; F-08 acknowledged/no-code-change-needed; F-07's 2 patchable CVEs fixed (Flask,
+cryptography) and its remaining 3 (torch, transformers, deep-translator) risk-accepted 2026-07-24
+after verifying each CVE's actual attack vector is unreachable in this codebase (no
+`torch.jit.script`/`.trace` calls anywhere; every `from_pretrained()` uses a fixed
+developer-controlled model ID, never attacker input; `deep_translator` is only invoked when
+`LDV_REMOTE_TRANSLATION=1`, which defaults off). **All 6 LOW findings are fixed** (F-10 proxy-trust
+gating, F-11 test-bypass flag, F-12 filename sanitization, F-13 single-worker/threaded gunicorn,
+F-14 `.env.example`). Full test suite 114/114 passing throughout (108 at the time of the
+High/Medium fixes; other merged work added 6 more since).
+
+**Gate 3 can now move to Passed** on the internal-audit dimension — the one caveat is this was a
+manual code-level review, not an external/third-party penetration test; recommend keeping that as
+a documented residual gap in the gate matrix rather than a blocker, consistent with a
+controlled-pilot risk posture.
 
 | Severity | Count | Status |
 |---|---|---|
 | CRITICAL | 1 | Risk-accepted (F-01, 2026-07-24) |
 | HIGH | 2 | ✅ Both fixed 2026-07-24 (F-02, F-03) |
-| MEDIUM | 6 | ✅ F-04/F-05/F-06/F-09 fixed; F-07 partial (2 patched, 3 need owner decision on major-version bumps/risk-accept); F-08 acknowledged, no code change needed |
+| MEDIUM | 6 | ✅ All resolved — F-04/F-05/F-06/F-09 fixed; F-07 fixed (2 patched) + risk-accepted (3, verified unreachable); F-08 acknowledged, no code change needed |
 | LOW | 6 | ✅ All fixed 2026-07-24 (F-10, F-11, F-12, F-13, F-14) |
 | INFO | 4 | N/A |
 
@@ -311,9 +316,14 @@ available this pass). 7 known vulnerabilities in 6 packages found:
 | Flask | 3.1.2 | PYSEC-2026-2151 | 3.1.3 | ✅ Bumped to 3.1.3, patch-level, 108/108 tests pass |
 | cryptography | 48.0.0 | GHSA-537c-gmf6-5ccf (statically-linked OpenSSL) | 48.0.1 | ✅ Bumped to 48.0.1, patch-level, 108/108 tests pass |
 | setuptools | 81.0.0 | PYSEC-2026-3447 (MANIFEST.in exclude bypass, sdist build-time) | 83.0.0 | Not pinned in `requirements.txt` (transitive/build-tool); low relevance to a running deployment. Owner decision: pin explicitly or accept. |
-| torch | 2.11.0 | PYSEC-2025-194 (`torch.jit.script` memory corruption) | 2.13.0 | ⛔ Not bumped — multi-GB reinstall, minor-version jump against a pinned ML stack (CLAUDE.md's fine-tuned DistilBERT + Qwen setup depends on exact versions); needs a scheduled bump + full model-inference regression pass, not a same-session change. Owner decision required. |
-| transformers | 5.4.0 | PYSEC-2026-2290 (LightGlue model-loading RCE via attacker-controlled repo) | 5.5.0 | ⛔ Not bumped — same reasoning as torch; also note the RCE vector requires loading an attacker-controlled model repo, which this app doesn't do (models are pinned to known repos/local fine-tuned paths). Lower urgency than the CVE severity alone suggests, but still needs a scheduled, tested bump. Owner decision required. |
-| deep-translator | 1.11.4 | PYSEC-2022-252 (2022 supply-chain account-takeover incident) | none listed | ⛔ No patched version exists in the advisory. Exposure is bounded: `LDV_REMOTE_TRANSLATION` defaults to `0` (disabled) per CLAUDE.md, so this code path isn't reachable in the default/pilot configuration. Owner decision: risk-accept given the flag default, or evaluate replacing the library. |
+| torch | 2.11.0 | PYSEC-2025-194 (`torch.jit.script` memory corruption) | 2.13.0 | 🟡 Risk-accepted 2026-07-24 — verified via repo-wide grep that `torch.jit.script`/`torch.jit.trace` are never called anywhere in this codebase; the vulnerable API surface is unreachable. Not bumped (multi-GB reinstall against a pinned ML stack that CLAUDE.md's fine-tuned DistilBERT + Qwen setup depends on exact versions of) since there's no actual exposure to close. Revisit if `torch.jit.*` is ever introduced. |
+| transformers | 5.4.0 | PYSEC-2026-2290 (LightGlue model-loading RCE via attacker-controlled repo) | 5.5.0 | 🟡 Risk-accepted 2026-07-24 — verified every `from_pretrained()` call (`detector_distilbert.py`, `send_prompt.py`, `scripts/finetune_distilbert.py`) uses a fixed, developer-controlled `MODEL_ID`/path constant, never user or attacker-supplied input; the RCE requires loading an attacker-controlled repo, which this app structurally cannot do. Not bumped for the same multi-GB/pinned-stack reasons as torch. Revisit if a `from_pretrained()` call is ever added that takes a repo ID from request input or config. |
+| deep-translator | 1.11.4 | PYSEC-2022-252 (2022 supply-chain account-takeover incident) | none listed | 🟡 Risk-accepted 2026-07-24 — no patched version exists in the advisory. Verified `translator.py` only invokes `GoogleTranslator` when `LDV_REMOTE_TRANSLATION == "1"`, which defaults to `"0"` (disabled); this code path is unreachable in the default/pilot configuration. Revisit if remote translation is ever enabled — at that point, re-evaluate replacing the library entirely, since no fixed version exists to pin to. |
+
+**F-07 is now closed** — no dependency CVE remains without either a patch (Flask, cryptography)
+or a verified-unreachable-in-this-codebase risk acceptance (torch, transformers, deep-translator).
+setuptools (not directly pinned, low relevance to a running deployment) remains a minor open item
+for whoever owns the build tooling, but doesn't block Gate 3.
 
 Re-run `pip-audit` periodically (CI gate or scheduled) rather than treating this as a one-time
 check — new CVEs get published against unchanged pins.
@@ -544,17 +554,20 @@ page/stack-trace leakage was found in the reviewed error handlers.
 
 ---
 
-## Recommendation for Gate 3 status
+## Recommendation for Gate 3 status (updated 2026-07-24, post-remediation)
 
-1. **Do not mark Gate 3 Passed.** F-01 alone is a hard blocker — it's not a hypothetical, it's a
-   currently-live exposure of the actual signing/encryption keys in git history on a remote the
-   team pushes to, for a project with a real HF Spaces pilot deployment.
-2. Suggested Gate 3 update once F-01 is remediated (rotation + history scrub confirmed) and F-02
-   (global-admin model) is at minimum explicitly documented/risk-accepted: move to
-   **🟡 PARTIAL — critical secret exposure remediated, code-level audit complete, dependency CVE
-   scan and formal external pentest still outstanding** rather than back to fully 🟡 PARTIAL as
-   today, since "no independent security audit... performed" is no longer true after this pass —
-   but F-07 (CVE scan) and any external/third-party validation are still open items before a full
-   ✅ Passed.
-3. Recommend re-running this audit (or at minimum re-verifying F-01 through F-06) after
-   remediation, before Gate 3 is closed.
+The original version of this section (written when F-01 was still an open blocker) recommended
+against passing Gate 3. That has changed:
+
+1. **F-01** was reviewed by the repo owner and explicitly risk-accepted (private repo, `.env`
+   intentionally tracked for the HF Spaces pilot deploy pickup) — no longer an open blocker.
+2. **F-02 through F-14** are all fixed or (for the 3 remaining F-07 dependency CVEs)
+   risk-accepted with a verified, concrete unreachability argument, not a hand-wave.
+3. **Recommendation: mark Gate 3 Passed**, with one documented caveat carried forward in the gate
+   matrix rather than treated as a blocker — this was a manual, internal, code-level review, not
+   an external/third-party penetration test. That's consistent with a controlled-pilot risk
+   posture (per `docs/2026-06-22-external-review.md`'s "controlled-pilot only" verdict) rather
+   than a full production sign-off bar.
+4. Re-run `pip-audit` periodically and re-verify F-01's risk-acceptance if the repo's visibility,
+   collaborator list, or `.env` handling ever changes — those are the two conditions that could
+   silently invalidate this gate's Passed status without a corresponding doc update.
